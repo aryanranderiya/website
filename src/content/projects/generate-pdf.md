@@ -3,7 +3,7 @@ title: Generate PDF from Practical
 description: Web app for students to create professional PDFs from practical assignments with a code editor, AI generation, and Python execution.
 date: 2024-06-01
 tags: [Next.js, TypeScript, TailwindCSS]
-tech: [Next.js, TypeScript, TailwindCSS, Monaco Editor, PDFKit]
+tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: web
 folder: Projects
@@ -13,6 +13,8 @@ order: 16
 github: https://github.com/aryanranderiya/Generate-PDF-from-Practical
 ---
 
-Every semester, students at my university have to submit practical assignments as neatly formatted PDFs. It's tedious. So I built a web app that handles the whole thing - you write or paste your code in a Monaco editor, optionally use AI to generate it, execute Python server-side with Matplotlib plot embedding, and export a clean PDF.
+Every semester, students at my university had to submit practical assignments as neatly formatted PDFs - a repetitive formatting chore that got in the way of actually learning. I built this to eliminate that friction: a single web app where you fill in your student info, write or generate your code, run it, and export a professionally formatted PDF without touching a word processor.
 
-It has syntax highlighting, dark mode, custom formatting options, and the server-side Python execution captures stdout and renders any plots directly into the output. Built with Next.js, shadcn/ui, and PDFKit on the backend.
+The code editor is Monaco - the same editor that powers VS Code - with full syntax highlighting. Students can write code directly, or use the integrated AI generation feature to scaffold a solution when the prompt is straightforward and they just need a starting point. Once the code is ready, it gets executed server-side in a Python environment, and both the stdout output and any Matplotlib plots are captured and embedded directly into the document. The plots don't open in a separate window - they're intercepted and dropped inline, so the final PDF actually reflects what the code produces.
+
+The student information form covers name, enrollment number, subject details, and practical metadata. You can choose font styles, and the whole interface has dark mode support. PDF generation runs through PDFKit on a Next.js API route, which kept the editor, execution endpoint, and export logic in one cohesive project rather than split across services. The UI components are built with Radix UI and custom shadcn/ui styling.

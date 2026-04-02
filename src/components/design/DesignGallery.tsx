@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { HugeiconsIcon, Cancel01Icon, ArrowLeft02Icon, ArrowRight02Icon, Search01Icon } from '@icons';
+import { HugeiconsIcon, Cancel01Icon, ArrowLeft02Icon, ArrowRight02Icon } from '@icons';
 
 interface DesignGalleryProps {
   apparel: string[];
@@ -179,13 +179,8 @@ function ApparelItem({ src, alt, onClick }: { src: string; alt: string; onClick:
         alt={alt}
         loading="lazy"
         decoding="async"
-        className="apparel-img transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.28] group-hover:brightness-[1.04] object-cover"
+        className="apparel-img transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.6] group-hover:brightness-[1.04] object-cover"
       />
-      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
-        <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)' }}>
-          <HugeiconsIcon icon={Search01Icon} size={16} color="white" />
-        </div>
-      </div>
     </div>
   );
 }
@@ -193,7 +188,7 @@ function ApparelItem({ src, alt, onClick }: { src: string; alt: string; onClick:
 function MasonryItem({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
   return (
     <div
-      className="masonry-item cursor-pointer group"
+      className="masonry-item cursor-zoom-in group"
       onClick={onClick}
     >
       <img

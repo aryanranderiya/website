@@ -78,9 +78,19 @@ const movies = defineCollection({
   }),
 });
 
+// Now page entries
+const now = defineCollection({
+  type: 'content',
+  schema: z.object({
+    date: z.coerce.date(),
+    location: z.string().optional(),
+  }),
+});
+
 export const collections = {
   blog,
   projects,
   books,
   movies,
+  now,
 };

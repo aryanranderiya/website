@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import NowLayout from '@/layouts/NowLayout.astro';
+
+// Fetch all now entries sorted by date descending
+const allEntries = await getCollection('now');
+const sorted = allEntries.sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+if (sorted.length === 0) {
+  return Astro.redirect('/');
+}
+
+const latest = sorted[0];
+const { Content } = await latest.render();
+
+const entries = sorted.map((entry, i) => ({
+  slug: entry.slug,
+  date: entry.data.date,
+  isLatest: i === 0,
+}));
+---
+
+<NowLayout
+  date={latest.data.date}
+  location={latest.data.location}
+  entries={entries}
+  currentSlug={latest.slug}
+>
+  <Content />
+</NowLayout>

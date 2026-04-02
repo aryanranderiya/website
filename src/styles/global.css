@@ -189,9 +189,7 @@
 }
 
 html {
-  font-family: "Inter var", "Inter", -apple-system, BlinkMacSystemFont,
-    "SF Pro Text", system-ui, sans-serif;
-  font-feature-settings: 'cv11', 'ss01', 'kern' 1, 'liga' 1, 'calt' 1;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HugeiconsIcon, Search01Icon, FilterIcon } from '@icons';
+import { HugeiconsIcon, Search01Icon, FilterIcon, Delete01Icon } from '@icons';
 import ProjectCard from './ProjectCard';
 import { getTechIconUrl } from '../../utils/techIcons';
 
@@ -51,6 +51,18 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   const [techPopoverOpen, setTechPopoverOpen] = useState(false);
   const filterBtnRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   useEffect(() => {
     if (!techPopoverOpen) return;
@@ -143,11 +155,10 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   return (
     <div>
       {/* Filter pills + search */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', marginBottom: '28px' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', alignItems: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '28px', width: '100%' }}>
 
-          {/* Tech filter icon button */}
-          <div style={{ position: 'relative' }}>
+        {/* Tech filter icon button — outside overflow:hidden so popover isn't clipped */}
+        <div style={{ position: 'relative', flexShrink: 0 }}>
             <button
               ref={filterBtnRef}
               onClick={() => setTechPopoverOpen(o => !o)}
@@ -182,8 +193,8 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                   top: 'calc(100% + 6px)',
                   left: 0,
                   zIndex: 100,
-                  background: 'var(--popover)',
-                  borderRadius: 10,
+                  background: 'var(--background)',
+                  borderRadius: 20,
                   padding: '6px',
                   minWidth: 210,
                   maxHeight: 300,
@@ -191,27 +202,29 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                   boxShadow: 'var(--shadow-lg)',
                 }}
               >
-                {activeTechFilters.length > 0 && (
-                  <button
-                    onClick={() => setActiveTechFilters([])}
-                    style={{
-                      width: '100%',
-                      textAlign: 'left',
-                      padding: '5px 8px',
-                      fontSize: '10px',
-                      color: 'var(--text-ghost)',
-                      background: 'transparent',
-                      border: 'none',
-                      borderRadius: 6,
-                      cursor: 'pointer',
-                      letterSpacing: '0.04em',
-                      textTransform: 'uppercase',
-                      marginBottom: 2,
-                    }}
-                  >
-                    Clear {activeTechFilters.length} filter{activeTechFilters.length > 1 ? 's' : ''}
-                  </button>
-                )}
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '4px 8px 6px',
+                }}>
+                  <span style={{ fontSize: '11px', fontWeight: 400, color: 'var(--text-ghost)', letterSpacing: '-0.01em' }}>
+                    Filters
+                  </span>
+                  {activeTechFilters.length > 0 && (
+                    <button
+                      onClick={() => setActiveTechFilters([])}
+                      style={{
+                        display: 'inline-flex', alignItems: 'center', gap: 4,
+                        padding: '2px 6px', fontSize: '10px',
+                        color: '#ef4444', background: 'transparent',
+                        border: 'none', borderRadius: 6, cursor: 'pointer',
+                        letterSpacing: '0.01em',
+                      }}
+                    >
+                      Clear
+                      <HugeiconsIcon icon={Delete01Icon} size={11} color="currentColor" />
+                    </button>
+                  )}
+                </div>
                 {sortedTechTags.map(([tag, count]) => {
                   const isOn = activeTechFilters.includes(tag);
                   const iconUrl = getTechIconUrl(tag);
@@ -219,12 +232,14 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                     <button
                       key={tag}
                       onClick={() => toggleTechFilter(tag)}
+                      onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'var(--muted-bg)'; }}
+                      onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = isOn ? 'var(--muted-bg)' : 'transparent'; }}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
                         width: '100%',
                         padding: '5px 8px',
-                        borderRadius: 6,
+                        borderRadius: 8,
                         border: 'none',
                         background: isOn ? 'var(--muted-bg)' : 'transparent',
                         color: isOn ? 'var(--text-primary)' : 'var(--text-secondary)',
@@ -232,7 +247,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                         fontSize: '12px',
                         fontWeight: isOn ? 500 : 400,
                         letterSpacing: '-0.01em',
-                        transition: 'all 100ms ease',
+                        transition: 'background 100ms ease',
                         gap: 7,
                       }}
                     >
@@ -268,14 +283,15 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
                 })}
               </div>
             )}
-          </div>
+        </div>
 
+        <div style={{ display: 'flex', gap: '2px', alignItems: 'center', flex: 1, overflow: 'hidden' }}>
           {allFilters.map(({ key, label }) => {
             const isActive = activeFilter === key;
             return (
               <button
                 key={key}
-                onClick={() => setActiveFilter(key)}
+                onClick={() => setActiveFilter(isActive && key !== 'all' ? 'all' : key)}
                 style={{
                   fontSize: '11px',
                   fontWeight: isActive ? 500 : 400,
@@ -295,6 +311,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
             );
           })}
         </div>
+
         <div style={{ position: 'relative', flexShrink: 0 }}>
           <span style={{
             position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
@@ -303,6 +320,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
             <HugeiconsIcon icon={Search01Icon} size={12} />
           </span>
           <input
+            ref={searchRef}
             type="text"
             value={search}
             onChange={e => setSearch(e.target.value)}
@@ -310,7 +328,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
             style={{
               background: 'var(--muted-bg)', border: 'none', borderRadius: '9999px',
               padding: '5px 14px 5px 28px', fontSize: '12px', color: 'var(--text-primary)',
-              outline: 'none', letterSpacing: '-0.01em', width: '200px',
+              outline: 'none', letterSpacing: '-0.01em', width: '140px',
             }}
           />
         </div>

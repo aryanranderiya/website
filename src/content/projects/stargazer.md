@@ -2,8 +2,8 @@
 title: Stargazer
 description: Terminal UI tool in Go that collects GitHub stargazers, resolves email addresses, and exports to CSV.
 date: 2025-03-01
-tags: [Go, CLI]
-tech: [Go, BubbleTea, GitHub API]
+tags: [Go]
+tech: [Go]
 featured: false
 type: other
 folder: Projects
@@ -13,6 +13,10 @@ order: 18
 github: https://github.com/aryanranderiya/stargazer
 ---
 
-A TUI tool written in Go that takes any GitHub repo and collects all its stargazers, enriches their profiles with email addresses using a three-step fallback (public profile, git commit email, noreply), and exports everything to CSV.
+I built Stargazer because I needed to reach out to people who had starred a GitHub repository and found that no existing tool handled email resolution in a meaningful way. The core idea was simple: given any public GitHub repo, collect every account that had starred it and enrich each profile with a real email address wherever possible.
 
-It's a single 7MB binary with zero dependencies. Uses BubbleTea for an interactive terminal interface with config, progress, and completion screens. It does incremental CSV writing so if you interrupt it midway, you don't lose what it already found. Processes about 1,000 stargazers in 5-15 minutes with 5 workers. Built this because I needed stargazer data for outreach and nothing existing handled email resolution well.
+To make email resolution as thorough as possible, I implemented a three-step fallback strategy. The tool first checked the user's public GitHub profile for a listed email, then scraped commit history to surface any git-configured addresses, and finally fell back to GitHub's noreply address when neither source yielded a result. This layered approach recovered contact information for a much larger share of stargazers than a single lookup ever could.
+
+I wrote the interface using BubbleTea, which gave the tool a proper terminal UI with distinct screens for configuration, live progress, and a completion summary. Incremental CSV writing meant that interrupting a long run mid-way never caused lost data - whatever had already been processed was safely on disk. With five concurrent workers the tool could work through roughly 1,000 stargazers in under fifteen minutes.
+
+The final artifact was a single 7 MB binary with no runtime dependencies, which made it straightforward to drop onto any machine and run immediately. The project gave me a solid introduction to Go's concurrency model and to building polished CLI experiences with the Charm ecosystem.

@@ -187,11 +187,12 @@ export default function Signature() {
   let letterIndex = 0;
 
   return (
-    <section className="pb-8 mt-8">
+    <section className="pb-8 mt-8" style={{ height: '88px' }}>
       <div
         ref={containerRef}
         aria-label="Aryan Randeriya signature"
-        className="flex min-h-[51px] flex-wrap justify-start items-center"
+        className="flex flex-wrap justify-start items-center"
+        style={{ transform: 'scale(1.7)', transformOrigin: '0 50%', height: '51px' }}
       >
         {ALL_ITEMS.map((item, i) => {
           if (item === 'space') {

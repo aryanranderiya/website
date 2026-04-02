@@ -11,132 +11,9 @@ import {
   ArrowRight02Icon,
   ArrowLeft02Icon,
 } from '@icons';
-
-interface FreelanceProject {
-  name: string;
-  type: string;
-  tech: string[];
-  url?: string;
-  description: string;
-  images: string[];
-  testimonial?: {
-    quote: string;
-    author: string;
-    role: string;
-  };
-}
+import { pastWork, type FreelanceProject } from '@/data/freelance';
 
 const PANEL_WIDTH = 580;
-
-const DEVICON_MAP: Record<string, string | null> = {
-  React: 'react',
-  TypeScript: 'typescript',
-  TailwindCSS: 'tailwindcss',
-  'Next.js': 'nextjs',
-  'Node.js': 'nodejs',
-  MongoDB: 'mongodb',
-  Redis: 'redis',
-  Express: 'express',
-  Astro: 'astro',
-};
-
-const pastWork: FreelanceProject[] = [
-  {
-    name: 'BlinkAnalytics',
-    type: 'Analytics Dashboard',
-    tech: ['React', 'TypeScript', 'TailwindCSS'],
-    url: 'https://blinkanalytics.in',
-    description:
-      'Official website and analytics dashboard for Blink Analytics, a generative AI and data analytics company. Real-time client reporting with custom charts, metrics, and data export.',
-    images: [
-      '/ProjectMedia/BlinkAnalytics/1.png',
-      '/ProjectMedia/BlinkAnalytics/2.webp',
-      '/ProjectMedia/BlinkAnalytics/3.webp',
-      '/ProjectMedia/BlinkAnalytics/4.webp',
-      '/ProjectMedia/BlinkAnalytics/5.webp',
-      '/ProjectMedia/BlinkAnalytics/6.webp',
-      '/ProjectMedia/BlinkAnalytics/7.webp',
-      '/ProjectMedia/BlinkAnalytics/8.webp',
-      '/ProjectMedia/BlinkAnalytics/9.webp',
-    ],
-  },
-  {
-    name: 'MWI',
-    type: 'Brand & Web',
-    tech: ['Next.js', 'TypeScript', 'TailwindCSS'],
-    url: 'https://mwi.gg',
-    description:
-      'Brand identity and web platform for Move With Intention (MWI), a fitness and wellness company. Modern, clean aesthetic with performant Next.js architecture.',
-    images: Array.from({ length: 14 }, (_, i) => `/ProjectMedia/MWI/${i + 1}.webp`),
-  },
-  {
-    name: 'Encode PDEU',
-    type: 'CS Club Platform',
-    tech: ['React', 'Node.js', 'MongoDB'],
-    url: 'https://encodepdeu.vercel.app',
-    description:
-      'The official website of Encode — the Computer Science Club at PDEU. Led the web dev core committee and built the site with event management, member profiles, and resource sharing.',
-    images: [
-      '/ProjectMedia/Encode_Official%20Website/1.webp',
-      '/ProjectMedia/Encode_Official%20Website/2.webp',
-      '/ProjectMedia/Encode_Official%20Website/3.webp',
-      '/ProjectMedia/Encode_Official%20Website/4.webp',
-      '/ProjectMedia/Encode_Official%20Website/5.webp',
-      '/ProjectMedia/Encode_Official%20Website/6.webp',
-      '/ProjectMedia/Encode_Official%20Website/7.webp',
-      '/ProjectMedia/Encode_Official%20Website/8.webp',
-    ],
-  },
-  {
-    name: 'Rezrek',
-    type: 'Content E-Commerce',
-    tech: ['React', 'Node.js', 'MongoDB', 'Redis'],
-    url: 'https://rezrek.com',
-    description:
-      'Content e-commerce platform enabling creators to sell digital products with integrated payments and delivery.',
-    images: [
-      '/ProjectMedia/Rezrek/rezrek%20main.webp',
-      '/ProjectMedia/Rezrek/0.webp',
-      '/ProjectMedia/Rezrek/1.webp',
-      '/ProjectMedia/Rezrek/2.webp',
-      '/ProjectMedia/Rezrek/3.webp',
-      '/ProjectMedia/Rezrek/4.webp',
-      '/ProjectMedia/Rezrek/5.webp',
-      '/ProjectMedia/Rezrek/6.webp',
-      '/ProjectMedia/Rezrek/7.webp',
-      '/ProjectMedia/Rezrek/8.webp',
-      '/ProjectMedia/Rezrek/9.webp',
-      '/ProjectMedia/Rezrek/10.webp',
-      '/ProjectMedia/Rezrek/11.webp',
-    ],
-    testimonial: {
-      quote:
-        'Aryan delivered exactly what we needed, fast and clean. The platform has been running smoothly since day one.',
-      author: 'Rezrek Founders',
-      role: 'Co-Founders, Rezrek',
-    },
-  },
-  {
-    name: 'LyfeLane',
-    type: 'Platform MVP',
-    tech: ['React', 'Node.js', 'MongoDB', 'Express'],
-    url: 'https://lyfelane.com',
-    description:
-      'Create personalized greeting cards, send them via email, and receive responses. Uses AI for card templates with an easy, Canva-like design interface.',
-    images: [
-      '/ProjectMedia/LyfeLane/2024-11-22_22-18.png',
-      '/ProjectMedia/LyfeLane/2024-11-22_22-19.png',
-      '/ProjectMedia/LyfeLane/2024-11-22_22-19_1.png',
-      '/ProjectMedia/LyfeLane/2024-11-22_22-20.png',
-      '/ProjectMedia/LyfeLane/2024-11-22_22-22.png',
-      '/ProjectMedia/LyfeLane/2024-11-22_22-23.png',
-      '/ProjectMedia/LyfeLane/2024-11-22_22-24.png',
-      '/ProjectMedia/LyfeLane/2024-11-22_22-24_1.png',
-      '/ProjectMedia/LyfeLane/2024-11-22_22-24_2.png',
-      '/ProjectMedia/LyfeLane/2024-11-22_22-24_3.png',
-    ],
-  },
-];
 
 function DeviconImg({ slug, size = 12 }: { slug: string; size?: number }) {
   return (
@@ -169,6 +46,7 @@ function ProjectDetail({
   hasNext: boolean;
 }) {
   const [activeImage, setActiveImage] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const wheelAccumRef = useRef(0);
   const wheelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -176,8 +54,20 @@ function ProjectDetail({
   const prevImg = () => setActiveImage((i) => Math.max(0, i - 1));
   const nextImg = () => setActiveImage((i) => Math.min(total - 1, i + 1));
 
-  // Reset image index when project changes
-  useEffect(() => { setActiveImage(0); }, [project.name]);
+  // Reset image index and close lightbox when project changes
+  useEffect(() => { setActiveImage(0); setLightboxOpen(false); }, [project.name]);
+
+  // Keyboard nav for lightbox
+  useEffect(() => {
+    if (!lightboxOpen) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxOpen(false);
+      if (e.key === 'ArrowLeft') setActiveImage(i => Math.max(0, i - 1));
+      if (e.key === 'ArrowRight') setActiveImage(i => Math.min(total - 1, i + 1));
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [lightboxOpen, total]);
 
   const handleWheel = (e: React.WheelEvent) => {
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
@@ -263,9 +153,10 @@ function ProjectDetail({
       {/* Image carousel — no overlaid buttons, just dots */}
       {total > 0 && (
         <div
-          className="relative mx-5 rounded-xl overflow-hidden shrink-0 bg-[var(--muted-bg)] select-none"
+          className="relative mx-5 rounded-xl overflow-hidden shrink-0 bg-[var(--muted-bg)] select-none cursor-pointer"
           style={{ aspectRatio: '16/9' }}
           onWheel={handleWheel}
+          onClick={() => setLightboxOpen(true)}
         >
           <AnimatePresence mode="wait" initial={false}>
             <motion.img
@@ -280,6 +171,74 @@ function ProjectDetail({
             />
           </AnimatePresence>
         </div>
+      )}
+
+      {/* Lightbox */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {lightboxOpen && (
+            <motion.div
+              key="freelance-lightbox"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
+              onClick={() => setLightboxOpen(false)}
+              className="fixed inset-0 flex items-center justify-center"
+              style={{ zIndex: 9999, backgroundColor: 'color-mix(in srgb, var(--background) 60%, transparent)' }}
+            >
+              <motion.img
+                key={activeImage}
+                src={project.images[activeImage]}
+                alt={project.name}
+                initial={{ scale: 0.94, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.94, opacity: 0 }}
+                transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
+                onClick={e => e.stopPropagation()}
+                className="max-h-[90vh] max-w-[90vw] object-contain block rounded-[6px]"
+                draggable={false}
+              />
+              <button
+                onClick={e => { e.stopPropagation(); setLightboxOpen(false); }}
+                aria-label="Close"
+                className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full border-none cursor-pointer"
+                style={{ background: 'color-mix(in srgb, var(--foreground) 10%, transparent)', color: 'var(--foreground)' }}
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={16} color="currentColor" />
+              </button>
+              {total > 1 && (
+                <>
+                  <button
+                    onClick={e => { e.stopPropagation(); setActiveImage(i => Math.max(0, i - 1)); }}
+                    disabled={activeImage === 0}
+                    aria-label="Previous"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full border-none cursor-pointer disabled:opacity-25"
+                    style={{ background: 'color-mix(in srgb, var(--foreground) 10%, transparent)', color: 'var(--foreground)' }}
+                  >
+                    <HugeiconsIcon icon={ArrowLeft02Icon} size={16} color="currentColor" />
+                  </button>
+                  <button
+                    onClick={e => { e.stopPropagation(); setActiveImage(i => Math.min(total - 1, i + 1)); }}
+                    disabled={activeImage === total - 1}
+                    aria-label="Next"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full border-none cursor-pointer disabled:opacity-25"
+                    style={{ background: 'color-mix(in srgb, var(--foreground) 10%, transparent)', color: 'var(--foreground)' }}
+                  >
+                    <HugeiconsIcon icon={ArrowRight02Icon} size={16} color="currentColor" />
+                  </button>
+                  <div
+                    className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[12px] pointer-events-none"
+                    style={{ color: 'color-mix(in srgb, var(--foreground) 45%, transparent)', letterSpacing: '0.04em' }}
+                  >
+                    {activeImage + 1} / {total}
+                  </div>
+                </>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
       )}
 
       {/* Content */}
@@ -343,9 +302,19 @@ function ProjectDetail({
   );
 }
 
-export default function FreelanceWork() {
-  const [selected, setSelected] = useState<FreelanceProject | null>(null);
+export default function FreelanceWork({ initialSlug }: { initialSlug?: string }) {
+  const [selected, setSelected] = useState<FreelanceProject | null>(
+    () => initialSlug ? (pastWork.find(p => p.slug === initialSlug) ?? null) : null
+  );
 
+  // Sync URL with selected project
+  useEffect(() => {
+    if (selected) {
+      history.pushState({}, '', `/freelance/${selected.slug}`);
+    } else {
+      history.pushState({}, '', '/freelance');
+    }
+  }, [selected]);
 
   // Escape to close
   useEffect(() => {

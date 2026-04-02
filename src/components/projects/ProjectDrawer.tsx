@@ -5,6 +5,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { useState, useEffect } from 'react';
 import { RaisedButton } from '@/components/ui/raised-button';
 import { HugeiconsIcon, Cancel01Icon, GithubIcon, LinkSquare02Icon, ImageNotFound01Icon, ArrowLeft01Icon, ArrowRight01Icon } from '@icons';
+import { getTechIconUrl } from '../../utils/techIcons';
 
 interface Project {
   slug: string;
@@ -22,49 +23,6 @@ interface Project {
   coverImage?: string;
 }
 
-// Map tech names to devicon slugs
-const DEVICON_MAP: Record<string, string | null> = {
-  'React': 'react',
-  'React Native': 'react',
-  'TypeScript': 'typescript',
-  'JavaScript': 'javascript',
-  'Python': 'python',
-  'FastAPI': 'fastapi',
-  'MongoDB': 'mongodb',
-  'Node.js': 'nodejs',
-  'Nodejs': 'nodejs',
-  'Tailwind': 'tailwindcss',
-  'TailwindCSS': 'tailwindcss',
-  'Next.js': 'nextjs',
-  'Nextjs': 'nextjs',
-  'Firebase': 'firebase',
-  'PostgreSQL': 'postgresql',
-  'WebSockets': null,
-  'Supabase': 'supabase',
-  'Express': 'express',
-  'Java': 'java',
-  'Android': 'android',
-  'HTML': 'html5',
-  'CSS': 'css3',
-  'Redis': 'redis',
-  'Flask': 'flask',
-  'Astro': 'astro',
-  'Vite': 'vitejs',
-  'OpenAI': null,
-};
-
-function DeviconImg({ slug, size = 12 }: { slug: string; size?: number }) {
-  return (
-    <img
-      src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${slug}/${slug}-original.svg`}
-      alt=""
-      width={size}
-      height={size}
-      style={{ display: 'inline-block', flexShrink: 0 }}
-      onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-    />
-  );
-}
 
 function CarouselImage({ src, alt }: { src: string; alt: string }) {
   const [loaded, setLoaded] = useState(false);
@@ -432,7 +390,7 @@ export default function ProjectDrawer({
                       </div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                         {project.tech.map(t => {
-                          const slug = DEVICON_MAP[t];
+                          const iconUrl = getTechIconUrl(t);
                           return (
                             <span
                               key={t}
@@ -448,8 +406,15 @@ export default function ProjectDrawer({
                                 letterSpacing: '0.01em',
                               }}
                             >
-                              {slug !== undefined && slug !== null && (
-                                <DeviconImg slug={slug} size={12} />
+                              {iconUrl && (
+                                <img
+                                  src={iconUrl}
+                                  alt=""
+                                  width={12}
+                                  height={12}
+                                  style={{ display: 'inline-block', flexShrink: 0 }}
+                                  onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                                />
                               )}
                               {t}
                             </span>

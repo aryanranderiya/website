@@ -2,8 +2,8 @@
 title: GoSpider
 description: High-performance concurrent web crawler in Go that converts thousands of web pages to Markdown in minutes.
 date: 2025-02-01
-tags: [Go, CLI]
-tech: [Go, Concurrency, HTTP]
+tags: [Go]
+tech: [Go]
 featured: false
 type: other
 folder: Projects
@@ -13,6 +13,10 @@ order: 18
 github: https://github.com/aryanranderiya/GoSpider
 ---
 
-A web crawler built in Go with a producer-consumer architecture. It extracts URLs, downloads content, and converts web pages to Markdown at scale. The whole thing is designed around Go's concurrency primitives - goroutines, channels, and thread-safe maps.
+I built GoSpider because I needed to crawl and convert large documentation sites to Markdown quickly, and nothing I found was fast enough to be practical. The result was a high-performance, concurrent web crawler written in Go that implemented a producer-consumer architecture around Go's core concurrency primitives - goroutines, buffered channels, and thread-safe maps.
 
-You can configure worker pools from 1 to 1000+, it does connection pooling at 500 per host, has a 10,000-URL buffer queue, and 16 dedicated file writers. It also handles URL deduplication, proxy rotation with validation, and domain-based rate limiting. Install it with a single `go install` command. I built this because I needed to crawl and convert a lot of documentation pages quickly, and nothing existing was fast enough.
+The architecture centered on a 10,000-URL buffered queue that fed a configurable pool of worker goroutines, each independently fetching pages, extracting links, and converting HTML to Markdown. I paired this with a singleton HTTP client that maintained up to 500 connections per host, which kept throughput high even when hitting the same domain repeatedly. A separate pool of 16 dedicated file-writer goroutines with 1MB buffers handled all disk I/O in parallel, reducing filesystem overhead significantly.
+
+I added proxy rotation with automatic validation and fallback to direct connections, domain-based rate limiting, and URL deduplication via in-memory hash maps for O(1) lookup. The crawler also extracted URLs from both the raw HTML and the converted Markdown output, which caught links that would otherwise be missed. Real-time monitoring reported URLs per second, queue depth, domain coverage, and success rates as the crawl ran.
+
+In practice, I was able to crawl and convert 100,000 URLs - parsing pages to Markdown and downloading assets - in under half an hour. The tool installs with a single `go install` command and exposes flags for worker count, domain and URL limits, proxy usage, image downloading, and verbosity, making it straightforward to tune for anything from a small site audit to a large-scale archiving job.

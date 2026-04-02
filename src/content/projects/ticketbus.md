@@ -22,6 +22,10 @@ order: 5
 github: https://github.com/aryanranderiya/TicketBus
 ---
 
-Led a team to build a public transportation app for Android. The idea was to make commuting less painful - scan a QR code to buy a ticket, manage your bus pass digitally, top up an e-wallet, and see real-time route information on a map. We also built a full admin panel for managing buses, passes, and locations.
+I led a team to build TicketBus, an Android app aimed at making public transportation genuinely digital from end to end. The core experience lets commuters book tickets on the go, apply for bus passes that come with QR codes for quick validation at the gate, and manage everything through an integrated e-wallet so there's no need to carry cash or hunt for exact change. Real-time information about bus arrivals and route changes is surfaced throughout, so you're never guessing when the next bus is coming.
 
-Everything was Java and Android Studio with Firebase on the backend. The app went from onboarding to ticket booking to route maps in a clean flow that we spent a lot of time getting right. Won 1st place at the college Project Fair, which was a nice validation that the UX actually made sense to people outside our team.
+The map module was one of the more technically interesting pieces to build. It's powered by the Mapbox API and gives users detailed route maps with bus stops and turn-by-turn directions for planning a trip, not just tracking one in progress. Getting that integrated cleanly with the rest of the app - so tapping a route in the booking flow took you directly to the map view - required thinking carefully about how the different screens handed off to each other.
+
+The whole thing runs on Firebase for backend services, which handled authentication, real-time database sync, and storage without needing a separate server to maintain. The codebase is Java throughout, built in Android Studio, with a screen flow that moves naturally from onboarding through login, ticket booking, pass management, and the map. We also shipped a full admin panel as a companion interface, letting authorized users manage bus listings, pass configurations, and location data independently.
+
+A big thanks to Neel Dedkawala, Himanshi Borad, Dhruv Gohil, Prince Ganeshwala, and Preet Gabani who helped build this out. The project took first place at the college Project Fair, which felt like solid confirmation that the experience we designed actually resonated with people seeing it fresh.

@@ -17,6 +17,10 @@ url: https://links.aryanranderiya.com
 github: https://github.com/aryanranderiya/URLShortener
 ---
 
-A URL shortener I built with the MERN stack. You paste a long URL, choose a custom alias or let it generate a random one, set the character length with a slider, and optionally add an expiration date. The shortened link redirects to the original URL and lives at links.aryanranderiya.com.
+I built this as a full-stack exercise in connecting every layer of a web app - from user input through an API to a database and back out as a working redirect. The core idea is simple: paste a long URL and get back something short and shareable. What made it more interesting to build was adding real control on top of that - you can type a custom alias if you have something memorable in mind, or let the app generate a random one with a slider to control how many characters the code uses.
 
-The UI is cyan-on-dark with a clean single-page layout. Frontend and backend both run on Vercel, with MongoDB Atlas for storage. It's a straightforward project but I use it regularly, and it was a good exercise in building a complete full-stack flow from form input to database to redirect.
+One feature I was particularly deliberate about was expiration dates. A lot of link shorteners live forever, which isn't always what you want - sometimes a link is for a campaign, an event, or a temporary resource. Adding an expiry field meant handling date comparison on every redirect request, checking whether a link had expired before serving it, and deciding how to communicate that gracefully to whoever followed it.
+
+The stack is React with NextUI on the frontend and Node.js with Express on the backend, with MongoDB Atlas holding all the URL mappings. Both frontend and backend are deployed on Vercel, and the backend automatically serves the frontend from the build folder so the whole thing is one deployment. The UI is lean and focused - a single input, the alias controls, and the result.
+
+I use this project regularly at links.aryanranderiya.com. Building a complete round-trip - form submission to database write to HTTP redirect - in a weekend-scale project turned out to be a solid way to see how all the MERN pieces fit together in practice.

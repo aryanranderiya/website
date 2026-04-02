@@ -13,6 +13,8 @@ order: 19
 github: https://github.com/aryanranderiya/Student-Management-System
 ---
 
-Built this for my Introduction to Web Technology class. It's a full student management system - user authentication, attendance tracking, timetable management, study materials upload and retrieval, and a library management module.
+I built this as my Introduction to Web Technology class project, and it ended up becoming one of the more ambitious things I tackled early in my development journey. The system covered user authentication, attendance tracking, timetable management, study material uploads and retrieval, and a library management module - all tied together under a single web-based platform.
 
-The backend is PHP with MySQL, and the frontend is plain HTML, CSS, and JavaScript. Runs on XAMPP/WAMP. It was one of my early full-stack projects and covered a lot of ground in terms of CRUD operations, session management, and database design.
+The backend was written in PHP with a MySQL database, while the frontend relied on plain HTML, CSS, and JavaScript. I ran it locally using XAMPP and WAMP, which kept the setup simple and accessible for a class context.
+
+Working on this gave me a solid foundation in CRUD operations and database design, since almost every feature required thinking carefully about how data was structured and queried. Session management was another area I had to learn properly, as keeping users authenticated across different pages of the system introduced challenges I hadn't encountered before. It was the kind of project where the scope pushed me to connect a lot of moving pieces for the first time.

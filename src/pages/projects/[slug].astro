@@ -159,40 +159,25 @@ const [heroImage, ...galleryImages] = allImages;
 
   <!-- Images -->
   {allImages.length > 0 && (
-    <section style="margin-bottom: 44px;">
+    <section id="project-images" style="margin-bottom: 44px;">
       <!-- Hero image -->
       {heroImage && (
-        <div style="border-radius: 14px; overflow: hidden; background: var(--muted-bg); margin-bottom: 8px;">
-          <img
-            src={heroImage}
-            alt={p.title}
-            style="width: 100%; height: auto; display: block;"
-            loading="lazy"
-          />
+        <div class="img-clickable" style="border-radius: 14px; overflow: hidden; background: var(--muted-bg); margin-bottom: 8px;">
+          <img src={heroImage} alt={p.title} style="width: 100%; height: auto; display: block;" loading="lazy" />
         </div>
       )}
 
       <!-- Gallery grid (remaining images) -->
       {galleryImages.length === 1 && (
-        <div style="border-radius: 10px; overflow: hidden; background: var(--muted-bg);">
-          <img
-            src={galleryImages[0]}
-            alt={`${p.title} screenshot 2`}
-            style="width: 100%; height: auto; display: block;"
-            loading="lazy"
-          />
+        <div class="img-clickable" style="border-radius: 10px; overflow: hidden; background: var(--muted-bg);">
+          <img src={galleryImages[0]} alt={`${p.title} screenshot 2`} style="width: 100%; height: auto; display: block;" loading="lazy" />
         </div>
       )}
       {galleryImages.length >= 2 && (
-        <div class="gallery-grid">
+        <div class="gallery-grid" id="gallery-grid">
           {galleryImages.map((img, i) => (
-            <div style="border-radius: 10px; overflow: hidden; background: var(--muted-bg);">
-              <img
-                src={img}
-                alt={`${p.title} screenshot ${i + 2}`}
-                style="width: 100%; height: auto; display: block;"
-                loading="lazy"
-              />
+            <div class="gallery-item img-clickable" style="border-radius: 10px; overflow: hidden; background: var(--muted-bg);">
+              <img src={img} alt={`${p.title} screenshot ${i + 2}`} style="width: 100%; height: auto; display: block;" loading="lazy" />
             </div>
           ))}
         </div>
@@ -215,6 +200,228 @@ const [heroImage, ...galleryImages] = allImages;
 
 </PageLayout>
 
+<script>
+  // ── Smart grid: landscape images span both columns ──────────────────────
+  const grid = document.getElementById('gallery-grid');
+  if (grid) {
+    Array.from(grid.querySelectorAll<HTMLElement>('.gallery-item')).forEach(item => {
+      const img = item.querySelector('img');
+      if (!img) return;
+      const applySpan = () => {
+        if (img.naturalWidth > 0 && img.naturalHeight > 0 && img.naturalWidth / img.naturalHeight > 1.3)
+          item.classList.add('landscape');
+      };
+      img.complete ? applySpan() : img.addEventListener('load', applySpan, { once: true });
+    });
+  }
+
+  // ── Lightbox ─────────────────────────────────────────────────────────────
+  // Collect all project images in DOM order (hero + gallery)
+  const allImgEls = Array.from(
+    document.querySelectorAll<HTMLImageElement>('#project-images img')
+  );
+  const srcs = allImgEls.map(el => el.src);
+
+  if (srcs.length === 0) {
+    // nothing to do
+  } else {
+    let currentIndex = 0;
+    const DURATION = 180;
+
+    // Build lightbox DOM
+    const overlay = document.createElement('div');
+    overlay.id = 'lb-overlay';
+    overlay.innerHTML = `
+      <div id="lb-backdrop"></div>
+      <button id="lb-close" aria-label="Close"></button>
+      <button id="lb-prev" aria-label="Previous" ${srcs.length < 2 ? 'hidden' : ''}></button>
+      <button id="lb-next" aria-label="Next" ${srcs.length < 2 ? 'hidden' : ''}></button>
+      <div id="lb-img-wrap"><img id="lb-img" src="" alt="" /></div>
+      <div id="lb-counter"></div>
+    `;
+    document.body.appendChild(overlay);
+
+    const lbImg     = document.getElementById('lb-img') as HTMLImageElement;
+    const lbCounter = document.getElementById('lb-counter')!;
+    const lbPrev    = document.getElementById('lb-prev')!;
+    const lbNext    = document.getElementById('lb-next')!;
+    const lbClose   = document.getElementById('lb-close')!;
+    const pageContent = document.getElementById('page-content') as HTMLElement | null;
+
+    function updateCounter() {
+      lbCounter.textContent = srcs.length > 1 ? `${currentIndex + 1} / ${srcs.length}` : '';
+    }
+
+    function showImage(index: number) {
+      currentIndex = (index + srcs.length) % srcs.length;
+      lbImg.style.opacity = '0';
+      lbImg.src = srcs[currentIndex];
+      lbImg.onload = () => { lbImg.style.opacity = '1'; };
+      updateCounter();
+      (lbPrev as HTMLButtonElement).disabled = false;
+      (lbNext as HTMLButtonElement).disabled = false;
+    }
+
+    function openLightbox(index: number) {
+      currentIndex = index;
+      showImage(currentIndex);
+      overlay.style.display = 'flex';
+      requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+      document.body.style.overflow = 'hidden';
+      if (pageContent) {
+        pageContent.style.transition = `filter ${DURATION}ms ease`;
+        requestAnimationFrame(() => { pageContent.style.filter = 'blur(12px) brightness(0.6)'; });
+      }
+    }
+
+    function closeLightbox() {
+      overlay.style.opacity = '0';
+      setTimeout(() => { overlay.style.display = 'none'; }, DURATION);
+      document.body.style.overflow = '';
+      if (pageContent) {
+        pageContent.style.transition = `filter ${DURATION}ms ease`;
+        pageContent.style.filter = 'blur(0px) brightness(1)';
+        setTimeout(() => { pageContent.style.filter = ''; pageContent.style.transition = ''; }, DURATION + 20);
+      }
+    }
+
+    // Wire up clicks on all project images
+    allImgEls.forEach((img, i) => {
+      img.addEventListener('click', () => openLightbox(i));
+    });
+
+    lbClose.addEventListener('click', closeLightbox);
+    document.getElementById('lb-backdrop')!.addEventListener('click', closeLightbox);
+    lbPrev.addEventListener('click', () => showImage(currentIndex - 1));
+    lbNext.addEventListener('click', () => showImage(currentIndex + 1));
+
+    window.addEventListener('keydown', (e) => {
+      if (overlay.style.display !== 'flex') return;
+      if (e.key === 'Escape')     closeLightbox();
+      if (e.key === 'ArrowLeft')  showImage(currentIndex - 1);
+      if (e.key === 'ArrowRight') showImage(currentIndex + 1);
+    });
+  }
+</script>
+
+<style is:global>
+  #lb-overlay {
+    display: none;
+    opacity: 0;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 180ms ease;
+  }
+
+  #lb-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+  }
+
+  #lb-img-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: min(92vw, 1200px);
+    max-height: 88vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #lb-img {
+    max-width: 100%;
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+    transition: opacity 140ms ease;
+    object-fit: contain;
+  }
+
+  #lb-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: background 150ms ease;
+  }
+  #lb-close::before,
+  #lb-close::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+  #lb-close::before { transform: rotate(45deg); }
+  #lb-close::after  { transform: rotate(-45deg); }
+  #lb-close:hover { background: rgba(255,255,255,0.2); }
+
+  #lb-prev,
+  #lb-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 150ms ease;
+  }
+  #lb-prev { left: 20px; }
+  #lb-next { right: 20px; }
+  #lb-prev::after,
+  #lb-next::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    display: block;
+  }
+  #lb-prev::after { transform: rotate(-135deg) translateX(-1px); }
+  #lb-next::after { transform: rotate(45deg) translateX(-1px); }
+  #lb-prev:hover,
+  #lb-next:hover { background: rgba(255,255,255,0.2); }
+  #lb-prev[hidden],
+  #lb-next[hidden] { display: none; }
+
+  #lb-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.04em;
+    pointer-events: none;
+  }
+</style>
+
 <style>
   .breadcrumb-back:hover {
     color: var(--text-muted) !important;
@@ -233,6 +440,29 @@ const [heroImage, ...galleryImages] = allImages;
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
   }
+
+  .gallery-item.landscape {
+    grid-column: span 2;
+  }
+
+  .img-clickable {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .img-clickable img {
+    cursor: pointer;
+    transition: scale 300ms ease, filter 300ms ease;
+    display: block;
+  }
+
+  .img-clickable:hover img {
+    scale: 1.04;
+    filter: brightness(1.04);
+  }
+
+
+
 
   .project-body {
     font-size: 14px;

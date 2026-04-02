@@ -3,7 +3,7 @@ title: Google Contacts Email Scraper
 description: Python tool using the Google People API to extract email addresses from large contact directories and export them.
 date: 2023-12-01
 tags: [Python, Google API]
-tech: [Python, Google People API]
+tech: [Python, Google API]
 featured: false
 type: other
 folder: Projects
@@ -17,6 +17,10 @@ order: 19
 github: https://github.com/aryanranderiya/GoogleContactsEmailScraper
 ---
 
-A Python script that uses the Google People API to fetch email addresses from large contact directories and personal contacts, then writes them to text files. It handles the OAuth flow, paginates through contacts, and extracts emails from both your own contacts and any directory you have access to.
+I built this when I needed to extract a large number of email addresses from a Google Workspace directory for an outreach project. Google Contacts has no native bulk export that gives you a clean flat list of addresses - the standard export is a vCard file that requires additional parsing, and doing it contact-by-contact through the UI was completely out of the question at scale.
 
-Built this when I needed to pull a large number of email addresses from a Google Workspace directory for a legitimate outreach project. It's straightforward but saves a ton of manual work compared to exporting and parsing vCards.
+The script uses OAuth 2.0 with the contacts.readonly and directory.readonly scopes, going through Google's standard consent flow on first run and storing the resulting token locally so subsequent runs don't require re-authentication. It then calls the Google People API, paginates through every contact in batches, and writes all discovered email addresses to text files. It handles both personal contacts and any shared organizational directory accessible under the account, producing three output files: one for personal contact emails, one for directory emails sorted alphabetically, and one sorted by domain.
+
+The most important thing to get right was pagination. The People API returns a continuation token with each page, and you have to keep making requests until that token is absent - assuming a fixed number of results is how you silently miss contacts at the end of a large directory. Getting that loop correct, and handling contacts that have multiple email addresses, was most of the real work.
+
+What came out is a narrow utility that turns hours of tedious clicking into a few seconds of runtime. It's the kind of tool that has one job and does it reliably.

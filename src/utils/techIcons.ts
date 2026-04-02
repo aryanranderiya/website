@@ -68,6 +68,13 @@ const ICON_MAP: Record<string, string> = {
   jetbrains:            devicon('jetbrains'),
   linear:               simpleicon('linear'),
   google:               devicon('google'),
+  'google api':         devicon('google'),
+  go:                   devicon('go'),
+  nestjs:               devicon('nestjs'),
+  prisma:               simpleicon('prisma'),
+  'objective-c':        devicon('c'),
+  'spotify api':        simpleicon('spotify'),
+  mcp:                  simpleicon('anthropic'),
 };
 
 export function getTechIconUrl(tech: string): string | null {

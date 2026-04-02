@@ -3,7 +3,7 @@ title: Itinerary MCP Server
 description: FastAPI travel itinerary backend with MCP integration - lets AI assistants discover, filter, and create travel plans via natural language.
 date: 2025-03-01
 tags: [Python, FastAPI, MCP]
-tech: [Python, FastAPI, SQLAlchemy, SQLite, MCP]
+tech: [Python, FastAPI, SQLite, MCP]
 featured: false
 type: other
 folder: Projects
@@ -13,6 +13,8 @@ order: 18
 github: https://github.com/aryanranderiya/itinerary-mcp-server
 ---
 
-A FastAPI backend for managing travel itineraries with Model Context Protocol integration. The idea is that AI assistants like Claude or GitHub Copilot can connect to it and discover, filter, and create travel plans through natural language.
+I built this as an exploration into what it would look like to give AI assistants genuine control over a structured travel planning backend. The Model Context Protocol is a standardized way for language models to discover and invoke tools exposed by a server, and I wanted to see how naturally it could map onto something as nested as travel itineraries - where a single trip contains accommodations, day-by-day activities, and transfer logistics all at once.
 
-It has SQLAlchemy models for itineraries, accommodations, transfers, and activities. Comes with seed data for Phuket and Krabi with recommended itineraries from 2 to 8 nights. The MCP endpoint runs over SSE and is compatible with any MCP client. Built this as an exploration into what MCP-powered travel planning could look like.
+The backend is a FastAPI application with SQLAlchemy models covering the full hierarchy of a travel plan: itineraries as the top-level container, then accommodations and transfers tied to specific date ranges, and individual activities slotted into each day. MCP is integrated using the fastapi_mcp library, and the endpoint runs over Server-Sent Events at /mcp. Any compliant MCP client - Claude Desktop, GitHub Copilot, or a custom integration - can connect via a simple SSE URL with no additional glue code required.
+
+To make the demo immediately useful, I seeded the database with realistic data for Phuket and Krabi, covering trip lengths from two to eight nights across multiple itinerary styles. This gave me concrete data to test against when verifying that an AI assistant could correctly filter by destination, duration, or activity type and return sensible results. Watching Claude reason through a vague prompt like "a week in southern Thailand with beach days" and surface the right structured itinerary was the moment the project clicked as something genuinely useful rather than just a technical exercise.

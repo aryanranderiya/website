@@ -3,7 +3,7 @@ title: Spotify Tools
 description: Python desktop app with Spotify API integration - playlist management, mini player, and profile viewing.
 date: 2023-08-01
 tags: [Python, Spotify API]
-tech: [Python, Tkinter, Spotify API]
+tech: [Python, Spotify API]
 featured: false
 type: other
 folder: Projects
@@ -15,6 +15,8 @@ order: 19
 github: https://github.com/aryanranderiya/SpotifyTools
 ---
 
-A Python desktop app that hooks into the Spotify Web API through a Tkinter GUI. It lets you manage playlists, view your profile, shuffle playlists, and has a mini player with full playback controls - play, pause, next, previous.
+Spotify Tools was a Python desktop application I built to explore the Spotify Web API, bringing playlist management, a mini player, and playback controls together in a single native interface through OAuth-based authentication. I implemented the full OAuth flow from scratch, handling token exchange and refresh cycles so the app could maintain an authenticated session without requiring the user to log in repeatedly. The project gave me hands-on experience working with REST APIs from a desktop context rather than a web browser, which required thinking differently about redirect URIs, local servers for token callbacks, and persisting credentials securely.
 
-I built this because I wanted to explore the Spotify API and ended up making something I actually used daily for a while. The GUI is nothing fancy but it gets the job done. It was a good exercise in working with OAuth flows and REST APIs from a desktop context.
+The core feature set covered the things I actually wanted from a lightweight Spotify client - browsing and managing playlists, viewing profile information, and shuffling tracks without reaching for the web player. I also built out a mini player panel with full playback controls, including play, pause, skip forward, and skip back, all wired up to the Spotify API's player endpoints. Getting the playback state to sync correctly with what was actually playing on the active device turned out to be one of the trickier parts of the implementation.
+
+I ended up using this tool daily for a stretch of time, which was a good indicator that the core experience held up in practice. Building something I genuinely reached for every day made the project feel worthwhile beyond just being a learning exercise, and it pushed me to smooth out rough edges in the UI that I might have otherwise left alone.

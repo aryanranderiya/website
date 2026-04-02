@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- icons used in JSX
 import {
@@ -8,7 +8,7 @@ import {
   Sun01Icon, Moon02Icon, Menu01Icon, Cancel01Icon,
   Home12Icon, Folder03Icon, BrushIcon, QuillWrite01Icon,
   NoteIcon, Briefcase01Icon, Books02Icon, Film01Icon, CarouselHorizontalIcon,
-  SparklesIcon,
+  SparklesIcon, ColorsIcon, Clock01Icon, ShuffleIcon,
 } from '@icons';
 import type { ComponentType } from 'react';
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
@@ -24,6 +24,7 @@ const NAV_GROUPS: { label: string | null; items: { href: string; label: string; 
       { href: '/blog',          label: 'Blog',      icon: QuillWrite01Icon },
       { href: '/resume',        label: 'Resume',    icon: NoteIcon },
       { href: '/freelance',     label: 'Freelance', icon: Briefcase01Icon },
+      { href: '/now',           label: 'Now',       icon: Clock01Icon },
     ],
   },
   {
@@ -37,25 +38,96 @@ const NAV_GROUPS: { label: string | null; items: { href: string; label: string; 
   },
 ];
 
+type Theme = 'light' | 'dark' | 'random';
+type Typography = 'helvetica' | 'inter' | 'georgia' | 'palatino' | 'mono' | 'pixel' | 'impact' | 'comic';
+
+const TYPOGRAPHY_OPTIONS: { id: Typography; label: string; family: string }[] = [
+  { id: 'helvetica', label: 'Helvetica',  family: "'Helvetica Neue', Helvetica, Arial, sans-serif" },
+  { id: 'inter',     label: 'Inter',      family: "'Inter var', Inter, sans-serif" },
+  { id: 'georgia',   label: 'Georgia',    family: "Georgia, 'Times New Roman', serif" },
+  { id: 'palatino',  label: 'Palatino',   family: "'Palatino Linotype', Palatino, 'Book Antiqua', serif" },
+  { id: 'mono',      label: 'Mono',       family: "ui-monospace, 'Courier New', monospace" },
+  { id: 'pixel',     label: 'Pixel',      family: "'VT323', monospace" },
+  { id: 'impact',    label: 'Impact',     family: "Impact, 'Arial Narrow', sans-serif" },
+  { id: 'comic',     label: 'Comic',      family: "'Comic Sans MS', 'Chalkboard SE', cursive" },
+];
+
+const RANDOM_VARS = [
+  '--background', '--foreground', '--card', '--card-foreground',
+  '--popover', '--popover-foreground', '--primary', '--primary-foreground',
+  '--glass-bg', '--accent-blue',
+];
+
+function applyRandomPalette(hue: number, sat: number) {
+  const l = Math.max(88, Math.round(96 - (sat - 25) * 0.23));
+  const root = document.documentElement;
+  root.style.setProperty('--background',          `hsl(${hue}, ${sat}%, ${l}%)`);
+  root.style.setProperty('--foreground',          `hsl(${hue}, 22%, 11%)`);
+  root.style.setProperty('--card',                `hsl(${hue}, ${Math.round(sat * 0.7)}%, ${Math.min(l + 2, 98)}%)`);
+  root.style.setProperty('--card-foreground',     `hsl(${hue}, 22%, 11%)`);
+  root.style.setProperty('--popover',             `hsl(${hue}, ${Math.round(sat * 0.7)}%, ${Math.min(l + 2, 98)}%)`);
+  root.style.setProperty('--popover-foreground',  `hsl(${hue}, 22%, 11%)`);
+  root.style.setProperty('--primary',             `hsl(${hue}, 22%, 11%)`);
+  root.style.setProperty('--primary-foreground',  `hsl(${hue}, ${sat}%, ${l}%)`);
+  root.style.setProperty('--glass-bg',            `hsla(${hue}, ${sat}%, ${l}%, 0.85)`);
+  root.style.setProperty('--accent-blue',         `hsl(${hue}, 72%, 52%)`);
+}
+
+function clearRandomPalette() {
+  RANDOM_VARS.forEach(v => document.documentElement.style.removeProperty(v));
+}
+
+function applyTypography(font: Typography) {
+  const root = document.documentElement;
+  if (font === 'helvetica') {
+    // Helvetica is the CSS default — remove any override
+    root.style.removeProperty('font-family');
+  } else {
+    if (font === 'pixel' && !document.getElementById('pixel-font-link')) {
+      const link = document.createElement('link');
+      link.id = 'pixel-font-link';
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=VT323&display=swap';
+      document.head.appendChild(link);
+    }
+    const option = TYPOGRAPHY_OPTIONS.find(o => o.id === font);
+    if (option) root.style.setProperty('font-family', option.family);
+  }
+  localStorage.setItem('typography', font);
+}
 
 export default function Sidebar() {
   const [pathname, setPathname] = useState('/');
-  const [isDark, setIsDark] = useState(false);
+  const [theme, setTheme] = useState<Theme>('light');
+  const [typography, setTypography] = useState<Typography>('helvetica');
+  const [shuffleOpen, setShuffleOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [avatarSrc, setAvatarSrc] = useState(() => Math.random() < 0.5 ? '/avatar-original.webp' : '/avatar.webp');
   const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const shuffleBtnRef = useRef<HTMLButtonElement>(null);
+
+  const isDark = theme === 'dark';
+
   useEffect(() => {
     setPathname(window.location.pathname);
-    setIsDark(document.documentElement.classList.contains('dark'));
+    const stored = localStorage.getItem('theme') as Theme | null;
+    if (stored === 'dark') setTheme('dark');
+    else if (stored === 'random') setTheme('random');
+    else setTheme('light');
+
+    const storedFont = localStorage.getItem('typography') as Typography | null;
+    if (storedFont) setTypography(storedFont);
 
     const handleThemeChange = () => {
-      setIsDark(document.documentElement.classList.contains('dark'));
+      const t = localStorage.getItem('theme') as Theme | null;
+      if (t === 'random') setTheme('random');
+      else setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     };
     const observer = new MutationObserver(handleThemeChange);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-    // Close mobile nav on route change
     const handleNavigation = () => {
       setPathname(window.location.pathname);
       setMobileOpen(false);
@@ -68,13 +140,72 @@ export default function Sidebar() {
     };
   }, []);
 
-  const toggleTheme = () => {
+  // Close popover on outside click or Escape
+  useEffect(() => {
+    if (!shuffleOpen) return;
+    function onMouseDown(e: MouseEvent) {
+      if (
+        popoverRef.current && !popoverRef.current.contains(e.target as Node) &&
+        shuffleBtnRef.current && !shuffleBtnRef.current.contains(e.target as Node)
+      ) {
+        setShuffleOpen(false);
+      }
+    }
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setShuffleOpen(false);
+    }
+    document.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [shuffleOpen]);
+
+  function handleThemeButtonClick() {
     const html = document.documentElement;
-    const newDark = !html.classList.contains('dark');
-    html.classList.toggle('dark', newDark);
-    localStorage.setItem('theme', newDark ? 'dark' : 'light');
-    setIsDark(newDark);
-  };
+    if (theme === 'light') {
+      html.classList.add('dark');
+      clearRandomPalette();
+      localStorage.setItem('theme', 'dark');
+      setTheme('dark');
+      setShuffleOpen(false);
+    } else if (theme === 'dark') {
+      // Advance to random and open the customization popover
+      html.classList.remove('dark');
+      const hue = Math.floor(Math.random() * 360);
+      const sat = Math.floor(Math.random() * 36) + 25;
+      applyRandomPalette(hue, sat);
+      localStorage.setItem('theme', 'random');
+      localStorage.setItem('randomHue', String(hue));
+      localStorage.setItem('randomSat', String(sat));
+      setTheme('random');
+      setShuffleOpen(true);
+    } else {
+      // random -> light
+      html.classList.remove('dark');
+      clearRandomPalette();
+      localStorage.setItem('theme', 'light');
+      setTheme('light');
+      setShuffleOpen(false);
+    }
+  }
+
+  function handleShuffleColors() {
+    // Re-shuffle colors while staying in random state
+    const hue = Math.floor(Math.random() * 360);
+    const sat = Math.floor(Math.random() * 36) + 25;
+    applyRandomPalette(hue, sat);
+    localStorage.setItem('randomHue', String(hue));
+    localStorage.setItem('randomSat', String(sat));
+  }
+
+  function handleShuffleFont() {
+    const others = TYPOGRAPHY_OPTIONS.filter(o => o.id !== typography);
+    const pick = others[Math.floor(Math.random() * others.length)];
+    applyTypography(pick.id);
+    setTypography(pick.id);
+  }
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
@@ -123,6 +254,19 @@ export default function Sidebar() {
     alignItems: 'center',
     gap: '6px',
     transition: 'color 0.15s ease',
+  };
+
+  const themeLabel = theme === 'light' ? 'Dark' : theme === 'dark' ? 'Shuffle' : 'Light';
+  const themeIcon = theme === 'light' ? Moon02Icon : theme === 'dark' ? ColorsIcon : Sun01Icon;
+
+  const popoverLabel: React.CSSProperties = {
+    fontSize: '9px',
+    fontVariationSettings: '"wght" 600',
+    color: 'var(--muted-foreground)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+    margin: '0 0 6px 0',
+    fontFamily: "'Inter var', Inter, sans-serif",
   };
 
   return (
@@ -261,32 +405,135 @@ export default function Sidebar() {
               transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
             }}>Old portfolio</span>
           </a>
-          {/* Theme toggle */}
-          <button
-            onClick={toggleTheme}
-            style={{
-              ...actionStyle,
-              color: hoveredAction === 'theme'
-                ? isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
-                : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
-            }}
-            onMouseEnter={() => setHoveredAction('theme')}
-            onMouseLeave={() => setHoveredAction(null)}
-            aria-label="Toggle theme"
-          >
-            <HugeiconsIcon icon={isDark ? Sun01Icon : Moon02Icon} size={13} />
-            <span style={{
-              fontSize: '11px',
-              whiteSpace: 'nowrap',
-              display: 'inline-block',
-              opacity: hoveredAction === 'theme' ? 1 : 0,
-              transform: hoveredAction === 'theme'
-                ? 'translateY(0) perspective(300px) rotateX(0deg)'
-                : 'translateY(5px) perspective(300px) rotateX(-40deg)',
-              transformOrigin: '50% 100%',
-              transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
-            }}>{isDark ? 'Light' : 'Dark'}</span>
-          </button>
+
+          {/* Theme toggle + shuffle popover */}
+          <div style={{ position: 'relative' }}>
+            <button
+              ref={shuffleBtnRef}
+              onClick={handleThemeButtonClick}
+              style={{
+                ...actionStyle,
+                color: hoveredAction === 'theme' || shuffleOpen
+                  ? isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
+                  : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
+              }}
+              onMouseEnter={() => setHoveredAction('theme')}
+              onMouseLeave={() => setHoveredAction(null)}
+              aria-label="Cycle theme"
+            >
+              <HugeiconsIcon icon={themeIcon} size={13} />
+              <span style={{
+                fontSize: '11px',
+                whiteSpace: 'nowrap',
+                display: 'inline-block',
+                opacity: hoveredAction === 'theme' || shuffleOpen ? 1 : 0,
+                transform: hoveredAction === 'theme' || shuffleOpen
+                  ? 'translateY(0) perspective(300px) rotateX(0deg)'
+                  : 'translateY(5px) perspective(300px) rotateX(-40deg)',
+                transformOrigin: '50% 100%',
+                transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+              }}>{themeLabel}</span>
+            </button>
+
+            <AnimatePresence>
+              {shuffleOpen && (
+                <motion.div
+                  ref={popoverRef}
+                  initial={{ opacity: 0, x: -6, scale: 0.97 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -6, scale: 0.97 }}
+                  transition={{ duration: 0.16, ease: [0.19, 1, 0.22, 1] }}
+                  style={{
+                    position: 'absolute',
+                    left: 'calc(100% + 14px)',
+                    bottom: '-4px',
+                    width: '164px',
+                    background: 'var(--popover)',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    zIndex: 200,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)',
+                  }}
+                >
+                  {/* Header */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '10px', fontVariationSettings: '"wght" 560', color: 'var(--foreground)', fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: '-0.01em' }}>Customize</span>
+                    <button
+                      onClick={() => setShuffleOpen(false)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0', display: 'flex', color: 'var(--muted-foreground)', lineHeight: 1 }}
+                      onMouseEnter={e => (e.currentTarget.style.color = 'var(--foreground)')}
+                      onMouseLeave={e => (e.currentTarget.style.color = 'var(--muted-foreground)')}
+                      aria-label="Close"
+                    >
+                      <HugeiconsIcon icon={Cancel01Icon} size={12} color="currentColor" />
+                    </button>
+                  </div>
+                  <p style={popoverLabel}>Colors</p>
+                  <button
+                    onClick={handleShuffleColors}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      background: 'var(--muted-bg)',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '6px 8px',
+                      cursor: 'pointer',
+                      fontSize: '11px',
+                      fontVariationSettings: '"wght" 480',
+                      color: 'var(--foreground)',
+                      fontFamily: "'Inter var', Inter, sans-serif",
+                      transition: 'opacity 0.15s ease',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.65')}
+                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                  >
+                    <HugeiconsIcon icon={ShuffleIcon} size={12} color="currentColor" />
+                    Shuffle palette
+                  </button>
+
+                  <p style={{ ...popoverLabel, marginTop: '12px' }}>Typography</p>
+                  <button
+                    onClick={handleShuffleFont}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      background: 'var(--muted-bg)',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '6px 8px',
+                      cursor: 'pointer',
+                      fontSize: '11px',
+                      fontVariationSettings: '"wght" 480',
+                      color: 'var(--foreground)',
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                      transition: 'opacity 0.15s ease',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.65')}
+                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                  >
+                    <HugeiconsIcon icon={ShuffleIcon} size={12} color="currentColor" />
+                    Shuffle font
+                  </button>
+                  {/* Current font preview */}
+                  <div style={{
+                    fontFamily: TYPOGRAPHY_OPTIONS.find(o => o.id === typography)?.family,
+                    fontSize: typography === 'pixel' ? '13px' : '10px',
+                    color: 'var(--muted-foreground)',
+                    marginTop: '6px',
+                    letterSpacing: typography === 'mono' ? '-0.02em' : '0',
+                  }}>
+                    {TYPOGRAPHY_OPTIONS.find(o => o.id === typography)?.label}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
           {/* GitHub */}
           <a
             href="https://github.com/aryanranderiya"
@@ -326,7 +573,7 @@ export default function Sidebar() {
       <div
         className="mobile-nav-bar fixed top-0 left-0 right-0 h-[52px] flex items-center justify-between px-5 backdrop-blur-[12px] border-b z-50"
         style={{
-          background: isDark ? 'rgba(17,17,17,0.92)' : 'rgba(253,253,252,0.92)',
+          background: 'var(--glass-bg)',
           borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
         }}
       >
@@ -341,11 +588,11 @@ export default function Sidebar() {
         </a>
         <div className="flex items-center gap-3">
           <button
-            onClick={toggleTheme}
+            onClick={handleThemeButtonClick}
             className="bg-none border-none cursor-pointer p-1 flex items-center"
             style={{ color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)' }}
           >
-            <HugeiconsIcon icon={isDark ? Sun01Icon : Moon02Icon} size={13} />
+            <HugeiconsIcon icon={themeIcon} size={13} />
           </button>
           <button
             onClick={() => setMobileOpen(v => !v)}
@@ -358,6 +605,94 @@ export default function Sidebar() {
         </div>
       </div>
 
+      {/* ── Mobile shuffle popover ── */}
+      <AnimatePresence>
+        {shuffleOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: [0.19, 1, 0.22, 1] }}
+            className="mobile-only-block"
+            style={{
+              position: 'fixed',
+              top: '60px',
+              left: '16px',
+              right: '16px',
+              background: 'var(--popover)',
+              borderRadius: '12px',
+              padding: '14px',
+              zIndex: 60,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <span style={{ fontSize: '11px', fontVariationSettings: '"wght" 560', color: 'var(--foreground)', fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: '-0.01em' }}>Customize</span>
+              <button
+                onClick={() => setShuffleOpen(false)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0', display: 'flex', color: 'var(--muted-foreground)', lineHeight: 1 }}
+                aria-label="Close"
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={13} color="currentColor" />
+              </button>
+            </div>
+            <p style={popoverLabel}>Colors</p>
+            <button
+              onClick={handleShuffleColors}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'var(--muted-bg)',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontVariationSettings: '"wght" 480',
+                color: 'var(--foreground)',
+                fontFamily: "'Inter var', Inter, sans-serif",
+              }}
+            >
+              <HugeiconsIcon icon={ShuffleIcon} size={13} color="currentColor" />
+              Shuffle palette
+            </button>
+            <p style={{ ...popoverLabel, marginTop: '12px' }}>Typography</p>
+            <button
+              onClick={handleShuffleFont}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'var(--muted-bg)',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontVariationSettings: '"wght" 480',
+                color: 'var(--foreground)',
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              }}
+            >
+              <HugeiconsIcon icon={ShuffleIcon} size={13} color="currentColor" />
+              Shuffle font
+            </button>
+            <div style={{
+              fontFamily: TYPOGRAPHY_OPTIONS.find(o => o.id === typography)?.family,
+              fontSize: typography === 'pixel' ? '14px' : '11px',
+              color: 'var(--muted-foreground)',
+              marginTop: '6px',
+              letterSpacing: typography === 'mono' ? '-0.02em' : '0',
+            }}>
+              {TYPOGRAPHY_OPTIONS.find(o => o.id === typography)?.label}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* ── Mobile dropdown menu ── */}
       <AnimatePresence>
         {mobileOpen && (
@@ -368,7 +703,7 @@ export default function Sidebar() {
             transition={{ duration: 0.2, ease: [0.19, 1, 0.22, 1] }}
             className="fixed top-[52px] left-0 right-0 backdrop-blur-[12px] border-b z-[49] px-5 pt-4 pb-5"
             style={{
-              background: isDark ? 'rgba(17,17,17,0.97)' : 'rgba(253,253,252,0.97)',
+              background: 'var(--glass-bg)',
               borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
             }}
           >
@@ -409,6 +744,7 @@ export default function Sidebar() {
         @media (min-width: 960px) {
           .hidden-mobile { display: flex !important; }
           .mobile-nav-bar { display: none !important; }
+          .mobile-only-block { display: none !important; }
         }
         @media (max-width: 959px) {
           .hidden-mobile { display: none !important; }
