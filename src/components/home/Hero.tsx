@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import SocialsGrid from './SocialsGrid';
 
 const BLUR_FADE = {
   initial: { opacity: 0, y: 6, filter: 'blur(4px)' },
@@ -11,7 +12,7 @@ const EASE = [0.19, 1, 0.22, 1] as const;
 
 export default function Hero() {
   return (
-    <section style={{ paddingTop: 80, paddingBottom: 48 }}>
+    <section style={{ paddingTop: 16, paddingBottom: 48 }}>
       {/* Label */}
       <motion.div
         {...BLUR_FADE}
@@ -60,7 +61,7 @@ export default function Hero() {
           marginBottom: 12,
         }}
       >
-        Currently building GAIA — an AI companion for iOS and Android. Previously a freelance designer and developer.
+        Currently building GAIA, an AI companion for iOS and Android. Previously a freelance designer and developer working with clients across branding, product design, and web.
       </motion.p>
       <motion.p
         {...BLUR_FADE}
@@ -74,14 +75,14 @@ export default function Hero() {
           marginBottom: 28,
         }}
       >
-        CS student at Pandit Deendayal Energy University with a background in graphic design — esports banners, apparel, thumbnails. Now focused on full-stack product work with React, React Native, Python, and TypeScript.
+        Born in England, based in India. CS graduate and design engineer who loves building things end-to-end — from the idea to the interface. I care about craft: clean code, considered design, and products that feel good to use.
       </motion.p>
 
       {/* Links */}
       <motion.div
         {...BLUR_FADE}
         transition={{ duration: 0.4, ease: EASE, delay: 0.22 }}
-        style={{ display: 'flex', gap: 20 }}
+        style={{ display: 'flex', gap: 8, marginBottom: 24, flexWrap: 'wrap' }}
       >
         {[
           { label: 'Work', href: '/projects' },
@@ -90,22 +91,33 @@ export default function Hero() {
           <a
             key={href}
             href={href}
-            className="hero-link"
             style={{
-              fontSize: 13,
-              color: 'var(--text-muted)',
+              fontSize: 12,
+              color: 'var(--text-secondary)',
               textDecoration: 'none',
               display: 'inline-flex',
               alignItems: 'center',
               gap: 4,
-              transition: 'color 150ms ease',
+              background: 'var(--muted-bg)',
+              borderRadius: 10,
+              padding: '5px 12px',
+              fontWeight: 500,
+              transition: 'filter 150ms ease',
             }}
-            onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-primary)')}
-            onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-muted)')}
+            onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(0.96)')}
+            onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(1)')}
           >
             → {label}
           </a>
         ))}
+      </motion.div>
+
+      {/* Socials */}
+      <motion.div
+        {...BLUR_FADE}
+        transition={{ duration: 0.4, ease: EASE, delay: 0.28 }}
+      >
+        <SocialsGrid />
       </motion.div>
     </section>
   );

@@ -26,7 +26,7 @@ export default function BlogPreview({ posts }: BlogPreviewProps) {
   const latest = posts.slice(0, 3);
 
   return (
-    <section style={{ paddingBottom: 48 }}>
+    <section style={{ paddingBottom: 24 }}>
       <div className="section-header">Writing</div>
 
       <div>

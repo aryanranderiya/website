@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import { HugeiconsIcon, ArrowDown01Icon } from '@icons';
 
 interface Experience {
   company: string;
@@ -162,23 +163,9 @@ function LogoAvatar({
 
 function ChevronIcon({ open }: { open: boolean }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      width="16"
-      height="16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      style={{
-        transition: 'transform 0.25s ease',
-        transform: open ? 'rotate(180deg)' : 'rotate(0deg)',
-        color: 'var(--muted-foreground)',
-        flexShrink: 0,
-      }}
-    >
-      <path d="M6 9l6 6 6-6" />
-    </svg>
+    <span style={{ transition: 'transform 0.25s ease', transform: open ? 'rotate(180deg)' : 'rotate(0deg)', color: 'var(--muted-foreground)', flexShrink: 0, display: 'flex' }}>
+      <HugeiconsIcon icon={ArrowDown01Icon} size={16} />
+    </span>
   );
 }
 

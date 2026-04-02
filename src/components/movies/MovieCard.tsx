@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { HugeiconsIcon, ImageNotFound01Icon } from '@icons';
 
 interface Movie {
   slug: string;
@@ -80,13 +81,7 @@ export default function MovieCard({
             className="w-full h-full flex flex-col items-center justify-center gap-2 p-4 text-center"
             style={{ background: 'var(--muted)' }}
           >
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" style={{ color: 'var(--muted-foreground)', opacity: 0.4 }}>
-              <rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"/>
-              <line x1="7" y1="2" x2="7" y2="22"/><line x1="17" y1="2" x2="17" y2="22"/>
-              <line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="7" x2="7" y2="7"/>
-              <line x1="2" y1="17" x2="7" y2="17"/><line x1="17" y1="17" x2="22" y2="17"/>
-              <line x1="17" y1="7" x2="22" y2="7"/>
-            </svg>
+            <HugeiconsIcon icon={ImageNotFound01Icon} size={28} color="var(--muted-foreground)" style={{ opacity: 0.4 }} />
             <span className="text-xs font-medium" style={{ color: 'var(--muted-foreground)' }}>{movie.title}</span>
           </div>
         )}

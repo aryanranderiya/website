@@ -2,13 +2,11 @@
 import { getCollection } from 'astro:content';
 import PageLayout from '@/layouts/PageLayout.astro';
 import Hero from '@/components/home/Hero';
-import ExperienceStrip from '@/components/home/ExperienceStrip';
+import ExperienceList from '@/components/resume/ExperienceList';
 import FeaturedProjects from '@/components/home/FeaturedProjects';
-import GithubGraph from '@/components/home/GithubGraph';
 import SpotifyWidget from '@/components/home/SpotifyWidget';
 import Toolbox from '@/components/home/Toolbox';
 import BlogPreview from '@/components/home/BlogPreview';
-import SocialsRow from '@/components/home/SocialsRow';
 import Signature from '@/components/home/Signature';
 
 // Fetch and sort blog posts by date descending
@@ -24,22 +22,16 @@ const posts = allPosts
   <!-- Hero -->
   <Hero client:load />
 
-  <!-- Experience strip -->
-  <ExperienceStrip client:visible />
+  <!-- Experience (shared component, featured only) -->
+  <ExperienceList featuredOnly compact client:visible />
 
   <!-- Featured projects -->
   <FeaturedProjects client:visible />
 
-  <!-- GitHub contribution graph -->
-  <GithubGraph client:visible />
-
   <!-- Toolbox + Spotify + Socials — minimal section -->
-  <section style="padding-bottom: 48px;">
-    <div style="margin-bottom: 24px;">
+  <section class="pb-12">
+    <div class="mb-6">
       <Toolbox client:visible />
-    </div>
-    <div style="margin-bottom: 24px;">
-      <SocialsRow client:visible />
     </div>
     <SpotifyWidget client:visible />
   </section>

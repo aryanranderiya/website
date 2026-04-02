@@ -115,7 +115,7 @@
   --leading-relaxed: 1.7;
 
   /* Spacing */
-  --section-padding-top: 96px;
+  --section-padding-top: 45px;
   --content-max-width: 640px;
   --prose-max-width: 620px;
   --sidebar-width: 120px;
@@ -286,6 +286,7 @@ body {
    LAYOUT UTILITIES
    ============================================ */
 .page-container {
+  width: 100%;
   max-width: var(--content-max-width);
   margin: 0 auto;
   padding: 0 var(--page-inset);

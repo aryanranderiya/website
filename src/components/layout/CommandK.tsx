@@ -4,12 +4,13 @@ import { useState, useEffect, useCallback } from 'react';
 import { Command } from 'cmdk';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Dialog from '@radix-ui/react-dialog';
+import { HugeiconsIcon, Search01Icon, Moon02Icon, Download01Icon, ArrowRight01Icon, ArrowUpRight01Icon } from '@icons';
 import { ALL_PAGES_FLAT, SOCIAL_LINKS, PAGES } from '@/constants/navigation';
 
 // Extra commands
 const ACTIONS = [
-  { id: 'theme', label: 'Toggle Theme', description: 'Switch between light and dark', icon: '🌓' },
-  { id: 'resume-download', label: 'Download Resume', description: 'Get my CV as PDF', href: '/resume.pdf', icon: '📄' },
+  { id: 'theme', label: 'Toggle Theme', description: 'Switch between light and dark', iconComp: Moon02Icon },
+  { id: 'resume-download', label: 'Download Resume', description: 'Get my CV as PDF', href: '/resume.pdf', iconComp: Download01Icon },
 ];
 
 export default function CommandK() {
@@ -95,12 +96,7 @@ export default function CommandK() {
                     className="flex items-center gap-3 px-4 border-b"
                     style={{ borderColor: 'var(--border)' }}
                   >
-                    <svg
-                      width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"
-                      style={{ color: 'var(--muted-foreground)', flexShrink: 0 }}
-                    >
-                      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-                    </svg>
+                    <HugeiconsIcon icon={Search01Icon} size={16} color="var(--muted-foreground)" />
                     <Command.Input
                       value={query}
                       onValueChange={setQuery}
@@ -160,10 +156,10 @@ export default function CommandK() {
                           onSelect={() => navigate(page.href)}
                         >
                           <span
-                            className="w-7 h-7 rounded-md flex items-center justify-center text-xs flex-shrink-0"
-                            style={{ background: 'var(--muted)', border: '1px solid var(--border)' }}
+                            className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0"
+                            style={{ background: 'var(--muted)', border: '1px solid var(--border)', color: 'var(--muted-foreground)' }}
                           >
-                            →
+                            <HugeiconsIcon icon={ArrowRight01Icon} size={13} />
                           </span>
                           <div className="flex-1 min-w-0">
                             <div className="font-medium" style={{ letterSpacing: '-0.01em' }}>{page.label}</div>
@@ -189,10 +185,10 @@ export default function CommandK() {
                           onSelect={() => navigate(link.href, true)}
                         >
                           <span
-                            className="w-7 h-7 rounded-md flex items-center justify-center text-xs flex-shrink-0"
-                            style={{ background: 'var(--muted)', border: '1px solid var(--border)' }}
+                            className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0"
+                            style={{ background: 'var(--muted)', border: '1px solid var(--border)', color: 'var(--muted-foreground)' }}
                           >
-                            ↗
+                            <HugeiconsIcon icon={ArrowUpRight01Icon} size={13} />
                           </span>
                           <div className="flex-1">
                             <div className="font-medium" style={{ letterSpacing: '-0.01em' }}>{link.label}</div>
@@ -214,9 +210,9 @@ export default function CommandK() {
                         >
                           <span
                             className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0"
-                            style={{ background: 'var(--muted)', border: '1px solid var(--border)', fontSize: '14px' }}
+                            style={{ background: 'var(--muted)', border: '1px solid var(--border)', color: 'var(--muted-foreground)' }}
                           >
-                            {action.icon}
+                            <HugeiconsIcon icon={action.iconComp} size={14} />
                           </span>
                           <div className="flex-1">
                             <div className="font-medium" style={{ letterSpacing: '-0.01em' }}>{action.label}</div>

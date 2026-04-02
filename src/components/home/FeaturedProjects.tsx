@@ -98,7 +98,7 @@ export default function FeaturedProjects() {
       </div>
 
       {/* View all */}
-      <div style={{ marginTop: 16 }}>
+      <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
         <a
           href="/projects"
           style={{

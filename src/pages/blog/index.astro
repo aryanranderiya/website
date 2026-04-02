@@ -1,135 +1,24 @@
 ---
 import PageLayout from '@/layouts/PageLayout.astro';
+import BlogList from '@/components/blog/BlogList';
 import { getCollection } from 'astro:content';
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
-const posts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-
-function formatDateShort(date: Date): string {
-  return date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-}
+const posts = allPosts
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .map(p => ({
+    slug: p.slug,
+    title: p.data.title,
+    date: p.data.date.toISOString(),
+    featured: p.data.featured ?? false,
+  }));
 ---
 
 <PageLayout title="Blog" description="Writing about engineering, design, and building things.">
-  <!-- Header -->
   <div class="mb-10">
     <div class="section-header">Writing</div>
     <h1 class="text-heading-1">Blog</h1>
   </div>
 
-  <!-- Post list -->
-  {posts.length > 0 ? (
-    <div class="post-list">
-      {posts.map((post, i) => (
-        <a
-          href={`/blog/${post.slug}`}
-          class:list={['post-row group', i < 6 ? `animate-fade-in stagger-${Math.min(i + 1, 6)}` : 'animate-fade-in']}
-        >
-          <time class="post-date">{formatDateShort(post.data.date)}</time>
-
-          <div class="post-title-wrap">
-            <span class="post-title">{post.data.title}</span>
-            {post.data.featured && (
-              <span class="post-pill">Featured</span>
-            )}
-          </div>
-
-          <span class="post-arrow" aria-hidden="true">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-              <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-          </span>
-        </a>
-      ))}
-    </div>
-  ) : (
-    <p class="empty-state">No posts yet. Check back soon.</p>
-  )}
+  <BlogList posts={posts} client:load />
 </PageLayout>
-
-<style>
-  .post-list {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .post-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    text-decoration: none;
-    background: transparent;
-    transition: background 150ms ease;
-    cursor: pointer;
-    margin: 0 -8px;
-    padding-left: 8px;
-    padding-right: 8px;
-    border-radius: var(--radius-sm);
-  }
-
-  .post-row:hover {
-    background: var(--muted-bg);
-  }
-
-  .post-row:hover .post-title {
-    color: var(--text-primary);
-  }
-
-  .post-row:hover .post-arrow {
-    color: var(--text-secondary);
-  }
-
-  .post-date {
-    width: 80px;
-    flex-shrink: 0;
-    font-size: 11px;
-    color: var(--text-ghost);
-    line-height: 1;
-  }
-
-  .post-title-wrap {
-    flex: 1;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .post-title {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text-secondary);
-    letter-spacing: -0.01em;
-    transition: color 150ms ease;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .post-pill {
-    font-size: 10px;
-    font-weight: 500;
-    padding: 2px 6px;
-    border-radius: var(--radius-full);
-    background: var(--border);
-    color: var(--text-muted);
-    flex-shrink: 0;
-    letter-spacing: 0.02em;
-  }
-
-  .post-arrow {
-    flex-shrink: 0;
-    color: var(--text-ghost);
-    transition: color 150ms ease;
-    display: flex;
-    align-items: center;
-  }
-
-  .empty-state {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-top: 32px;
-  }
-</style>

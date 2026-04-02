@@ -18,7 +18,7 @@ export const PAGES: NavPage[] = [
     href: '/projects',
     label: 'Projects',
     description: 'Things I have built',
-    icon: 'Code01Icon',
+    icon: 'CodeIcon',
     children: [
       { href: '/projects?type=mobile', label: 'Mobile Apps', description: 'iOS and Android apps', icon: 'SmartPhone01Icon' },
       { href: '/projects?type=web', label: 'Web Apps', description: 'Web applications', icon: 'Globe02Icon' },
@@ -52,7 +52,7 @@ export const PAGES: NavPage[] = [
     href: '/movies',
     label: 'Movies',
     description: 'My personal Letterboxd',
-    icon: 'Movie01Icon',
+    icon: 'Film01Icon',
     children: [
       { href: '/movies#watched', label: 'Watched', description: 'Movies I have seen', icon: 'Tv01Icon' },
       { href: '/movies#watchlist', label: 'Watchlist', description: 'Want to watch', icon: 'BookmarkIcon' },
@@ -74,16 +74,14 @@ export const PAGES: NavPage[] = [
     href: '/resume',
     label: 'Resume',
     description: 'My work experience and skills',
-    icon: 'FileTextIcon',
+    icon: 'NoteIcon',
   },
 ];
 
 export const SOCIAL_LINKS = [
-  { label: 'GitHub', href: 'https://github.com/aryanranderiya', icon: 'GithubIcon', external: true },
-  { label: 'Twitter', href: 'https://twitter.com/aryanranderiya', icon: 'NewTwitterIcon', external: true },
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/aryanranderiya', icon: 'LinkedinIcon', external: true },
-  { label: 'Instagram', href: 'https://instagram.com/aryanranderiya', icon: 'InstagramIcon', external: true },
-  { label: 'Monkeytype', href: 'https://monkeytype.com/profile/aryanranderiya', icon: 'KeyboardIcon', external: true },
+  { label: 'GitHub', href: 'https://github.com/aryanranderiya', external: true },
+  { label: 'Twitter', href: 'https://twitter.com/aryanranderiya', external: true },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/aryanranderiya', external: true },
 ] as const;
 
 // Flat list of all pages for CommandK and other lookups

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Dialog from '@radix-ui/react-dialog';
 import { buttonVariants } from '@/components/ui/raised-button';
+import { HugeiconsIcon, Cancel01Icon, LinkSquare02Icon, ArrowRight01Icon } from '@icons';
 
 interface FreelanceProject {
   name: string;
@@ -209,18 +210,7 @@ function FreelanceDrawer({
                         '1')
                     }
                   >
-                    <svg
-                      width="12"
-                      height="12"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                    >
-                      <line x1="18" y1="6" x2="6" y2="18" />
-                      <line x1="6" y1="6" x2="18" y2="18" />
-                    </svg>
+                    <HugeiconsIcon icon={Cancel01Icon} size={12} color="currentColor" />
                   </button>
                 </Dialog.Close>
 
@@ -348,17 +338,7 @@ function FreelanceDrawer({
                         }}
                       >
                         Visit
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                        >
-                          <path d="M7 17L17 7M7 7h10v10" />
-                        </svg>
+                        <HugeiconsIcon icon={LinkSquare02Icon} size={10} color="currentColor" />
                       </a>
                     )}
                   </div>
@@ -590,23 +570,7 @@ export default function FreelanceWork() {
                   {tag}
                 </span>
               ))}
-              <svg
-                width="11"
-                height="11"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                style={{
-                  flexShrink: 0,
-                  marginLeft: '2px',
-                  color: 'var(--text-ghost)',
-                }}
-              >
-                <path d="M9 18l6-6-6-6" />
-              </svg>
+              <HugeiconsIcon icon={ArrowRight01Icon} size={11} color="var(--text-ghost)" style={{ flexShrink: 0, marginLeft: '2px' }} />
             </div>
           </button>
         ))}

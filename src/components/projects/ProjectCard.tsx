@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { HugeiconsIcon, LinkSquare02Icon } from '@icons';
 
 interface Project {
   slug: string;
@@ -112,9 +113,7 @@ export default function ProjectCard({
               onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-secondary)')}
               onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-ghost)')}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M7 17L17 7M7 7h10v10"/>
-              </svg>
+              <HugeiconsIcon icon={LinkSquare02Icon} size={12} />
             </a>
           )}
         </div>

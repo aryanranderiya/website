@@ -34,12 +34,14 @@ export default function Toolbox() {
             viewport={{ once: true }}
             transition={{ duration: 0.35, ease: EASE, delay: i * 0.04 }}
             whileHover={{ scale: 1.08 }}
+            className="toolbox-item"
             style={{
               display: 'inline-flex',
               flexDirection: 'column',
               alignItems: 'center',
               gap: 6,
               cursor: 'default',
+              position: 'relative',
             }}
           >
             {/* Favicon icon */}
@@ -51,21 +53,32 @@ export default function Toolbox() {
               style={{ display: 'block', borderRadius: 6 }}
             />
 
-            {/* Name */}
-            <span
-              style={{
-                fontSize: 10,
-                color: 'var(--text-ghost)',
-                letterSpacing: '-0.01em',
-                lineHeight: 1,
-                whiteSpace: 'nowrap',
-              }}
-            >
+            {/* Name — visible on hover */}
+            <span className="toolbox-label">
               {tool.name}
             </span>
           </motion.div>
         ))}
       </div>
+      <style>{`
+        .toolbox-label {
+          position: absolute;
+          bottom: -18px;
+          left: 50%;
+          transform: translateX(-50%);
+          font-size: 10px;
+          color: var(--text-ghost);
+          letter-spacing: -0.01em;
+          line-height: 1;
+          white-space: nowrap;
+          opacity: 0;
+          transition: opacity 150ms ease;
+          pointer-events: none;
+        }
+        .toolbox-item:hover .toolbox-label {
+          opacity: 1;
+        }
+      `}</style>
     </div>
   );
 }

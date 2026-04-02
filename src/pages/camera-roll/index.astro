@@ -18,64 +18,59 @@ const photos = [
 ---
 
 <PageLayout title="Camera Roll" description="Photos from my camera roll.">
-    <div style="padding-bottom: 64px;">
+  <div class="pb-16">
 
-      <!-- Header -->
-      <div style="margin-bottom: 32px;">
-        <div class="section-header">PHOTOS</div>
-        <h1 class="text-heading-1" style="margin-bottom: 6px;">Camera Roll</h1>
-        <p style="font-size: 13px; color: var(--text-muted);">Moments.</p>
-      </div>
-
-      <!-- Masonry grid -->
-      <div class="columns-2 sm:columns-3" style="gap: 6px; column-gap: 6px;">
-        {photos.map(photo => (
-          <div
-            class="photo-item break-inside-avoid"
-            style="margin-bottom: 6px; position: relative; overflow: hidden; border-radius: var(--radius-md, 8px); display: block;"
-          >
-            <img
-              src={photo.url}
-              alt={photo.alt}
-              loading="lazy"
-              style="width: 100%; height: auto; display: block; transition: transform 200ms ease;"
-              onmouseover="this.style.transform='scale(1.02)'"
-              onmouseout="this.style.transform='scale(1)'"
-            />
-            <div
-              class="photo-overlay"
-              style="
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                padding: 24px 10px 10px;
-                background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
-                opacity: 0;
-                transition: opacity 200ms ease;
-                pointer-events: none;
-              "
-            >
-              <div style="color: white; font-size: 12px; font-weight: 500; line-height: 1.3;">
-                {photo.location}
-              </div>
-              <div style="color: rgba(255,255,255,0.6); font-size: 11px;">
-                {photo.date}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
+    <!-- Header -->
+    <div class="mb-8">
+      <div class="section-header">PHOTOS</div>
+      <h1 class="text-heading-1 mb-1.5">Camera Roll</h1>
+      <p class="text-sm text-[var(--text-muted)]">Moments.</p>
     </div>
+
+    <!-- Masonry grid -->
+    <div class="columns-2 sm:columns-3 gap-1.5 [column-gap:6px]">
+      {photos.map(photo => (
+        <div class="photo-item break-inside-avoid mb-1.5">
+          <img
+            src={photo.url}
+            alt={photo.alt}
+            loading="lazy"
+            class="w-full h-auto block transition-transform duration-200 ease-out"
+            onmouseover="this.style.transform='scale(1.02)'"
+            onmouseout="this.style.transform='scale(1)'"
+          />
+          <div class="photo-overlay">
+            <div class="text-white text-xs font-medium leading-tight">{photo.location}</div>
+            <div class="text-white/60 text-[11px]">{photo.date}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
 </PageLayout>
 
 <style>
-  .photo-item:hover .photo-overlay {
-    opacity: 1;
+  .photo-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--radius-md, 8px);
+    cursor: default;
   }
 
-  .photo-item {
-    cursor: default;
+  .photo-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 24px 10px 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+    opacity: 0;
+    transition: opacity 200ms ease;
+    pointer-events: none;
+  }
+
+  .photo-item:hover .photo-overlay {
+    opacity: 1;
   }
 </style>

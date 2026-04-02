@@ -3,6 +3,7 @@
 import * as Dialog from '@radix-ui/react-dialog';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { HugeiconsIcon, Cancel01Icon } from '@icons';
 
 interface ModalProps {
   open: boolean;
@@ -68,10 +69,7 @@ export function Modal({
                   style={{ color: 'var(--muted-foreground)' }}
                   aria-label="Close"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                  </svg>
+                  <HugeiconsIcon icon={Cancel01Icon} size={16} />
                 </Dialog.Close>
                 {children}
               </motion.div>

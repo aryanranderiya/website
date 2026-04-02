@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { HugeiconsIcon, Cancel01Icon, ArrowLeft01Icon, ArrowRight01Icon } from '@icons';
 
 interface DesignGalleryProps {
   apparel: string[];
@@ -292,9 +293,7 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
           flexShrink: 0,
         }}
       >
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-          <path d="M2 2L14 14M14 2L2 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-        </svg>
+        <HugeiconsIcon icon={Cancel01Icon} size={16} color="currentColor" />
       </button>
 
       {/* Prev button */}
@@ -320,9 +319,7 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
             flexShrink: 0,
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M10 3L5 8L10 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <HugeiconsIcon icon={ArrowLeft01Icon} size={16} color="currentColor" />
         </button>
       )}
 
@@ -349,9 +346,7 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
             flexShrink: 0,
           }}
         >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M6 3L11 8L6 13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
+          <HugeiconsIcon icon={ArrowRight01Icon} size={16} color="currentColor" />
         </button>
       )}
 

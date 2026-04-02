@@ -4,6 +4,7 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   site: 'https://aryanranderiya.com',
@@ -31,6 +32,11 @@ export default defineConfig({
   },
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        '@icons': fileURLToPath(new URL('./src/components/icons/index.ts', import.meta.url)),
+      },
+    },
   },
   markdown: {
     shikiConfig: {
