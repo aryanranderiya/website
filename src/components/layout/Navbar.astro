@@ -1,0 +1,218 @@
+---
+import { PAGES } from '@/constants/navigation';
+import { SITE } from '@/constants/site';
+import ThemeToggle from './ThemeToggle';
+---
+
+<header
+  id="navbar"
+  class="fixed top-0 left-0 right-0 z-40 h-14 transition-all duration-300"
+>
+  <div class="page-container h-full flex items-center justify-between gap-4">
+    <!-- Logo / Name -->
+    <a
+      href="/"
+      class="font-semibold text-sm tracking-tight flex-shrink-0 transition-opacity hover:opacity-70"
+      style="letter-spacing: -0.02em;"
+      aria-label="Home"
+    >
+      {SITE.name}
+    </a>
+
+    <!-- Right actions -->
+    <div class="flex items-center gap-1">
+      <ThemeToggle client:only="react" />
+
+      <!-- Hamburger toggle (all screen sizes) -->
+      <button
+        id="hamburger-toggle"
+        aria-label="Toggle menu"
+        aria-expanded="false"
+        class="w-9 h-9 flex items-center justify-center rounded-lg transition-opacity hover:opacity-70"
+        style="color: var(--foreground);"
+      >
+        <!-- Hamburger lines / X — animated via CSS classes -->
+        <span id="hamburger-icon" class="hamburger-icon">
+          <span class="line line-1"></span>
+          <span class="line line-2"></span>
+          <span class="line line-3"></span>
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Full-screen overlay menu -->
+<div
+  id="overlay-menu"
+  aria-hidden="true"
+  class="overlay-menu fixed inset-0 z-50 flex flex-col"
+  style="
+    background: color-mix(in srgb, var(--background) 85%, transparent);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  "
+>
+  <!-- Top bar: logo + close button -->
+  <div class="page-container h-14 flex items-center justify-between flex-shrink-0">
+    <a
+      href="/"
+      class="font-semibold text-sm tracking-tight transition-opacity hover:opacity-70 overlay-nav-link"
+      style="letter-spacing: -0.02em;"
+      aria-label="Home"
+    >
+      {SITE.name}
+    </a>
+
+    <button
+      id="overlay-close"
+      aria-label="Close menu"
+      class="w-9 h-9 flex items-center justify-center rounded-lg transition-opacity hover:opacity-70"
+      style="color: var(--foreground);"
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Nav links -->
+  <nav
+    class="page-container flex-1 flex flex-col justify-center gap-1 pb-20"
+    aria-label="Overlay navigation"
+  >
+    {PAGES.map(page => (
+      <a
+        href={page.href}
+        class="overlay-nav-link overlay-link flex items-baseline gap-3 py-2 transition-opacity hover:opacity-60"
+        style="color: var(--foreground);"
+      >
+        <span class="font-semibold" style="font-size: 1.75rem; letter-spacing: -0.03em; line-height: 1.15;">
+          {page.label}
+        </span>
+        {page.description && (
+          <span class="text-sm hidden sm:inline" style="color: var(--muted-foreground);">
+            {page.description}
+          </span>
+        )}
+      </a>
+    ))}
+  </nav>
+</div>
+
+<style>
+  /* Hamburger icon lines */
+  .hamburger-icon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 18px;
+    height: 18px;
+    gap: 4px;
+  }
+
+  .line {
+    display: block;
+    width: 18px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 2px;
+    transform-origin: center;
+    transition: transform 0.2s ease, opacity 0.2s ease, width 0.2s ease;
+  }
+
+  /* Open state: animate to X */
+  .hamburger-icon.is-open .line-1 {
+    transform: translateY(5.5px) rotate(45deg);
+  }
+  .hamburger-icon.is-open .line-2 {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  .hamburger-icon.is-open .line-3 {
+    transform: translateY(-5.5px) rotate(-45deg);
+  }
+
+  /* Overlay visible state */
+  .overlay-menu.is-open {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  /* Navbar scrolled glass */
+  #navbar.scrolled {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+  }
+</style>
+
+<script>
+  function initNavbar() {
+    // Scroll effect
+    const navbar = document.getElementById('navbar');
+    function updateNavbar() {
+      if (window.scrollY > 20) {
+        navbar?.classList.add('scrolled');
+      } else {
+        navbar?.classList.remove('scrolled');
+      }
+    }
+    window.addEventListener('scroll', updateNavbar, { passive: true });
+    updateNavbar();
+
+    // Overlay menu
+    const toggle = document.getElementById('hamburger-toggle');
+    const closeBtn = document.getElementById('overlay-close');
+    const overlay = document.getElementById('overlay-menu');
+    const hamburgerIcon = document.getElementById('hamburger-icon');
+    let isOpen = false;
+
+    function openMenu() {
+      isOpen = true;
+      overlay?.classList.add('is-open');
+      overlay?.setAttribute('aria-hidden', 'false');
+      hamburgerIcon?.classList.add('is-open');
+      toggle?.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      isOpen = false;
+      overlay?.classList.remove('is-open');
+      overlay?.setAttribute('aria-hidden', 'true');
+      hamburgerIcon?.classList.remove('is-open');
+      toggle?.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    toggle?.addEventListener('click', () => {
+      if (isOpen) closeMenu(); else openMenu();
+    });
+
+    closeBtn?.addEventListener('click', closeMenu);
+
+    // Close on nav link click
+    document.querySelectorAll('.overlay-nav-link').forEach(link => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) closeMenu();
+    });
+  }
+
+  // Init on first load
+  initNavbar();
+
+  // Re-init on Astro view transitions
+  document.addEventListener('astro:page-load', () => {
+    initNavbar();
+  });
+</script>

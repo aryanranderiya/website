@@ -1,17 +1,52 @@
 ---
+import { getCollection } from 'astro:content';
+import PageLayout from '@/layouts/PageLayout.astro';
+import Hero from '@/components/home/Hero';
+import ExperienceStrip from '@/components/home/ExperienceStrip';
+import FeaturedProjects from '@/components/home/FeaturedProjects';
+import GithubGraph from '@/components/home/GithubGraph';
+import SpotifyWidget from '@/components/home/SpotifyWidget';
+import Toolbox from '@/components/home/Toolbox';
+import BlogPreview from '@/components/home/BlogPreview';
+import SocialsRow from '@/components/home/SocialsRow';
+import Signature from '@/components/home/Signature';
 
+// Fetch and sort blog posts by date descending
+const allPosts = await getCollection('blog');
+const posts = allPosts
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<PageLayout
+  title="Home"
+  description="Founder, designer, and developer. Currently building GAIA — an AI companion."
+>
+  <!-- Hero -->
+  <Hero client:load />
+
+  <!-- Experience strip -->
+  <ExperienceStrip client:visible />
+
+  <!-- Featured projects -->
+  <FeaturedProjects client:visible />
+
+  <!-- GitHub contribution graph -->
+  <GithubGraph client:visible />
+
+  <!-- Toolbox + Spotify + Socials — minimal section -->
+  <section style="padding-bottom: 48px;">
+    <div style="margin-bottom: 24px;">
+      <Toolbox client:visible />
+    </div>
+    <div style="margin-bottom: 24px;">
+      <SocialsRow client:visible />
+    </div>
+    <SpotifyWidget client:visible />
+  </section>
+
+  <!-- Blog preview -->
+  <BlogPreview posts={posts} client:visible />
+
+  <!-- Signature -->
+  <Signature client:visible />
+</PageLayout>

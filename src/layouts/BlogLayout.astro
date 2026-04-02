@@ -1,0 +1,62 @@
+---
+import PageLayout from './PageLayout.astro';
+import { formatDate } from '@/lib/utils';
+
+interface Props {
+  title: string;
+  description: string;
+  date: Date;
+  updated?: Date;
+  tags?: string[];
+  category?: string;
+  cover?: string;
+}
+
+const { title, description, date, updated, tags = [], category, cover } = Astro.props;
+---
+
+<PageLayout title={title} description={description}>
+  <article class="content-container" style="padding-bottom: 64px;">
+    <!-- Header -->
+    <header class="mb-12">
+      {category && (
+        <div class="text-label text-accent mb-4" style="color: var(--accent-blue)">
+          {category}
+        </div>
+      )}
+      <h1 class="text-heading-1 mb-4">{title}</h1>
+      <p class="text-body mb-6">{description}</p>
+      <div class="flex items-center gap-4 text-caption">
+        <time datetime={date.toISOString()}>{formatDate(date)}</time>
+        {updated && (
+          <>
+            <span>·</span>
+            <span>Updated {formatDate(updated)}</span>
+          </>
+        )}
+      </div>
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-4">
+          {tags.map(tag => (
+            <span class="text-xs px-2.5 py-1 rounded-full border" style="border-color: var(--border); color: var(--muted-foreground);">
+              {tag}
+            </span>
+          ))}
+        </div>
+      )}
+      {cover && (
+        <img
+          src={cover}
+          alt={title}
+          class="w-full aspect-video object-cover rounded-xl mt-8"
+          style="border: 1px solid var(--border);"
+        />
+      )}
+    </header>
+
+    <!-- Content -->
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</PageLayout>

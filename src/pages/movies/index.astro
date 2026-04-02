@@ -1,0 +1,37 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import MoviesGrid from '@/components/movies/MoviesGrid';
+import { getCollection } from 'astro:content';
+
+const movieEntries = await getCollection('movies');
+const movies = movieEntries.map(entry => ({
+  slug: entry.slug,
+  title: entry.data.title,
+  year: entry.data.year,
+  cover: entry.data.cover,
+  imdbId: entry.data.imdbId,
+  myRating: entry.data.myRating,
+  status: entry.data.status,
+  review: entry.data.review,
+  thoughts: entry.data.thoughts,
+  favCharacters: entry.data.favCharacters,
+  genre: entry.data.genre,
+  director: entry.data.director,
+  dateWatched: entry.data.dateWatched?.toISOString(),
+  featured: entry.data.featured,
+}));
+---
+
+<PageLayout title="Movies" description="My personal film diary — watched and watchlist.">
+  <div style="padding-bottom: 64px;">
+    <div class="mb-10">
+      <div class="text-label mb-3" style="color: var(--muted-foreground);">Cinema</div>
+      <h1 class="text-heading-1 mb-4">Movies</h1>
+      <p class="text-body max-w-lg">
+        My personal film diary. Films I've watched, thoughts I've had, and what's next on my list.
+      </p>
+    </div>
+
+    <MoviesGrid movies={movies} client:load />
+  </div>
+</PageLayout>

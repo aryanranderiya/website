@@ -1,0 +1,40 @@
+---
+import Layout from './Layout.astro';
+import Sidebar from '@/components/layout/Sidebar';
+import Footer from '@/components/layout/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+  noindex?: boolean;
+  fullWidth?: boolean;
+}
+
+const { fullWidth = false, ...layoutProps } = Astro.props;
+---
+
+<Layout {...layoutProps}>
+  <Sidebar client:only="react" />
+  <main
+    id="page-content"
+    class:list={[
+      'flex-1',
+      fullWidth ? '' : 'page-container',
+    ]}
+    style="padding-top: var(--section-padding-top);"
+  >
+    <slot />
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  /* On mobile, push content below the fixed top bar */
+  @media (max-width: 959px) {
+    main {
+      padding-top: calc(52px + 32px) !important;
+    }
+  }
+</style>

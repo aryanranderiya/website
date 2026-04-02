@@ -1,0 +1,100 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import { SITE, SEO } from '@/constants/site';
+import '@/styles/global.css';
+import CommandK from '@/components/layout/CommandK';
+import AgentationOverlay from '@/components/layout/AgentationOverlay';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  canonical?: string;
+  noindex?: boolean;
+  class?: string;
+}
+
+const {
+  title,
+  description = SITE.description,
+  ogImage = '/og-image.jpg',
+  canonical = Astro.url.pathname,
+  noindex = false,
+  class: className,
+} = Astro.props;
+
+const metaTitle = title ? `${title} — ${SITE.name}` : SEO.defaultTitle;
+const canonicalURL = new URL(canonical, Astro.site ?? Astro.url.origin);
+const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro.site ?? Astro.url.origin).toString();
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary -->
+    <title>{metaTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={SITE.name} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {!noindex && <meta name="robots" content="index, follow" />}
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalURL.toString()} />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={Astro.url.toString()} />
+    <meta property="og:title" content={metaTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={`@${SITE.twitter}`} />
+    <meta name="twitter:title" content={metaTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+
+    <!-- Theme -->
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
+
+    <!-- Prefetch hint for faster navigation -->
+    <link rel="dns-prefetch" href="https://api.github.com" />
+
+    <!-- View Transitions -->
+    <ViewTransitions />
+
+    <!-- Theme init — light by default, dark only if explicitly stored -->
+    <script is:inline>
+      (function () {
+        if (localStorage.getItem('theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-white focus:dark:bg-zinc-900 focus:rounded-lg focus:shadow-lg">
+      Skip to content
+    </a>
+
+    <div id="main-content" transition:animate="fade" class:list={['min-h-screen flex flex-col', className]}>
+      <slot />
+    </div>
+    <CommandK client:only="react" />
+    <AgentationOverlay client:only="react" />
+  </body>
+</html>

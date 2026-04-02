@@ -1,0 +1,35 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import Bookshelf from '@/components/books/Bookshelf';
+import { getCollection } from 'astro:content';
+
+const bookEntries = await getCollection('books');
+const books = bookEntries.map(entry => ({
+  slug: entry.slug,
+  title: entry.data.title,
+  author: entry.data.author,
+  cover: entry.data.cover,
+  status: entry.data.status,
+  rating: entry.data.rating,
+  review: entry.data.review,
+  genre: entry.data.genre,
+  year: entry.data.year,
+  pages: entry.data.pages,
+  dateRead: entry.data.dateRead?.toISOString(),
+  featured: entry.data.featured,
+}));
+---
+
+<PageLayout title="Bookshelf" description="Books I have read, am reading, and want to read.">
+  <div style="padding-bottom: 64px;">
+    <div class="mb-10">
+      <div class="text-label mb-3" style="color: var(--muted-foreground);">Reading</div>
+      <h1 class="text-heading-1 mb-4">Bookshelf</h1>
+      <p class="text-body max-w-lg">
+        Books that have shaped how I think. Click any book to read my notes and thoughts.
+      </p>
+    </div>
+
+    <Bookshelf books={books} client:load />
+  </div>
+</PageLayout>

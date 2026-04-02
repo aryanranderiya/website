@@ -1,0 +1,114 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import FreelanceWork from '@/components/freelance/FreelanceWork.tsx';
+
+const services = [
+  {
+    title: 'Web Development',
+    description: 'React, Next.js, Astro. Landing pages to complex SaaS.',
+  },
+  {
+    title: 'Mobile Development',
+    description: 'React Native & Expo. iOS and Android.',
+  },
+  {
+    title: 'UI/UX Design',
+    description: 'Figma to code. I design and build — no handoff overhead.',
+  },
+  {
+    title: 'Backend & APIs',
+    description: 'FastAPI, Node.js, PostgreSQL. Scalable and clean.',
+  },
+];
+
+const process = [
+  {
+    step: '01',
+    title: 'Discovery',
+    description: 'Understand the product, users, and constraints.',
+  },
+  {
+    step: '02',
+    title: 'Design & Build',
+    description: 'Design in Figma, build in code. Parallel, not sequential.',
+  },
+  {
+    step: '03',
+    title: 'Ship & Iterate',
+    description: 'Deploy fast, gather feedback, iterate. Done means done.',
+  },
+];
+---
+
+<PageLayout title="Freelance" description="Freelance web and mobile development services.">
+    <div style="padding-bottom: 64px;">
+
+      <!-- Hero -->
+      <section class="pb-10">
+        <div class="section-header">FREELANCE</div>
+        <div style="font-size: 11px; color: var(--text-ghost); margin-bottom: 12px;">
+          Available for work
+        </div>
+        <h1 class="text-heading-1" style="margin-bottom: 16px;">
+          Building products<br/>people actually use.
+        </h1>
+        <p style="font-size: 14px; color: var(--text-muted); max-width: 28rem; line-height: 1.6; margin-bottom: 20px;">
+          I work with founders and teams to design and ship digital products. Fast, clean, no bloat.
+        </p>
+        <a
+          href="mailto:hey@aryanranderiya.com"
+          style="font-size: 13px; font-weight: 500; color: #000; background: #00bbff; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 8px 20px; box-shadow: 0 2px 8px rgba(0,187,255,0.3); transition: opacity 150ms ease;"
+          onmouseover="this.style.opacity='0.88'"
+          onmouseout="this.style.opacity='1'"
+        >
+          Get in touch &rarr;
+        </a>
+      </section>
+
+      <!-- What I Do -->
+      <section class="py-10">
+        <div class="section-header">WHAT I DO</div>
+        <div>
+          {services.map((service, i) => (
+            <div
+              style={`padding: 12px 0; ${i < services.length - 1 ? 'border-bottom: 1px solid var(--border);' : ''}`}
+            >
+              <span style="font-size: 13px; font-weight: 600; color: var(--text-primary);">
+                {service.title}
+              </span>
+              <span style="font-size: 12px; color: var(--text-muted);"> — {service.description}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Selected Work -->
+      <section class="py-10">
+        <div class="section-header">SELECTED WORK</div>
+        <FreelanceWork client:load />
+      </section>
+
+      <!-- Process -->
+      <section class="py-10">
+        <div class="section-header">PROCESS</div>
+        <div class="space-y-6">
+          {process.map(item => (
+            <div style="display: flex; gap: 20px; align-items: flex-start;">
+              <span style="font-size: 11px; font-weight: 600; color: var(--text-ghost); letter-spacing: 0.05em; min-width: 20px; padding-top: 1px;">
+                {item.step}
+              </span>
+              <div>
+                <div style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px;">
+                  {item.title}
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">
+                  {item.description}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+    </div>
+</PageLayout>

@@ -1,0 +1,81 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+
+const photos = [
+  { url: 'https://images.unsplash.com/photo-1477346611705-65d1883cee1e?w=800&q=80', alt: 'Mountain landscape at dawn', location: 'Ahmedabad', date: '2024' },
+  { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80', alt: 'Sunset over the city', location: 'Ahmedabad', date: '2024' },
+  { url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&q=80', alt: 'Starry night sky', location: 'Gujarat', date: '2023' },
+  { url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80', alt: 'Green hills and clouds', location: 'Ahmedabad', date: '2024' },
+  { url: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=800&q=80', alt: 'Lake in the mountains', location: 'Gujarat', date: '2023' },
+  { url: 'https://images.unsplash.com/photo-1444723121867-7a241cacace9?w=800&q=80', alt: 'City streets at night', location: 'Ahmedabad', date: '2024' },
+  { url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800&q=80', alt: 'Desert road at dusk', location: 'Rajasthan', date: '2023' },
+  { url: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800&q=80', alt: 'Forest path in morning light', location: 'Gujarat', date: '2024' },
+  { url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=80', alt: 'Monsoon clouds', location: 'Ahmedabad', date: '2024' },
+  { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80', alt: 'Portrait', location: 'Home', date: '2024' },
+  { url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80', alt: 'Coffee and laptop', location: 'Home', date: '2024' },
+  { url: 'https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=800&q=80', alt: 'Workspace', location: 'Home', date: '2024' },
+];
+---
+
+<PageLayout title="Camera Roll" description="Photos from my camera roll.">
+    <div style="padding-bottom: 64px;">
+
+      <!-- Header -->
+      <div style="margin-bottom: 32px;">
+        <div class="section-header">PHOTOS</div>
+        <h1 class="text-heading-1" style="margin-bottom: 6px;">Camera Roll</h1>
+        <p style="font-size: 13px; color: var(--text-muted);">Moments.</p>
+      </div>
+
+      <!-- Masonry grid -->
+      <div class="columns-2 sm:columns-3" style="gap: 6px; column-gap: 6px;">
+        {photos.map(photo => (
+          <div
+            class="photo-item break-inside-avoid"
+            style="margin-bottom: 6px; position: relative; overflow: hidden; border-radius: var(--radius-md, 8px); display: block;"
+          >
+            <img
+              src={photo.url}
+              alt={photo.alt}
+              loading="lazy"
+              style="width: 100%; height: auto; display: block; transition: transform 200ms ease;"
+              onmouseover="this.style.transform='scale(1.02)'"
+              onmouseout="this.style.transform='scale(1)'"
+            />
+            <div
+              class="photo-overlay"
+              style="
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 24px 10px 10px;
+                background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+                opacity: 0;
+                transition: opacity 200ms ease;
+                pointer-events: none;
+              "
+            >
+              <div style="color: white; font-size: 12px; font-weight: 500; line-height: 1.3;">
+                {photo.location}
+              </div>
+              <div style="color: rgba(255,255,255,0.6); font-size: 11px;">
+                {photo.date}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+</PageLayout>
+
+<style>
+  .photo-item:hover .photo-overlay {
+    opacity: 1;
+  }
+
+  .photo-item {
+    cursor: default;
+  }
+</style>

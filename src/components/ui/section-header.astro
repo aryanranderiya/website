@@ -1,0 +1,27 @@
+---
+interface Props {
+  label?: string;
+  title: string;
+  description?: string;
+  align?: 'left' | 'center';
+  class?: string;
+}
+
+const { label, title, description, align = 'left', class: className } = Astro.props;
+---
+
+<div class:list={[
+  'mb-10',
+  align === 'center' && 'text-center',
+  className,
+]}>
+  {label && (
+    <div class="text-label mb-3" style="color: var(--accent-blue);">{label}</div>
+  )}
+  <h2 class="text-heading-2">{title}</h2>
+  {description && (
+    <p class="text-body mt-3 max-w-2xl" class:list={align === 'center' && 'mx-auto'}>
+      {description}
+    </p>
+  )}
+</div>
