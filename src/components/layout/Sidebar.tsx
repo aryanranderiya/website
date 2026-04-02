@@ -6,8 +6,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   HugeiconsIcon,
   Sun01Icon, Moon02Icon, Menu01Icon, Cancel01Icon,
-  Home12Icon, CodeFolderIcon, BrushIcon, QuillWrite02Icon,
-  NoteIcon, Briefcase01Icon, Books02Icon, Film01Icon, Image01Icon,
+  Home12Icon, Folder03Icon, BrushIcon, QuillWrite01Icon,
+  NoteIcon, Briefcase01Icon, Books02Icon, Film01Icon, CarouselHorizontalIcon,
+  SparklesIcon,
 } from '@icons';
 import type { ComponentType } from 'react';
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
@@ -18,9 +19,9 @@ const NAV_GROUPS: { label: string | null; items: { href: string; label: string; 
     label: null,
     items: [
       { href: '/',              label: 'Home',      icon: Home12Icon },
-      { href: '/projects',      label: 'Projects',  icon: CodeFolderIcon },
+      { href: '/projects',      label: 'Projects',  icon: Folder03Icon },
       { href: '/graphic-design',label: 'Design',    icon: BrushIcon },
-      { href: '/blog',          label: 'Blog',      icon: QuillWrite02Icon },
+      { href: '/blog',          label: 'Blog',      icon: QuillWrite01Icon },
       { href: '/resume',        label: 'Resume',    icon: NoteIcon },
       { href: '/freelance',     label: 'Freelance', icon: Briefcase01Icon },
     ],
@@ -28,9 +29,10 @@ const NAV_GROUPS: { label: string | null; items: { href: string; label: string; 
   {
     label: 'Extra',
     items: [
+      { href: '/tools',        label: 'Tools',   icon: SparklesIcon },
       { href: '/books',        label: 'Books',   icon: Books02Icon },
       { href: '/movies',       label: 'Movies',  icon: Film01Icon },
-      { href: '/camera-roll',  label: 'Gallery', icon: Image01Icon },
+      { href: '/camera-roll',  label: 'Gallery', icon: CarouselHorizontalIcon },
     ],
   },
 ];
@@ -126,38 +128,24 @@ export default function Sidebar() {
     <>
       {/* ── Desktop sidebar ── */}
       <nav
+        className="hidden-mobile fixed flex-col gap-0.5 bg-transparent border-none overflow-y-auto overflow-x-hidden [scrollbar-width:none] z-40"
         style={{
-          position: 'fixed',
           top: '60px',
           bottom: '128px',
           left: 'calc(50% - 320px - 120px - 32px)',
           width: '100px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '2px',
-          background: 'transparent',
-          border: 'none',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          scrollbarWidth: 'none',
-          zIndex: 40,
         }}
-        className="hidden-mobile"
       >
 
         {/* Profile photo */}
-        <div style={{ marginBottom: 16 }}>
+        <div className="mb-4">
           <a href="/">
             <img
               src="/avatar.webp"
               alt="Aryan Randeriya"
               width={32}
               height={32}
-              style={{
-                borderRadius: '50%',
-                display: 'block',
-                opacity: 0.9,
-              }}
+              className="rounded-full block opacity-90"
             />
           </a>
         </div>
@@ -171,7 +159,7 @@ export default function Sidebar() {
             {group.label && (
               <div style={sectionLabelStyle}>{group.label}</div>
             )}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            <div className="flex flex-col gap-0.5">
               {group.items.map((item) => {
                 return (
                 <a
@@ -193,7 +181,7 @@ export default function Sidebar() {
                     }
                   }}
                 >
-                  <HugeiconsIcon icon={item.icon} size={14} style={{ flexShrink: 0, opacity: 0.85 }} />
+                  <HugeiconsIcon icon={item.icon} size={14} color="currentColor" style={{ flexShrink: 0 }} />
                   {item.label}
                 </a>
                 );
@@ -203,7 +191,7 @@ export default function Sidebar() {
         ))}
 
         {/* Bottom actions */}
-        <div style={{ marginTop: 'auto', paddingTop: '24px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+        <div className="mt-auto pt-6 flex flex-col gap-1">
           {/* Built in Astro */}
           <a
             href="https://astro.build"
@@ -219,11 +207,11 @@ export default function Sidebar() {
             onMouseLeave={() => setHoveredAction(null)}
           >
             <img
-              src="https://www.google.com/s2/favicons?domain=astro.build&sz=32"
+              src={isDark ? "https://astro.build/assets/press/astro-icon-light-gradient.png" : "https://astro.build/assets/press/astro-icon-dark.svg"}
               width={13}
               height={13}
               alt="Astro"
-              style={{ borderRadius: 3 }}
+              className="rounded-[3px]"
             />
             <span style={{
               fontSize: '11px',
@@ -256,7 +244,7 @@ export default function Sidebar() {
               width={13}
               height={13}
               alt="Old portfolio"
-              style={{ borderRadius: 2 }}
+              className="rounded-[2px]"
             />
             <span style={{
               fontSize: '11px',
@@ -336,22 +324,10 @@ export default function Sidebar() {
 
       {/* ── Mobile top bar ── */}
       <div
-        className="mobile-nav-bar"
+        className="mobile-nav-bar fixed top-0 left-0 right-0 h-[52px] flex items-center justify-between px-5 backdrop-blur-[12px] border-b z-50"
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '52px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 20px',
           background: isDark ? 'rgba(17,17,17,0.92)' : 'rgba(253,253,252,0.92)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
-          zIndex: 50,
+          borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
         }}
       >
         <a href="/" style={{
@@ -363,32 +339,18 @@ export default function Sidebar() {
         }}>
           Aryan Randeriya
         </a>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="flex items-center gap-3">
           <button
             onClick={toggleTheme}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)',
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
+            className="bg-none border-none cursor-pointer p-1 flex items-center"
+            style={{ color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)' }}
           >
             <HugeiconsIcon icon={isDark ? Sun01Icon : Moon02Icon} size={13} />
           </button>
           <button
             onClick={() => setMobileOpen(v => !v)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
+            className="bg-none border-none cursor-pointer p-1 flex items-center"
+            style={{ color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)' }}
             aria-label="Toggle menu"
           >
             <HugeiconsIcon icon={mobileOpen ? Cancel01Icon : Menu01Icon} size={16} />
@@ -404,17 +366,10 @@ export default function Sidebar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: [0.19, 1, 0.22, 1] }}
+            className="fixed top-[52px] left-0 right-0 backdrop-blur-[12px] border-b z-[49] px-5 pt-4 pb-5"
             style={{
-              position: 'fixed',
-              top: '52px',
-              left: 0,
-              right: 0,
               background: isDark ? 'rgba(17,17,17,0.97)' : 'rgba(253,253,252,0.97)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
-              zIndex: 49,
-              padding: '16px 20px 20px',
+              borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
             }}
           >
             {NAV_GROUPS.map((group, gi) => (

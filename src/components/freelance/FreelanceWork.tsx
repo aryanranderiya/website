@@ -9,7 +9,7 @@ import {
   Cancel01Icon,
   LinkSquare02Icon,
   ArrowRight02Icon,
-  ArrowLeft01Icon,
+  ArrowLeft02Icon,
 } from '@icons';
 
 interface FreelanceProject {
@@ -164,36 +164,48 @@ function DeviconImg({ slug, size = 12 }: { slug: string; size?: number }) {
 function ProjectDetail({
   project,
   onClose,
+  onPrev,
+  onNext,
+  hasPrev,
+  hasNext,
 }: {
   project: FreelanceProject;
   onClose: () => void;
+  onPrev: () => void;
+  onNext: () => void;
+  hasPrev: boolean;
+  hasNext: boolean;
 }) {
   const [activeImage, setActiveImage] = useState(0);
   const wheelAccumRef = useRef(0);
   const wheelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const total = project.images.length;
-  const prev = () => setActiveImage((i) => Math.max(0, i - 1));
-  const next = () => setActiveImage((i) => Math.min(total - 1, i + 1));
+  const prevImg = () => setActiveImage((i) => Math.max(0, i - 1));
+  const nextImg = () => setActiveImage((i) => Math.min(total - 1, i + 1));
+
+  // Reset image index when project changes
+  useEffect(() => { setActiveImage(0); }, [project.name]);
 
   const handleWheel = (e: React.WheelEvent) => {
-    // Use horizontal delta from trackpad; fallback to vertical if no horizontal
     const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
     wheelAccumRef.current += delta;
-
     if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
-    wheelTimerRef.current = setTimeout(() => {
-      wheelAccumRef.current = 0;
-    }, 200);
-
-    if (wheelAccumRef.current > 60) {
-      wheelAccumRef.current = 0;
-      next();
-    } else if (wheelAccumRef.current < -60) {
-      wheelAccumRef.current = 0;
-      prev();
-    }
+    wheelTimerRef.current = setTimeout(() => { wheelAccumRef.current = 0; }, 200);
+    if (wheelAccumRef.current > 60) { wheelAccumRef.current = 0; nextImg(); }
+    else if (wheelAccumRef.current < -60) { wheelAccumRef.current = 0; prevImg(); }
   };
+
+  const NavBtn = ({ onClick, disabled, icon, label }: { onClick: () => void; disabled: boolean; icon: typeof ArrowLeft02Icon; label: string }) => (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className="w-6 h-6 rounded-md bg-[var(--muted-bg)] flex items-center justify-center border-none cursor-pointer transition-opacity duration-150 disabled:opacity-25 hover:opacity-60"
+      aria-label={label}
+    >
+      <HugeiconsIcon icon={icon} size={11} color="var(--text-muted)" />
+    </button>
+  );
 
   return (
     <motion.div
@@ -205,22 +217,58 @@ function ProjectDetail({
       transition={{ duration: 0.18 }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-6 pt-5 pb-4 shrink-0">
-        <div className="flex items-center gap-2">
-          <span className="text-[11px] px-2 py-[3px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] tracking-[0.02em]">
+      <div className="flex items-center justify-between px-6 pt-5 pb-4 shrink-0 gap-3">
+        {/* Left: type + project nav */}
+        <div className="flex items-center gap-2 min-w-0">
+          <NavBtn onClick={onPrev} disabled={!hasPrev} icon={ArrowLeft02Icon} label="Previous project" />
+          <span className="text-[11px] px-2 py-[3px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] tracking-[0.02em] truncate">
             {project.type}
           </span>
+          <NavBtn onClick={onNext} disabled={!hasNext} icon={ArrowRight02Icon} label="Next project" />
         </div>
-        <button
-          onClick={onClose}
-          className="w-7 h-7 rounded-lg bg-[var(--muted-bg)] text-[var(--text-muted)] cursor-pointer flex items-center justify-center transition-opacity duration-150 hover:opacity-60 border-none"
-          aria-label="Close"
-        >
-          <HugeiconsIcon icon={Cancel01Icon} size={12} color="currentColor" />
-        </button>
+        {/* Right: image nav + visit + close */}
+        <div className="flex items-center gap-1.5 shrink-0">
+          {total > 1 && (
+            <>
+              <NavBtn onClick={prevImg} disabled={activeImage === 0} icon={ArrowLeft02Icon} label="Previous image" />
+              <span className="text-[10px] text-[var(--text-ghost)] tabular-nums w-[28px] text-center">
+                {activeImage + 1}/{total}
+              </span>
+              <NavBtn onClick={nextImg} disabled={activeImage === total - 1} icon={ArrowRight02Icon} label="Next image" />
+            </>
+          )}
+          {project.url && (
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonVariants({ variant: 'accent', size: 'sm' })}
+              style={{
+                backgroundColor: '#00bbff',
+                color: '#000',
+                borderColor: 'rgba(0,187,255,0.4)',
+                boxShadow: '0 2px 8px rgba(0,187,255,0.3)',
+                textDecoration: 'none',
+                flexShrink: 0,
+                gap: '5px',
+                marginLeft: '4px',
+              }}
+            >
+              Visit
+              <HugeiconsIcon icon={LinkSquare02Icon} size={10} color="currentColor" />
+            </a>
+          )}
+          <button
+            onClick={onClose}
+            className="w-6 h-6 rounded-md bg-[var(--muted-bg)] text-[var(--text-muted)] cursor-pointer flex items-center justify-center transition-opacity duration-150 hover:opacity-60 border-none ml-1"
+            aria-label="Close"
+          >
+            <HugeiconsIcon icon={Cancel01Icon} size={11} color="currentColor" />
+          </button>
+        </div>
       </div>
 
-      {/* Image carousel */}
+      {/* Image carousel — no overlaid buttons, just dots */}
       {total > 0 && (
         <div
           className="relative mx-5 rounded-xl overflow-hidden shrink-0 bg-[var(--muted-bg)] select-none"
@@ -239,74 +287,32 @@ function ProjectDetail({
               transition={{ duration: 0.15 }}
             />
           </AnimatePresence>
-
-          {/* Prev / Next buttons */}
           {total > 1 && (
-            <>
-              <button
-                onClick={prev}
-                disabled={activeImage === 0}
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg bg-black/40 backdrop-blur-sm flex items-center justify-center border-none cursor-pointer transition-opacity duration-150 disabled:opacity-20"
-                aria-label="Previous image"
-              >
-                <HugeiconsIcon icon={ArrowLeft01Icon} size={13} color="#fff" />
-              </button>
-              <button
-                onClick={next}
-                disabled={activeImage === total - 1}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg bg-black/40 backdrop-blur-sm flex items-center justify-center border-none cursor-pointer transition-opacity duration-150 disabled:opacity-20"
-                aria-label="Next image"
-              >
-                <HugeiconsIcon icon={ArrowRight02Icon} size={13} color="#fff" />
-              </button>
-
-              {/* Dot indicators */}
-              <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-[5px] items-center">
-                {project.images.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveImage(i)}
-                    className="h-[5px] rounded-full border-none cursor-pointer p-0 transition-all duration-200"
-                    style={{
-                      width: i === activeImage ? '14px' : '5px',
-                      background: i === activeImage ? '#fff' : 'rgba(255,255,255,0.4)',
-                    }}
-                    aria-label={`Image ${i + 1}`}
-                  />
-                ))}
-              </div>
-            </>
+            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-[5px] items-center">
+              {project.images.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImage(i)}
+                  className="h-[5px] rounded-full border-none cursor-pointer p-0 transition-all duration-200"
+                  style={{
+                    width: i === activeImage ? '14px' : '5px',
+                    background: i === activeImage ? '#fff' : 'rgba(255,255,255,0.4)',
+                  }}
+                  aria-label={`Image ${i + 1}`}
+                />
+              ))}
+            </div>
           )}
         </div>
       )}
 
       {/* Content */}
       <div className="px-6 py-5 flex flex-col gap-5">
-        {/* Title + visit */}
-        <div className="flex items-start justify-between gap-3">
+        {/* Title */}
+        <div>
           <h2 className="text-[22px] font-semibold tracking-[-0.03em] text-[var(--text-primary)] leading-[1.2]">
             {project.name}
           </h2>
-          {project.url && (
-            <a
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={buttonVariants({ variant: 'accent', size: 'sm' })}
-              style={{
-                backgroundColor: '#00bbff',
-                color: '#000',
-                borderColor: 'rgba(0,187,255,0.4)',
-                boxShadow: '0 2px 8px rgba(0,187,255,0.3)',
-                textDecoration: 'none',
-                flexShrink: 0,
-                gap: '5px',
-              }}
-            >
-              Visit
-              <HugeiconsIcon icon={LinkSquare02Icon} size={10} color="currentColor" />
-            </a>
-          )}
         </div>
 
         {/* Description */}
@@ -411,6 +417,10 @@ export default function FreelanceWork() {
     setSelected((prev) => (prev?.name === project.name ? null : project));
   };
 
+  const selectedIdx = selected ? pastWork.findIndex(p => p.name === selected.name) : -1;
+  const handlePrevProject = () => { if (selectedIdx > 0) setSelected(pastWork[selectedIdx - 1]); };
+  const handleNextProject = () => { if (selectedIdx < pastWork.length - 1) setSelected(pastWork[selectedIdx + 1]); };
+
   return (
     <>
       {/* Project list — always full width of its container */}
@@ -422,7 +432,7 @@ export default function FreelanceWork() {
               key={work.name}
               type="button"
               onClick={() => handleSelect(work)}
-              className="flex items-center justify-between py-[10px] px-[6px] -mx-[6px] rounded-[4px] transition-[background] duration-150 cursor-pointer w-[calc(100%+12px)] bg-transparent border-none [border-block-end:1px_solid_var(--border)] text-left font-[inherit] hover:bg-[var(--muted-bg)]"
+              className="flex items-center justify-between py-[10px] px-[6px] -mx-[6px] transition-[background] duration-150 cursor-pointer w-[calc(100%+12px)] bg-transparent border-none [border-block-end:1px_solid_var(--border)] text-left font-[inherit] hover:bg-[var(--muted-bg)]"
               style={{ background: isActive ? 'var(--muted-bg)' : undefined }}
             >
               <div className="flex items-center gap-3 min-w-0">
@@ -471,7 +481,14 @@ export default function FreelanceWork() {
               exit={{ x: PANEL_WIDTH }}
               transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
             >
-              <ProjectDetail project={selected} onClose={() => setSelected(null)} />
+              <ProjectDetail
+                project={selected}
+                onClose={() => setSelected(null)}
+                onPrev={handlePrevProject}
+                onNext={handleNextProject}
+                hasPrev={selectedIdx > 0}
+                hasNext={selectedIdx < pastWork.length - 1}
+              />
             </motion.div>
           )}
         </AnimatePresence>,

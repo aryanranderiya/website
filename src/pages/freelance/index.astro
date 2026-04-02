@@ -49,7 +49,7 @@ const services = [
 
       <!-- Notice -->
       <div class="inline-flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--muted-bg)] max-w-[28rem]">
-        <HugeiconsIcon icon={InformationCircleIcon} size={13} color="var(--text-ghost)" className="shrink-0 mt-px" />
+        <HugeiconsIcon icon={InformationCircleIcon} size={13} color="var(--text-ghost)" className="shrink-0 mt-px opacity-50" />
         <p class="text-[12px] text-[var(--text-muted)] leading-relaxed">
           I'm not actively taking freelance work right now — fully focused on building my startup.
           This page documents past client work.
@@ -69,7 +69,7 @@ const services = [
       <div class="grid grid-cols-2 gap-3">
         {services.map((service) => (
           <div class="p-4 rounded-xl bg-[var(--muted-bg)] flex flex-col gap-2">
-            <HugeiconsIcon icon={service.icon} size={16} color="var(--text-ghost)" />
+            <HugeiconsIcon icon={service.icon} size={16} color="var(--text-ghost)" className="opacity-40" />
             <div class="text-[13px] font-semibold text-[var(--text-primary)]">
               {service.title}
             </div>
