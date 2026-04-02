@@ -75,7 +75,11 @@ export default function Hero() {
           marginBottom: 28,
         }}
       >
-        Born in England, based in India. CS graduate and design engineer who loves building things end-to-end — from the idea to the interface. I care about craft: clean code, considered design, and products that feel good to use.
+        Born in{' '}
+        <img src="https://em-content.zobj.net/source/apple/118/flag-for-united-kingdom_1f1ec-1f1e7.png" alt="UK" style={{ display: 'inline', verticalAlign: 'middle', width: 'auto', height: '1em', marginBottom: 1 }} />{' '}
+        England, based in{' '}
+        <img src="https://em-content.zobj.net/source/apple/118/flag-for-india_1f1ee-1f1f3.png" alt="India" style={{ display: 'inline', verticalAlign: 'middle', width: 'auto', height: '1em', marginBottom: 1 }} />{' '}
+        India. CS graduate and design engineer who loves building things end-to-end — from the idea to the interface. I care about craft: clean code, considered design, and products that feel good to use.
       </motion.p>
 
       {/* Links */}
@@ -86,7 +90,7 @@ export default function Hero() {
       >
         {[
           { label: 'Work', href: '/projects' },
-          { label: 'Writing', href: '/blog' },
+          { label: 'Blog', href: '/blog' },
         ].map(({ label, href }) => (
           <a
             key={href}
@@ -107,7 +111,7 @@ export default function Hero() {
             onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(0.96)')}
             onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(1)')}
           >
-            → {label}
+            {label} →
           </a>
         ))}
       </motion.div>

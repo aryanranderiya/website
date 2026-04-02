@@ -22,17 +22,17 @@ const FEATURED: Project[] = [
   },
   {
     title: 'TicketBus',
-    description: 'Mobile app for real-time public transit ticketing and route tracking across Gujarat.',
-    tags: ['React Native', 'Node.js', 'Maps'],
+    description: 'Public transportation app with QR-based ticketing, bus passes, e-wallets, and a comprehensive map module. Won 1st place in college Project Fair.',
+    tags: ['Java', 'Android', 'Firebase'],
     href: '/projects',
-    year: '2024',
+    year: '2023',
   },
   {
     title: 'Blink Analytics',
     description: 'Analytics dashboard for client reporting — real-time metrics, custom charts, and data export.',
-    tags: ['React', 'TypeScript', 'FastAPI'],
+    tags: ['React', 'TypeScript', 'TailwindCSS'],
     href: '/projects',
-    year: '2023',
+    year: '2025',
   },
 ];
 
@@ -57,8 +57,8 @@ export default function FeaturedProjects() {
             style={{
               display: 'block',
               textDecoration: 'none',
-              background: 'var(--muted-bg)',
-              borderRadius: 10,
+              background: 'color-mix(in srgb, var(--muted-bg) 70%, transparent)',
+              borderRadius: 14,
               padding: '14px 16px',
               transition: 'filter 150ms ease',
             }}

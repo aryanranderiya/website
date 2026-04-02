@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useState } from 'react';
 
 interface Post {
   slug: string;
@@ -24,10 +25,11 @@ function formatDate(date: string | Date): string {
 
 export default function BlogPreview({ posts }: BlogPreviewProps) {
   const latest = posts.slice(0, 3);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <section style={{ paddingBottom: 24 }}>
-      <div className="section-header">Writing</div>
+    <section style={{ paddingBottom: 24, marginBottom: 32 }}>
+      <div className="section-header" style={{ marginBottom: 10 }}>Blog</div>
 
       <div>
         {latest.map((post, i) => (
@@ -38,9 +40,11 @@ export default function BlogPreview({ posts }: BlogPreviewProps) {
             whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.4, ease: EASE, delay: i * 0.05 }}
+            onMouseEnter={() => setHoveredIndex(i)}
+            onMouseLeave={() => setHoveredIndex(null)}
             style={{
               display: 'flex',
-              alignItems: 'baseline',
+              alignItems: 'center',
               gap: 14,
               padding: '10px 0',
               borderBottom: i < latest.length - 1 ? '1px solid var(--border)' : 'none',
@@ -62,14 +66,31 @@ export default function BlogPreview({ posts }: BlogPreviewProps) {
               style={{
                 fontSize: 13,
                 fontWeight: 500,
-                color: 'var(--text-secondary)',
+                color: hoveredIndex === i ? 'var(--text-primary)' : 'var(--text-secondary)',
                 lineHeight: 1.5,
                 transition: 'color 150ms ease',
+                flex: 1,
               }}
-              onMouseEnter={e => ((e.currentTarget as HTMLSpanElement).style.color = 'var(--text-primary)')}
-              onMouseLeave={e => ((e.currentTarget as HTMLSpanElement).style.color = 'var(--text-secondary)')}
             >
               {post.data.title}
+            </span>
+            <span
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: '50%',
+                border: '1px solid var(--border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: 11,
+                color: 'var(--text-ghost)',
+                flexShrink: 0,
+                opacity: hoveredIndex === i ? 1 : 0,
+                transition: 'opacity 150ms ease',
+              }}
+            >
+              →
             </span>
           </motion.a>
         ))}

@@ -4,6 +4,7 @@ import { SITE, SEO } from '@/constants/site';
 import '@/styles/global.css';
 import CommandK from '@/components/layout/CommandK';
 import AgentationOverlay from '@/components/layout/AgentationOverlay';
+import BlurStack from '@/components/ui/blur-stack';
 
 interface Props {
   title?: string;
@@ -94,6 +95,7 @@ const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro
     <div id="main-content" transition:animate="fade" class:list={['min-h-screen flex flex-col', className]}>
       <slot />
     </div>
+    <BlurStack client:only="react" className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none" />
     <CommandK client:only="react" />
     <AgentationOverlay client:only="react" />
   </body>

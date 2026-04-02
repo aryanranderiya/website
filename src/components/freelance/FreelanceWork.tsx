@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Dialog from '@radix-ui/react-dialog';
 import { buttonVariants } from '@/components/ui/raised-button';
-import { HugeiconsIcon, Cancel01Icon, LinkSquare02Icon, ArrowRight01Icon } from '@icons';
+import { HugeiconsIcon, Cancel01Icon, LinkSquare02Icon, ArrowRight02Icon } from '@icons';
 
 interface FreelanceProject {
   name: string;
@@ -39,7 +39,7 @@ const pastWork: FreelanceProject[] = [
     tech: ['React', 'TypeScript', 'TailwindCSS'],
     url: 'https://blinkanalytics.in',
     description:
-      'A comprehensive analytics dashboard for real-time client reporting with custom charts, metrics, and data export.',
+      'Official website and analytics dashboard for Blink Analytics, a generative AI and data analytics company. Real-time client reporting with custom charts, metrics, and data export.',
     images: [
       'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/1.png',
       'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/2.webp',
@@ -58,7 +58,7 @@ const pastWork: FreelanceProject[] = [
     tech: ['Next.js', 'TypeScript', 'TailwindCSS'],
     url: 'https://mwi.gg',
     description:
-      'Brand identity and web platform for a fitness and wellness company.',
+      'Brand identity and web platform for Move With Intention (MWI), a fitness and wellness company. Modern, clean aesthetic with performant Next.js architecture.',
     images: Array.from({ length: 14 }, (_, i) =>
       `https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/MWI/${i + 1}.webp`
     ),
@@ -69,10 +69,15 @@ const pastWork: FreelanceProject[] = [
     tech: ['React', 'Node.js', 'MongoDB'],
     url: 'https://encodepdeu.vercel.app',
     description:
-      'Full-stack platform for the Computer Science club at PDEU, featuring event management, member profiles, and resource sharing.',
-    images: Array.from({ length: 5 }, (_, i) =>
-      `https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/${i + 1}.webp`
-    ),
+      'The official website of Encode — the Computer Science Club at PDEU. Led the web dev core committee and built the site with event management, member profiles, and resource sharing.',
+    images: [
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/encode.png',
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/1.webp',
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/2.webp',
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/3.webp',
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/4.webp',
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/5.webp',
+    ],
   },
   {
     name: 'Rezrek',
@@ -97,9 +102,14 @@ const pastWork: FreelanceProject[] = [
     tech: ['React', 'Node.js', 'MongoDB', 'Express'],
     url: 'https://lyfelane.com',
     description:
-      'Personalized greeting cards platform with AI templates and Canva-like design interface.',
+      'Create personalized greeting cards, send them via email, and receive responses. Uses AI for card templates with an easy, Canva-like design interface.',
     images: [
       'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/2024-11-22_22-18.png',
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/1.webp',
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/2.webp',
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/3.webp',
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/4.webp',
+      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/5.webp',
     ],
   },
   {
@@ -570,7 +580,7 @@ export default function FreelanceWork() {
                   {tag}
                 </span>
               ))}
-              <HugeiconsIcon icon={ArrowRight01Icon} size={11} color="var(--text-ghost)" style={{ flexShrink: 0, marginLeft: '2px' }} />
+              <HugeiconsIcon icon={ArrowRight02Icon} size={11} color="var(--text-ghost)" style={{ flexShrink: 0, marginLeft: '2px' }} />
             </div>
           </button>
         ))}

@@ -8,6 +8,7 @@ export interface Experience {
   description: string;
   highlights: string[];
   logo?: string;       // clearbit URL or manual
+  logoInvert?: boolean; // true if logo is white/black and needs invert in light mode
   website?: string;
   skills: string[];
   featured?: boolean;  // show on home page
@@ -28,7 +29,8 @@ export const experience: Experience[] = [
       'Selected for buildspace nights & weekends S5',
       'Designed the full product experience from 0 → 1',
     ],
-    logo: 'https://www.google.com/s2/favicons?domain=heygaia.io&sz=128',
+    logo: 'https://experience.heygaia.io/logo.svg',
+    logoInvert: true,
     website: 'https://heygaia.io',
     skills: ['React Native', 'TypeScript', 'Python', 'FastAPI', 'OpenAI'],
     featured: true,

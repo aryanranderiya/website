@@ -228,35 +228,33 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
         justifyContent: 'center',
       }}
     >
-      {/* Backdrop layer — backdrop-filter is set as a static style (never animated)
-          because animating backdropFilter is poorly supported and breaks blur in
-          most browsers. Only opacity is animated. */}
+      {/* Backdrop — opacity animates, blur is static for browser compat */}
       <motion.div
         variants={{
           hidden: { opacity: 0 },
           visible: { opacity: 1 },
         }}
-        transition={{ duration: 0.12 }}
+        transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
         style={{
           position: 'absolute',
           inset: 0,
-          backdropFilter: 'blur(40px)',
-          WebkitBackdropFilter: 'blur(40px)',
-          backgroundColor: 'rgba(0,0,0,0.35)',
+          backdropFilter: 'blur(20px) saturate(1.1)',
+          WebkitBackdropFilter: 'blur(20px) saturate(1.1)',
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
         }}
       />
       {/* Image */}
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="popLayout">
         <motion.img
           key={src}
           src={src}
           alt={alt}
-          initial={{ scale: 0.95, opacity: 0 }}
+          initial={{ scale: 0.92, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.97, opacity: 0 }}
+          exit={{ scale: 0.95, opacity: 0 }}
           transition={{
-            default: { duration: 0.25, ease: [0.19, 1, 0.22, 1] },
-            exit: { duration: 0.12, ease: 'easeIn' },
+            default: { duration: 0.2, ease: [0.32, 0.72, 0, 1] },
+            exit: { duration: 0.15, ease: [0.32, 0, 0.67, 0] },
           }}
           onClick={e => e.stopPropagation()}
           style={{
@@ -265,7 +263,7 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
             maxWidth: '90vw',
             objectFit: 'contain',
             display: 'block',
-            borderRadius: 4,
+            borderRadius: 6,
             pointerEvents: 'auto',
           }}
           draggable={false}

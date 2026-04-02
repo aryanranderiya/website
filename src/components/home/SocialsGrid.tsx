@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import useSWR from "swr";
 import {
   HugeiconsIcon,
@@ -337,60 +338,60 @@ function MonkeytypePreview() {
 
   return (
     <div
-      className="bg-[#323437] border border-[#2c2e31] rounded-xl p-4 w-[300px] shadow-2xl text-[#d1d0c5]"
+      className="bg-[#323437] border border-[#2c2e31] rounded-xl p-4 w-[360px] shadow-2xl text-[#d1d0c5]"
       style={{ fontFamily: '"Roboto Mono", "Courier New", monospace' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <HugeiconsIcon icon={KeyboardIcon} size={16} />
+        <div className="flex items-center gap-2.5">
+          <HugeiconsIcon icon={KeyboardIcon} size={20} />
           <div>
-            <div className="text-[13px] font-bold text-[#e2b714] tracking-tight leading-none">monkeytype</div>
-            <div className="text-[10px] text-[#646669] mt-0.5">aryanranderiya</div>
+            <div className="text-[17px] font-bold text-[#e2b714] tracking-tight leading-none">monkeytype</div>
+            <div className="text-[13px] text-[#646669] mt-1">aryanranderiya</div>
           </div>
         </div>
         {!isLoading && data?.streak != null && (
           <div className="text-right">
-            <div className="text-sm font-bold text-[#e2b714]">{data.streak}d</div>
-            <div className="text-[10px] text-[#646669]">streak</div>
+            <div className="text-2xl font-bold text-[#e2b714]">{data.streak}d</div>
+            <div className="text-[12px] text-[#646669]">streak</div>
           </div>
         )}
       </div>
 
       {/* PB table */}
-      <div className="border-t border-[#2c2e31] pt-2.5 mb-3">
-        <div className="grid grid-cols-4 gap-1 mb-1.5">
+      <div className="border-t border-[#2c2e31] pt-2 mb-3">
+        <div className="grid grid-cols-4 gap-2 mb-1">
           {['mode', 'wpm', 'raw', 'acc'].map(h => (
-            <div key={h} className="text-[9px] text-[#646669] uppercase tracking-wider text-center first:text-left">{h}</div>
+            <div key={h} className="text-[12px] text-[#646669] uppercase tracking-wider text-center first:text-left">{h}</div>
           ))}
         </div>
         {isLoading
           ? [0,1,2].map(i => (
-            <div key={i} className="grid grid-cols-4 gap-1 py-1">
-              {[0,1,2,3].map(j => <div key={j} className="text-[11px] text-[#646669] text-center first:text-left">···</div>)}
+            <div key={i} className="grid grid-cols-4 gap-2 py-2">
+              {[0,1,2,3].map(j => <div key={j} className="text-[14px] text-[#646669] text-center first:text-left">···</div>)}
             </div>
           ))
           : data?.modes.map(({ label, pb }) => (
-            <div key={label} className="grid grid-cols-4 gap-1 py-1 border-b border-[#2c2e31] last:border-0">
-              <div className="text-[11px] text-[#646669]">{label}</div>
-              <div className="text-[11px] text-[#e2b714] font-bold text-center">{pb ? Math.round(pb.wpm) : '—'}</div>
-              <div className="text-[11px] text-[#d1d0c5] text-center">{pb ? Math.round(pb.raw) : '—'}</div>
-              <div className="text-[11px] text-[#d1d0c5] text-center">{pb ? `${Math.round(pb.acc)}%` : '—'}</div>
+            <div key={label} className="grid grid-cols-4 gap-2 py-1.5 border-b border-[#2c2e31] last:border-0">
+              <div className="text-[14px] text-[#646669]">{label}</div>
+              <div className="text-[17px] text-[#e2b714] font-bold text-center">{pb ? Math.round(pb.wpm) : '—'}</div>
+              <div className="text-[14px] text-[#d1d0c5] text-center">{pb ? Math.round(pb.raw) : '—'}</div>
+              <div className="text-[14px] text-[#d1d0c5] text-center">{pb ? `${Math.round(pb.acc)}%` : '—'}</div>
             </div>
           ))
         }
       </div>
 
       {/* Footer stats */}
-      <div className="grid grid-cols-3 gap-2 pt-2.5 border-t border-[#2c2e31]">
+      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#2c2e31]">
         {[
           { label: 'tests', value: isLoading ? '···' : (data?.tests?.toLocaleString() ?? '—') },
           { label: 'time', value: isLoading ? '···' : (data?.timeTyping ? fmtTime(data.timeTyping) : '—') },
           { label: 'top rank', value: isLoading ? '···' : (data?.rank15 ? `#${data.rank15.toLocaleString()}` : '—') },
         ].map(s => (
           <div key={s.label} className="text-center">
-            <div className="text-[12px] font-bold text-[#d1d0c5] leading-tight">{s.value}</div>
-            <div className="text-[9px] text-[#646669] mt-0.5">{s.label}</div>
+            <div className="text-[17px] font-bold text-[#d1d0c5] leading-tight">{s.value}</div>
+            <div className="text-[12px] text-[#646669] mt-1">{s.label}</div>
           </div>
         ))}
       </div>
@@ -460,7 +461,6 @@ function PreviewCard({ visible, rect, children, onMouseEnter, onMouseLeave }: Pr
   const above = rect.top > window.innerHeight * 0.55;
   const anchorY = above ? rect.top : rect.bottom;
   const anchorX = rect.left + rect.width / 2;
-  const offset = visible ? 8 : 4;
 
   return (
     <div
@@ -470,10 +470,10 @@ function PreviewCard({ visible, rect, children, onMouseEnter, onMouseLeave }: Pr
       style={{
         top: anchorY,
         left: anchorX,
-        transform: `translateX(-50%) translateY(${above ? `calc(-100% - ${offset}px)` : `${offset}px`})`,
+        transform: `translateX(-50%) translateY(${above ? `calc(-100% - 8px)` : `8px`})`,
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? 'auto' : 'none',
-        transition: 'opacity 0.15s ease, transform 0.15s ease',
+        transition: visible ? 'opacity 0.15s ease' : 'none',
       }}
     >
       {children}
@@ -495,8 +495,15 @@ function SocialChip({ social }: { social: SocialItem }) {
     setHovered(true);
   }, []);
 
-  const hide = useCallback(() => {
-    leaveTimer.current = setTimeout(() => setHovered(false), 150);
+  // Small delay only when leaving anchor, to give time to reach the popover card
+  const hideFromAnchor = useCallback(() => {
+    leaveTimer.current = setTimeout(() => setHovered(false), 80);
+  }, []);
+
+  // Instant hide when leaving the popover card itself
+  const hideFromCard = useCallback(() => {
+    clearTimeout(leaveTimer.current);
+    setHovered(false);
   }, []);
 
   useEffect(() => () => clearTimeout(leaveTimer.current), []);
@@ -507,7 +514,7 @@ function SocialChip({ social }: { social: SocialItem }) {
         ref={anchorRef}
         className="inline-flex"
         onMouseEnter={show}
-        onMouseLeave={hide}
+        onMouseLeave={hideFromAnchor}
       >
         <a
           href={social.href}
@@ -528,10 +535,11 @@ function SocialChip({ social }: { social: SocialItem }) {
           {social.label}
         </a>
       </div>
-      {rect && (
-        <PreviewCard visible={hovered} rect={rect} onMouseEnter={show} onMouseLeave={hide}>
+      {rect && typeof document !== 'undefined' && createPortal(
+        <PreviewCard visible={hovered} rect={rect} onMouseEnter={show} onMouseLeave={hideFromCard}>
           {social.preview}
-        </PreviewCard>
+        </PreviewCard>,
+        document.body
       )}
     </>
   );

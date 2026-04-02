@@ -1,6 +1,13 @@
 ---
 import PageLayout from './PageLayout.astro';
+import TableOfContents from '@/components/blog/TableOfContents.astro';
 import { formatDate } from '@/lib/utils';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
 
 interface Props {
   title: string;
@@ -10,53 +17,95 @@ interface Props {
   tags?: string[];
   category?: string;
   cover?: string;
+  headings?: Heading[];
 }
 
-const { title, description, date, updated, tags = [], category, cover } = Astro.props;
+const { title, description, date, updated, tags = [], category, cover, headings = [] } = Astro.props;
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
-<PageLayout title={title} description={description}>
-  <article class="content-container" style="padding-bottom: 64px;">
-    <!-- Header -->
-    <header class="mb-12">
-      {category && (
-        <div class="text-label text-accent mb-4" style="color: var(--accent-blue)">
-          {category}
-        </div>
-      )}
-      <h1 class="text-heading-1 mb-4">{title}</h1>
-      <p class="text-body mb-6">{description}</p>
-      <div class="flex items-center gap-4 text-caption">
-        <time datetime={date.toISOString()}>{formatDate(date)}</time>
-        {updated && (
-          <>
-            <span>·</span>
-            <span>Updated {formatDate(updated)}</span>
-          </>
+<PageLayout title={title} description={description} fullWidth={true}>
+  <div class="blog-wrapper">
+    <article class="blog-content" style="padding-bottom: 64px;">
+      <!-- Header -->
+      <header class="mb-12">
+        {category && (
+          <div class="text-label text-accent mb-4" style="color: var(--accent-blue)">
+            {category}
+          </div>
         )}
-      </div>
-      {tags.length > 0 && (
-        <div class="flex flex-wrap gap-2 mt-4">
-          {tags.map(tag => (
-            <span class="text-xs px-2.5 py-1 rounded-full border" style="border-color: var(--border); color: var(--muted-foreground);">
-              {tag}
-            </span>
-          ))}
+        <h1 class="text-heading-1 mb-4">{title}</h1>
+        <p class="text-body mb-6">{description}</p>
+        <div class="flex items-center gap-4 text-caption">
+          <time datetime={date.toISOString()}>{formatDate(date)}</time>
+          {updated && (
+            <>
+              <span>·</span>
+              <span>Updated {formatDate(updated)}</span>
+            </>
+          )}
         </div>
-      )}
-      {cover && (
-        <img
-          src={cover}
-          alt={title}
-          class="w-full aspect-video object-cover rounded-xl mt-8"
-          style="border: 1px solid var(--border);"
-        />
-      )}
-    </header>
+        {tags.length > 0 && (
+          <div class="flex flex-wrap gap-2 mt-4">
+            {tags.map(tag => (
+              <span class="text-xs px-2.5 py-1 rounded-full border" style="border-color: var(--border); color: var(--muted-foreground);">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+        {cover && (
+          <img
+            src={cover}
+            alt={title}
+            class="w-full aspect-video object-cover rounded-xl mt-8"
+            style="border: 1px solid var(--border);"
+          />
+        )}
+      </header>
 
-    <!-- Content -->
-    <div class="prose">
-      <slot />
-    </div>
-  </article>
+      <!-- Content -->
+      <div class="prose">
+        <slot />
+      </div>
+    </article>
+
+    {tocHeadings.length > 1 && (
+      <aside class="blog-toc-aside">
+        <TableOfContents headings={headings} />
+      </aside>
+    )}
+  </div>
 </PageLayout>
+
+<style>
+  .blog-wrapper {
+    display: flex;
+    /* Align left edge with page-container so sidebar isn't encroached;
+       TOC extends to the right naturally instead of centering the wider box */
+    margin-left: max(0px, calc((100% - var(--prose-max-width)) / 2));
+    padding: 0 var(--page-inset);
+    gap: 56px;
+    align-items: flex-start;
+  }
+
+  .blog-content {
+    flex: 1;
+    min-width: 0;
+    max-width: var(--prose-max-width);
+  }
+
+  .blog-toc-aside {
+    display: none;
+    width: 176px;
+    flex-shrink: 0;
+    position: sticky;
+    top: calc(var(--section-padding-top) + 24px);
+  }
+
+  @media (min-width: 1080px) {
+    .blog-toc-aside {
+      display: block;
+    }
+  }
+</style>

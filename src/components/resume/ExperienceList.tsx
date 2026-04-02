@@ -14,7 +14,7 @@ const EMPLOYMENT_LABELS: Record<Experience['employmentType'], string> = {
   contract: 'Contract',
 };
 
-function LogoAvatar({ company, logo, size = 28 }: { company: string; logo?: string; size?: number }) {
+function LogoAvatar({ company, logo, logoInvert, size = 28 }: { company: string; logo?: string; logoInvert?: boolean; size?: number }) {
   const [imgError, setImgError] = useState(false);
 
   if (logo && !imgError) {
@@ -25,6 +25,7 @@ function LogoAvatar({ company, logo, size = 28 }: { company: string; logo?: stri
         width={size}
         height={size}
         onError={() => setImgError(true)}
+        className={logoInvert ? 'exp-logo-invert' : undefined}
         style={{ borderRadius: 6, objectFit: 'contain', flexShrink: 0 }}
       />
     );
@@ -74,7 +75,7 @@ function ExperienceItem({ exp, isLast, compact = false }: { exp: Experience; isL
     >
       {/* Logo */}
       <div style={{ paddingTop: 1, flexShrink: 0 }}>
-        <LogoAvatar company={exp.company} logo={exp.logo} size={28} />
+        <LogoAvatar company={exp.company} logo={exp.logo} logoInvert={exp.logoInvert} size={28} />
       </div>
 
       {/* Content */}
@@ -251,7 +252,16 @@ export default function ExperienceList({ featuredOnly = false, compact = false }
 
   return (
     <section style={{ paddingBottom: 48 }}>
-      {featuredOnly && <div className="section-header">Experience</div>}
+      {featuredOnly && (
+        <motion.div
+          initial={{ opacity: 0, y: 6, filter: 'blur(4px)' }}
+          whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+        >
+          <div className="section-header">Experience</div>
+        </motion.div>
+      )}
 
       <motion.div
         variants={containerVariants}
@@ -288,6 +298,10 @@ export default function ExperienceList({ featuredOnly = false, compact = false }
           </a>
         </div>
       )}
+      <style>{`
+        .exp-logo-invert { filter: invert(1); }
+        .dark .exp-logo-invert { filter: invert(0); }
+      `}</style>
     </section>
   );
 }

@@ -1,6 +1,6 @@
 ---
 title: Encode
-description: The official website of Encode — the Computer Science Club at PDEU, built with a full MERN stack.
+description: The official website of Encode — the Computer Science Club at PDEU. Full MERN stack with event management, member profiles, and resource sharing.
 date: 2024-08-01
 tags: [React, Node.js, MongoDB]
 tech: [React, Node.js, Express, MongoDB, TailwindCSS, JavaScript]
@@ -21,4 +21,4 @@ url: https://encodepdeu.vercel.app
 github: https://github.com/aryanranderiya/EncodeWebsite2024Fork
 ---
 
-The Official Website of Encode — The Computer Science Club at PDEU. Led the web dev core committee team of Encode 2024 and worked on the homepage alongside Nemil Shah.
+The official website of Encode — the Computer Science Club at Pandit Deendayal Energy University. Led the web dev core committee team of Encode 2024 and built the site featuring event management, member profiles, and resource sharing. Worked on the homepage alongside Nemil Shah.

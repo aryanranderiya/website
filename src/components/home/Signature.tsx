@@ -188,7 +188,7 @@ export default function Signature() {
 
   return (
     <section
-      style={{ paddingBottom: 16 }}
+      style={{ paddingBottom: 16, marginTop: 32 }}
     >
       <div
         ref={containerRef}

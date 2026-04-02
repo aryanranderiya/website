@@ -3,27 +3,34 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- icons used in JSX
-import { HugeiconsIcon, Sun01Icon, Moon02Icon, GithubIcon, Menu01Icon, Cancel01Icon } from '@icons';
+import {
+  HugeiconsIcon,
+  Sun01Icon, Moon02Icon, Menu01Icon, Cancel01Icon,
+  Home12Icon, CodeFolderIcon, BrushIcon, QuillWrite02Icon,
+  NoteIcon, Briefcase01Icon, Books02Icon, Film01Icon, Image01Icon,
+} from '@icons';
+import type { ComponentType } from 'react';
+import type { IconProps } from '@theexperiencecompany/gaia-icons';
 import { PAGES } from '@/constants/navigation';
 
-const NAV_GROUPS = [
+const NAV_GROUPS: { label: string | null; items: { href: string; label: string; icon: ComponentType<IconProps> }[] }[] = [
   {
     label: null,
     items: [
-      { href: '/',         label: 'Home' },
-      { href: '/projects', label: 'Projects' },
-      { href: '/graphic-design', label: 'Design' },
-      { href: '/blog',     label: 'Writing' },
-      { href: '/resume',   label: 'Resume' },
-      { href: '/freelance', label: 'Freelance' },
+      { href: '/',              label: 'Home',      icon: Home12Icon },
+      { href: '/projects',      label: 'Projects',  icon: CodeFolderIcon },
+      { href: '/graphic-design',label: 'Design',    icon: BrushIcon },
+      { href: '/blog',          label: 'Blog',      icon: QuillWrite02Icon },
+      { href: '/resume',        label: 'Resume',    icon: NoteIcon },
+      { href: '/freelance',     label: 'Freelance', icon: Briefcase01Icon },
     ],
   },
   {
     label: 'Extra',
     items: [
-      { href: '/books',       label: 'Books' },
-      { href: '/movies',      label: 'Movies' },
-      { href: '/camera-roll', label: 'Photos' },
+      { href: '/books',        label: 'Books',   icon: Books02Icon },
+      { href: '/movies',       label: 'Movies',  icon: Film01Icon },
+      { href: '/camera-roll',  label: 'Gallery', icon: Image01Icon },
     ],
   },
 ];
@@ -33,6 +40,7 @@ export default function Sidebar() {
   const [pathname, setPathname] = useState('/');
   const [isDark, setIsDark] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
   useEffect(() => {
     setPathname(window.location.pathname);
@@ -70,14 +78,18 @@ export default function Sidebar() {
     return pathname.startsWith(href);
   };
 
+  const anyActive = NAV_GROUPS.flatMap(g => g.items).some(item => isActive(item.href));
+
   const linkStyle = (href: string, secondary?: boolean): React.CSSProperties => ({
     fontSize: secondary ? '11px' : '12px',
     fontVariationSettings: isActive(href) ? '"wght" 580' : '"wght" 450',
     color: isActive(href)
       ? isDark ? 'rgba(255,255,255,0.88)' : 'rgba(0,0,0,0.85)'
       : secondary
-        ? isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.38)'
-        : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
+        ? isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.28)'
+        : anyActive
+          ? isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.38)'
+          : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
     textDecoration: 'none',
     display: 'block',
     padding: '2px 0',
@@ -89,7 +101,7 @@ export default function Sidebar() {
   const sectionLabelStyle: React.CSSProperties = {
     fontSize: '10px',
     fontVariationSettings: '"wght" 500',
-    color: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.38)',
+    color: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.25)',
     textTransform: 'uppercase',
     letterSpacing: '0.07em',
     marginTop: '16px',
@@ -113,14 +125,11 @@ export default function Sidebar() {
   return (
     <>
       {/* ── Desktop sidebar ── */}
-      <motion.nav
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+      <nav
         style={{
           position: 'fixed',
           top: '60px',
-          bottom: '24px',
+          bottom: '128px',
           left: 'calc(50% - 320px - 120px - 32px)',
           width: '100px',
           display: 'flex',
@@ -135,138 +144,195 @@ export default function Sidebar() {
         }}
         className="hidden-mobile"
       >
+
         {/* Profile photo */}
         <div style={{ marginBottom: 16 }}>
-          <img
-            src="/avatar.webp"
-            alt="Aryan Randeriya"
-            width={32}
-            height={32}
-            style={{
-              borderRadius: '50%',
-              display: 'block',
-              opacity: 0.9,
-            }}
-          />
+          <a href="/">
+            <img
+              src="/avatar.webp"
+              alt="Aryan Randeriya"
+              width={32}
+              height={32}
+              style={{
+                borderRadius: '50%',
+                display: 'block',
+                opacity: 0.9,
+              }}
+            />
+          </a>
         </div>
 
         {/* Nav groups */}
         {NAV_GROUPS.map((group, gi) => (
-          <motion.div
+          <div
             key={gi}
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.35, delay: gi * 0.05, ease: [0.19, 1, 0.22, 1] }}
             style={gi > 0 ? { marginTop: 16 } : undefined}
           >
             {group.label && (
               <div style={sectionLabelStyle}>{group.label}</div>
             )}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              {group.items.map((item, ii) => {
+              {group.items.map((item) => {
                 return (
-                <motion.a
+                <a
                   key={item.href}
                   href={item.href}
-                  style={linkStyle(item.href)}
-                  initial={{ opacity: 0, x: -4 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: (gi * 0.05) + (ii * 0.03), ease: [0.19, 1, 0.22, 1] }}
+                  style={{ ...linkStyle(item.href), display: 'flex', alignItems: 'center', gap: '6px' }}
                   onMouseEnter={e => {
                     if (!isActive(item.href)) {
                       (e.currentTarget as HTMLAnchorElement).style.color = isDark
-                        ? 'rgba(255,255,255,0.65)'
-                        : 'rgba(0,0,0,0.65)';
+                        ? 'rgba(255,255,255,0.60)'
+                        : 'rgba(0,0,0,0.58)';
                       (e.currentTarget as HTMLAnchorElement).style.fontVariationSettings = '"wght" 520';
                     }
                   }}
                   onMouseLeave={e => {
                     if (!isActive(item.href)) {
-                      (e.currentTarget as HTMLAnchorElement).style.color = isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)';
+                      (e.currentTarget as HTMLAnchorElement).style.color = isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.38)';
                       (e.currentTarget as HTMLAnchorElement).style.fontVariationSettings = '"wght" 450';
                     }
                   }}
                 >
+                  <HugeiconsIcon icon={item.icon} size={14} style={{ flexShrink: 0, opacity: 0.85 }} />
                   {item.label}
-                </motion.a>
+                </a>
                 );
               })}
             </div>
-          </motion.div>
+          </div>
         ))}
 
         {/* Bottom actions */}
         <div style={{ marginTop: 'auto', paddingTop: '24px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          {/* Made in Astro */}
+          {/* Built in Astro */}
           <a
             href="https://astro.build"
             target="_blank"
             rel="noopener noreferrer"
             style={{
               ...actionStyle,
-              marginBottom: 8,
-              gap: 5,
+              color: hoveredAction === 'astro'
+                ? isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
+                : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
             }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLAnchorElement).style.color = isDark
-                ? 'rgba(255,255,255,0.6)'
-                : 'rgba(0,0,0,0.6)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLAnchorElement).style.color = isDark
-                ? 'rgba(255,255,255,0.50)'
-                : 'rgba(0,0,0,0.50)';
-            }}
+            onMouseEnter={() => setHoveredAction('astro')}
+            onMouseLeave={() => setHoveredAction(null)}
           >
             <img
               src="https://www.google.com/s2/favicons?domain=astro.build&sz=32"
               width={13}
               height={13}
               alt="Astro"
-              style={{ borderRadius: 3, display: 'block' }}
+              style={{ borderRadius: 3 }}
             />
-            <span style={{ fontSize: '11px' }}>Astro</span>
+            <span style={{
+              fontSize: '11px',
+              whiteSpace: 'nowrap',
+              display: 'inline-block',
+              opacity: hoveredAction === 'astro' ? 1 : 0,
+              transform: hoveredAction === 'astro'
+                ? 'translateY(0) perspective(300px) rotateX(0deg)'
+                : 'translateY(5px) perspective(300px) rotateX(-40deg)',
+              transformOrigin: '50% 100%',
+              transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+            }}>Built in Astro</span>
           </a>
+          {/* Old portfolio */}
+          <a
+            href="https://aryanranderiya.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              ...actionStyle,
+              color: hoveredAction === 'old-portfolio'
+                ? isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
+                : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
+            }}
+            onMouseEnter={() => setHoveredAction('old-portfolio')}
+            onMouseLeave={() => setHoveredAction(null)}
+          >
+            <img
+              src="/old-portfolio-logo.webp"
+              width={13}
+              height={13}
+              alt="Old portfolio"
+              style={{ borderRadius: 2 }}
+            />
+            <span style={{
+              fontSize: '11px',
+              whiteSpace: 'nowrap',
+              display: 'inline-block',
+              opacity: hoveredAction === 'old-portfolio' ? 1 : 0,
+              transform: hoveredAction === 'old-portfolio'
+                ? 'translateY(0) perspective(300px) rotateX(0deg)'
+                : 'translateY(5px) perspective(300px) rotateX(-40deg)',
+              transformOrigin: '50% 100%',
+              textDecoration: hoveredAction === 'old-portfolio' ? 'underline' : 'none',
+              textDecorationStyle: 'dotted',
+              textUnderlineOffset: '3px',
+              transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+            }}>Old portfolio</span>
+          </a>
+          {/* Theme toggle */}
           <button
             onClick={toggleTheme}
-            style={actionStyle}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = isDark
-                ? 'rgba(255,255,255,0.6)'
-                : 'rgba(0,0,0,0.6)';
+            style={{
+              ...actionStyle,
+              color: hoveredAction === 'theme'
+                ? isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
+                : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
             }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = isDark
-                ? 'rgba(255,255,255,0.50)'
-                : 'rgba(0,0,0,0.50)';
-            }}
+            onMouseEnter={() => setHoveredAction('theme')}
+            onMouseLeave={() => setHoveredAction(null)}
             aria-label="Toggle theme"
           >
             <HugeiconsIcon icon={isDark ? Sun01Icon : Moon02Icon} size={13} />
+            <span style={{
+              fontSize: '11px',
+              whiteSpace: 'nowrap',
+              display: 'inline-block',
+              opacity: hoveredAction === 'theme' ? 1 : 0,
+              transform: hoveredAction === 'theme'
+                ? 'translateY(0) perspective(300px) rotateX(0deg)'
+                : 'translateY(5px) perspective(300px) rotateX(-40deg)',
+              transformOrigin: '50% 100%',
+              transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+            }}>{isDark ? 'Light' : 'Dark'}</span>
           </button>
+          {/* GitHub */}
           <a
             href="https://github.com/aryanranderiya"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="GitHub"
-            style={actionStyle as React.CSSProperties}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLAnchorElement).style.color = isDark
-                ? 'rgba(255,255,255,0.6)'
-                : 'rgba(0,0,0,0.6)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLAnchorElement).style.color = isDark
-                ? 'rgba(255,255,255,0.50)'
-                : 'rgba(0,0,0,0.50)';
-            }}
+            style={{
+              ...actionStyle,
+              color: hoveredAction === 'github'
+                ? isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
+                : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
+            } as React.CSSProperties}
+            onMouseEnter={() => setHoveredAction('github')}
+            onMouseLeave={() => setHoveredAction(null)}
           >
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
             </svg>
+            <span style={{
+              fontSize: '11px',
+              whiteSpace: 'nowrap',
+              display: 'inline-block',
+              opacity: hoveredAction === 'github' ? 1 : 0,
+              transform: hoveredAction === 'github'
+                ? 'translateY(0) perspective(300px) rotateX(0deg)'
+                : 'translateY(5px) perspective(300px) rotateX(-40deg)',
+              transformOrigin: '50% 100%',
+              textDecoration: hoveredAction === 'github' ? 'underline' : 'none',
+              textDecorationStyle: 'dotted',
+              textUnderlineOffset: '3px',
+              transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+            }}>GitHub</span>
           </a>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* ── Mobile top bar ── */}
       <div
@@ -365,12 +431,15 @@ export default function Sidebar() {
                       href={item.href}
                       style={{
                         ...linkStyle(item.href),
-                        display: 'block',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
                         padding: '7px 0',
                         fontSize: '14px',
                       }}
                       onClick={() => setMobileOpen(false)}
                     >
+                      <HugeiconsIcon icon={item.icon} size={16} style={{ flexShrink: 0, opacity: 0.85 }} />
                       {item.label}
                     </a>
                   );
