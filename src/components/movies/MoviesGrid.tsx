@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import MovieCard from './MovieCard';
 import MovieDetail from './MovieDetail';
 
@@ -21,6 +20,17 @@ interface Movie {
   dateWatched?: string;
 }
 
+function SectionHeader({ label, count }: { label: string; count: number }) {
+  return (
+    <div className="flex items-center gap-3 mb-7">
+      <span style={{ fontSize: '11px', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--muted-foreground)', opacity: 0.6, whiteSpace: 'nowrap' }}>
+        {label} — {count}
+      </span>
+      <div style={{ flex: 1, height: '1px', background: 'var(--border)' }} />
+    </div>
+  );
+}
+
 export default function MoviesGrid({ movies }: { movies: Movie[] }) {
   const [selected, setSelected] = useState<Movie | null>(null);
 
@@ -30,16 +40,9 @@ export default function MoviesGrid({ movies }: { movies: Movie[] }) {
   return (
     <div>
       {/* Watched */}
-      <section className="mb-16">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <div className="text-label mb-1" style={{ color: 'var(--muted-foreground)' }}>Seen</div>
-            <h2 className="text-heading-2">Watched</h2>
-          </div>
-          <span className="text-sm" style={{ color: 'var(--muted-foreground)' }}>{watched.length} films</span>
-        </div>
-
-        <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+      <section className="mb-14">
+        <SectionHeader label="Watched" count={watched.length} />
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
           {watched.map((movie, i) => (
             <MovieCard key={movie.slug} movie={movie} index={i} onClick={setSelected} />
           ))}
@@ -49,15 +52,8 @@ export default function MoviesGrid({ movies }: { movies: Movie[] }) {
       {/* Watchlist */}
       {watchlist.length > 0 && (
         <section>
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <div className="text-label mb-1" style={{ color: 'var(--muted-foreground)' }}>Queue</div>
-              <h2 className="text-heading-2">Watchlist</h2>
-            </div>
-            <span className="text-sm" style={{ color: 'var(--muted-foreground)' }}>{watchlist.length} films</span>
-          </div>
-
-          <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-4">
+          <SectionHeader label="Watchlist" count={watchlist.length} />
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
             {watchlist.map((movie, i) => (
               <MovieCard key={movie.slug} movie={movie} index={i} onClick={setSelected} />
             ))}

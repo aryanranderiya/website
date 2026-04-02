@@ -1,22 +1,30 @@
 ---
 title: LyfeLane
-description: Personalized greeting cards platform — create custom cards, send via email, and receive responses. AI-powered templates with a Canva-like design interface.
+description: Personalized greeting cards platform - create custom cards, send via email, and receive responses. AI-powered templates with a Canva-like design interface.
 date: 2024-11-01
 tags: [React, Node.js, MongoDB]
 tech: [React, Node.js, Express, MongoDB, JavaScript]
 featured: false
 type: web
 folder: Client
-coverImage: https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/2024-11-22_22-18.png
+coverImage: /ProjectMedia/LyfeLane/2024-11-22_22-18.png
 images:
-  - https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/1.webp
-  - https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/2.webp
-  - https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/3.webp
-  - https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/4.webp
-  - https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/5.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-18.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-19.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-19_1.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-20.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-22.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-23.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-23_1.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-24.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-24_1.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-24_2.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-24_3.png
 status: completed
 order: 32
 url: https://lyfelane.com
 ---
 
-LyfeLane is a personalized greeting cards platform. Create custom greeting cards, send them via email, and receive responses. Uses AI for generating card templates with an intuitive, Canva-like design interface that makes card creation accessible to everyone.
+LyfeLane is a greeting card platform where you design, personalize, and send cards digitally. The landing page showcases a collage of beautifully designed cards and walks you through a five-step process - pick a template, customize it in the editor, add your message and photos, preview, and send.
+
+The editor is built to feel like a lightweight Canva - drag, drop, resize, and tweak until it looks right. There's also AI-powered template generation so you can get started quickly. The backend is Node.js with Express and MongoDB, and the frontend is React. We focused on making card creation feel accessible, not like a design tool that requires a tutorial to use.

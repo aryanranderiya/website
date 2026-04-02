@@ -1,0 +1,257 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { getTechIconUrl } from '@/utils/techIcons';
+import { HugeiconsIcon, GithubIcon, LinkSquare02Icon } from '@icons';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const p = entry.data;
+
+const FOLDER_CHIP: Record<string, { color: string; label: string }> = {
+  Featured:  { color: '#f59e0b', label: 'Featured' },
+  Client:    { color: '#10b981', label: 'Freelance' },
+  Hackathon: { color: '#a78bfa', label: 'Hackathon' },
+};
+
+const chip = p.folder ? FOLDER_CHIP[p.folder] : undefined;
+const year = new Date(p.date).getFullYear();
+const allImages = p.images ?? [];
+const [heroImage, ...galleryImages] = allImages;
+---
+
+<PageLayout title={p.title} description={p.description} ogImage={heroImage}>
+
+  <!-- Breadcrumb -->
+  <nav style="display: flex; align-items: center; gap: 6px; margin-bottom: 32px;">
+    <a
+      href="/projects"
+      class="breadcrumb-back"
+      style="font-size: 12px; color: var(--text-ghost); text-decoration: none; transition: color 150ms ease;"
+    >
+      Projects
+    </a>
+    <span style="font-size: 12px; color: var(--text-ghost);">/</span>
+    <span style="font-size: 12px; color: var(--text-secondary); letter-spacing: -0.01em;">{p.title}</span>
+  </nav>
+
+  <!-- Header -->
+  <header style="margin-bottom: 36px;">
+    <!-- Badges row -->
+    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;">
+      {p.status === 'in-progress' && (
+        <span style="font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: rgba(0,187,255,0.1); color: #00bbff; font-weight: 500; letter-spacing: 0.02em;">
+          In Progress
+        </span>
+      )}
+      {p.status === 'archived' && (
+        <span style="font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: var(--muted-bg); color: var(--text-ghost); letter-spacing: 0.02em;">
+          Archived
+        </span>
+      )}
+      <span style="font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: var(--muted-bg); color: var(--text-muted); letter-spacing: 0.02em; text-transform: capitalize;">
+        {p.type}
+      </span>
+      {chip && (
+        <span style={`font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: var(--muted-bg); color: ${chip.color}; font-weight: 500; letter-spacing: 0.02em;`}>
+          {chip.label}
+        </span>
+      )}
+      <span style="font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: var(--muted-bg); color: var(--text-ghost); letter-spacing: 0.02em;">
+        {year}
+      </span>
+    </div>
+
+    <!-- Title + CTA row -->
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;">
+      <h1 style="font-size: 28px; font-weight: 600; letter-spacing: -0.04em; color: var(--text-primary); line-height: 1.15; margin: 0;">
+        {p.title}
+      </h1>
+      <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0; padding-top: 3px;">
+        {p.github && (
+          <a
+            href={p.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="icon-btn"
+            style="height: 32px; padding: 0 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; background: var(--muted-bg); color: var(--text-secondary); text-decoration: none; transition: opacity 150ms ease; flex-shrink: 0; font-size: 12px; font-weight: 500; letter-spacing: -0.01em;"
+          >
+            <HugeiconsIcon icon={GithubIcon} size={14} color="currentColor" />
+            View GitHub
+          </a>
+        )}
+        {p.url && (
+          <a
+            href={p.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="visit-btn"
+            style="display: inline-flex; align-items: center; gap: 5px; height: 32px; padding: 0 14px; border-radius: 8px; background: #00bbff; color: #000; font-size: 12px; font-weight: 500; text-decoration: none; transition: opacity 150ms ease; flex-shrink: 0; letter-spacing: -0.01em;"
+          >
+            Visit
+            <HugeiconsIcon icon={LinkSquare02Icon} size={11} color="currentColor" />
+          </a>
+        )}
+      </div>
+    </div>
+
+    <!-- Description -->
+    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.7; margin: 0; max-width: 560px;">
+      {p.description}
+    </p>
+  </header>
+
+  <!-- Tech stack + Tags -->
+  <section style="margin-bottom: 40px; display: flex; flex-direction: column; gap: 20px;">
+    {p.tech && p.tech.length > 0 && (
+      <div>
+        <div style="font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-ghost); margin-bottom: 10px;">
+          Tech Stack
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          {p.tech.map(t => {
+            const iconUrl = getTechIconUrl(t);
+            return (
+              <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11px; padding: 4px 10px; border-radius: 9999px; background: var(--muted-bg); color: var(--text-secondary);">
+                {iconUrl && (
+                  <img src={iconUrl} alt="" width="12" height="12" style="flex-shrink: 0; object-fit: contain;" />
+                )}
+                {t}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    {p.tags && p.tags.filter(tag => !p.tech?.includes(tag)).length > 0 && (
+      <div>
+        <div style="font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-ghost); margin-bottom: 10px;">
+          Tags
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          {p.tags.filter(tag => !p.tech?.includes(tag)).map(tag => (
+            <span style="font-size: 11px; padding: 3px 9px; border-radius: 9999px; background: var(--muted-bg); color: var(--text-muted);">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+
+  <!-- Body content (rendered markdown) -->
+  <div class="project-body" style="margin-bottom: 44px;">
+    <Content />
+  </div>
+
+  <!-- Images -->
+  {allImages.length > 0 && (
+    <section style="margin-bottom: 44px;">
+      <!-- Hero image -->
+      {heroImage && (
+        <div style="border-radius: 14px; overflow: hidden; background: var(--muted-bg); margin-bottom: 8px;">
+          <img
+            src={heroImage}
+            alt={p.title}
+            style="width: 100%; height: auto; display: block;"
+            loading="lazy"
+          />
+        </div>
+      )}
+
+      <!-- Gallery grid (remaining images) -->
+      {galleryImages.length === 1 && (
+        <div style="border-radius: 10px; overflow: hidden; background: var(--muted-bg);">
+          <img
+            src={galleryImages[0]}
+            alt={`${p.title} screenshot 2`}
+            style="width: 100%; height: auto; display: block;"
+            loading="lazy"
+          />
+        </div>
+      )}
+      {galleryImages.length >= 2 && (
+        <div class="gallery-grid">
+          {galleryImages.map((img, i) => (
+            <div style="border-radius: 10px; overflow: hidden; background: var(--muted-bg);">
+              <img
+                src={img}
+                alt={`${p.title} screenshot ${i + 2}`}
+                style="width: 100%; height: auto; display: block;"
+                loading="lazy"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  )}
+
+  <!-- Video (if present) -->
+  {p.video && (
+    <section style="margin-bottom: 44px;">
+      <div style="border-radius: 14px; overflow: hidden; background: var(--muted-bg); aspect-ratio: 16/9;">
+        <video
+          src={p.video}
+          controls
+          style="width: 100%; height: 100%; display: block; object-fit: cover;"
+        />
+      </div>
+    </section>
+  )}
+
+</PageLayout>
+
+<style>
+  .breadcrumb-back:hover {
+    color: var(--text-muted) !important;
+  }
+
+  .icon-btn:hover {
+    opacity: 0.65;
+  }
+
+  .visit-btn:hover {
+    opacity: 0.85;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .project-body {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    letter-spacing: -0.01em;
+  }
+
+  .project-body p {
+    margin-bottom: 1em;
+  }
+
+  .project-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 600px) {
+    .gallery-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

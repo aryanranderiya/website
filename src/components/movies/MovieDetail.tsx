@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import * as Dialog from '@radix-ui/react-dialog';
-import { HugeiconsIcon, Cancel01Icon } from '@icons';
+import { HugeiconsIcon, Cancel01Icon, StarIcon } from '@icons';
 
 interface Movie {
   slug: string;
@@ -20,6 +20,27 @@ interface Movie {
   dateWatched?: string;
 }
 
+function RatingDots({ rating, max = 10 }: { rating: number; max?: number }) {
+  const filled = Math.round((rating / max) * 5);
+  return (
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-0.5">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <HugeiconsIcon
+            key={i}
+            icon={StarIcon}
+            size={12}
+            color={i < filled ? 'rgba(255,255,255,0.85)' : 'rgba(255,255,255,0.2)'}
+          />
+        ))}
+      </div>
+      <span style={{ fontSize: '13px', fontWeight: 600, color: 'rgba(255,255,255,0.9)', letterSpacing: '-0.02em' }}>
+        {rating}/10
+      </span>
+    </div>
+  );
+}
+
 export default function MovieDetail({ movie, open, onClose }: { movie: Movie | null; open: boolean; onClose: () => void }) {
   if (!movie) return null;
 
@@ -31,91 +52,160 @@ export default function MovieDetail({ movie, open, onClose }: { movie: Movie | n
             <Dialog.Overlay asChild>
               <motion.div
                 className="fixed inset-0 z-50"
-                style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(6px)' }}
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)' }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 transition={{ duration: 0.2 }}
               />
             </Dialog.Overlay>
             <Dialog.Content asChild>
               <motion.div
-                className="fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border overflow-hidden"
-                style={{ background: 'var(--card)', borderColor: 'var(--border)', maxHeight: '85vh', overflowY: 'auto' }}
-                initial={{ opacity: 0, scale: 0.95, y: 12 }}
+                className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 overflow-hidden"
+                style={{
+                  background: 'var(--background)',
+                  borderRadius: '16px',
+                  maxHeight: '88vh',
+                  overflowY: 'auto',
+                }}
+                initial={{ opacity: 0, scale: 0.96, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 12 }}
-                transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+                exit={{ opacity: 0, scale: 0.96, y: 10 }}
+                transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1] }}
               >
                 <Dialog.Title className="sr-only">{movie.title}</Dialog.Title>
+
+                {/* Close button */}
                 <Dialog.Close asChild>
                   <button
-                    className="absolute top-4 right-4 z-10 w-8 h-8 rounded-lg flex items-center justify-center"
-                    style={{ background: 'var(--muted)', color: 'var(--muted-foreground)', border: 'none', cursor: 'pointer' }}
+                    className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center"
+                    style={{ background: 'rgba(0,0,0,0.35)', backdropFilter: 'blur(4px)', border: 'none', cursor: 'pointer' }}
                     aria-label="Close"
                   >
-                    <HugeiconsIcon icon={Cancel01Icon} size={14} color="currentColor" />
+                    <HugeiconsIcon icon={Cancel01Icon} size={12} color="rgba(255,255,255,0.8)" />
                   </button>
                 </Dialog.Close>
 
-                {/* Header with poster */}
-                <div className="flex gap-4 p-6 pb-4">
-                  <div className="w-24 rounded-xl overflow-hidden flex-shrink-0" style={{ aspectRatio: '2/3', background: 'var(--muted)' }}>
-                    {movie.cover && <img src={movie.cover} alt={movie.title} className="w-full h-full object-cover" />}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h2 className="text-xl font-bold mb-1" style={{ letterSpacing: '-0.02em', color: 'var(--foreground)' }}>
-                      {movie.title}
-                    </h2>
-                    <div className="text-sm mb-2" style={{ color: 'var(--muted-foreground)' }}>
-                      {movie.year}{movie.director && ` · ${movie.director}`}
+                {/* Hero header — blurred poster bg */}
+                <div className="relative overflow-hidden" style={{ height: '200px' }}>
+                  {/* Background blur */}
+                  {movie.cover && (
+                    <img
+                      src={movie.cover}
+                      alt=""
+                      aria-hidden="true"
+                      className="absolute inset-0 w-full h-full object-cover scale-110"
+                      style={{ filter: 'blur(24px) saturate(0.8) brightness(0.5)', transform: 'scale(1.2)' }}
+                    />
+                  )}
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background: movie.cover
+                        ? 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.75) 100%)'
+                        : 'var(--muted)',
+                    }}
+                  />
+
+                  {/* Poster + info row */}
+                  <div className="absolute inset-0 flex items-end p-5 gap-4">
+                    {/* Poster */}
+                    <div
+                      className="flex-shrink-0 overflow-hidden"
+                      style={{
+                        width: '72px',
+                        aspectRatio: '2/3',
+                        borderRadius: '8px',
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+                        background: 'rgba(0,0,0,0.3)',
+                      }}
+                    >
+                      {movie.cover && (
+                        <img src={movie.cover} alt={movie.title} className="w-full h-full object-cover" />
+                      )}
                     </div>
 
-                    {movie.myRating && (
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="flex gap-0.5">
-                          {Array.from({ length: 5 }).map((_, i) => {
-                            const stars = Math.round((movie.myRating! / 10) * 5);
-                            return <span key={i} style={{ color: i < stars ? '#00bbff' : 'var(--muted-foreground)', fontSize: '14px' }}>★</span>;
-                          })}
-                        </div>
-                        <span className="text-sm font-semibold" style={{ color: 'var(--foreground)' }}>{movie.myRating}/10</span>
+                    {/* Title & meta */}
+                    <div className="flex-1 min-w-0 pb-1">
+                      <h2 style={{ fontSize: '20px', fontWeight: 700, color: 'rgba(255,255,255,0.95)', letterSpacing: '-0.03em', lineHeight: 1.2, marginBottom: '4px' }}>
+                        {movie.title}
+                      </h2>
+                      <div style={{ fontSize: '12px', color: 'rgba(255,255,255,0.5)', marginBottom: '8px', letterSpacing: '-0.01em' }}>
+                        {movie.year}{movie.director && ` · ${movie.director}`}
                       </div>
-                    )}
-
-                    {movie.imdbId && (
-                      <a
-                        href={`https://www.imdb.com/title/${movie.imdbId}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-md transition-opacity hover:opacity-70"
-                        style={{ background: '#f5c518', color: '#000', fontWeight: 600 }}
-                      >
-                        IMDB ↗
-                      </a>
-                    )}
+                      {movie.myRating && <RatingDots rating={movie.myRating} />}
+                    </div>
                   </div>
                 </div>
 
-                <div className="px-6 pb-6 space-y-4">
-                  {/* Genre */}
+                {/* Body */}
+                <div className="p-5 space-y-5">
+                  {/* Genre tags */}
                   {movie.genre.length > 0 && (
                     <div className="flex flex-wrap gap-1.5">
                       {movie.genre.map(g => (
-                        <span key={g} className="text-xs px-2 py-0.5 rounded-full border capitalize" style={{ borderColor: 'var(--border)', color: 'var(--muted-foreground)' }}>
+                        <span
+                          key={g}
+                          className="capitalize"
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: 500,
+                            padding: '3px 10px',
+                            borderRadius: '999px',
+                            background: 'var(--muted)',
+                            color: 'var(--muted-foreground)',
+                          }}
+                        >
                           {g}
                         </span>
                       ))}
                     </div>
                   )}
 
+                  {/* Review */}
+                  {movie.review && (
+                    <div>
+                      <div style={{ fontSize: '10px', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--muted-foreground)', opacity: 0.6, marginBottom: '8px' }}>
+                        My Review
+                      </div>
+                      <p style={{ fontSize: '13px', lineHeight: 1.65, color: 'var(--foreground)', opacity: 0.75, letterSpacing: '-0.01em' }}>
+                        {movie.review}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Pre-watch thoughts */}
+                  {movie.thoughts && (
+                    <div>
+                      <div style={{ fontSize: '10px', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--muted-foreground)', opacity: 0.6, marginBottom: '8px' }}>
+                        Why I Want to Watch
+                      </div>
+                      <p style={{ fontSize: '13px', lineHeight: 1.65, color: 'var(--foreground)', opacity: 0.75, letterSpacing: '-0.01em' }}>
+                        {movie.thoughts}
+                      </p>
+                    </div>
+                  )}
+
                   {/* Favourite characters */}
                   {movie.favCharacters.length > 0 && (
                     <div>
-                      <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: 'var(--muted-foreground)' }}>
+                      <div style={{ fontSize: '10px', fontWeight: 500, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--muted-foreground)', opacity: 0.6, marginBottom: '8px' }}>
                         Favourite Characters
                       </div>
                       <div className="flex flex-wrap gap-1.5">
                         {movie.favCharacters.map(char => (
-                          <span key={char} className="text-xs px-2.5 py-1 rounded-full" style={{ background: 'var(--muted)', color: 'var(--foreground)', border: '1px solid var(--border)' }}>
+                          <span
+                            key={char}
+                            style={{
+                              fontSize: '12px',
+                              fontWeight: 500,
+                              padding: '4px 12px',
+                              borderRadius: '999px',
+                              background: 'var(--muted)',
+                              color: 'var(--foreground)',
+                              opacity: 0.8,
+                            }}
+                          >
                             {char}
                           </span>
                         ))}
@@ -123,20 +213,32 @@ export default function MovieDetail({ movie, open, onClose }: { movie: Movie | n
                     </div>
                   )}
 
-                  {/* Review */}
-                  {movie.review && (
-                    <div className="p-4 rounded-xl" style={{ background: 'var(--muted)', border: '1px solid var(--border)' }}>
-                      <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: 'var(--muted-foreground)' }}>My Review</div>
-                      <p className="text-sm leading-relaxed" style={{ color: 'var(--foreground)' }}>{movie.review}</p>
-                    </div>
-                  )}
-
-                  {/* Pre-watch thoughts */}
-                  {movie.thoughts && (
-                    <div className="p-4 rounded-xl" style={{ background: 'var(--muted)', border: '1px solid var(--border)' }}>
-                      <div className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: 'var(--muted-foreground)' }}>Why I Want to Watch</div>
-                      <p className="text-sm leading-relaxed" style={{ color: 'var(--foreground)' }}>{movie.thoughts}</p>
-                    </div>
+                  {/* IMDB link */}
+                  {movie.imdbId && (
+                    <a
+                      href={`https://www.imdb.com/title/${movie.imdbId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                        fontSize: '11px',
+                        fontWeight: 700,
+                        padding: '5px 12px',
+                        borderRadius: '6px',
+                        background: '#f5c518',
+                        color: '#000',
+                        textDecoration: 'none',
+                        letterSpacing: '0.02em',
+                        opacity: 0.9,
+                        transition: 'opacity 0.15s ease',
+                      }}
+                      onMouseEnter={e => (e.currentTarget.style.opacity = '1')}
+                      onMouseLeave={e => (e.currentTarget.style.opacity = '0.9')}
+                    >
+                      IMDB ↗
+                    </a>
                   )}
                 </div>
               </motion.div>

@@ -77,7 +77,6 @@ const pastWork: FreelanceProject[] = [
     description:
       'The official website of Encode — the Computer Science Club at PDEU. Led the web dev core committee and built the site with event management, member profiles, and resource sharing.',
     images: [
-      '/ProjectMedia/Encode_Official%20Website/encode.png',
       '/ProjectMedia/Encode_Official%20Website/1.webp',
       '/ProjectMedia/Encode_Official%20Website/2.webp',
       '/ProjectMedia/Encode_Official%20Website/3.webp',
@@ -136,13 +135,6 @@ const pastWork: FreelanceProject[] = [
       '/ProjectMedia/LyfeLane/2024-11-22_22-24_2.png',
       '/ProjectMedia/LyfeLane/2024-11-22_22-24_3.png',
     ],
-  },
-  {
-    name: 'Brushstroke Studio',
-    type: 'Agency Website',
-    tech: ['Astro', 'React'],
-    description: 'Marketing website for a creative design agency.',
-    images: [],
   },
 ];
 
@@ -287,22 +279,6 @@ function ProjectDetail({
               transition={{ duration: 0.15 }}
             />
           </AnimatePresence>
-          {total > 1 && (
-            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-[5px] items-center">
-              {project.images.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveImage(i)}
-                  className="h-[5px] rounded-full border-none cursor-pointer p-0 transition-all duration-200"
-                  style={{
-                    width: i === activeImage ? '14px' : '5px',
-                    background: i === activeImage ? '#fff' : 'rgba(255,255,255,0.4)',
-                  }}
-                  aria-label={`Image ${i + 1}`}
-                />
-              ))}
-            </div>
-          )}
         </div>
       )}
 

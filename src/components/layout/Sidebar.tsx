@@ -42,6 +42,7 @@ export default function Sidebar() {
   const [pathname, setPathname] = useState('/');
   const [isDark, setIsDark] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [avatarSrc, setAvatarSrc] = useState(() => Math.random() < 0.5 ? '/avatar-original.webp' : '/avatar.webp');
   const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
   useEffect(() => {
@@ -128,7 +129,7 @@ export default function Sidebar() {
     <>
       {/* ── Desktop sidebar ── */}
       <nav
-        className="hidden-mobile fixed flex-col gap-0.5 bg-transparent border-none overflow-y-auto overflow-x-hidden [scrollbar-width:none] z-40"
+        className="hidden-mobile fixed flex-col gap-0.5 bg-transparent border-none overflow-visible z-40"
         style={{
           top: '60px',
           bottom: '128px',
@@ -139,15 +140,14 @@ export default function Sidebar() {
 
         {/* Profile photo */}
         <div className="mb-4">
-          <a href="/">
-            <img
-              src="/avatar.webp"
-              alt="Aryan Randeriya"
-              width={32}
-              height={32}
-              className="rounded-full block opacity-90"
-            />
-          </a>
+          <img
+            src={avatarSrc}
+            alt="Aryan Randeriya"
+            width={32}
+            height={32}
+            className="rounded-full block opacity-90 cursor-pointer"
+            onClick={() => setAvatarSrc(s => s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp')}
+          />
         </div>
 
         {/* Nav groups */}

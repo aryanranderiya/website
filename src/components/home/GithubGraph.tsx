@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import useSWR from 'swr';
+import { useQuery, QueryClientProvider } from '@tanstack/react-query';
+import { queryClient } from '@/utils/queryClient';
 
 interface ContributionDay {
   date: string;
@@ -130,17 +131,11 @@ function ContributionCell({
   );
 }
 
-export default function GithubGraph({ compact = false }: { compact?: boolean }) {
-  const { data, isLoading } = useSWR(
-    'github-contributions-aryanranderiya',
-    () => fetchContributions('aryanranderiya'),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-      dedupingInterval: 3_600_000, // 1 hour
-    }
-  );
+function GithubGraphInner({ compact = false }: { compact?: boolean }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ['github-contributions', 'aryanranderiya'],
+    queryFn: () => fetchContributions('aryanranderiya'),
+  });
 
   const weeks = data?.weeks.slice(-52) ?? [];
   const totalContributions = data?.total ?? 0;
@@ -240,5 +235,13 @@ export default function GithubGraph({ compact = false }: { compact?: boolean }) 
         <span className="text-xs" style={{ color: 'var(--text-muted)' }}>More</span>
       </div>
     </section>
+  );
+}
+
+export default function GithubGraph(props: { compact?: boolean }) {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <GithubGraphInner {...props} />
+    </QueryClientProvider>
   );
 }

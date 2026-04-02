@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { HugeiconsIcon, ImageNotFound01Icon } from '@icons';
+import { motion } from 'framer-motion';
+import { HugeiconsIcon, ImageNotFound01Icon, StarIcon } from '@icons';
 
 interface Movie {
   slug: string;
@@ -20,23 +20,6 @@ interface Movie {
   dateWatched?: string;
 }
 
-function StarRating({ rating, max = 10 }: { rating: number; max?: number }) {
-  // Convert to 5-star display
-  const stars = Math.round((rating / max) * 5);
-  return (
-    <div className="flex items-center gap-1">
-      <div className="flex gap-0.5">
-        {Array.from({ length: 5 }).map((_, i) => (
-          <span key={i} style={{ color: i < stars ? '#00bbff' : 'var(--muted-foreground)', fontSize: '12px' }}>
-            ★
-          </span>
-        ))}
-      </div>
-      <span className="text-xs font-medium" style={{ color: 'var(--foreground)' }}>{rating}/10</span>
-    </div>
-  );
-}
-
 export default function MovieCard({
   movie,
   index,
@@ -50,24 +33,25 @@ export default function MovieCard({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ delay: index * 0.07, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
-      onHoverStart={() => setHovered(true)}
-      onHoverEnd={() => setHovered(false)}
+      transition={{ delay: index * 0.05, duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
       onClick={() => onClick(movie)}
-      className="cursor-pointer group"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      className="cursor-pointer"
     >
       {/* Poster */}
       <div
-        className="relative rounded-xl overflow-hidden mb-3 transition-all duration-200"
+        className="relative overflow-hidden mb-2.5"
         style={{
           aspectRatio: '2/3',
           background: 'var(--muted)',
-          boxShadow: hovered ? '0 12px 32px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.15)',
-          transform: hovered ? 'translateY(-4px)' : 'translateY(0)',
-          transition: 'all 0.25s ease',
+          borderRadius: '8px',
+          transform: hovered ? 'translateY(-3px)' : 'translateY(0)',
+          boxShadow: hovered ? '0 10px 28px rgba(0,0,0,0.18)' : '0 2px 8px rgba(0,0,0,0.08)',
+          transition: 'transform 0.2s ease, box-shadow 0.2s ease',
         }}
       >
         {movie.cover ? (
@@ -81,48 +65,52 @@ export default function MovieCard({
             className="w-full h-full flex flex-col items-center justify-center gap-2 p-4 text-center"
             style={{ background: 'var(--muted)' }}
           >
-            <HugeiconsIcon icon={ImageNotFound01Icon} size={28} color="var(--muted-foreground)" style={{ opacity: 0.4 }} />
-            <span className="text-xs font-medium" style={{ color: 'var(--muted-foreground)' }}>{movie.title}</span>
+            <HugeiconsIcon icon={ImageNotFound01Icon} size={24} color="var(--muted-foreground)" style={{ opacity: 0.3 }} />
+            <span style={{ fontSize: '11px', color: 'var(--muted-foreground)', opacity: 0.5 }}>{movie.title}</span>
           </div>
         )}
 
-        {/* Rating overlay */}
+        {/* Rating badge */}
         {movie.myRating && (
           <div
-            className="absolute bottom-2 right-2 px-2 py-1 rounded-lg text-xs font-bold"
+            className="absolute bottom-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded-md"
             style={{
-              background: 'rgba(0,0,0,0.8)',
-              color: '#00bbff',
-              backdropFilter: 'blur(4px)',
+              background: 'rgba(0,0,0,0.72)',
+              backdropFilter: 'blur(6px)',
             }}
           >
-            {movie.myRating}/10
+            <HugeiconsIcon icon={StarIcon} size={9} color="rgba(255,255,255,0.7)" />
+            <span style={{ fontSize: '10px', fontWeight: 600, color: 'rgba(255,255,255,0.9)', letterSpacing: '-0.01em' }}>
+              {movie.myRating}
+            </span>
           </div>
         )}
 
         {/* Hover overlay */}
-        <AnimatePresence>
-          {hovered && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(2px)' }}
-            >
-              <span className="text-white text-sm font-medium">View Details</span>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div
+          className="absolute inset-0 flex items-end justify-center pb-7"
+          style={{
+            background: 'linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%)',
+            opacity: hovered ? 1 : 0,
+            transition: 'opacity 0.2s ease',
+          }}
+        >
+          <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.85)', fontWeight: 500, letterSpacing: '0.03em', textTransform: 'uppercase' }}>
+            View details
+          </span>
+        </div>
       </div>
 
       {/* Info */}
-      <div>
-        <h3 className="text-sm font-semibold truncate mb-0.5" style={{ color: 'var(--foreground)', letterSpacing: '-0.01em' }}>
+      <div className="space-y-0.5">
+        <h3
+          className="truncate"
+          style={{ fontSize: '12px', fontWeight: 600, color: 'var(--foreground)', letterSpacing: '-0.02em', lineHeight: 1.3 }}
+        >
           {movie.title}
         </h3>
-        <div className="text-xs" style={{ color: 'var(--muted-foreground)' }}>
-          {movie.year} {movie.director && `· ${movie.director}`}
+        <div style={{ fontSize: '11px', color: 'var(--muted-foreground)', opacity: 0.6 }}>
+          {movie.year}
         </div>
       </div>
     </motion.div>

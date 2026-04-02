@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useState, useEffect } from 'react';
 import { RaisedButton } from '@/components/ui/raised-button';
-import { HugeiconsIcon, Cancel01Icon, GithubIcon, LinkSquare02Icon, ImageNotFound01Icon } from '@icons';
+import { HugeiconsIcon, Cancel01Icon, GithubIcon, LinkSquare02Icon, ImageNotFound01Icon, ArrowLeft01Icon, ArrowRight01Icon } from '@icons';
 
 interface Project {
   slug: string;
@@ -159,34 +159,23 @@ export default function ProjectDrawer({
               />
             </Dialog.Overlay>
 
-            {/* Bottom sheet drawer */}
+            {/* Right-side drawer */}
             <Dialog.Content asChild>
               <motion.div
-                className="fixed bottom-0 left-0 right-0 z-50 flex flex-col"
+                className="fixed top-0 right-0 bottom-0 z-50 flex flex-col"
                 style={{
-                  maxHeight: '85vh',
+                  width: '420px',
+                  maxWidth: '100vw',
                   background: 'var(--background)',
-                  borderRadius: '16px 16px 0 0',
+                  borderRadius: '16px 0 0 16px',
                   overflowX: 'hidden',
                 }}
-                initial={{ y: '100%' }}
-                animate={{ y: 0 }}
-                exit={{ y: '100%' }}
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
                 transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
               >
                 <Dialog.Title className="sr-only">{project.title}</Dialog.Title>
-
-                {/* Drag handle */}
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 4px', flexShrink: 0 }}>
-                  <div
-                    style={{
-                      width: '40px',
-                      height: '4px',
-                      borderRadius: '9999px',
-                      background: 'rgba(0,0,0,0.15)',
-                    }}
-                  />
-                </div>
 
                 {/* Close button */}
                 <Dialog.Close asChild>
@@ -226,7 +215,6 @@ export default function ProjectDrawer({
                       position: 'relative',
                       width: '100%',
                       aspectRatio: '16/9',
-                      maxHeight: '260px',
                       background: 'var(--muted-bg)',
                       overflow: 'hidden',
                       flexShrink: 0,
@@ -347,6 +335,40 @@ export default function ProjectDrawer({
                     </h2>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, paddingTop: '2px' }}>
+                      {images.length > 1 && (
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                          <button
+                            onClick={() => setActiveImage(i => Math.max(0, i - 1))}
+                            disabled={safeActiveImage === 0}
+                            style={{
+                              width: '32px', height: '32px', borderRadius: '6px', border: 'none',
+                              background: 'var(--muted-bg)', cursor: safeActiveImage === 0 ? 'default' : 'pointer',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              opacity: safeActiveImage === 0 ? 0.35 : 1,
+                              transition: 'opacity 150ms ease',
+                              color: 'var(--text-secondary)',
+                            }}
+                            aria-label="Previous image"
+                          >
+                            <HugeiconsIcon icon={ArrowLeft01Icon} size={13} />
+                          </button>
+                          <button
+                            onClick={() => setActiveImage(i => Math.min(images.length - 1, i + 1))}
+                            disabled={safeActiveImage === images.length - 1}
+                            style={{
+                              width: '32px', height: '32px', borderRadius: '6px', border: 'none',
+                              background: 'var(--muted-bg)', cursor: safeActiveImage === images.length - 1 ? 'default' : 'pointer',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              opacity: safeActiveImage === images.length - 1 ? 0.35 : 1,
+                              transition: 'opacity 150ms ease',
+                              color: 'var(--text-secondary)',
+                            }}
+                            aria-label="Next image"
+                          >
+                            <HugeiconsIcon icon={ArrowRight01Icon} size={13} />
+                          </button>
+                        </div>
+                      )}
                       {project.github && (
                         <a
                           href={project.github}

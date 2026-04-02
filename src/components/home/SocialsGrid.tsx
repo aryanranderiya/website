@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
-import useSWR from "swr";
+import { useQuery, QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/utils/queryClient";
 import {
   HugeiconsIcon,
   KeyboardIcon,
@@ -13,7 +14,7 @@ import {
 } from "@icons";
 import GithubGraph, { fetchContributions } from "./GithubGraph";
 
-const AVATAR_URL = "/avatar.webp";
+const AVATAR_URL = "/avatar-original.webp";
 const INSTAGRAM_GRADIENT =
   "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)";
 
@@ -82,16 +83,10 @@ function InstagramLogo({ size = 18 }: { size?: number }) {
 // ── Preview cards ─────────────────────────────────────────────────────────────
 
 function GitHubPreview() {
-  const { data } = useSWR(
-    "github-contributions-aryanranderiya",
-    () => fetchContributions("aryanranderiya"),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-      dedupingInterval: 3_600_000,
-    },
-  );
+  const { data } = useQuery({
+    queryKey: ['github-contributions', 'aryanranderiya'],
+    queryFn: () => fetchContributions('aryanranderiya'),
+  });
   const total = data?.total;
 
   return (
@@ -152,10 +147,7 @@ function GitHubPreview() {
           Contributions this year
         </div>
         {total !== undefined && (
-          <div
-            className="text-sm font-semibold text-[#e6edf3]"
-            style={{ letterSpacing: "-0.02em" }}
-          >
+          <div className="text-sm font-semibold text-[#e6edf3] tracking-[-0.02em]">
             {total.toLocaleString()}
           </div>
         )}
@@ -329,11 +321,9 @@ async function fetchMonkeytype() {
 }
 
 function MonkeytypePreview() {
-  const { data, isLoading } = useSWR('monkeytype-aryanranderiya', fetchMonkeytype, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    revalidateIfStale: false,
-    dedupingInterval: 3_600_000,
+  const { data, isLoading } = useQuery({
+    queryKey: ['monkeytype', 'aryanranderiya'],
+    queryFn: fetchMonkeytype,
   });
 
   return (
@@ -470,10 +460,10 @@ function PreviewCard({ visible, rect, children, onMouseEnter, onMouseLeave }: Pr
       style={{
         top: anchorY,
         left: anchorX,
-        transform: `translateX(-50%) translateY(${above ? `calc(-100% - 8px)` : `8px`})`,
+        transform: `translateX(-50%) translateY(${above ? `calc(-100% - 4px)` : `4px`})`,
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? 'auto' : 'none',
-        transition: visible ? 'opacity 0.15s ease' : 'none',
+        transition: 'opacity 0.15s ease',
       }}
     >
       {children}
@@ -483,30 +473,34 @@ function PreviewCard({ visible, rect, children, onMouseEnter, onMouseLeave }: Pr
 
 // ── Chip ──────────────────────────────────────────────────────────────────────
 
-function SocialChip({ social }: { social: SocialItem }) {
-  const [hovered, setHovered] = useState(false);
+interface SocialChipProps {
+  social: SocialItem;
+  activeId: string | null;
+  setActiveId: (id: string | null) => void;
+  leaveTimer: React.MutableRefObject<ReturnType<typeof setTimeout> | undefined>;
+}
+
+function SocialChip({ social, activeId, setActiveId, leaveTimer }: SocialChipProps) {
+  const hovered = activeId === social.id;
   const [rect, setRect] = useState<DOMRect | null>(null);
   const anchorRef = useRef<HTMLDivElement>(null);
-  const leaveTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const show = useCallback(() => {
     clearTimeout(leaveTimer.current);
     if (anchorRef.current) setRect(anchorRef.current.getBoundingClientRect());
-    setHovered(true);
-  }, []);
+    setActiveId(social.id);
+  }, [social.id, setActiveId, leaveTimer]);
 
-  // Small delay only when leaving anchor, to give time to reach the popover card
+  // Small delay when leaving anchor so the user can reach the popover card
   const hideFromAnchor = useCallback(() => {
-    leaveTimer.current = setTimeout(() => setHovered(false), 80);
-  }, []);
+    leaveTimer.current = setTimeout(() => setActiveId(null), 150);
+  }, [setActiveId, leaveTimer]);
 
   // Instant hide when leaving the popover card itself
   const hideFromCard = useCallback(() => {
     clearTimeout(leaveTimer.current);
-    setHovered(false);
-  }, []);
-
-  useEffect(() => () => clearTimeout(leaveTimer.current), []);
+    setActiveId(null);
+  }, [setActiveId, leaveTimer]);
 
   return (
     <>
@@ -521,7 +515,7 @@ function SocialChip({ social }: { social: SocialItem }) {
           target="_blank"
           rel="noopener noreferrer"
           className={[
-            "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[var(--border)]",
+            "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[var(--border)] outline-none",
             "text-xs font-medium tracking-[-0.01em] whitespace-nowrap select-none no-underline",
             "transition-all duration-150",
             hovered
@@ -547,12 +541,25 @@ function SocialChip({ social }: { social: SocialItem }) {
 
 // ── Export ────────────────────────────────────────────────────────────────────
 
-export default function SocialsGrid() {
+function SocialsGridInner() {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => () => clearTimeout(leaveTimer.current), []);
+
   return (
     <div className="flex flex-wrap gap-2 items-center">
       {SOCIALS.map((social) => (
-        <SocialChip key={social.id} social={social} />
+        <SocialChip key={social.id} social={social} activeId={activeId} setActiveId={setActiveId} leaveTimer={leaveTimer} />
       ))}
     </div>
+  );
+}
+
+export default function SocialsGrid() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <SocialsGridInner />
+    </QueryClientProvider>
   );
 }

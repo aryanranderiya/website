@@ -1,10 +1,3 @@
-// TODO: Spotify API credentials needed in .env file:
-//   SPOTIFY_CLIENT_ID=your_client_id
-//   SPOTIFY_CLIENT_SECRET=your_client_secret
-//   SPOTIFY_REFRESH_TOKEN=your_refresh_token
-// Until then this will show "Not playing"
-// See: https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -31,16 +24,48 @@ async function getNowPlaying(): Promise<SpotifyTrack> {
   }
 }
 
+const SHIMMER_KF = `
+  @keyframes shimmer {
+    0%   { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+`;
+
+function ShimmerBlock({
+  w,
+  h,
+  r = 6,
+}: {
+  w: string | number;
+  h: number;
+  r?: number;
+}) {
+  return (
+    <div
+      style={{
+        width: w,
+        height: h,
+        borderRadius: r,
+        background:
+          'linear-gradient(90deg, var(--border) 25%, var(--border-strong) 50%, var(--border) 75%)',
+        backgroundSize: '200% 100%',
+        animation: 'shimmer 1.4s ease-in-out infinite',
+        flexShrink: 0,
+      }}
+    />
+  );
+}
+
 function MusicBars() {
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 12 }}>
+    <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 10 }}>
       {[1, 2, 3].map(i => (
         <motion.span
           key={i}
           style={{
             width: 2,
             borderRadius: 999,
-            background: 'var(--accent-blue)',
+            background: '#1DB954',
             display: 'block',
           }}
           animate={{ height: ['40%', '100%', '60%', '80%', '40%'] }}
@@ -56,6 +81,17 @@ function MusicBars() {
   );
 }
 
+const SPOTIFY_LOGO = 'https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Full_Logo_RGB_Green.png';
+
+function formatTime(ms?: number): string {
+  if (!ms) return '0:00';
+  const s = Math.floor(ms / 1000);
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+const HEIGHT = 160;
+const ART_SIZE = 64;
+
 export default function SpotifyWidget() {
   const [track, setTrack] = useState<SpotifyTrack>({ isPlaying: false });
   const [loading, setLoading] = useState(true);
@@ -65,79 +101,281 @@ export default function SpotifyWidget() {
       setTrack(t);
       setLoading(false);
     });
-
-    const interval = setInterval(() => {
-      getNowPlaying().then(setTrack);
-    }, 30000);
-
+    const interval = setInterval(() => getNowPlaying().then(setTrack), 30000);
     return () => clearInterval(interval);
   }, []);
 
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      {/* Spotify icon */}
-      <svg viewBox="0 0 24 24" width="13" height="13" fill="var(--text-muted)" style={{ flexShrink: 0 }}>
-        <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
-      </svg>
+  const progressPct =
+    track.progress && track.duration
+      ? (track.progress / track.duration) * 100
+      : 0;
 
-      <AnimatePresence mode="wait">
-        {loading ? (
-          <motion.span
-            key="loading"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{ fontSize: 12, color: 'var(--text-ghost)' }}
-          >
-            …
-          </motion.span>
-        ) : track.isPlaying && track.title ? (
-          <motion.div
-            key={track.title}
-            initial={{ opacity: 0, y: 3 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -3 }}
-            transition={{ duration: 0.2 }}
-            style={{ display: 'flex', alignItems: 'center', gap: 6 }}
-          >
-            <MusicBars />
-            <span style={{ fontSize: 12, color: 'var(--text-muted)', flexShrink: 0 }}>
-              Now Playing —
-            </span>
-            <a
-              href={track.songUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontSize: 12,
-                color: 'var(--text-secondary)',
-                fontWeight: 500,
-                textDecoration: 'none',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                maxWidth: 180,
-              }}
-              onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-primary)')}
-              onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-secondary)')}
+  return (
+    <div
+      style={{
+        height: HEIGHT,
+        borderRadius: 20,
+        background: 'var(--muted-bg)',
+        padding: '15px 17px',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        position: 'relative',
+      }}
+    >
+      <style>{SHIMMER_KF}</style>
+
+      {/* Header */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          position: 'relative',
+        }}
+      >
+        <img src={SPOTIFY_LOGO} alt="Spotify" style={{ height: 14, width: 'auto' }} />
+
+        <AnimatePresence>
+          {track.isPlaying && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{ display: 'flex', alignItems: 'center', gap: 5 }}
             >
-              {track.title}
-            </a>
-            <span style={{ fontSize: 12, color: 'var(--text-ghost)', flexShrink: 0 }}>
-              — {track.artist}
-            </span>
-          </motion.div>
-        ) : (
-          <motion.span
-            key="not-playing"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            style={{ fontSize: 12, color: 'var(--text-ghost)' }}
-          >
-            Not playing
-          </motion.span>
-        )}
-      </AnimatePresence>
+              <MusicBars />
+              <span
+                style={{
+                  fontSize: 9,
+                  letterSpacing: '0.07em',
+                  textTransform: 'uppercase',
+                  color: 'var(--text-ghost)',
+                  fontWeight: 500,
+                }}
+              >
+                Now Playing
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Main content */}
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          alignItems: 'center',
+          position: 'relative',
+        }}
+      >
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{ display: 'flex', gap: 13, alignItems: 'center', width: '100%' }}
+            >
+              <ShimmerBlock w={ART_SIZE} h={ART_SIZE} r={10} />
+              <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 7 }}>
+                <ShimmerBlock w="75%" h={12} r={5} />
+                <ShimmerBlock w="55%" h={10} r={5} />
+                <ShimmerBlock w="40%" h={9} r={5} />
+              </div>
+            </motion.div>
+          ) : track.isPlaying && track.title ? (
+            <motion.div
+              key={track.title}
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1] }}
+              style={{ display: 'flex', gap: 13, alignItems: 'center', width: '100%' }}
+            >
+              {/* Album art */}
+              {track.albumArt ? (
+                <img
+                  src={track.albumArt}
+                  alt={track.album ?? 'Album art'}
+                  style={{
+                    width: ART_SIZE,
+                    height: ART_SIZE,
+                    borderRadius: 10,
+                    objectFit: 'cover',
+                    flexShrink: 0,
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: ART_SIZE,
+                    height: ART_SIZE,
+                    borderRadius: 10,
+                    flexShrink: 0,
+                    background: 'var(--border)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'var(--text-ghost)',
+                  }}
+                >
+                  <img src={SPOTIFY_LOGO} alt="Spotify" style={{ width: 40, opacity: 0.4 }} />
+                </div>
+              )}
+
+              {/* Track info */}
+              <div
+                style={{
+                  flex: 1,
+                  minWidth: 0,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 2,
+                }}
+              >
+                <a
+                  href={track.songUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    letterSpacing: '-0.02em',
+                    color: 'var(--text-primary)',
+                    textDecoration: 'none',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    display: 'block',
+                    lineHeight: 1.3,
+                    transition: 'color 0.15s',
+                  }}
+                  onMouseEnter={e => {
+                    (e.currentTarget as HTMLAnchorElement).style.color = '#1DB954';
+                  }}
+                  onMouseLeave={e => {
+                    (e.currentTarget as HTMLAnchorElement).style.color =
+                      'var(--text-primary)';
+                  }}
+                >
+                  {track.title}
+                </a>
+                <span
+                  style={{
+                    fontSize: 12,
+                    color: 'var(--text-secondary)',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    letterSpacing: '-0.01em',
+                  }}
+                >
+                  {track.artist}
+                </span>
+                {track.album && (
+                  <span
+                    style={{
+                      fontSize: 11,
+                      color: 'var(--text-ghost)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      marginTop: 2,
+                    }}
+                  >
+                    {track.album}
+                  </span>
+                )}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="not-playing"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: 3 }}
+            >
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 500,
+                  color: 'var(--text-secondary)',
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                Not playing
+              </span>
+              <span style={{ fontSize: 11, color: 'var(--text-ghost)' }}>
+                Nothing in queue
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* Progress bar */}
+      <div style={{ position: 'relative' }}>
+        <AnimatePresence>
+          {track.isPlaying && track.duration ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginBottom: 5,
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 9,
+                    color: 'var(--text-ghost)',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {formatTime(track.progress)}
+                </span>
+                <span
+                  style={{
+                    fontSize: 9,
+                    color: 'var(--text-ghost)',
+                    letterSpacing: '0.02em',
+                  }}
+                >
+                  {formatTime(track.duration)}
+                </span>
+              </div>
+              <div
+                style={{
+                  height: 4,
+                  background: 'var(--border)',
+                  borderRadius: 999,
+                  overflow: 'hidden',
+                }}
+              >
+                <motion.div
+                  style={{
+                    height: '100%',
+                    background: '#1DB954',
+                    borderRadius: 999,
+                  }}
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progressPct}%` }}
+                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                />
+              </div>
+            </motion.div>
+          ) : (
+            <div style={{ height: 17 }} />
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 }

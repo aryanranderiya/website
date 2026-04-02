@@ -24,6 +24,7 @@ import {
   Camera01Icon,
   PenTool01Icon,
   NoteIcon,
+  SparklesIcon,
   // Social brand icons
   GithubIcon,
   NewTwitterIcon,
@@ -42,6 +43,7 @@ const ICON_MAP: Record<string, ComponentType<IconProps>> = {
   Camera01Icon,
   PenTool01Icon,
   NoteIcon,
+  SparklesIcon,
   GithubIcon,
   NewTwitterIcon,
   LinkedinIcon,
@@ -106,8 +108,7 @@ export default function CommandK() {
           <Dialog.Portal forceMount>
             <Dialog.Overlay asChild>
               <motion.div
-                className="fixed inset-0 z-[100]"
-                style={{ backgroundColor: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(4px)' }}
+                className="fixed inset-0 z-[100] bg-black/40 backdrop-blur-sm"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -117,8 +118,7 @@ export default function CommandK() {
 
             <Dialog.Content asChild>
               <motion.div
-                className="fixed left-1/2 top-[20%] z-[101] w-full max-w-lg -translate-x-1/2 rounded-2xl border overflow-hidden shadow-2xl"
-                style={{ background: 'var(--card)', borderColor: 'var(--border)', outline: 'none' }}
+                className="fixed left-1/2 top-[20%] z-[101] w-full max-w-lg -translate-x-1/2 rounded-2xl border border-border overflow-hidden shadow-2xl bg-card outline-none"
                 initial={{ opacity: 0, scale: 0.96, y: -8 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.96, y: -8 }}
@@ -132,29 +132,22 @@ export default function CommandK() {
                   shouldFilter={true}
                 >
                   {/* Search input */}
-                  <div
-                    className="flex items-center gap-3 px-4 border-b"
-                    style={{ borderColor: 'var(--border)' }}
-                  >
+                  <div className="flex items-center gap-3 px-4 border-b border-border">
                     <HugeiconsIcon icon={Search01Icon} size={16} color="var(--muted-foreground)" />
                     <Command.Input
                       value={query}
                       onValueChange={setQuery}
                       placeholder="Search pages, actions..."
-                      className="flex-1 py-4 text-sm outline-none ring-0 border-none shadow-none bg-transparent"
-                      style={{ color: 'var(--foreground)', caretColor: 'var(--foreground)', outline: 'none' }}
+                      className="flex-1 py-4 text-sm outline-none ring-0 border-none shadow-none bg-transparent text-foreground caret-foreground"
                     />
-                    <kbd
-                      className="hidden sm:inline-flex text-xs px-1.5 py-0.5 rounded"
-                      style={{ background: 'var(--muted)', color: 'var(--muted-foreground)', border: '1px solid var(--border)' }}
-                    >
+                    <kbd className="hidden sm:inline-flex text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border">
                       esc
                     </kbd>
                   </div>
 
                   {/* Results list */}
                   <Command.List className="max-h-80 overflow-y-auto py-2">
-                    <Command.Empty className="py-8 text-center text-sm" style={{ color: 'var(--muted-foreground)' }}>
+                    <Command.Empty className="py-8 text-center text-sm text-muted-foreground">
                       No results found.
                     </Command.Empty>
 
@@ -195,21 +188,18 @@ export default function CommandK() {
                             value={`${page.label} ${page.description}`}
                             onSelect={() => navigate(page.href)}
                           >
-                            <span
-                              className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0"
-                              style={{ background: 'var(--muted)', border: '1px solid var(--border)', color: 'var(--muted-foreground)' }}
-                            >
+                            <span className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 bg-muted border border-border text-muted-foreground">
                               <HugeiconsIcon icon={IconComp} size={ITEM_ICON_SIZE} />
                             </span>
                             <div className="flex-1 min-w-0">
-                              <div className="font-medium" style={{ letterSpacing: '-0.01em' }}>{page.label}</div>
+                              <div className="font-medium tracking-[-0.01em]">{page.label}</div>
                               {page.description && (
-                                <div className="text-xs truncate mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
+                                <div className="text-xs truncate mt-0.5 text-muted-foreground">
                                   {page.description}
                                 </div>
                               )}
                             </div>
-                            <kbd className="text-xs flex-shrink-0 hidden sm:block" style={{ color: 'var(--muted-foreground)' }}>
+                            <kbd className="text-xs flex-shrink-0 hidden sm:block text-muted-foreground">
                               ↵
                             </kbd>
                           </Command.Item>
@@ -227,21 +217,18 @@ export default function CommandK() {
                             value={`${link.label} social`}
                             onSelect={() => navigate(link.href, true)}
                           >
-                            <span
-                              className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0"
-                              style={{ background: 'var(--muted)', border: '1px solid var(--border)', color: 'var(--muted-foreground)' }}
-                            >
+                            <span className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 bg-muted border border-border text-muted-foreground">
                               <HugeiconsIcon icon={IconComp} size={ITEM_ICON_SIZE} />
                             </span>
                             <div className="flex-1 min-w-0">
-                              <div className="font-medium" style={{ letterSpacing: '-0.01em' }}>{link.label}</div>
+                              <div className="font-medium tracking-[-0.01em]">{link.label}</div>
                               {link.description && (
-                                <div className="text-xs truncate mt-0.5" style={{ color: 'var(--muted-foreground)' }}>
+                                <div className="text-xs truncate mt-0.5 text-muted-foreground">
                                   {link.description}
                                 </div>
                               )}
                             </div>
-                            <kbd className="text-xs flex-shrink-0 hidden sm:block" style={{ color: 'var(--muted-foreground)' }}>
+                            <kbd className="text-xs flex-shrink-0 hidden sm:block text-muted-foreground">
                               ↗
                             </kbd>
                           </Command.Item>
@@ -260,16 +247,13 @@ export default function CommandK() {
                             else runAction(action.id);
                           }}
                         >
-                          <span
-                            className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0"
-                            style={{ background: 'var(--muted)', border: '1px solid var(--border)', color: 'var(--muted-foreground)' }}
-                          >
+                          <span className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 bg-muted border border-border text-muted-foreground">
                             <HugeiconsIcon icon={action.iconComp} size={ITEM_ICON_SIZE} />
                           </span>
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium" style={{ letterSpacing: '-0.01em' }}>{action.label}</div>
+                            <div className="font-medium tracking-[-0.01em]">{action.label}</div>
                             {action.description && (
-                              <div className="text-xs truncate mt-0.5" style={{ color: 'var(--muted-foreground)' }}>{action.description}</div>
+                              <div className="text-xs truncate mt-0.5 text-muted-foreground">{action.description}</div>
                             )}
                           </div>
                         </Command.Item>
@@ -278,20 +262,17 @@ export default function CommandK() {
                   </Command.List>
 
                   {/* Footer */}
-                  <div
-                    className="flex items-center gap-3 px-4 py-2.5 border-t"
-                    style={{ borderColor: 'var(--border)' }}
-                  >
-                    <div className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--muted-foreground)' }}>
-                      <kbd className="px-1.5 py-0.5 rounded text-xs" style={{ background: 'var(--muted)', border: '1px solid var(--border)' }}>↑↓</kbd>
+                  <div className="flex items-center gap-3 px-4 py-2.5 border-t border-border">
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <kbd className="px-1.5 py-0.5 rounded text-xs bg-muted border border-border">↑↓</kbd>
                       <span>navigate</span>
                     </div>
-                    <div className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--muted-foreground)' }}>
-                      <kbd className="px-1.5 py-0.5 rounded text-xs" style={{ background: 'var(--muted)', border: '1px solid var(--border)' }}>↵</kbd>
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <kbd className="px-1.5 py-0.5 rounded text-xs bg-muted border border-border">↵</kbd>
                       <span>open</span>
                     </div>
-                    <div className="ml-auto flex items-center gap-1.5 text-xs" style={{ color: 'var(--muted-foreground)' }}>
-                      <kbd className="px-1.5 py-0.5 rounded text-xs" style={{ background: 'var(--muted)', border: '1px solid var(--border)' }}>⌘K</kbd>
+                    <div className="ml-auto flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <kbd className="px-1.5 py-0.5 rounded text-xs bg-muted border border-border">⌘K</kbd>
                       <span>toggle</span>
                     </div>
                   </div>

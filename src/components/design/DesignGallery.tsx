@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { HugeiconsIcon, Cancel01Icon, ArrowLeft01Icon, ArrowRight01Icon } from '@icons';
+import { HugeiconsIcon, Cancel01Icon, ArrowLeft02Icon, ArrowRight02Icon, Search01Icon } from '@icons';
 
 interface DesignGalleryProps {
   apparel: string[];
@@ -52,14 +53,29 @@ export default function DesignGallery({ apparel, headers, thumbnails, adMockups 
     return () => window.removeEventListener('keydown', handler);
   }, [lightboxOpen, goPrev, goNext]);
 
-  // Lock body scroll when lightbox is open
+  // Lock scroll + blur page content when lightbox is open
   useEffect(() => {
+    const content = document.getElementById('page-content') as HTMLElement | null;
+    const DURATION = 180;
     if (lightboxOpen) {
       document.body.style.overflow = 'hidden';
+      if (content) {
+        content.style.transition = `filter ${DURATION}ms ease`;
+        requestAnimationFrame(() => { content.style.filter = 'blur(12px) brightness(0.6)'; });
+      }
     } else {
       document.body.style.overflow = '';
+      if (content) {
+        content.style.transition = `filter ${DURATION}ms ease`;
+        content.style.filter = 'blur(0px) brightness(1)';
+        const t = setTimeout(() => { content.style.filter = ''; content.style.transition = ''; }, DURATION + 20);
+        return () => clearTimeout(t);
+      }
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+      if (content) { content.style.filter = ''; content.style.transition = ''; }
+    };
   }, [lightboxOpen]);
 
   const apparelSrcs = apparel.map(apparelSrc);
@@ -70,7 +86,7 @@ export default function DesignGallery({ apparel, headers, thumbnails, adMockups 
   return (
     <>
       {/* Apparel & Streetwear */}
-      <section style={{ marginBottom: 56 }}>
+      <section className="mb-14">
         <div className="section-header">Apparel &amp; Streetwear</div>
         <div className="apparel-grid">
           {apparel.map((file, i) => (
@@ -85,7 +101,7 @@ export default function DesignGallery({ apparel, headers, thumbnails, adMockups 
       </section>
 
       {/* Banners & Headers */}
-      <section style={{ marginBottom: 56 }}>
+      <section className="mb-14">
         <div className="section-header">Banners &amp; Headers</div>
         <div className="masonry-2col">
           {headers.map((file, i) => (
@@ -100,7 +116,7 @@ export default function DesignGallery({ apparel, headers, thumbnails, adMockups 
       </section>
 
       {/* Thumbnails */}
-      <section style={{ marginBottom: 56 }}>
+      <section className="mb-14">
         <div className="section-header">Thumbnails</div>
         <div className="masonry-2col">
           {thumbnails.map((file, i) => (
@@ -115,7 +131,7 @@ export default function DesignGallery({ apparel, headers, thumbnails, adMockups 
       </section>
 
       {/* Ad Mockups */}
-      <section style={{ marginBottom: 56 }}>
+      <section className="mb-14">
         <div className="section-header">Ad Mockups</div>
         <div className="masonry-2col">
           {adMockups.map((file, i) => (
@@ -129,20 +145,23 @@ export default function DesignGallery({ apparel, headers, thumbnails, adMockups 
         </div>
       </section>
 
-      {/* Lightbox */}
-      <AnimatePresence>
-        {lightboxOpen && (
-          <Lightbox
-            src={lightboxImages[lightboxIndex]}
-            alt={altText(lightboxImages[lightboxIndex]?.split('/').pop() ?? '')}
-            index={lightboxIndex}
-            total={lightboxImages.length}
-            onClose={closeLightbox}
-            onPrev={goPrev}
-            onNext={goNext}
-          />
-        )}
-      </AnimatePresence>
+      {/* Lightbox — portalled to document.body so CSS filter on #page-content doesn't affect it */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {lightboxOpen && (
+            <Lightbox
+              src={lightboxImages[lightboxIndex]}
+              alt={altText(lightboxImages[lightboxIndex]?.split('/').pop() ?? '')}
+              index={lightboxIndex}
+              total={lightboxImages.length}
+              onClose={closeLightbox}
+              onPrev={goPrev}
+              onNext={goNext}
+            />
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 }
@@ -150,52 +169,39 @@ export default function DesignGallery({ apparel, headers, thumbnails, adMockups 
 /* ── Sub-components ─────────────────────────────────────────── */
 
 function ApparelItem({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="apparel-item"
-      style={{ cursor: 'pointer' }}
+      className="apparel-item cursor-zoom-in group relative overflow-hidden"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       <img
         src={src}
         alt={alt}
         loading="lazy"
         decoding="async"
-        className="apparel-img"
-        style={{
-          transform: hovered ? 'scale(1.03)' : 'scale(1)',
-          filter: hovered ? 'brightness(1.04)' : 'brightness(1)',
-          transition: 'transform 200ms ease, filter 200ms ease',
-        }}
+        className="apparel-img transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.28] group-hover:brightness-[1.04] object-cover"
       />
+      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        <div className="w-9 h-9 rounded-full flex items-center justify-center" style={{ background: 'rgba(0,0,0,0.45)', backdropFilter: 'blur(4px)' }}>
+          <HugeiconsIcon icon={Search01Icon} size={16} color="white" />
+        </div>
+      </div>
     </div>
   );
 }
 
 function MasonryItem({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
-  const [hovered, setHovered] = useState(false);
   return (
     <div
-      className="masonry-item"
-      style={{ cursor: 'pointer' }}
+      className="masonry-item cursor-pointer group"
       onClick={onClick}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
     >
       <img
         src={src}
         alt={alt}
         loading="lazy"
         decoding="async"
-        className="masonry-img"
-        style={{
-          transform: hovered ? 'scale(1.03)' : 'scale(1)',
-          filter: hovered ? 'brightness(1.04)' : 'brightness(1)',
-          transition: 'transform 200ms ease, filter 200ms ease',
-        }}
+        className="masonry-img transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.12] group-hover:brightness-[1.04] object-cover"
       />
     </div>
   );
@@ -215,81 +221,34 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
   return (
     <motion.div
       key="lightbox-overlay"
-      initial="hidden"
-      animate="visible"
-      exit="hidden"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
       onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        zIndex: 100,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
+      className="fixed inset-0 z-[100] flex items-center justify-center"
+      style={{ backgroundColor: 'color-mix(in srgb, var(--background) 60%, transparent)' }}
     >
-      {/* Backdrop — opacity animates, blur is static for browser compat */}
-      <motion.div
-        variants={{
-          hidden: { opacity: 0 },
-          visible: { opacity: 1 },
-        }}
+      {/* Image — entry animation on src change only; close fades with the parent */}
+      <motion.img
+        key={src}
+        src={src}
+        alt={alt}
+        initial={{ scale: 0.94, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.94, opacity: 0 }}
         transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backdropFilter: 'blur(20px) saturate(1.1)',
-          WebkitBackdropFilter: 'blur(20px) saturate(1.1)',
-          backgroundColor: 'rgba(0, 0, 0, 0.6)',
-        }}
+        onClick={e => e.stopPropagation()}
+        className="relative max-h-[90vh] max-w-[90vw] object-contain block rounded-[6px] pointer-events-auto"
+        draggable={false}
       />
-      {/* Image */}
-      <AnimatePresence mode="popLayout">
-        <motion.img
-          key={src}
-          src={src}
-          alt={alt}
-          initial={{ scale: 0.92, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.95, opacity: 0 }}
-          transition={{
-            default: { duration: 0.2, ease: [0.32, 0.72, 0, 1] },
-            exit: { duration: 0.15, ease: [0.32, 0, 0.67, 0] },
-          }}
-          onClick={e => e.stopPropagation()}
-          style={{
-            position: 'relative',
-            maxHeight: '90vh',
-            maxWidth: '90vw',
-            objectFit: 'contain',
-            display: 'block',
-            borderRadius: 6,
-            pointerEvents: 'auto',
-          }}
-          draggable={false}
-        />
-      </AnimatePresence>
 
       {/* Close button */}
       <button
         onClick={e => { e.stopPropagation(); onClose(); }}
         aria-label="Close"
-        style={{
-          position: 'absolute',
-          top: 16,
-          right: 16,
-          width: 40,
-          height: 40,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'rgba(255,255,255,0.1)',
-          border: 'none',
-          borderRadius: '50%',
-          cursor: 'pointer',
-          color: '#fff',
-          flexShrink: 0,
-        }}
+        className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center border-none rounded-full cursor-pointer shrink-0"
+        style={{ background: 'color-mix(in srgb, var(--foreground) 10%, transparent)', color: 'var(--foreground)' }}
       >
         <HugeiconsIcon icon={Cancel01Icon} size={16} color="currentColor" />
       </button>
@@ -299,25 +258,10 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
         <button
           onClick={e => { e.stopPropagation(); onPrev(); }}
           aria-label="Previous image"
-          style={{
-            position: 'absolute',
-            left: 16,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: 40,
-            height: 40,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'rgba(255,255,255,0.1)',
-            border: 'none',
-            borderRadius: '50%',
-            cursor: 'pointer',
-            color: '#fff',
-            flexShrink: 0,
-          }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center border-none rounded-full cursor-pointer shrink-0"
+          style={{ background: 'color-mix(in srgb, var(--foreground) 10%, transparent)', color: 'var(--foreground)' }}
         >
-          <HugeiconsIcon icon={ArrowLeft01Icon} size={16} color="currentColor" />
+          <HugeiconsIcon icon={ArrowLeft02Icon} size={16} color="currentColor" />
         </button>
       )}
 
@@ -326,43 +270,18 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
         <button
           onClick={e => { e.stopPropagation(); onNext(); }}
           aria-label="Next image"
-          style={{
-            position: 'absolute',
-            right: 16,
-            top: '50%',
-            transform: 'translateY(-50%)',
-            width: 40,
-            height: 40,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'rgba(255,255,255,0.1)',
-            border: 'none',
-            borderRadius: '50%',
-            cursor: 'pointer',
-            color: '#fff',
-            flexShrink: 0,
-          }}
+          className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center border-none rounded-full cursor-pointer shrink-0"
+          style={{ background: 'color-mix(in srgb, var(--foreground) 10%, transparent)', color: 'var(--foreground)' }}
         >
-          <HugeiconsIcon icon={ArrowRight01Icon} size={16} color="currentColor" />
+          <HugeiconsIcon icon={ArrowRight02Icon} size={16} color="currentColor" />
         </button>
       )}
 
       {/* Counter */}
       <div
         onClick={e => e.stopPropagation()}
-        style={{
-          position: 'absolute',
-          bottom: 20,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          color: 'rgba(255,255,255,0.5)',
-          fontSize: 12,
-          fontVariantNumeric: 'tabular-nums',
-          letterSpacing: '0.04em',
-          pointerEvents: 'none',
-          userSelect: 'none',
-        }}
+        className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[12px] tabular-nums tracking-[0.04em] pointer-events-none select-none"
+        style={{ color: 'color-mix(in srgb, var(--foreground) 50%, transparent)' }}
       >
         {index + 1} / {total}
       </div>

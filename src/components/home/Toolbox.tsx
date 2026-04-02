@@ -18,7 +18,23 @@ const EASE = [0.19, 1, 0.22, 1] as const;
 export default function Toolbox() {
   return (
     <div>
-      <div className="section-header">Toolbox</div>
+      <div className="section-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <span>Toolbox</span>
+        <a
+          href="/tools"
+          style={{
+            fontSize: '11px',
+            color: 'var(--text-ghost)',
+            textDecoration: 'none',
+            letterSpacing: '-0.01em',
+            transition: 'color 150ms ease',
+          }}
+          onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-muted)'; }}
+          onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-ghost)'; }}
+        >
+          See all →
+        </a>
+      </div>
       <div
         style={{
           display: 'flex',

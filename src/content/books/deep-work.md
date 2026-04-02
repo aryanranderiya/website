@@ -3,6 +3,7 @@ title: Deep Work
 author: Cal Newport
 status: read
 rating: 5
+cover: https://covers.openlibrary.org/b/id/7988607-L.jpg
 genre: [productivity, focus]
 year: 2016
 pages: 296

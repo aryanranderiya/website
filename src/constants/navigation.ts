@@ -33,6 +33,12 @@ export const PAGES: NavPage[] = [
     icon: 'PenTool02Icon',
   },
   {
+    href: '/tools',
+    label: 'Tools',
+    description: 'Apps and tools I use and recommend',
+    icon: 'SparklesIcon',
+  },
+  {
     href: '/books',
     label: 'Bookshelf',
     description: 'Books I have read and want to read',

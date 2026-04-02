@@ -187,26 +187,18 @@ export default function Signature() {
   let letterIndex = 0;
 
   return (
-    <section
-      style={{ paddingBottom: 16, marginTop: 32 }}
-    >
+    <section className="pb-8 mt-8">
       <div
         ref={containerRef}
         aria-label="Aryan Randeriya signature"
-        style={{
-          display: 'flex',
-          minHeight: 51,
-          flexFlow: 'wrap',
-          justifyContent: 'start',
-          alignItems: 'center',
-        }}
+        className="flex min-h-[51px] flex-wrap justify-start items-center"
       >
         {ALL_ITEMS.map((item, i) => {
           if (item === 'space') {
             return (
               <div
                 key={`space-${i}`}
-                style={{ width: 12, height: 51 }}
+                className="w-3 h-[51px]"
               />
             );
           }
@@ -223,7 +215,7 @@ export default function Signature() {
                 viewBox={item.viewBox}
                 height={item.height}
                 width={item.width}
-                style={{ overflow: 'visible' }}
+                className="overflow-visible"
               >
                 <path
                   d={item.path}

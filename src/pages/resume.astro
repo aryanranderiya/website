@@ -73,7 +73,7 @@ const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
   <div class="pb-16">
 
     <!-- ── Header ───────────────────────────────────────────────── -->
-    <div class="mb-10 pb-8 border-b border-[var(--border)]">
+    <div class="mb-10 pb-8">
       <p class="section-header mb-5">Resume</p>
 
       <h1 class="text-heading-1 tracking-[-0.03em] mb-1.5">
@@ -96,7 +96,7 @@ const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
         <span class="text-[11px] text-[var(--text-ghost)]">Ahmedabad, India</span>
       </div>
 
-      <div class="mt-5">
+      <div class="mt-5 overflow-hidden">
         <ButtonLink
           href="/resume.pdf"
           label="Download PDF"
@@ -113,7 +113,13 @@ const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
     <!-- ── Experience ────────────────────────────────────────────── -->
     <section class="mb-9">
       <p class="section-header">Experience</p>
-      <ExperienceList client:load />
+      <ExperienceList excludeTypes={['volunteer']} client:load />
+    </section>
+
+    <!-- ── Community Experience ──────────────────────────────────── -->
+    <section class="mb-9">
+      <p class="section-header">Community</p>
+      <ExperienceList includeTypes={['volunteer']} client:load />
     </section>
 
     <!-- ── Education ─────────────────────────────────────────────── -->
