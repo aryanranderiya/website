@@ -1,10 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import * as Dialog from '@radix-ui/react-dialog';
 import { buttonVariants } from '@/components/ui/raised-button';
-import { HugeiconsIcon, Cancel01Icon, LinkSquare02Icon, ArrowRight02Icon } from '@icons';
+import {
+  HugeiconsIcon,
+  Cancel01Icon,
+  LinkSquare02Icon,
+  ArrowRight02Icon,
+  ArrowLeft01Icon,
+} from '@icons';
 
 interface FreelanceProject {
   name: string;
@@ -19,6 +25,8 @@ interface FreelanceProject {
     role: string;
   };
 }
+
+const PANEL_WIDTH = 580;
 
 const DEVICON_MAP: Record<string, string | null> = {
   React: 'react',
@@ -41,15 +49,15 @@ const pastWork: FreelanceProject[] = [
     description:
       'Official website and analytics dashboard for Blink Analytics, a generative AI and data analytics company. Real-time client reporting with custom charts, metrics, and data export.',
     images: [
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/1.png',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/2.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/3.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/4.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/5.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/6.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/7.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/8.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/BlinkAnalytics/9.webp',
+      '/ProjectMedia/BlinkAnalytics/1.png',
+      '/ProjectMedia/BlinkAnalytics/2.webp',
+      '/ProjectMedia/BlinkAnalytics/3.webp',
+      '/ProjectMedia/BlinkAnalytics/4.webp',
+      '/ProjectMedia/BlinkAnalytics/5.webp',
+      '/ProjectMedia/BlinkAnalytics/6.webp',
+      '/ProjectMedia/BlinkAnalytics/7.webp',
+      '/ProjectMedia/BlinkAnalytics/8.webp',
+      '/ProjectMedia/BlinkAnalytics/9.webp',
     ],
   },
   {
@@ -59,9 +67,7 @@ const pastWork: FreelanceProject[] = [
     url: 'https://mwi.gg',
     description:
       'Brand identity and web platform for Move With Intention (MWI), a fitness and wellness company. Modern, clean aesthetic with performant Next.js architecture.',
-    images: Array.from({ length: 14 }, (_, i) =>
-      `https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/MWI/${i + 1}.webp`
-    ),
+    images: Array.from({ length: 14 }, (_, i) => `/ProjectMedia/MWI/${i + 1}.webp`),
   },
   {
     name: 'Encode PDEU',
@@ -71,12 +77,15 @@ const pastWork: FreelanceProject[] = [
     description:
       'The official website of Encode — the Computer Science Club at PDEU. Led the web dev core committee and built the site with event management, member profiles, and resource sharing.',
     images: [
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/encode.png',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/1.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/2.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/3.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/4.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/5.webp',
+      '/ProjectMedia/Encode_Official%20Website/encode.png',
+      '/ProjectMedia/Encode_Official%20Website/1.webp',
+      '/ProjectMedia/Encode_Official%20Website/2.webp',
+      '/ProjectMedia/Encode_Official%20Website/3.webp',
+      '/ProjectMedia/Encode_Official%20Website/4.webp',
+      '/ProjectMedia/Encode_Official%20Website/5.webp',
+      '/ProjectMedia/Encode_Official%20Website/6.webp',
+      '/ProjectMedia/Encode_Official%20Website/7.webp',
+      '/ProjectMedia/Encode_Official%20Website/8.webp',
     ],
   },
   {
@@ -87,7 +96,19 @@ const pastWork: FreelanceProject[] = [
     description:
       'Content e-commerce platform enabling creators to sell digital products with integrated payments and delivery.',
     images: [
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Rezrek/image%20(1).png',
+      '/ProjectMedia/Rezrek/rezrek%20main.webp',
+      '/ProjectMedia/Rezrek/0.webp',
+      '/ProjectMedia/Rezrek/1.webp',
+      '/ProjectMedia/Rezrek/2.webp',
+      '/ProjectMedia/Rezrek/3.webp',
+      '/ProjectMedia/Rezrek/4.webp',
+      '/ProjectMedia/Rezrek/5.webp',
+      '/ProjectMedia/Rezrek/6.webp',
+      '/ProjectMedia/Rezrek/7.webp',
+      '/ProjectMedia/Rezrek/8.webp',
+      '/ProjectMedia/Rezrek/9.webp',
+      '/ProjectMedia/Rezrek/10.webp',
+      '/ProjectMedia/Rezrek/11.webp',
     ],
     testimonial: {
       quote:
@@ -104,12 +125,16 @@ const pastWork: FreelanceProject[] = [
     description:
       'Create personalized greeting cards, send them via email, and receive responses. Uses AI for card templates with an easy, Canva-like design interface.',
     images: [
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/2024-11-22_22-18.png',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/1.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/2.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/3.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/4.webp',
-      'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/LyfeLane/5.webp',
+      '/ProjectMedia/LyfeLane/2024-11-22_22-18.png',
+      '/ProjectMedia/LyfeLane/2024-11-22_22-19.png',
+      '/ProjectMedia/LyfeLane/2024-11-22_22-19_1.png',
+      '/ProjectMedia/LyfeLane/2024-11-22_22-20.png',
+      '/ProjectMedia/LyfeLane/2024-11-22_22-22.png',
+      '/ProjectMedia/LyfeLane/2024-11-22_22-23.png',
+      '/ProjectMedia/LyfeLane/2024-11-22_22-24.png',
+      '/ProjectMedia/LyfeLane/2024-11-22_22-24_1.png',
+      '/ProjectMedia/LyfeLane/2024-11-22_22-24_2.png',
+      '/ProjectMedia/LyfeLane/2024-11-22_22-24_3.png',
     ],
   },
   {
@@ -128,7 +153,7 @@ function DeviconImg({ slug, size = 12 }: { slug: string; size?: number }) {
       alt=""
       width={size}
       height={size}
-      style={{ display: 'inline-block', flexShrink: 0 }}
+      className="inline-block shrink-0"
       onError={(e) => {
         (e.currentTarget as HTMLImageElement).style.display = 'none';
       }}
@@ -136,461 +161,322 @@ function DeviconImg({ slug, size = 12 }: { slug: string; size?: number }) {
   );
 }
 
-function FreelanceDrawer({
+function ProjectDetail({
   project,
-  open,
   onClose,
 }: {
-  project: FreelanceProject | null;
-  open: boolean;
+  project: FreelanceProject;
   onClose: () => void;
 }) {
   const [activeImage, setActiveImage] = useState(0);
+  const wheelAccumRef = useRef(0);
+  const wheelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Reset image index when drawer closes
-  if (!open && activeImage !== 0) setActiveImage(0);
+  const total = project.images.length;
+  const prev = () => setActiveImage((i) => Math.max(0, i - 1));
+  const next = () => setActiveImage((i) => Math.min(total - 1, i + 1));
+
+  const handleWheel = (e: React.WheelEvent) => {
+    // Use horizontal delta from trackpad; fallback to vertical if no horizontal
+    const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+    wheelAccumRef.current += delta;
+
+    if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
+    wheelTimerRef.current = setTimeout(() => {
+      wheelAccumRef.current = 0;
+    }, 200);
+
+    if (wheelAccumRef.current > 60) {
+      wheelAccumRef.current = 0;
+      next();
+    } else if (wheelAccumRef.current < -60) {
+      wheelAccumRef.current = 0;
+      prev();
+    }
+  };
 
   return (
-    <Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
-      <AnimatePresence>
-        {open && project && (
-          <Dialog.Portal forceMount>
-            {/* Overlay */}
-            <Dialog.Overlay asChild>
-              <motion.div
-                className="fixed inset-0 z-50"
-                style={{
-                  background: 'rgba(0,0,0,0.4)',
-                  backdropFilter: 'blur(4px)',
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                onClick={onClose}
-              />
-            </Dialog.Overlay>
+    <motion.div
+      key={project.name}
+      className="flex flex-col bg-[var(--background)] w-full h-full overflow-y-auto"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.18 }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 pt-5 pb-4 shrink-0">
+        <div className="flex items-center gap-2">
+          <span className="text-[11px] px-2 py-[3px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] tracking-[0.02em]">
+            {project.type}
+          </span>
+        </div>
+        <button
+          onClick={onClose}
+          className="w-7 h-7 rounded-lg bg-[var(--muted-bg)] text-[var(--text-muted)] cursor-pointer flex items-center justify-center transition-opacity duration-150 hover:opacity-60 border-none"
+          aria-label="Close"
+        >
+          <HugeiconsIcon icon={Cancel01Icon} size={12} color="currentColor" />
+        </button>
+      </div>
 
-            {/* Drawer panel */}
-            <Dialog.Content asChild>
-              <motion.div
-                className="fixed top-0 right-0 bottom-0 z-50 flex flex-col"
-                style={{
-                  width: 'min(max(320px, 50%), 620px)',
-                  background: 'var(--background)',
-                  overflowY: 'auto',
-                  overflowX: 'hidden',
-                }}
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
+      {/* Image carousel */}
+      {total > 0 && (
+        <div
+          className="relative mx-5 rounded-xl overflow-hidden shrink-0 bg-[var(--muted-bg)] select-none"
+          style={{ aspectRatio: '16/9' }}
+          onWheel={handleWheel}
+        >
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.img
+              key={activeImage}
+              src={project.images[activeImage]}
+              alt={project.name}
+              className="w-full h-full object-cover block absolute inset-0"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            />
+          </AnimatePresence>
+
+          {/* Prev / Next buttons */}
+          {total > 1 && (
+            <>
+              <button
+                onClick={prev}
+                disabled={activeImage === 0}
+                className="absolute left-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg bg-black/40 backdrop-blur-sm flex items-center justify-center border-none cursor-pointer transition-opacity duration-150 disabled:opacity-20"
+                aria-label="Previous image"
               >
-                <Dialog.Title className="sr-only">
-                  {project.name}
-                </Dialog.Title>
+                <HugeiconsIcon icon={ArrowLeft01Icon} size={13} color="#fff" />
+              </button>
+              <button
+                onClick={next}
+                disabled={activeImage === total - 1}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-lg bg-black/40 backdrop-blur-sm flex items-center justify-center border-none cursor-pointer transition-opacity duration-150 disabled:opacity-20"
+                aria-label="Next image"
+              >
+                <HugeiconsIcon icon={ArrowRight02Icon} size={13} color="#fff" />
+              </button>
 
-                {/* Close button */}
-                <Dialog.Close asChild>
+              {/* Dot indicators */}
+              <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex gap-[5px] items-center">
+                {project.images.map((_, i) => (
                   <button
+                    key={i}
+                    onClick={() => setActiveImage(i)}
+                    className="h-[5px] rounded-full border-none cursor-pointer p-0 transition-all duration-200"
                     style={{
-                      position: 'absolute',
-                      top: '16px',
-                      right: '16px',
-                      zIndex: 10,
-                      width: '28px',
-                      height: '28px',
-                      borderRadius: '6px',
-                      border: 'none',
-                      background: 'var(--muted-bg)',
-                      color: 'var(--text-muted)',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      transition: 'opacity 150ms ease',
+                      width: i === activeImage ? '14px' : '5px',
+                      background: i === activeImage ? '#fff' : 'rgba(255,255,255,0.4)',
                     }}
-                    aria-label="Close"
-                    onMouseEnter={(e) =>
-                      ((e.currentTarget as HTMLButtonElement).style.opacity =
-                        '0.6')
-                    }
-                    onMouseLeave={(e) =>
-                      ((e.currentTarget as HTMLButtonElement).style.opacity =
-                        '1')
-                    }
+                    aria-label={`Image ${i + 1}`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* Content */}
+      <div className="px-6 py-5 flex flex-col gap-5">
+        {/* Title + visit */}
+        <div className="flex items-start justify-between gap-3">
+          <h2 className="text-[22px] font-semibold tracking-[-0.03em] text-[var(--text-primary)] leading-[1.2]">
+            {project.name}
+          </h2>
+          {project.url && (
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={buttonVariants({ variant: 'accent', size: 'sm' })}
+              style={{
+                backgroundColor: '#00bbff',
+                color: '#000',
+                borderColor: 'rgba(0,187,255,0.4)',
+                boxShadow: '0 2px 8px rgba(0,187,255,0.3)',
+                textDecoration: 'none',
+                flexShrink: 0,
+                gap: '5px',
+              }}
+            >
+              Visit
+              <HugeiconsIcon icon={LinkSquare02Icon} size={10} color="currentColor" />
+            </a>
+          )}
+        </div>
+
+        {/* Description */}
+        <p className="text-[13px] text-[var(--text-muted)] leading-[1.65]">
+          {project.description}
+        </p>
+
+        {/* Tech stack */}
+        {project.tech.length > 0 && (
+          <div>
+            <div className="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2">
+              Tech Stack
+            </div>
+            <div className="flex flex-wrap gap-[6px]">
+              {project.tech.map((t) => {
+                const slug = DEVICON_MAP[t];
+                return (
+                  <span
+                    key={t}
+                    className="inline-flex items-center gap-[5px] text-[11px] px-[9px] py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-secondary)]"
                   >
-                    <HugeiconsIcon icon={Cancel01Icon} size={12} color="currentColor" />
-                  </button>
-                </Dialog.Close>
-
-                {/* Image carousel */}
-                {project.images.length > 0 && (
-                  <div
-                    style={{
-                      position: 'relative',
-                      width: '100%',
-                      aspectRatio: '16/9',
-                      background: 'var(--muted-bg)',
-                      overflow: 'hidden',
-                      flexShrink: 0,
-                    }}
-                  >
-                    <img
-                      src={project.images[activeImage]}
-                      alt={project.name}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                        objectFit: 'cover',
-                        display: 'block',
-                      }}
-                    />
-                    {project.images.length > 1 && (
-                      <div
-                        style={{
-                          position: 'absolute',
-                          bottom: '12px',
-                          left: '50%',
-                          transform: 'translateX(-50%)',
-                          display: 'flex',
-                          gap: '6px',
-                          alignItems: 'center',
-                        }}
-                      >
-                        {project.images.map((_, i) => (
-                          <button
-                            key={i}
-                            onClick={() => setActiveImage(i)}
-                            style={{
-                              width: i === activeImage ? '16px' : '6px',
-                              height: '6px',
-                              borderRadius: '9999px',
-                              border: 'none',
-                              background:
-                                i === activeImage
-                                  ? '#fff'
-                                  : 'rgba(255,255,255,0.45)',
-                              cursor: 'pointer',
-                              padding: 0,
-                              transition: 'all 200ms ease',
-                            }}
-                            aria-label={`Image ${i + 1}`}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Content */}
-                <div style={{ padding: '24px', flex: 1 }}>
-                  {/* Type badge */}
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      marginBottom: '10px',
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: '10px',
-                        padding: '2px 8px',
-                        borderRadius: '9999px',
-                        background: 'var(--muted-bg)',
-                        color: 'var(--text-muted)',
-                        letterSpacing: '0.02em',
-                        textTransform: 'capitalize',
-                      }}
-                    >
-                      {project.type}
-                    </span>
-                  </div>
-
-                  {/* Title + visit link */}
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      justifyContent: 'space-between',
-                      gap: '12px',
-                      marginBottom: '12px',
-                    }}
-                  >
-                    <h2
-                      style={{
-                        fontSize: '22px',
-                        fontWeight: 600,
-                        letterSpacing: '-0.03em',
-                        color: 'var(--text-primary)',
-                        lineHeight: 1.2,
-                      }}
-                    >
-                      {project.name}
-                    </h2>
-
-                    {project.url && (
-                      <a
-                        href={project.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={buttonVariants({ variant: 'accent', size: 'sm' })}
-                        style={{
-                          backgroundColor: '#00bbff',
-                          color: '#000000',
-                          borderColor: 'rgba(0, 187, 255, 0.4)',
-                          boxShadow: '0 2px 8px rgba(0, 187, 255, 0.3)',
-                          textDecoration: 'none',
-                          flexShrink: 0,
-                          gap: '5px',
-                        }}
-                      >
-                        Visit
-                        <HugeiconsIcon icon={LinkSquare02Icon} size={10} color="currentColor" />
-                      </a>
-                    )}
-                  </div>
-
-                  {/* Description */}
-                  <p
-                    style={{
-                      fontSize: '13px',
-                      color: 'var(--text-muted)',
-                      lineHeight: 1.65,
-                      marginBottom: '24px',
-                    }}
-                  >
-                    {project.description}
-                  </p>
-
-                  {/* Tech stack */}
-                  {project.tech.length > 0 && (
-                    <div style={{ marginBottom: '20px' }}>
-                      <div
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 500,
-                          letterSpacing: '0.07em',
-                          textTransform: 'uppercase',
-                          color: 'var(--text-ghost)',
-                          marginBottom: '10px',
-                        }}
-                      >
-                        Tech Stack
-                      </div>
-                      <div
-                        style={{
-                          display: 'flex',
-                          flexWrap: 'wrap',
-                          gap: '6px',
-                        }}
-                      >
-                        {project.tech.map((t) => {
-                          const slug = DEVICON_MAP[t];
-                          return (
-                            <span
-                              key={t}
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '5px',
-                                fontSize: '11px',
-                                padding: '4px 9px',
-                                borderRadius: '9999px',
-                                background: 'var(--muted-bg)',
-                                color: 'var(--text-secondary)',
-                                letterSpacing: '0.01em',
-                              }}
-                            >
-                              {slug !== undefined && slug !== null && (
-                                <DeviconImg slug={slug} size={12} />
-                              )}
-                              {t}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Testimonial */}
-                  {project.testimonial && (
-                    <div style={{ marginBottom: '20px' }}>
-                      <div
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 500,
-                          letterSpacing: '0.07em',
-                          textTransform: 'uppercase',
-                          color: 'var(--text-ghost)',
-                          marginBottom: '10px',
-                        }}
-                      >
-                        Testimonial
-                      </div>
-                      <div
-                        style={{
-                          padding: '16px',
-                          borderRadius: '8px',
-                          background: 'var(--muted-bg)',
-                        }}
-                      >
-                        <p
-                          style={{
-                            fontSize: '13px',
-                            color: 'var(--text-secondary)',
-                            lineHeight: 1.6,
-                            fontStyle: 'italic',
-                            marginBottom: '10px',
-                          }}
-                        >
-                          "{project.testimonial.quote}"
-                        </p>
-                        <div>
-                          <span
-                            style={{
-                              fontSize: '12px',
-                              fontWeight: 600,
-                              color: 'var(--text-primary)',
-                            }}
-                          >
-                            {project.testimonial.author}
-                          </span>
-                          <span
-                            style={{
-                              fontSize: '11px',
-                              color: 'var(--text-ghost)',
-                              marginLeft: '6px',
-                            }}
-                          >
-                            {project.testimonial.role}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            </Dialog.Content>
-          </Dialog.Portal>
+                    {slug && <DeviconImg slug={slug} size={12} />}
+                    {t}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
         )}
-      </AnimatePresence>
-    </Dialog.Root>
+
+        {/* Testimonial */}
+        {project.testimonial && (
+          <div>
+            <div className="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2">
+              Testimonial
+            </div>
+            <div className="p-4 rounded-xl bg-[var(--muted-bg)]">
+              <p className="text-[13px] text-[var(--text-secondary)] leading-[1.6] italic mb-2">
+                "{project.testimonial.quote}"
+              </p>
+              <span className="text-[12px] font-semibold text-[var(--text-primary)]">
+                {project.testimonial.author}
+              </span>
+              <span className="text-[11px] text-[var(--text-ghost)] ml-[6px]">
+                {project.testimonial.role}
+              </span>
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
   );
 }
 
 export default function FreelanceWork() {
   const [selected, setSelected] = useState<FreelanceProject | null>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const handleOpen = (project: FreelanceProject) => {
-    setSelected(project);
-    setDrawerOpen(true);
-  };
 
-  const handleClose = () => {
-    setDrawerOpen(false);
+  // Escape to close
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setSelected(null);
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
+
+  // Collapse content width to fit left of the panel.
+  // Always use explicit px values (never 'auto') so CSS can interpolate smoothly.
+  useEffect(() => {
+    const el = document.getElementById('page-content');
+    if (!el) return;
+    const CONTENT_MAX_WIDTH = 640;
+    const TRANSITION = 'max-width 0.35s cubic-bezier(0.19, 1, 0.22, 1), margin-left 0.35s cubic-bezier(0.19, 1, 0.22, 1), margin-right 0.35s cubic-bezier(0.19, 1, 0.22, 1)';
+    el.style.transition = TRANSITION;
+
+    if (selected) {
+      const currentLeft = (window.innerWidth - Math.min(window.innerWidth, CONTENT_MAX_WIDTH)) / 2;
+      const panelLeft = window.innerWidth - PANEL_WIDTH;
+      el.style.marginLeft = `${currentLeft}px`;
+      el.style.marginRight = '0px';
+      el.style.maxWidth = `${panelLeft - currentLeft}px`;
+    } else {
+      // Animate back to centered px values — can't transition to 'auto'
+      const centeredMargin = Math.max(0, (window.innerWidth - CONTENT_MAX_WIDTH) / 2);
+      el.style.marginLeft = `${centeredMargin}px`;
+      el.style.marginRight = `${centeredMargin}px`;
+      el.style.maxWidth = `${CONTENT_MAX_WIDTH}px`;
+      // After transition, hand back to CSS
+      const t = setTimeout(() => {
+        el.style.marginLeft = '';
+        el.style.marginRight = '';
+        el.style.maxWidth = '';
+        el.style.transition = '';
+      }, 400);
+      return () => clearTimeout(t);
+    }
+  }, [selected]);
+
+
+  const handleSelect = (project: FreelanceProject) => {
+    setSelected((prev) => (prev?.name === project.name ? null : project));
   };
 
   return (
     <>
+      {/* Project list — always full width of its container */}
       <div>
-        {pastWork.map((work) => (
-          <button
-            key={work.name}
-            type="button"
-            onClick={() => handleOpen(work)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '10px 6px',
-              margin: '0 -6px',
-              borderBottom: '1px solid var(--border)',
-              textDecoration: 'none',
-              borderRadius: '4px',
-              transition: 'background 150ms ease',
-              cursor: 'pointer',
-              width: 'calc(100% + 12px)',
-              background: 'transparent',
-              border: 'none',
-              borderBlockEnd: '1px solid var(--border)',
-              textAlign: 'left',
-              fontFamily: 'inherit',
-            }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background = 'rgba(0,0,0,0.02)')
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background = 'transparent')
-            }
-          >
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                minWidth: 0,
-              }}
+        {pastWork.map((work) => {
+          const isActive = selected?.name === work.name;
+          return (
+            <button
+              key={work.name}
+              type="button"
+              onClick={() => handleSelect(work)}
+              className="flex items-center justify-between py-[10px] px-[6px] -mx-[6px] rounded-[4px] transition-[background] duration-150 cursor-pointer w-[calc(100%+12px)] bg-transparent border-none [border-block-end:1px_solid_var(--border)] text-left font-[inherit] hover:bg-[var(--muted-bg)]"
+              style={{ background: isActive ? 'var(--muted-bg)' : undefined }}
             >
-              <span
-                style={{
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  color: 'var(--text-primary)',
-                  whiteSpace: 'nowrap',
-                }}
-              >
-                {work.name}
-              </span>
-              <span
-                style={{
-                  fontSize: '12px',
-                  color: 'var(--text-ghost)',
-                  whiteSpace: 'nowrap',
-                  flexShrink: 0,
-                }}
-              >
-                {work.type}
-              </span>
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                flexShrink: 0,
-                marginLeft: '12px',
-              }}
-            >
-              {work.tech.map((tag) => (
-                <span
-                  key={tag}
-                  style={{
-                    fontSize: '10px',
-                    padding: '2px 7px',
-                    borderRadius: '999px',
-                    background: 'var(--muted-bg)',
-                    color: 'var(--text-muted)',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {tag}
+              <div className="flex items-center gap-3 min-w-0">
+                <span className="text-[13px] font-semibold text-[var(--text-primary)] whitespace-nowrap truncate">
+                  {work.name}
                 </span>
-              ))}
-              <HugeiconsIcon icon={ArrowRight02Icon} size={11} color="var(--text-ghost)" style={{ flexShrink: 0, marginLeft: '2px' }} />
-            </div>
-          </button>
-        ))}
+                <span className="text-[12px] text-[var(--text-ghost)] whitespace-nowrap shrink-0">
+                  {work.type}
+                </span>
+              </div>
+              <div className="flex items-center gap-[5px] shrink-0 ml-2">
+                {work.tech.slice(0, 2).map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-[10px] px-[7px] py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] whitespace-nowrap"
+                  >
+                    {tag}
+                  </span>
+                ))}
+                <HugeiconsIcon
+                  icon={ArrowRight02Icon}
+                  size={11}
+                  color={isActive ? 'var(--text-secondary)' : 'var(--text-ghost)'}
+                  className="shrink-0 ml-[2px]"
+                  style={{
+                    transform: isActive ? 'rotate(90deg)' : undefined,
+                    transition: 'transform 0.2s',
+                  }}
+                />
+              </div>
+            </button>
+          );
+        })}
       </div>
 
-      <FreelanceDrawer
-        project={selected}
-        open={drawerOpen}
-        onClose={handleClose}
-      />
+      {/* Detail panel — portalled to body so position:fixed is relative to viewport,
+          not to the transformed #page-content ancestor */}
+      {typeof document !== 'undefined' && createPortal(
+        <AnimatePresence>
+          {selected && (
+            <motion.div
+              className="fixed top-0 right-0 h-screen z-40 overflow-hidden"
+              style={{ width: PANEL_WIDTH }}
+              initial={{ x: PANEL_WIDTH }}
+              animate={{ x: 0 }}
+              exit={{ x: PANEL_WIDTH }}
+              transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+            >
+              <ProjectDetail project={selected} onClose={() => setSelected(null)} />
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 }
