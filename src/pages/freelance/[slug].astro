@@ -16,6 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
+const currentWork = pastWork.find(p => p.slug === slug);
 
 const services = [
   {
@@ -43,6 +44,15 @@ const services = [
 
 <PageLayout title="Freelance" description="Freelance web and mobile development services.">
   <div class="pb-16">
+
+    <!-- Breadcrumb -->
+    {currentWork && (
+      <nav class="flex items-center gap-1.5 text-xs mb-8" style="color: var(--text-ghost);" aria-label="Breadcrumb">
+        <a href="/freelance" class="transition-colors hover:text-[var(--text-muted)]" style="color: var(--text-ghost);">Freelance</a>
+        <span>/</span>
+        <span style="color: var(--text-muted);">{currentWork.name}</span>
+      </nav>
+    )}
 
     <!-- Hero -->
     <section class="pb-10">

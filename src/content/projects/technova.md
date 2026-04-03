@@ -2,12 +2,18 @@
 title: Intelli-Transport
 description: AI-driven transportation system with traffic prediction, accident detection, and driver safety monitoring - built for TechNova Hackathon.
 date: 2024-12-01
-tags: [Next.js, Python, FastAPI]
+tags: [Hackathon, AI / ML, FastAPI]
 tech: [Next.js, TypeScript, FastAPI, Python]
 featured: false
 type: web
 folder: Hackathon
-images: []
+coverImage: /ProjectMedia/TechNova/screenshot-1.png
+images:
+  - /ProjectMedia/TechNova/screenshot-1.png
+  - /ProjectMedia/TechNova/screenshot-2.png
+  - /ProjectMedia/TechNova/screenshot-3.png
+  - /ProjectMedia/TechNova/screenshot-4.png
+  - /ProjectMedia/TechNova/screenshot-5.png
 status: completed
 order: 25
 url: https://tech-nova-hackathon.vercel.app

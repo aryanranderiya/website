@@ -2,7 +2,7 @@
 title: URL Shortener
 description: Full-stack MERN app to generate custom or randomized short URLs with expiration date functionality.
 date: 2024-03-01
-tags: [React, Node.js, MongoDB]
+tags: [Full Stack, MERN]
 tech: [React, Node.js, Express, MongoDB, TailwindCSS]
 featured: false
 type: web
@@ -11,6 +11,7 @@ coverImage: /ProjectMedia/URL_Shortener/URLShortener.png
 images:
   - /ProjectMedia/URL_Shortener/URLShortener.png
   - /ProjectMedia/URL_Shortener/2024-03-14_21-13.png
+  - /ProjectMedia/URL_Shortener/screenshot-1.png
 status: completed
 order: 11
 url: https://links.aryanranderiya.com

@@ -3,6 +3,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 import { getTechIconUrl } from '@/utils/techIcons';
 import { HugeiconsIcon, GithubIcon, LinkSquare02Icon } from '@icons';
+import { RaisedButton } from '@/components/ui/raised-button';
 
 export async function getStaticPaths() {
   const projects = await getCollection('projects');
@@ -93,16 +94,12 @@ const [heroImage, ...galleryImages] = allImages;
           </a>
         )}
         {p.url && (
-          <a
-            href={p.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="visit-btn"
-            style="display: inline-flex; align-items: center; gap: 5px; height: 32px; padding: 0 14px; border-radius: 8px; background: #00bbff; color: #000; font-size: 12px; font-weight: 500; text-decoration: none; transition: opacity 150ms ease; flex-shrink: 0; letter-spacing: -0.01em;"
-          >
-            Visit
-            <HugeiconsIcon icon={LinkSquare02Icon} size={11} color="currentColor" />
-          </a>
+          <RaisedButton asChild variant="accent" size="sm">
+            <a href={p.url} target="_blank" rel="noopener noreferrer" style="gap: 5px; letter-spacing: -0.01em;">
+              Visit
+              <HugeiconsIcon icon={LinkSquare02Icon} size={11} color="currentColor" />
+            </a>
+          </RaisedButton>
         )}
       </div>
     </div>
@@ -429,10 +426,6 @@ const [heroImage, ...galleryImages] = allImages;
 
   .icon-btn:hover {
     opacity: 0.65;
-  }
-
-  .visit-btn:hover {
-    opacity: 0.85;
   }
 
   .gallery-grid {

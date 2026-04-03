@@ -536,7 +536,7 @@ export default function Sidebar() {
 
           {/* GitHub */}
           <a
-            href="https://github.com/aryanranderiya"
+            href="https://github.com/aryanranderiya/website"
             target="_blank"
             rel="noopener noreferrer"
             style={{

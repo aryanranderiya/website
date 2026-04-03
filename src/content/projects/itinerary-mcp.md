@@ -2,12 +2,15 @@
 title: Itinerary MCP Server
 description: FastAPI travel itinerary backend with MCP integration - lets AI assistants discover, filter, and create travel plans via natural language.
 date: 2025-03-01
-tags: [Python, FastAPI, MCP]
+tags: [MCP, AI / ML, FastAPI]
 tech: [Python, FastAPI, SQLite, MCP]
 featured: false
 type: other
 folder: Projects
-images: []
+coverImage: /ProjectMedia/Itinerary_MCP/screenshot-1.png
+images:
+  - /ProjectMedia/Itinerary_MCP/screenshot-1.png
+  - /ProjectMedia/Itinerary_MCP/screenshot-2.png
 status: completed
 order: 18
 github: https://github.com/aryanranderiya/itinerary-mcp-server

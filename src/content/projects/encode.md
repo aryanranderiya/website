@@ -2,7 +2,7 @@
 title: Encode
 description: The official website of Encode - the Computer Science Club at PDEU. Full MERN stack with event management, member profiles, and resource sharing.
 date: 2024-08-01
-tags: [React, Node.js, MongoDB]
+tags: [Full Stack, MERN]
 tech: [React, Node.js, Express, MongoDB, TailwindCSS, JavaScript]
 featured: false
 type: web

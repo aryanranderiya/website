@@ -2,7 +2,7 @@
 title: SUSTAIN
 description: A tool to help farmers analyze soil moisture and water data, optimizing water usage and improving crop yields - built for NASA Space Apps Hackathon 2024.
 date: 2024-11-01
-tags: [React, TypeScript, TailwindCSS]
+tags: [Hackathon, AI / ML, React]
 tech: [React, TypeScript, TailwindCSS]
 featured: false
 type: web

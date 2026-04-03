@@ -2,12 +2,17 @@
 title: OS Concepts Visualizer
 description: Interactive web app visualizing operating system algorithms - page replacement, producer-consumer, and disk scheduling.
 date: 2024-01-01
-tags: [Python, Flask]
+tags: [Education, Python]
 tech: [Python, Flask, HTML, CSS, JavaScript]
 featured: false
 type: web
 folder: Projects
-images: []
+coverImage: /ProjectMedia/OS_Mini_Project/srtn.png
+images:
+  - /ProjectMedia/OS_Mini_Project/srtn.png
+  - /ProjectMedia/OS_Mini_Project/srtn-2.png
+  - /ProjectMedia/OS_Mini_Project/producer-consumer.png
+  - /ProjectMedia/OS_Mini_Project/sstf.png
 status: completed
 order: 19
 url: https://osproject.vercel.app

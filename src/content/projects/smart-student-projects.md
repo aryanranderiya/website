@@ -2,7 +2,7 @@
 title: Smart Student Projects
 description: Platform to showcase student projects from universities across India - built for Smart India Hackathon 2023.
 date: 2023-09-01
-tags: [HTML, CSS, JavaScript]
+tags: [Hackathon, Firebase]
 tech: [HTML, CSS, JavaScript, Firebase]
 featured: false
 type: web
@@ -10,6 +10,9 @@ folder: Hackathon
 coverImage: /ProjectMedia/Smart_Student Projects/SSPBanner.png
 images:
   - /ProjectMedia/Smart_Student Projects/SSPBanner.png
+  - /ProjectMedia/Smart_Student Projects/screenshot-1.png
+  - /ProjectMedia/Smart_Student Projects/screenshot-2.png
+  - /ProjectMedia/Smart_Student Projects/screenshot-3.png
 status: completed
 order: 26
 url: http://projects.aryanranderiya.com/SmartStudentProjects/

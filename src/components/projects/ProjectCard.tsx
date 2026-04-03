@@ -28,6 +28,18 @@ const FOLDER_CHIP: Record<string, { bg: string; color: string; label: string }> 
   Hackathon: { bg: 'rgba(167,139,250,0.12)', color: '#a78bfa', label: 'Hackathon' },
 };
 
+const TYPE_LABELS: Record<string, string> = {
+  web:     'Web',
+  mobile:  'Mobile',
+  game:    'Game',
+  cli:     'CLI',
+  desktop: 'Desktop',
+  macos:   'macOS',
+  os:      'macOS',
+  other:   'Other',
+  api:     'API',
+};
+
 export default function ProjectCard({
   project,
   index,
@@ -40,6 +52,7 @@ export default function ProjectCard({
   const [hovered, setHovered] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const chip = FOLDER_CHIP[project.folder];
+  const typeLabel = TYPE_LABELS[project.type] ?? project.type;
 
   return (
     <motion.div
@@ -118,8 +131,23 @@ export default function ProjectCard({
         </span>
       </div>
 
-      {/* Right side: tags + category chip + arrow */}
+      {/* Right side: type + tags + folder chip + arrow */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+        {/* Type badge */}
+        <span
+          style={{
+            fontSize: '10px',
+            padding: '2px 7px',
+            borderRadius: '9999px',
+            background: 'var(--muted-bg)',
+            color: 'var(--text-ghost)',
+            letterSpacing: '0.01em',
+          }}
+        >
+          {typeLabel}
+        </span>
+
+        {/* Tag chips */}
         {project.tags.slice(0, 2).map(t => {
           const iconUrl = getTechIconUrl(t);
           return (

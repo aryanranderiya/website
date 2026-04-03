@@ -2,7 +2,7 @@
 title: University Research Portal
 description: Full-stack website for university professors to upload and manage research data, generate analytics, and manage publications.
 date: 2024-04-01
-tags: [React, Node.js, Supabase]
+tags: [Full Stack, Supabase]
 tech: [React, Node.js, Express, Supabase]
 featured: false
 type: web

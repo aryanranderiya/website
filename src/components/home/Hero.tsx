@@ -27,30 +27,27 @@ function SpotifyLink() {
 export default function Hero() {
   return (
     <section className="pt-4 pb-12">
-      {/* Label */}
-      <div className="animate-fade-in text-[11px] text-[var(--text-ghost)] uppercase tracking-[0.07em] font-medium mb-8">
-        Aryan Randeriya
-      </div>
-
       {/* Headline */}
       <h1 className="animate-fade-in stagger-1 text-[36px] font-semibold tracking-[-0.035em] leading-[1.1] text-[var(--text-primary)] m-0 mb-4">
-        Founder, designer,
+        Hey! Welcome to
         <br />
-        and developer.
+        my digital world.
       </h1>
 
-      {/* Bio - GAIA + The Experience Company */}
+      {/* Bio - Intro */}
+      <p className="animate-fade-in stagger-2 text-[14px] text-[var(--text-muted)] max-w-[440px] leading-[1.65] m-0 mb-3">
+        My name is{' '}
+        <img src="/avatar.webp" alt="Aryan Randeriya" className="inline align-middle rounded-full w-auto h-[1.4em] mb-[2px] mx-[4px]" />{' '}
+        Aryan Randeriya and I'm a Designer, Developer, and the founder of{' '}
+        <img src="https://github.com/theexperiencecompany.png" alt="The Experience Company" className="inline align-middle rounded-full w-auto h-[1.1em] mb-[1px] mx-[3px]" />{' '}
+        The Experience Company. The name comes from two things: our belief that our mission is to improve the human experience, and our deep care about the experience of every product we build.
+      </p>
+
+      {/* Bio - GAIA */}
       <p className="animate-fade-in stagger-2 text-[14px] text-[var(--text-muted)] max-w-[440px] leading-[1.65] m-0 mb-3">
         Currently building{' '}
         <img src="/gaia-logo.png" alt="GAIA" className="inline align-middle rounded-full w-auto h-[1.1em] mb-[1px] mx-[3px]" />{' '}
         GAIA - a proactive personal AI assistant that acts before you even need to ask. The goal: every person in the world should have their own truly intelligent assistant.
-      </p>
-
-      {/* Bio - The Experience Company */}
-      <p className="animate-fade-in stagger-2 text-[14px] text-[var(--text-muted)] max-w-[440px] leading-[1.65] m-0 mb-3">
-        I'm the founder of{' '}
-        <img src="https://github.com/theexperiencecompany.png" alt="The Experience Company" className="inline align-middle rounded-full w-auto h-[1.1em] mb-[1px] mx-[3px]" />{' '}
-        The Experience Company. The name comes from two things: our belief that our mission is to improve the human experience, and the fact that we have a lot of care about the experience of every product we build.
       </p>
 
       {/* Bio - Personal */}

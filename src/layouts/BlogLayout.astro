@@ -18,49 +18,64 @@ interface Props {
   category?: string;
   cover?: string;
   headings?: Heading[];
+  readingTime?: number;
 }
 
-const { title, description, date, updated, tags = [], category, cover, headings = [] } = Astro.props;
+const { title, description, date, updated, tags = [], category, cover, headings = [], readingTime } = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
 <PageLayout title={title} description={description} fullWidth={true}>
   <div class="blog-wrapper">
     <article class="blog-content" style="padding-bottom: 64px;">
+
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-1.5 text-xs mb-8" style="color: var(--text-ghost);" aria-label="Breadcrumb">
+        <a href="/blog" class="transition-colors hover:text-[var(--text-muted)]" style="color: var(--text-ghost);">Blog</a>
+        <span>/</span>
+        <span class="truncate" style="color: var(--text-muted);">{title}</span>
+      </nav>
+
+      {cover && (
+        <img
+          src={cover}
+          alt={title}
+          class="w-full aspect-video object-cover rounded-xl mb-10"
+        />
+      )}
+
       <!-- Header -->
       <header class="mb-12">
         {category && (
-          <div class="text-label text-accent mb-4" style="color: var(--accent-blue)">
+          <div class="text-label mb-3" style="color: var(--accent-blue)">
             {category}
           </div>
         )}
         <h1 class="text-heading-1 mb-4">{title}</h1>
-        <p class="text-body mb-6">{description}</p>
-        <div class="flex items-center gap-4 text-caption">
+        <p class="text-body mb-5" style="color: var(--text-muted);">{description}</p>
+        <div class="flex items-center gap-3 text-caption">
           <time datetime={date.toISOString()}>{formatDate(date)}</time>
           {updated && (
             <>
-              <span>·</span>
+              <span style="color: var(--text-ghost);">·</span>
               <span>Updated {formatDate(updated)}</span>
+            </>
+          )}
+          {readingTime && (
+            <>
+              <span style="color: var(--text-ghost);">·</span>
+              <span>{readingTime} min read</span>
             </>
           )}
         </div>
         {tags.length > 0 && (
-          <div class="flex flex-wrap gap-2 mt-4">
+          <div class="flex flex-wrap gap-1.5 mt-4">
             {tags.map(tag => (
-              <span class="text-xs px-2.5 py-1 rounded-full border" style="border-color: var(--border); color: var(--muted-foreground);">
-                {tag}
+              <span class="text-xs px-2.5 py-1 rounded-full bg-[var(--muted-bg)]" style="color: var(--text-ghost);">
+                {tag.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
               </span>
             ))}
           </div>
-        )}
-        {cover && (
-          <img
-            src={cover}
-            alt={title}
-            class="w-full aspect-video object-cover rounded-xl mt-8"
-            style="border: 1px solid var(--border);"
-          />
         )}
       </header>
 

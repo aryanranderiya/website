@@ -2,7 +2,7 @@
 title: Slate
 description: Minimalistic color-coded note-taking app with a clean interface for organizing thoughts and ideas.
 date: 2025-04-01
-tags: [Next.js, TypeScript, TailwindCSS]
+tags: [Hackathon, Next.js]
 tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: web
@@ -11,6 +11,9 @@ coverImage: /ProjectMedia/Slate/banner.png
 images:
   - /ProjectMedia/Slate/banner.png
   - /ProjectMedia/Slate/screenshot.png
+  - /ProjectMedia/Slate/screenshot-1.png
+  - /ProjectMedia/Slate/screenshot-2.png
+  - /ProjectMedia/Slate/screenshot-3.png
 status: completed
 order: 21
 url: https://slate-notetaking.vercel.app

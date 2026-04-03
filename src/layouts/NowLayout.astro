@@ -22,6 +22,12 @@ const { date, location, entries, currentSlug } = Astro.props;
   <div class="now-wrapper">
     <article class="now-content">
       <header class="now-header">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-1.5 text-xs mb-8" style="color: var(--text-ghost);" aria-label="Breadcrumb">
+          <a href="/now" class="transition-colors hover:text-[var(--text-muted)]" style="color: var(--text-ghost);">Now</a>
+          <span>/</span>
+          <span style="color: var(--text-muted);">{formatDate(date)}</span>
+        </nav>
         <div class="now-eyebrow">Now</div>
         <h1 class="text-heading-1">{formatDate(date)}</h1>
         {location && <p class="now-location">{location}</p>}

@@ -7,6 +7,18 @@ import { RaisedButton } from '@/components/ui/raised-button';
 import { HugeiconsIcon, Cancel01Icon, GithubIcon, LinkSquare02Icon, ImageNotFound01Icon, ArrowLeft01Icon, ArrowRight01Icon } from '@icons';
 import { getTechIconUrl } from '../../utils/techIcons';
 
+const TYPE_LABELS: Record<string, string> = {
+  web:     'Web',
+  mobile:  'Mobile',
+  game:    'Game',
+  cli:     'CLI',
+  desktop: 'Desktop',
+  macos:   'macOS',
+  os:      'macOS',
+  other:   'Other',
+  api:     'API',
+};
+
 interface Project {
   slug: string;
   title: string;
@@ -257,10 +269,9 @@ export default function ProjectDrawer({
                         background: 'var(--muted-bg)',
                         color: 'var(--text-muted)',
                         letterSpacing: '0.02em',
-                        textTransform: 'capitalize',
                       }}
                     >
-                      {project.type}
+                      {TYPE_LABELS[project.type] ?? project.type}
                     </span>
                     {project.folder && project.folder !== 'Projects' && (
                       <span
@@ -373,9 +384,9 @@ export default function ProjectDrawer({
                     {project.description}
                   </p>
 
-                  {/* Tech stack */}
-                  {project.tech.length > 0 && (
-                    <div style={{ marginBottom: '20px' }}>
+                  {/* Tags */}
+                  {project.tags.length > 0 && (
+                    <div>
                       <div
                         style={{
                           fontSize: '10px',
@@ -386,14 +397,14 @@ export default function ProjectDrawer({
                           marginBottom: '10px',
                         }}
                       >
-                        Tech Stack
+                        Tags
                       </div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                        {project.tech.map(t => {
-                          const iconUrl = getTechIconUrl(t);
+                        {project.tags.map(tag => {
+                          const iconUrl = getTechIconUrl(tag);
                           return (
                             <span
-                              key={t}
+                              key={tag}
                               style={{
                                 display: 'inline-flex',
                                 alignItems: 'center',
@@ -416,44 +427,10 @@ export default function ProjectDrawer({
                                   onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
                                 />
                               )}
-                              {t}
+                              {tag}
                             </span>
                           );
                         })}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Tags */}
-                  {project.tags.length > 0 && (
-                    <div>
-                      <div
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 500,
-                          letterSpacing: '0.07em',
-                          textTransform: 'uppercase',
-                          color: 'var(--text-ghost)',
-                          marginBottom: '10px',
-                        }}
-                      >
-                        Tags
-                      </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                        {project.tags.map(tag => (
-                          <span
-                            key={tag}
-                            style={{
-                              fontSize: '11px',
-                              padding: '3px 8px',
-                              borderRadius: '9999px',
-                              background: 'var(--muted-bg)',
-                              color: 'var(--text-muted)',
-                            }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
                       </div>
                     </div>
                   )}

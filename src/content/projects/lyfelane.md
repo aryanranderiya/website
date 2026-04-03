@@ -2,7 +2,7 @@
 title: LyfeLane
 description: Personalized greeting cards platform - create custom cards, send via email, and receive responses. AI-powered templates with a Canva-like design interface.
 date: 2024-11-01
-tags: [React, Node.js, MongoDB]
+tags: [Full Stack, MongoDB]
 tech: [React, Node.js, Express, MongoDB, JavaScript]
 featured: false
 type: web

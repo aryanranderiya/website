@@ -2,10 +2,10 @@
 title: Google Contacts Email Scraper
 description: Python tool using the Google People API to extract email addresses from large contact directories and export them.
 date: 2023-12-01
-tags: [Python, Google API]
+tags: [Python, Automation]
 tech: [Python, Google API]
 featured: false
-type: other
+type: cli
 folder: Projects
 coverImage: /ProjectMedia/Google_Contacts Email Scraper/project_banner_google_contacts.png
 images:

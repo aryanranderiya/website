@@ -32,7 +32,9 @@ const posts = allPosts
   </section>
 
   <!-- Experience (shared component, featured only) -->
-  <ExperienceList featuredOnly compact client:visible />
+  <div class="mt-8">
+    <ExperienceList featuredOnly compact client:visible />
+  </div>
 
   <!-- Featured projects -->
   <FeaturedProjects client:visible />
