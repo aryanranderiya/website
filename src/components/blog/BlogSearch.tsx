@@ -3,6 +3,7 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HugeiconsIcon, Search01Icon, ChevronRight } from '@icons';
+import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 
 interface Post {
   slug: string;
@@ -35,6 +36,8 @@ export default function BlogSearch({ posts }: { posts: Post[] }) {
     return () => window.removeEventListener('keydown', handler);
   }, []);
 
+  const ready = useAfterPreloader();
+
   const filtered = useMemo(() => {
     if (!query.trim()) return posts;
     const q = query.toLowerCase();
@@ -47,7 +50,11 @@ export default function BlogSearch({ posts }: { posts: Post[] }) {
   }, [posts, query]);
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+      animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const }}
+    >
       {/* Header row: title left, search right */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
@@ -192,6 +199,6 @@ export default function BlogSearch({ posts }: { posts: Post[] }) {
           </div>
         )}
       </AnimatePresence>
-    </div>
+    </motion.div>
   );
 }

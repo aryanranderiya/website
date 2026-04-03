@@ -2,7 +2,7 @@
 title: Dune
 author: Frank Herbert
 status: to-read
-cover: https://covers.openlibrary.org/b/id/11481354-L.jpg
+cover: /images/books/dune.webp
 genre: [science fiction, classic]
 year: 1965
 pages: 896

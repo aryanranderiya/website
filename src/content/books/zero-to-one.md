@@ -3,7 +3,7 @@ title: Zero to One
 author: Peter Thiel
 status: read
 rating: 4
-cover: https://covers.openlibrary.org/b/id/9002334-L.jpg
+cover: /images/books/zero-to-one.webp
 genre: [business, startups]
 year: 2014
 pages: 224

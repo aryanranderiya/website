@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery, QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from '@/utils/queryClient';
+import { Skeleton } from 'boneyard-js/react';
+import { useLazyMount } from '@/hooks/useLazyMount';
 
 interface ContributionDay {
   date: string;
@@ -238,10 +240,45 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
   );
 }
 
-export default function GithubGraph(props: { compact?: boolean }) {
+function GithubGraphFixture() {
+  // Mimics the visual shape of the full graph section
   return (
-    <QueryClientProvider client={queryClient}>
-      <GithubGraphInner {...props} />
-    </QueryClientProvider>
+    <section style={{ paddingBottom: 48 }}>
+      <div className="flex items-center justify-between mb-4">
+        <div style={{ height: 14, width: 160, borderRadius: 4, background: 'rgba(0,0,0,0.08)' }} />
+        <div style={{ height: 36, width: 64, borderRadius: 4, background: 'rgba(0,0,0,0.08)' }} />
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(52, 1fr)', gap: '3px', width: '100%' }}>
+        {Array.from({ length: 52 }).map((_, i) => (
+          <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+            {Array.from({ length: 7 }).map((_, j) => (
+              <div key={j} style={{ aspectRatio: '1', borderRadius: '2px', background: 'rgba(64,196,99,0.10)', width: '100%' }} />
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+export default function GithubGraph(props: { compact?: boolean }) {
+  const { ref, mounted } = useLazyMount('300px');
+
+  return (
+    <div ref={ref}>
+      <Skeleton
+        name="github-graph"
+        loading={!mounted}
+        fixture={<GithubGraphFixture />}
+        color="rgba(64, 196, 99, 0.08)"
+        fallback={<GithubGraphFixture />}
+      >
+        {mounted && (
+          <QueryClientProvider client={queryClient}>
+            <GithubGraphInner {...props} />
+          </QueryClientProvider>
+        )}
+      </Skeleton>
+    </div>
   );
 }

@@ -1,4 +1,4 @@
-@import url('https://rsms.me/inter/inter.css');
+@import '@fontsource-variable/inter';
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -189,12 +189,11 @@
 }
 
 html {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Inter Variable", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
-  font-variation-settings: "wght" 400;
 }
 
 body {

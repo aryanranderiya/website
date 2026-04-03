@@ -2,7 +2,7 @@
 title: The Pragmatic Programmer
 author: David Thomas & Andrew Hunt
 status: reading
-cover: https://covers.openlibrary.org/b/id/10143650-L.jpg
+cover: /images/books/the-pragmatic-programmer.webp
 genre: [programming, engineering]
 year: 2019
 pages: 352

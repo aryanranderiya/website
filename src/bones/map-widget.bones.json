@@ -1,0 +1,94 @@
+{
+  "breakpoints": {
+    "375": {
+      "name": "map-widget",
+      "viewportWidth": 156,
+      "width": 156,
+      "height": 160,
+      "bones": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 100,
+          "h": 160,
+          "r": 20
+        }
+      ]
+    },
+    "640": {
+      "name": "map-widget",
+      "viewportWidth": 288,
+      "width": 288,
+      "height": 160,
+      "bones": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 100,
+          "h": 160,
+          "r": 20
+        }
+      ]
+    },
+    "768": {
+      "name": "map-widget",
+      "viewportWidth": 288,
+      "width": 288,
+      "height": 160,
+      "bones": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 100,
+          "h": 160,
+          "r": 20
+        }
+      ]
+    },
+    "1024": {
+      "name": "map-widget",
+      "viewportWidth": 288,
+      "width": 288,
+      "height": 160,
+      "bones": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 100,
+          "h": 160,
+          "r": 20
+        }
+      ]
+    },
+    "1280": {
+      "name": "map-widget",
+      "viewportWidth": 288,
+      "width": 288,
+      "height": 160,
+      "bones": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 100,
+          "h": 160,
+          "r": 20
+        }
+      ]
+    },
+    "1536": {
+      "name": "map-widget",
+      "viewportWidth": 288,
+      "width": 288,
+      "height": 160,
+      "bones": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 100,
+          "h": 160,
+          "r": 20
+        }
+      ]
+    }
+  }
+}

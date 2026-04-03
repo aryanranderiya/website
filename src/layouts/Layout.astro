@@ -5,6 +5,7 @@ import '@/styles/global.css';
 import CommandK from '@/components/layout/CommandK';
 import AgentationOverlay from '@/components/layout/AgentationOverlay';
 import BlurStack from '@/components/ui/blur-stack';
+import Preloader from '@/components/layout/Preloader';
 
 interface Props {
   title?: string;
@@ -72,8 +73,11 @@ const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
 
-    <!-- Prefetch hint for faster navigation -->
+    <!-- Preconnects for key third-party origins -->
+    <link rel="preconnect" href="https://api.mapbox.com" crossorigin />
+    <link rel="preconnect" href="https://events.mapbox.com" crossorigin />
     <link rel="dns-prefetch" href="https://api.github.com" />
+    <link rel="dns-prefetch" href="https://github-contributions-api.jogruber.de" />
 
     <!-- View Transitions -->
     <ViewTransitions />
@@ -137,8 +141,10 @@ const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro
     <div id="main-content" transition:animate="fade" class:list={['min-h-screen flex flex-col', className]}>
       <slot />
     </div>
+    <Preloader client:load />
     <BlurStack client:only="react" className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none" />
     <CommandK client:only="react" />
+    <script>import '@/bones/registry'</script>
     <AgentationOverlay client:only="react" />
   </body>
 </html>

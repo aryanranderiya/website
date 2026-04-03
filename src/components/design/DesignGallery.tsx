@@ -4,6 +4,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { HugeiconsIcon, Cancel01Icon, ArrowLeft02Icon, ArrowRight02Icon } from '@icons';
+import { useAfterPreloader } from '@/hooks/useAfterPreloader';
+import ProgressiveImg from '@/components/ui/ProgressiveImg';
+import thumbhashes from '@/data/design-thumbhashes.json';
+
+// Convert public URL → thumbhash lookup key: "/design/apparel/foo.webp" → "design/apparel/foo.webp"
+function getHash(src: string): string | undefined {
+  return (thumbhashes as Record<string, string>)[src.replace(/^\//, '')];
+}
 
 interface DesignGalleryProps {
   apparel: string[];
@@ -23,6 +31,7 @@ function altText(file: string) {
 
 export default function DesignGallery({ apparel, headers, thumbnails, adMockups }: DesignGalleryProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
+  const ready = useAfterPreloader();
   const [lightboxImages, setLightboxImages] = useState<string[]>([]);
   const [lightboxIndex, setLightboxIndex] = useState(0);
 
@@ -84,7 +93,11 @@ export default function DesignGallery({ apparel, headers, thumbnails, adMockups 
   const adMockupSrcs = adMockups.map(adMockupSrc);
 
   return (
-    <>
+    <motion.div
+      initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+      animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.1 }}
+    >
       {/* Apparel & Streetwear */}
       <section className="mb-14">
         <div className="section-header">Apparel &amp; Streetwear</div>
@@ -162,7 +175,7 @@ export default function DesignGallery({ apparel, headers, thumbnails, adMockups 
         </AnimatePresence>,
         document.body
       )}
-    </>
+    </motion.div>
   );
 }
 
@@ -170,35 +183,27 @@ export default function DesignGallery({ apparel, headers, thumbnails, adMockups 
 
 function ApparelItem({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
   return (
-    <div
+    <ProgressiveImg
+      src={src}
+      alt={alt}
+      hash={getHash(src)}
       className="apparel-item cursor-zoom-in group relative overflow-hidden"
+      imgClassName="apparel-img transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.6] group-hover:brightness-[1.04] object-cover"
       onClick={onClick}
-    >
-      <img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        decoding="async"
-        className="apparel-img transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.6] group-hover:brightness-[1.04] object-cover"
-      />
-    </div>
+    />
   );
 }
 
 function MasonryItem({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
   return (
-    <div
+    <ProgressiveImg
+      src={src}
+      alt={alt}
+      hash={getHash(src)}
       className="masonry-item cursor-zoom-in group"
+      imgClassName="masonry-img transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.12] group-hover:brightness-[1.04] object-cover"
       onClick={onClick}
-    >
-      <img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        decoding="async"
-        className="masonry-img transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.12] group-hover:brightness-[1.04] object-cover"
-      />
-    </div>
+    />
   );
 }
 

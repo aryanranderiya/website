@@ -1,9 +1,16 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { motion } from 'framer-motion';
+import { useAfterPreloader } from '@/hooks/useAfterPreloader';
+import { Skeleton } from 'boneyard-js/react';
+import { useLazyMount } from '@/hooks/useLazyMount';
 import { SITE } from '@/constants/site';
+import 'mapbox-gl/dist/mapbox-gl.css';
+
+// mapbox-gl JS (240kB) is dynamically imported inside useEffect so the bundle
+// is only downloaded when the map widget scrolls into the viewport.
+// The CSS above (~12kB) is kept static since it's small and avoids a FOUC.
 
 const LNG = SITE.coords.lng;
 const LAT = SITE.coords.lat;
@@ -33,56 +40,80 @@ function createAvatarMarkerEl() {
   return el;
 }
 
-export default function MapWidget() {
+function MapWidgetFixture() {
+  return (
+    <div style={{ height: 160, borderRadius: 20, background: 'rgba(0,0,0,0.06)' }} />
+  );
+}
+
+function MapWidgetInner() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<mapboxgl.Map | null>(null);
-  const markerRef = useRef<mapboxgl.Marker | null>(null);
+  const ready = useAfterPreloader();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mapRef = useRef<any>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const markerRef = useRef<any>(null);
+  const observerRef = useRef<MutationObserver | null>(null);
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current || !TOKEN) return;
 
-    mapboxgl.accessToken = TOKEN;
+    let cancelled = false;
 
-    const map = new mapboxgl.Map({
-      container: containerRef.current,
-      style: isDarkMode() ? STYLE_DARK : STYLE_LIGHT,
-      center: [LNG, LAT],
-      zoom: 10.5,
-      interactive: true,
-      attributionControl: false,
-    });
+    async function initMap() {
+      // Dynamic import — mapbox-gl JS (240kB) only downloads when widget is in view
+      const { default: mapboxgl } = await import('mapbox-gl');
 
-    markerRef.current = new mapboxgl.Marker({ element: createAvatarMarkerEl(), offset: [0, -35] })
-      .setLngLat([LNG, LAT])
-      .addTo(map);
+      if (cancelled || !containerRef.current) return;
 
-    mapRef.current = map;
+      mapboxgl.accessToken = TOKEN!;
 
-    // Sync style when the `dark` class is toggled on <html>
-    const observer = new MutationObserver(() => {
-      mapRef.current?.setStyle(isDarkMode() ? STYLE_DARK : STYLE_LIGHT);
-    });
+      const map = new mapboxgl.Map({
+        container: containerRef.current,
+        style: isDarkMode() ? STYLE_DARK : STYLE_LIGHT,
+        center: [LNG, LAT],
+        zoom: 10.5,
+        interactive: true,
+        attributionControl: false,
+      });
 
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    });
+      markerRef.current = new mapboxgl.Marker({ element: createAvatarMarkerEl(), offset: [0, -35] })
+        .setLngLat([LNG, LAT])
+        .addTo(map);
 
-    // Re-add marker after style reload (setStyle removes all layers/sources)
-    map.on('style.load', () => {
-      if (markerRef.current) {
-        markerRef.current.remove();
-        markerRef.current = new mapboxgl.Marker({ element: createAvatarMarkerEl(), offset: [0, -35] })
-          .setLngLat([LNG, LAT])
-          .addTo(map);
-      }
-    });
+      mapRef.current = map;
+
+      // Sync style when the `dark` class is toggled on <html>
+      observerRef.current = new MutationObserver(() => {
+        mapRef.current?.setStyle(isDarkMode() ? STYLE_DARK : STYLE_LIGHT);
+      });
+      observerRef.current.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class'],
+      });
+
+      // Re-add marker after style reload (setStyle removes all layers/sources)
+      map.on('style.load', () => {
+        if (markerRef.current) {
+          markerRef.current.remove();
+          markerRef.current = new mapboxgl.Marker({ element: createAvatarMarkerEl(), offset: [0, -35] })
+            .setLngLat([LNG, LAT])
+            .addTo(map);
+        }
+      });
+    }
+
+    initMap();
 
     return () => {
-      observer.disconnect();
-      map.remove();
-      mapRef.current = null;
-      markerRef.current = null;
+      cancelled = true;
+      observerRef.current?.disconnect();
+      observerRef.current = null;
+      if (mapRef.current) {
+        mapRef.current.remove();
+        mapRef.current = null;
+        markerRef.current = null;
+      }
     };
   }, []);
 
@@ -100,8 +131,32 @@ export default function MapWidget() {
   }
 
   return (
-    <div className="rounded-2xl overflow-hidden" style={{ height: 160 }}>
+    <motion.div
+      className="rounded-2xl overflow-hidden"
+      style={{ height: 160 }}
+      initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+      animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.39 }}
+    >
       <div ref={containerRef} style={{ width: '100%', height: '100%' }} />
+    </motion.div>
+  );
+}
+
+export default function MapWidget() {
+  const { ref, mounted } = useLazyMount('200px');
+
+  return (
+    <div ref={ref}>
+      <Skeleton
+        name="map-widget"
+        loading={!mounted}
+        fixture={<MapWidgetFixture />}
+        color="rgba(0, 0, 0, 0.06)"
+        fallback={<MapWidgetFixture />}
+      >
+        {mounted && <MapWidgetInner />}
+      </Skeleton>
     </div>
   );
 }

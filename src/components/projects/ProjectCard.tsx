@@ -57,9 +57,10 @@ export default function ProjectCard({
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 4 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.04, duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
+      variants={{
+        hidden: { opacity: 0, y: 4 },
+        show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.19, 1, 0.22, 1] as const } },
+      }}
       onHoverStart={() => {
         setHovered(true);
         if (ref.current) onHoverChange?.({ project, index, el: ref.current });

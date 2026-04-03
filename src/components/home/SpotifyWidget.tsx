@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 
 interface SpotifyTrack {
   isPlaying: boolean;
@@ -81,7 +82,7 @@ function MusicBars() {
   );
 }
 
-const SPOTIFY_LOGO = 'https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Full_Logo_RGB_Green.png';
+const SPOTIFY_LOGO = '/images/spotify-logo.webp';
 
 function formatTime(ms?: number): string {
   if (!ms) return '0:00';
@@ -95,23 +96,41 @@ const ART_SIZE = 64;
 export default function SpotifyWidget() {
   const [track, setTrack] = useState<SpotifyTrack>({ isPlaying: false });
   const [loading, setLoading] = useState(true);
+  const [liveProgress, setLiveProgress] = useState(0);
+  const ready = useAfterPreloader();
 
   useEffect(() => {
     getNowPlaying().then(t => {
       setTrack(t);
+      setLiveProgress(t.progress ?? 0);
       setLoading(false);
     });
-    const interval = setInterval(() => getNowPlaying().then(setTrack), 30000);
+    const interval = setInterval(() => getNowPlaying().then(t => {
+      setTrack(t);
+      setLiveProgress(t.progress ?? 0);
+    }), 30000);
     return () => clearInterval(interval);
   }, []);
 
+  // Tick progress forward every second when playing
+  useEffect(() => {
+    if (!track.isPlaying || !track.duration) return;
+    const ticker = setInterval(() => {
+      setLiveProgress(p => Math.min(p + 1000, track.duration!));
+    }, 1000);
+    return () => clearInterval(ticker);
+  }, [track.isPlaying, track.duration]);
+
   const progressPct =
-    track.progress && track.duration
-      ? (track.progress / track.duration) * 100
+    liveProgress && track.duration
+      ? (liveProgress / track.duration) * 100
       : 0;
 
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+      animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.32 }}
       style={{
         height: HEIGHT,
         borderRadius: 20,
@@ -339,7 +358,7 @@ export default function SpotifyWidget() {
                     letterSpacing: '0.02em',
                   }}
                 >
-                  {formatTime(track.progress)}
+                  {formatTime(liveProgress)}
                 </span>
                 <span
                   style={{
@@ -365,9 +384,8 @@ export default function SpotifyWidget() {
                     background: '#1DB954',
                     borderRadius: 999,
                   }}
-                  initial={{ width: 0 }}
                   animate={{ width: `${progressPct}%` }}
-                  transition={{ duration: 0.6, ease: 'easeOut' }}
+                  transition={{ duration: 1, ease: 'linear' }}
                 />
               </div>
             </motion.div>
@@ -376,6 +394,6 @@ export default function SpotifyWidget() {
           )}
         </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 }

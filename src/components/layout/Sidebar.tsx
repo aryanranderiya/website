@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- icons used in JSX
 import {
   HugeiconsIcon,
-  Sun01Icon, Moon02Icon, Menu01Icon, Cancel01Icon,
+  Sun01Icon, Moon02Icon, Cancel01Icon, SidebarRightIcon,
   Home12Icon, Folder03Icon, BrushIcon, QuillWrite01Icon,
   NoteIcon, Briefcase01Icon, Books02Icon, Film01Icon, CarouselHorizontalIcon,
   SparklesIcon, ColorsIcon, Clock01Icon, ShuffleIcon,
@@ -13,6 +13,7 @@ import {
 import type { ComponentType } from 'react';
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
 import { PAGES } from '@/constants/navigation';
+import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 
 const NAV_GROUPS: { label: string | null; items: { href: string; label: string; icon: ComponentType<IconProps> }[] }[] = [
   {
@@ -258,6 +259,16 @@ export default function Sidebar() {
 
   const themeLabel = theme === 'light' ? 'Dark' : theme === 'dark' ? 'Shuffle' : 'Light';
   const themeIcon = theme === 'light' ? Moon02Icon : theme === 'dark' ? ColorsIcon : Sun01Icon;
+  const ready = useAfterPreloader();
+
+  const sidebarContainer = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.05, delayChildren: 0 } },
+  };
+  const sidebarItem = {
+    hidden: { opacity: 0, x: -5, filter: 'blur(3px)' },
+    show: { opacity: 1, x: 0, filter: 'blur(0px)', transition: { duration: 0.4, ease: [0.19, 1, 0.22, 1] as const } },
+  };
 
   const popoverLabel: React.CSSProperties = {
     fontSize: '9px',
@@ -282,8 +293,15 @@ export default function Sidebar() {
         }}
       >
 
+        <motion.div
+          variants={sidebarContainer}
+          initial="hidden"
+          animate={ready ? "show" : "hidden"}
+          style={{ display: 'flex', flexDirection: 'column', gap: 2, height: '100%' }}
+        >
+
         {/* Profile photo */}
-        <div className="mb-4">
+        <motion.div variants={sidebarItem} className="mb-4">
           <img
             src={avatarSrc}
             alt="Aryan Randeriya"
@@ -292,11 +310,12 @@ export default function Sidebar() {
             className="rounded-full block opacity-90 cursor-pointer"
             onClick={() => setAvatarSrc(s => s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp')}
           />
-        </div>
+        </motion.div>
 
         {/* Nav groups */}
         {NAV_GROUPS.map((group, gi) => (
-          <div
+          <motion.div
+            variants={sidebarItem}
             key={gi}
             style={gi > 0 ? { marginTop: 16 } : undefined}
           >
@@ -331,16 +350,17 @@ export default function Sidebar() {
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         ))}
 
         {/* Bottom actions */}
-        <div className="mt-auto pt-6 flex flex-col gap-1">
+        <motion.div variants={sidebarItem} className="mt-auto pt-6 flex flex-col gap-1">
           {/* Built in Astro */}
           <a
             href="https://astro.build"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Built in Astro"
             style={{
               ...actionStyle,
               color: hoveredAction === 'astro'
@@ -374,6 +394,7 @@ export default function Sidebar() {
             href="https://aryanranderiya.com"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Old portfolio (aryanranderiya.com)"
             style={{
               ...actionStyle,
               color: hoveredAction === 'old-portfolio'
@@ -471,6 +492,7 @@ export default function Sidebar() {
                   <p style={popoverLabel}>Colors</p>
                   <button
                     onClick={handleShuffleColors}
+                    aria-label="Shuffle color palette"
                     style={{
                       width: '100%',
                       display: 'flex',
@@ -497,6 +519,7 @@ export default function Sidebar() {
                   <p style={{ ...popoverLabel, marginTop: '12px' }}>Typography</p>
                   <button
                     onClick={handleShuffleFont}
+                    aria-label="Shuffle typography"
                     style={{
                       width: '100%',
                       display: 'flex',
@@ -539,6 +562,7 @@ export default function Sidebar() {
             href="https://github.com/aryanranderiya/website"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="View source on GitHub"
             style={{
               ...actionStyle,
               color: hoveredAction === 'github'
@@ -566,16 +590,15 @@ export default function Sidebar() {
               transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
             }}>GitHub</span>
           </a>
-        </div>
+        </motion.div>
+
+        </motion.div>
       </nav>
 
       {/* ── Mobile top bar ── */}
       <div
-        className="mobile-nav-bar fixed top-0 left-0 right-0 h-[52px] flex items-center justify-between px-5 backdrop-blur-[12px] border-b z-50"
-        style={{
-          background: 'var(--glass-bg)',
-          borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
-        }}
+        className="mobile-nav-bar fixed top-0 left-0 right-0 h-[52px] flex items-center justify-between px-5 backdrop-blur-[12px] z-50"
+        style={{ background: 'var(--glass-bg)' }}
       >
         <a href="/" style={{
           fontSize: '13px',
@@ -591,6 +614,7 @@ export default function Sidebar() {
             onClick={handleThemeButtonClick}
             className="bg-none border-none cursor-pointer p-1 flex items-center"
             style={{ color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)' }}
+            aria-label="Cycle theme"
           >
             <HugeiconsIcon icon={themeIcon} size={13} />
           </button>
@@ -598,9 +622,9 @@ export default function Sidebar() {
             onClick={() => setMobileOpen(v => !v)}
             className="bg-none border-none cursor-pointer p-1 flex items-center"
             style={{ color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)' }}
-            aria-label="Toggle menu"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
           >
-            <HugeiconsIcon icon={mobileOpen ? Cancel01Icon : Menu01Icon} size={16} />
+            <HugeiconsIcon icon={mobileOpen ? Cancel01Icon : SidebarRightIcon} size={16} />
           </button>
         </div>
       </div>
@@ -639,6 +663,7 @@ export default function Sidebar() {
             <p style={popoverLabel}>Colors</p>
             <button
               onClick={handleShuffleColors}
+              aria-label="Shuffle color palette"
               style={{
                 width: '100%',
                 display: 'flex',
@@ -661,6 +686,7 @@ export default function Sidebar() {
             <p style={{ ...popoverLabel, marginTop: '12px' }}>Typography</p>
             <button
               onClick={handleShuffleFont}
+              aria-label="Shuffle typography"
               style={{
                 width: '100%',
                 display: 'flex',
@@ -693,29 +719,48 @@ export default function Sidebar() {
         )}
       </AnimatePresence>
 
-      {/* ── Mobile dropdown menu ── */}
+      {/* ── Mobile fullscreen menu ── */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2, ease: [0.19, 1, 0.22, 1] }}
-            className="fixed top-[52px] left-0 right-0 backdrop-blur-[12px] border-b z-[49] px-5 pt-4 pb-5"
-            style={{
-              background: 'var(--glass-bg)',
-              borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
-            }}
+            initial={{ opacity: 0, x: 16 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 16 }}
+            transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1] }}
+            className="fixed inset-0 z-[48]"
+            style={{ background: 'var(--background)' }}
           >
-            {NAV_GROUPS.map((group, gi) => (
-              <div key={gi} style={{ marginBottom: group.label ? '0' : '8px' }}>
-                {group.label && (
-                  <div style={{ ...sectionLabelStyle, marginTop: gi === 0 ? '0' : '16px' }}>
-                    {group.label}
-                  </div>
-                )}
-                {group.items.map(item => {
-                  return (
+            {/* Close button top-right */}
+            <div className="flex items-center justify-between px-5 h-[52px]">
+              <a href="/" style={{
+                fontSize: '13px',
+                fontVariationSettings: '"wght" 600',
+                color: isDark ? 'rgba(255,255,255,0.85)' : 'rgba(0,0,0,0.85)',
+                letterSpacing: '-0.02em',
+                textDecoration: 'none',
+              }}>
+                Aryan Randeriya
+              </a>
+              <button
+                onClick={() => setMobileOpen(false)}
+                className="bg-none border-none cursor-pointer p-1 flex items-center"
+                style={{ color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)' }}
+                aria-label="Close menu"
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={16} />
+              </button>
+            </div>
+
+            {/* Nav links */}
+            <div className="px-6 pt-6">
+              {NAV_GROUPS.map((group, gi) => (
+                <div key={gi} style={{ marginBottom: group.label ? '0' : '8px' }}>
+                  {group.label && (
+                    <div style={{ ...sectionLabelStyle, marginTop: gi === 0 ? '0' : '20px' }}>
+                      {group.label}
+                    </div>
+                  )}
+                  {group.items.map(item => (
                     <a
                       key={item.href}
                       href={item.href}
@@ -723,19 +768,19 @@ export default function Sidebar() {
                         ...linkStyle(item.href),
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        padding: '7px 0',
-                        fontSize: '14px',
+                        gap: '10px',
+                        padding: '9px 0',
+                        fontSize: '15px',
                       }}
                       onClick={() => setMobileOpen(false)}
                     >
                       <HugeiconsIcon icon={item.icon} size={16} style={{ flexShrink: 0, opacity: 0.85 }} />
                       {item.label}
                     </a>
-                  );
-                })}
-              </div>
-            ))}
+                  ))}
+                </div>
+              ))}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

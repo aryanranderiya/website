@@ -1,76 +1,117 @@
-import SocialsGrid from './SocialsGrid';
-import { HugeiconsIcon, Folder03Icon, QuillWrite01Icon, Clock01Icon } from '@icons';
-import type { ComponentType } from 'react';
-import type { IconProps } from '@theexperiencecompany/gaia-icons';
+import { motion } from "framer-motion";
+import SocialsGrid from "./SocialsGrid";
+import { LogoLink } from "@/components/ui/LogoLink";
+import { HugeiconsIcon, Folder03Icon, QuillWrite01Icon, Clock01Icon } from "@icons";
+import { useAfterPreloader } from "@/hooks/useAfterPreloader";
+import type { ComponentType } from "react";
+import type { IconProps } from "@theexperiencecompany/gaia-icons";
 
-function SpotifyLink() {
-  return (
-    <a
-      href="https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-[3px] no-underline text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors duration-150"
-    >
-      <img
-        src="https://cdn.simpleicons.org/spotify/1DB954"
-        width={11}
-        height={11}
-        alt="Spotify"
-        className="inline shrink-0 align-middle"
-      />
-      <span>playlist</span>
-    </a>
-  );
-}
+const paraBase = "text-[14px] text-[var(--text-muted)] leading-[1.65] m-0";
+const paraWide = `${paraBase} max-w-2xl`;
 
+const container = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.07, delayChildren: 0.05 } },
+};
+
+const EASE = [0.19, 1, 0.22, 1] as const;
+
+const item = {
+  hidden: { opacity: 0, y: 10, filter: "blur(4px)" },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: "blur(0px)",
+    transition: { duration: 0.45, ease: EASE },
+  },
+};
 
 export default function Hero() {
+  const ready = useAfterPreloader();
+
   return (
-    <section className="pt-4 pb-12">
-      {/* Headline */}
-      <h1 className="animate-fade-in stagger-1 text-[36px] font-semibold tracking-[-0.035em] leading-[1.1] text-[var(--text-primary)] m-0 mb-4">
-        Hey! Welcome to
+    <motion.section
+      className="pt-4 pb-12"
+      variants={container}
+      initial="hidden"
+      animate={ready ? "show" : "hidden"}
+    >
+      <motion.h1
+        variants={item}
+        className="text-[36px] font-semibold tracking-[-0.035em] leading-[1.1] text-[var(--text-primary)] m-0 mb-4"
+      >
+        Hey! Welcome to my digital world.
+      </motion.h1>
+
+      <motion.p variants={item} className={`mb-3 ${paraWide}`}>
+        My name is
+        <img
+          src="/avatar.webp"
+          alt="Aryan Randeriya"
+          className="inline align-middle rounded-full w-auto h-[1.4em] mb-0.5 ml-2"
+        />{" "}
+        Aryan Randeriya and I'm a Designer, Developer, and the Founder & CEO of
+        <LogoLink
+          href="https://experience.heygaia.io"
+          logo="/images/theexperiencecompany.webp"
+          name="The Experience Company"
+        />
+        . The name comes from two things: our belief that our mission is to
+        improve the human experience, and our deep care about the experience of
+        every product we build.
+      </motion.p>
+
+      <motion.p variants={item} className={`mb-3 ${paraWide}`}>
+        Currently building{" "}
+        <LogoLink href="https://heygaia.io" logo="/gaia-logo.png" name="GAIA" />
+        - a proactive personal AI assistant that acts before you even need to
+        ask. The goal: every person in the world should have their own truly
+        intelligent assistant.
+      </motion.p>
+
+      <motion.p variants={item} className={`mb-3 ${paraWide}`}>
+        I'm a tech nerd who's been tinkering with computers since a very young
+        age.
         <br />
-        my digital world.
-      </h1>
+        Born in{" "}
+        <img
+          src="/images/flag-uk.webp"
+          alt="UK"
+          className="inline align-middle w-auto h-[1em] mb-[1px]"
+        />{" "}
+        the United Kingdom, based in{" "}
+        <img
+          src="/images/flag-india.webp"
+          alt="India"
+          className="inline align-middle w-auto h-[1em] mb-[1px]"
+        />{" "}
+        India. I love building products - I'm a product guy but a developer and
+        designer by heart. I love music - fun fact, I have a{" "}
+        <LogoLink
+          href="https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"
+          logo="https://cdn.simpleicons.org/spotify/1DB954"
+          name="Spotify playlist"
+        />{" "}
+        with 2000+ songs. I absolutely love movies and am extremely passionate
+        about them. I also love food - I love trying different cuisines and
+        having a variety of different foods. I love tinkering around with code
+        and shipping things and exploring new things - maybe that's the ADHD
+        too, lol.
+      </motion.p>
 
-      {/* Bio - Intro */}
-      <p className="animate-fade-in stagger-2 text-[14px] text-[var(--text-muted)] max-w-[440px] leading-[1.65] m-0 mb-3">
-        My name is{' '}
-        <img src="/avatar.webp" alt="Aryan Randeriya" className="inline align-middle rounded-full w-auto h-[1.4em] mb-[2px] mx-[4px]" />{' '}
-        Aryan Randeriya and I'm a Designer, Developer, and the founder of{' '}
-        <img src="https://github.com/theexperiencecompany.png" alt="The Experience Company" className="inline align-middle rounded-full w-auto h-[1.1em] mb-[1px] mx-[3px]" />{' '}
-        The Experience Company. The name comes from two things: our belief that our mission is to improve the human experience, and our deep care about the experience of every product we build.
-      </p>
+      <motion.p variants={item} className={`mb-7 ${paraWide}`}>
+        Some things I want to explore: Rust, hardware, robotics, energy
+        infrastructure, personal companions and smart wearables (both through
+        GAIA), and low-level programming - hardcore C, OS internals, all of
+        that.
+      </motion.p>
 
-      {/* Bio - GAIA */}
-      <p className="animate-fade-in stagger-2 text-[14px] text-[var(--text-muted)] max-w-[440px] leading-[1.65] m-0 mb-3">
-        Currently building{' '}
-        <img src="/gaia-logo.png" alt="GAIA" className="inline align-middle rounded-full w-auto h-[1.1em] mb-[1px] mx-[3px]" />{' '}
-        GAIA - a proactive personal AI assistant that acts before you even need to ask. The goal: every person in the world should have their own truly intelligent assistant.
-      </p>
-
-      {/* Bio - Personal */}
-      <p className="animate-fade-in stagger-3 text-[14px] text-[var(--text-muted)] max-w-[440px] leading-[1.65] m-0 mb-3">
-        I'm a tech nerd who's been tinkering with computers since a very young age. Born in{' '}
-        <img src="https://em-content.zobj.net/source/apple/118/flag-for-united-kingdom_1f1ec-1f1e7.png" alt="UK" className="inline align-middle w-auto h-[1em] mb-[1px]" />{' '}
-        the United Kingdom, based in{' '}
-        <img src="https://em-content.zobj.net/source/apple/118/flag-for-india_1f1ee-1f1f3.png" alt="India" className="inline align-middle w-auto h-[1em] mb-[1px]" />{' '}
-        India. I love building products - I'm a product guy but a developer and designer by heart. I love music - fun fact, I have a <SpotifyLink /> with 2000+ songs. I absolutely love movies and am extremely passionate about them. I also love food - I love trying different cuisines and having a variety of different foods. I love tinkering around with code and shipping things and exploring new things - maybe that's the ADHD too, lol.
-      </p>
-
-      {/* Bio - Areas to explore */}
-      <p className="animate-fade-in stagger-3 text-[14px] text-[var(--text-muted)] max-w-[440px] leading-[1.65] m-0 mb-7">
-        Some things I want to explore: Rust, hardware, robotics, energy infrastructure, personal companions and smart wearables (both through GAIA), and low-level programming - hardcore C, OS internals, all of that.
-      </p>
-
-      {/* Links */}
-      <div className="animate-fade-in stagger-4 flex gap-2 mb-6 flex-wrap">
+      <motion.div variants={item} className="flex gap-2 mb-6 flex-wrap">
         {(
           [
-            { label: 'Work', href: '/projects', icon: Folder03Icon },
-            { label: 'Blog', href: '/blog',     icon: QuillWrite01Icon },
-            { label: 'Now',  href: '/now',      icon: Clock01Icon },
+            { label: "Work", href: "/projects", icon: Folder03Icon },
+            { label: "Blog", href: "/blog", icon: QuillWrite01Icon },
+            { label: "Now", href: "/now", icon: Clock01Icon },
           ] as { label: string; href: string; icon: ComponentType<IconProps> }[]
         ).map(({ label, href, icon }) => (
           <a
@@ -82,10 +123,11 @@ export default function Hero() {
             {label}
           </a>
         ))}
-      </div>
+      </motion.div>
 
-      {/* Socials */}
-      <SocialsGrid />
-    </section>
+      <motion.div variants={item}>
+        <SocialsGrid />
+      </motion.div>
+    </motion.section>
   );
 }

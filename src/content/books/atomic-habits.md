@@ -3,7 +3,7 @@ title: Atomic Habits
 author: James Clear
 status: read
 rating: 5
-cover: https://covers.openlibrary.org/b/id/12539702-L.jpg
+cover: /images/books/atomic-habits.webp
 genre: [self-help, productivity]
 year: 2018
 pages: 320

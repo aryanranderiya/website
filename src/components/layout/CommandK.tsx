@@ -138,6 +138,7 @@ export default function CommandK() {
                       value={query}
                       onValueChange={setQuery}
                       placeholder="Search pages, actions..."
+                      aria-label="Search pages and actions"
                       className="flex-1 py-4 text-sm outline-none ring-0 border-none shadow-none bg-transparent text-foreground caret-foreground"
                     />
                     <kbd className="hidden sm:inline-flex text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border">

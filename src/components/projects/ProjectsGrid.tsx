@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HugeiconsIcon, Search01Icon, FilterIcon, Delete01Icon } from '@icons';
 import ProjectCard from './ProjectCard';
 import { getTechIconUrl } from '../../utils/techIcons';
+import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 
 interface Project {
   slug: string;
@@ -37,6 +39,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   const [hovered, setHovered] = useState<HoveredState | null>(null);
   const [activeTagFilters, setActiveTagFilters] = useState<string[]>([]);
   const [tagPopoverOpen, setTagPopoverOpen] = useState(false);
+  const ready = useAfterPreloader();
   const filterBtnRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
@@ -116,7 +119,12 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   };
 
   return (
-    <div>
+    <>
+    <motion.div
+      initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+      animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+      transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
+    >
       {/* Filter button + search */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '28px', width: '100%' }}>
 
@@ -289,10 +297,13 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
         {filtered.length > 0 ? (
           <motion.div
             key={search + activeTagFilters.join(',')}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial="hidden"
+            animate={ready ? 'show' : 'hidden'}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
+            variants={{
+              hidden: {},
+              show: { transition: { staggerChildren: 0.04, delayChildren: 0.15 } },
+            }}
             style={{ display: 'flex', flexDirection: 'column', gap: 2 }}
           >
             {filtered.map((project: Project, i: number) => (
@@ -317,21 +328,24 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
         )}
       </AnimatePresence>
 
-      {/* Preview image — aligns vertically with the hovered row, floats to the right */}
+    </motion.div>
+
+    {/* Preview image portal — rendered at body to avoid filter/transform containing block */}
+    {typeof document !== 'undefined' && createPortal(
       <AnimatePresence>
         {hovered?.project.coverImage && (
           <motion.div
             key={hovered.project.slug}
             initial={{ opacity: 0, scale: 0.84, rotate: rotation > 0 ? rotation + 12 : rotation - 12 }}
-            animate={{ opacity: 1, scale: 1, rotate: rotation, top: previewTop }}
-            exit={{ opacity: 0, scale: 0.84, rotate: rotation > 0 ? rotation + 12 : rotation - 12 }}
+            animate={{ opacity: 1, scale: 1, rotate: rotation }}
+            exit={{ opacity: 0, scale: 0.84 }}
             transition={{ duration: 0.22, ease: [0.19, 1, 0.22, 1] }}
             style={{
               position: 'fixed',
-              right: '18vw',
+              left: hovered.rect.right + 24,
               top: previewTop,
-              translateY: '-50%',
-              width: 240,
+              y: '-50%',
+              width: 200,
               borderRadius: 12,
               overflow: 'hidden',
               pointerEvents: 'none',
@@ -345,8 +359,9 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
             />
           </motion.div>
         )}
-      </AnimatePresence>
-
-    </div>
+      </AnimatePresence>,
+      document.body
+    )}
+    </>
   );
 }
