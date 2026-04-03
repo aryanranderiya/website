@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import SocialsGrid from "./SocialsGrid";
 import { LogoLink } from "@/components/ui/LogoLink";
 import { HugeiconsIcon, Folder03Icon, QuillWrite01Icon, Clock01Icon } from "@icons";

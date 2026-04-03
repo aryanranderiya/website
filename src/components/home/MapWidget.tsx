@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 import { Skeleton } from 'boneyard-js/react';
 import { useLazyMount } from '@/hooks/useLazyMount';

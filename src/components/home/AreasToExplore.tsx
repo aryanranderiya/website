@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 const AREAS = [
   { label: 'Hardware', description: 'Physical computing and embedded systems' },

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { HugeiconsIcon, Cancel01Icon, LinkSquare02Icon } from '@icons';
 import { TOOLS, TOOL_CATEGORIES, type Tool, type ToolCategory } from '@/data/tools';

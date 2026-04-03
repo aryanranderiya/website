@@ -1,6 +1,6 @@
 'use client';
 
-import { useInView } from 'framer-motion';
+import { useInView } from 'motion/react';
 import { useRef, useEffect, useState } from 'react';
 
 /**
@@ -190,6 +190,7 @@ export default function Signature() {
     <section className="pb-8 mt-8" style={{ height: '88px' }}>
       <div
         ref={containerRef}
+        role="img"
         aria-label="Aryan Randeriya signature"
         className="flex flex-wrap justify-start items-center"
         style={{ transform: 'scale(1.7)', transformOrigin: '0 50%', height: '51px' }}

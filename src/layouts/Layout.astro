@@ -73,11 +73,14 @@ const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
 
-    <!-- Preconnects for key third-party origins -->
+    <!-- Preconnects / prefetches for third-party origins -->
     <link rel="preconnect" href="https://api.mapbox.com" crossorigin />
     <link rel="preconnect" href="https://events.mapbox.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin />
     <link rel="dns-prefetch" href="https://api.github.com" />
     <link rel="dns-prefetch" href="https://github-contributions-api.jogruber.de" />
+    <link rel="dns-prefetch" href="https://open.spotify.com" />
 
     <!-- View Transitions -->
     <ViewTransitions />

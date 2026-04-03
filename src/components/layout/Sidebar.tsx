@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- icons used in JSX
 import {
   HugeiconsIcon,
@@ -221,10 +221,10 @@ export default function Sidebar() {
     color: isActive(href)
       ? isDark ? 'rgba(255,255,255,0.88)' : 'rgba(0,0,0,0.85)'
       : secondary
-        ? isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.28)'
+        ? isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)'
         : anyActive
-          ? isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.38)'
-          : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
+          ? isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)'
+          : isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
     textDecoration: 'none',
     display: 'block',
     padding: '2px 0',
@@ -236,7 +236,7 @@ export default function Sidebar() {
   const sectionLabelStyle: React.CSSProperties = {
     fontSize: '10px',
     fontVariationSettings: '"wght" 500',
-    color: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.25)',
+    color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
     textTransform: 'uppercase',
     letterSpacing: '0.07em',
     marginTop: '16px',
@@ -246,7 +246,7 @@ export default function Sidebar() {
   const actionStyle: React.CSSProperties = {
     fontSize: '12px',
     fontVariationSettings: '"wght" 450',
-    color: isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
+    color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
     background: 'none',
     border: 'none',
     padding: '2px 0',
@@ -339,7 +339,7 @@ export default function Sidebar() {
                   }}
                   onMouseLeave={e => {
                     if (!isActive(item.href)) {
-                      (e.currentTarget as HTMLAnchorElement).style.color = isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.38)';
+                      (e.currentTarget as HTMLAnchorElement).style.color = isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)';
                       (e.currentTarget as HTMLAnchorElement).style.fontVariationSettings = '"wght" 450';
                     }
                   }}

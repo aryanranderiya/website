@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { HugeiconsIcon, Search01Icon, ChevronRight } from '@icons';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 

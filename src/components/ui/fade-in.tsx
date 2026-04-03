@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, type HTMLMotionProps } from 'framer-motion';
+import { motion, type HTMLMotionProps } from 'motion/react';
 import { fadeInBlur, staggerContainer, staggerItem } from '@/lib/motion';
 
 interface FadeInProps extends HTMLMotionProps<'div'> {

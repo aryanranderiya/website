@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { HugeiconsIcon, Briefcase01Icon } from '@icons';
 import { experience } from '@/data/experience';
 import type { Experience } from '@/data/experience';

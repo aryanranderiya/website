@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion } from 'motion/react';
 import { HugeiconsIcon, Cancel01Icon, ArrowLeft02Icon, ArrowRight02Icon } from '@icons';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 import ProgressiveImg from '@/components/ui/ProgressiveImg';

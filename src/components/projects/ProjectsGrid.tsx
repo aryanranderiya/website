@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { HugeiconsIcon, Search01Icon, FilterIcon, Delete01Icon } from '@icons';
 import ProjectCard from './ProjectCard';
 import { getTechIconUrl } from '../../utils/techIcons';

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { PAGES, type NavPage } from '@/constants/navigation';
 
 function AccordionItem({ page, index }: { page: NavPage; index: number }) {

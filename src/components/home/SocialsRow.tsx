@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 const EASE = [0.19, 1, 0.22, 1] as const;
 

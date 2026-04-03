@@ -16,13 +16,8 @@ const greetings = [
   "안녕하세요, 세계",
   "Hallo, Welt",
   "Merhaba, Dünya",
-  "Hallo, Wereld",
   "Hej, Världen",
   "Γεια σου, Κόσμε",
-  "สวัสดี โลก",
-  "שלום, עולם",
-  "Xin chào, Thế giới",
-  "سلام، دنیا",
   "Hello, World",
 ];
 
@@ -37,26 +32,32 @@ export default function Preloader() {
       return;
     }
 
+    // Show first greeting immediately, then cycle through the rest at 50ms each
+    let cancelled = false;
     let i = 0;
-    const timer = setInterval(() => {
+    const tick = () => {
+      if (cancelled) return;
       i++;
       if (i >= greetings.length) {
-        clearInterval(timer);
         const overlay = overlayRef.current;
         if (overlay) {
           overlay.style.opacity = "0";
           window.dispatchEvent(new CustomEvent("preloader:done"));
           setTimeout(() => {
-            setShow(false);
-            sessionStorage.setItem("preloader_shown", "1");
+            if (!cancelled) {
+              setShow(false);
+              sessionStorage.setItem("preloader_shown", "1");
+            }
           }, 400);
         }
         return;
       }
       setIndex(i);
-    }, 70);
+      setTimeout(tick, 50);
+    };
+    setTimeout(tick, 50);
 
-    return () => clearInterval(timer);
+    return () => { cancelled = true; };
   }, []);
 
   if (!show) return null;

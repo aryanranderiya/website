@@ -1,6 +1,6 @@
 'use client';
 
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useState } from 'react';
 import { HugeiconsIcon, Cancel01Icon, GithubIcon, LinkSquare02Icon } from '@icons';

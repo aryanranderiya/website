@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronRight } from '@icons';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 
 interface Post {
   slug: string;
