@@ -1,6 +1,8 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { ChevronRight } from '@icons';
 
 interface Post {
   slug: string;
@@ -24,10 +26,11 @@ function formatDate(date: string | Date): string {
 
 export default function BlogPreview({ posts }: BlogPreviewProps) {
   const latest = posts.slice(0, 3);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <section style={{ paddingBottom: 24 }}>
-      <div className="section-header">Writing</div>
+    <section className="pb-6 mb-8">
+      <div className="section-header" style={{ marginBottom: 10 }}>Blog</div>
 
       <div>
         {latest.map((post, i) => (
@@ -38,63 +41,38 @@ export default function BlogPreview({ posts }: BlogPreviewProps) {
             whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.4, ease: EASE, delay: i * 0.05 }}
-            style={{
-              display: 'flex',
-              alignItems: 'baseline',
-              gap: 14,
-              padding: '10px 0',
-              borderBottom: i < latest.length - 1 ? '1px solid var(--border)' : 'none',
-              textDecoration: 'none',
-            }}
+            onMouseEnter={() => setHoveredIndex(i)}
+            onMouseLeave={() => setHoveredIndex(null)}
+            className={[
+              'flex items-center gap-[14px] py-[10px] no-underline',
+              i < latest.length - 1 ? 'border-b border-border' : '',
+            ].join(' ')}
           >
-            <span
-              style={{
-                fontSize: 11,
-                color: 'var(--text-ghost)',
-                flexShrink: 0,
-                fontVariantNumeric: 'tabular-nums',
-                lineHeight: 1.5,
-              }}
-            >
+            <span className="text-[11px] text-[var(--text-ghost)] shrink-0 tabular-nums leading-[1.5]">
               {formatDate(post.data.date)}
             </span>
             <span
-              style={{
-                fontSize: 13,
-                fontWeight: 500,
-                color: 'var(--text-secondary)',
-                lineHeight: 1.5,
-                transition: 'color 150ms ease',
-              }}
-              onMouseEnter={e => ((e.currentTarget as HTMLSpanElement).style.color = 'var(--text-primary)')}
-              onMouseLeave={e => ((e.currentTarget as HTMLSpanElement).style.color = 'var(--text-secondary)')}
+              className="text-[13px] font-medium leading-[1.5] flex-1 transition-colors duration-150"
+              style={{ color: hoveredIndex === i ? 'var(--text-primary)' : 'var(--text-secondary)' }}
             >
               {post.data.title}
+            </span>
+            <span
+              className="w-[22px] h-[22px] rounded-full border border-border flex items-center justify-center text-[var(--text-ghost)] shrink-0 transition-opacity duration-150"
+              style={{ opacity: hoveredIndex === i ? 1 : 0 }}
+            >
+              <ChevronRight size={13} />
             </span>
           </motion.a>
         ))}
       </div>
 
-      <div style={{ marginTop: 14 }}>
+      <div className="mt-[14px] flex justify-end">
         <a
           href="/blog"
-          style={{
-            fontSize: 12,
-            fontWeight: 500,
-            color: 'var(--text-secondary)',
-            textDecoration: 'none',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 4,
-            background: 'var(--muted-bg)',
-            borderRadius: 999,
-            padding: '6px 14px',
-            transition: 'filter 150ms ease',
-          }}
-          onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(0.96)'; }}
-          onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.filter = 'brightness(1)'; }}
+          className="text-[12px] font-medium text-[var(--text-secondary)] no-underline inline-flex items-center gap-1 bg-[var(--muted-bg)] rounded-full px-[14px] py-[6px] transition-[filter] duration-150 hover:brightness-[0.96]"
         >
-          All writing →
+          All writing <ChevronRight size={13} />
         </a>
       </div>
     </section>

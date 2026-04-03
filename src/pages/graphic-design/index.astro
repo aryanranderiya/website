@@ -69,9 +69,24 @@ const adMockups = [
   <div class="mb-10">
     <div class="section-header">Design</div>
     <h1 class="text-heading-1 mb-3">Graphic Design</h1>
-    <p class="text-body">
+    <p class="text-body mb-4">
       A collection of graphic design work — esports banners, apparel graphics, YouTube thumbnails, and ad mockups.
     </p>
+    <a
+      href="https://www.behance.net/aryanranderiya"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="behance-link"
+    >
+      <img
+        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/behance/behance-original.svg"
+        alt=""
+        width="14"
+        height="14"
+        aria-hidden="true"
+      />
+      Behance
+    </a>
   </div>
 
   <DesignGallery
@@ -82,6 +97,26 @@ const adMockups = [
     client:load
   />
 </PageLayout>
+
+<style>
+  .behance-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-decoration: none;
+    background: var(--muted-bg);
+    border-radius: 999px;
+    padding: 5px 12px;
+    transition: color 0.15s ease, opacity 0.15s ease;
+  }
+  .behance-link:hover {
+    color: var(--text-secondary);
+    opacity: 0.85;
+  }
+</style>
 
 <style is:global>
   /* Apparel: 3-column grid, 1:1 ratio */

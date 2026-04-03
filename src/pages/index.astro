@@ -5,6 +5,7 @@ import Hero from '@/components/home/Hero';
 import ExperienceList from '@/components/resume/ExperienceList';
 import FeaturedProjects from '@/components/home/FeaturedProjects';
 import SpotifyWidget from '@/components/home/SpotifyWidget';
+import MapWidget from '@/components/home/MapWidget';
 import Toolbox from '@/components/home/Toolbox';
 import BlogPreview from '@/components/home/BlogPreview';
 import Signature from '@/components/home/Signature';
@@ -22,18 +23,25 @@ const posts = allPosts
   <!-- Hero -->
   <Hero client:load />
 
+  <!-- Spotify + Map -->
+  <section class="pb-4">
+    <div class="grid grid-cols-2 gap-4">
+      <SpotifyWidget client:visible />
+      <MapWidget client:visible />
+    </div>
+  </section>
+
   <!-- Experience (shared component, featured only) -->
-  <ExperienceList featuredOnly compact client:visible />
+  <div class="mt-8">
+    <ExperienceList featuredOnly compact client:visible />
+  </div>
 
   <!-- Featured projects -->
   <FeaturedProjects client:visible />
 
-  <!-- Toolbox + Spotify + Socials — minimal section -->
+  <!-- Toolbox -->
   <section class="pb-12">
-    <div class="mb-6">
-      <Toolbox client:visible />
-    </div>
-    <SpotifyWidget client:visible />
+    <Toolbox client:visible />
   </section>
 
   <!-- Blog preview -->

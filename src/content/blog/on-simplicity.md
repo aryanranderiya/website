@@ -4,6 +4,7 @@ description: Why the hardest thing in design is knowing what to leave out.
 date: 2024-09-01
 tags: [design, thinking]
 category: design
+cover: https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=1200&h=630&fit=crop
 ---
 
 The best designs don't add — they subtract. Every element on a screen is a question to the user's brain. The fewer questions, the better the experience.

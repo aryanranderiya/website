@@ -1,0 +1,107 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{
+  toc.length > 0 && (
+    <nav id="toc" aria-label="Table of contents">
+      <p class="toc-label">On this page</p>
+      <ul>
+        {toc.map((h) => (
+          <li>
+            <a
+              href={`#${h.slug}`}
+              class:list={['toc-link', h.depth === 3 && 'toc-link--sub']}
+              data-heading={h.slug}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )
+}
+
+<style>
+  .toc-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-ghost);
+    margin: 0 0 10px 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .toc-link {
+    display: block;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding: 3px 0;
+    transition: color 150ms ease;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .toc-link--sub {
+    padding-left: 10px;
+    font-size: 11px;
+    color: var(--text-ghost);
+  }
+
+  .toc-link:hover {
+    color: var(--text-secondary);
+  }
+
+  .toc-link.active {
+    color: var(--text-primary);
+  }
+</style>
+
+<script>
+  const links = document.querySelectorAll<HTMLAnchorElement>('#toc .toc-link');
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          links.forEach((l) => l.classList.remove('active'));
+          const active = document.querySelector(`#toc .toc-link[data-heading="${id}"]`);
+          if (active) active.classList.add('active');
+        }
+      }
+    },
+    { rootMargin: '0px 0px -70% 0px', threshold: 0 },
+  );
+
+  links.forEach((link) => {
+    const id = link.getAttribute('data-heading');
+    if (id) {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    }
+  });
+</script>

@@ -1,6 +1,6 @@
 'use client';
 
-import { HugeiconsIcon, ArrowRight01Icon } from '@icons';
+import { ChevronRight } from '@icons';
 import { motion } from 'framer-motion';
 
 interface Post {
@@ -50,7 +50,7 @@ export default function BlogList({ posts }: BlogListProps) {
           </div>
 
           <span className="shrink-0 text-[var(--text-ghost)] flex items-center transition-colors duration-150 group-hover:text-[var(--text-secondary)]">
-            <HugeiconsIcon icon={ArrowRight01Icon} size={12} />
+            <ChevronRight size={12} />
           </span>
         </motion.a>
       ))}

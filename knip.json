@@ -1,0 +1,19 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "src/pages/**/*.{astro,ts,tsx}",
+    "src/layouts/**/*.astro",
+    "astro.config.*"
+  ],
+  "project": [
+    "src/**/*.{astro,ts,tsx,js,jsx}"
+  ],
+  "ignore": [
+    "src/env.d.ts",
+    ".astro/**"
+  ],
+  "ignoreDependencies": [
+    "@astrojs/check",
+    "sharp"
+  ]
+}

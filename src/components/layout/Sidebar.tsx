@@ -1,50 +1,133 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- icons used in JSX
-import { HugeiconsIcon, Sun01Icon, Moon02Icon, GithubIcon, Menu01Icon, Cancel01Icon } from '@icons';
+import {
+  HugeiconsIcon,
+  Sun01Icon, Moon02Icon, Menu01Icon, Cancel01Icon,
+  Home12Icon, Folder03Icon, BrushIcon, QuillWrite01Icon,
+  NoteIcon, Briefcase01Icon, Books02Icon, Film01Icon, CarouselHorizontalIcon,
+  SparklesIcon, ColorsIcon, Clock01Icon, ShuffleIcon,
+} from '@icons';
+import type { ComponentType } from 'react';
+import type { IconProps } from '@theexperiencecompany/gaia-icons';
 import { PAGES } from '@/constants/navigation';
 
-const NAV_GROUPS = [
+const NAV_GROUPS: { label: string | null; items: { href: string; label: string; icon: ComponentType<IconProps> }[] }[] = [
   {
     label: null,
     items: [
-      { href: '/',         label: 'Home' },
-      { href: '/projects', label: 'Projects' },
-      { href: '/graphic-design', label: 'Design' },
-      { href: '/blog',     label: 'Writing' },
-      { href: '/resume',   label: 'Resume' },
-      { href: '/freelance', label: 'Freelance' },
+      { href: '/',              label: 'Home',      icon: Home12Icon },
+      { href: '/projects',      label: 'Projects',  icon: Folder03Icon },
+      { href: '/graphic-design',label: 'Design',    icon: BrushIcon },
+      { href: '/blog',          label: 'Blog',      icon: QuillWrite01Icon },
+      { href: '/resume',        label: 'Resume',    icon: NoteIcon },
+      { href: '/freelance',     label: 'Freelance', icon: Briefcase01Icon },
+      { href: '/now',           label: 'Now',       icon: Clock01Icon },
     ],
   },
   {
     label: 'Extra',
     items: [
-      { href: '/books',       label: 'Books' },
-      { href: '/movies',      label: 'Movies' },
-      { href: '/camera-roll', label: 'Photos' },
+      { href: '/tools',        label: 'Tools',   icon: SparklesIcon },
+      { href: '/books',        label: 'Books',   icon: Books02Icon },
+      { href: '/movies',       label: 'Movies',  icon: Film01Icon },
+      { href: '/camera-roll',  label: 'Gallery', icon: CarouselHorizontalIcon },
     ],
   },
 ];
 
+type Theme = 'light' | 'dark' | 'random';
+type Typography = 'helvetica' | 'inter' | 'georgia' | 'palatino' | 'mono' | 'pixel' | 'impact' | 'comic';
+
+const TYPOGRAPHY_OPTIONS: { id: Typography; label: string; family: string }[] = [
+  { id: 'helvetica', label: 'Helvetica',  family: "'Helvetica Neue', Helvetica, Arial, sans-serif" },
+  { id: 'inter',     label: 'Inter',      family: "'Inter var', Inter, sans-serif" },
+  { id: 'georgia',   label: 'Georgia',    family: "Georgia, 'Times New Roman', serif" },
+  { id: 'palatino',  label: 'Palatino',   family: "'Palatino Linotype', Palatino, 'Book Antiqua', serif" },
+  { id: 'mono',      label: 'Mono',       family: "ui-monospace, 'Courier New', monospace" },
+  { id: 'pixel',     label: 'Pixel',      family: "'VT323', monospace" },
+  { id: 'impact',    label: 'Impact',     family: "Impact, 'Arial Narrow', sans-serif" },
+  { id: 'comic',     label: 'Comic',      family: "'Comic Sans MS', 'Chalkboard SE', cursive" },
+];
+
+const RANDOM_VARS = [
+  '--background', '--foreground', '--card', '--card-foreground',
+  '--popover', '--popover-foreground', '--primary', '--primary-foreground',
+  '--glass-bg', '--accent-blue',
+];
+
+function applyRandomPalette(hue: number, sat: number) {
+  const l = Math.max(88, Math.round(96 - (sat - 25) * 0.23));
+  const root = document.documentElement;
+  root.style.setProperty('--background',          `hsl(${hue}, ${sat}%, ${l}%)`);
+  root.style.setProperty('--foreground',          `hsl(${hue}, 22%, 11%)`);
+  root.style.setProperty('--card',                `hsl(${hue}, ${Math.round(sat * 0.7)}%, ${Math.min(l + 2, 98)}%)`);
+  root.style.setProperty('--card-foreground',     `hsl(${hue}, 22%, 11%)`);
+  root.style.setProperty('--popover',             `hsl(${hue}, ${Math.round(sat * 0.7)}%, ${Math.min(l + 2, 98)}%)`);
+  root.style.setProperty('--popover-foreground',  `hsl(${hue}, 22%, 11%)`);
+  root.style.setProperty('--primary',             `hsl(${hue}, 22%, 11%)`);
+  root.style.setProperty('--primary-foreground',  `hsl(${hue}, ${sat}%, ${l}%)`);
+  root.style.setProperty('--glass-bg',            `hsla(${hue}, ${sat}%, ${l}%, 0.85)`);
+  root.style.setProperty('--accent-blue',         `hsl(${hue}, 72%, 52%)`);
+}
+
+function clearRandomPalette() {
+  RANDOM_VARS.forEach(v => document.documentElement.style.removeProperty(v));
+}
+
+function applyTypography(font: Typography) {
+  const root = document.documentElement;
+  if (font === 'helvetica') {
+    // Helvetica is the CSS default — remove any override
+    root.style.removeProperty('font-family');
+  } else {
+    if (font === 'pixel' && !document.getElementById('pixel-font-link')) {
+      const link = document.createElement('link');
+      link.id = 'pixel-font-link';
+      link.rel = 'stylesheet';
+      link.href = 'https://fonts.googleapis.com/css2?family=VT323&display=swap';
+      document.head.appendChild(link);
+    }
+    const option = TYPOGRAPHY_OPTIONS.find(o => o.id === font);
+    if (option) root.style.setProperty('font-family', option.family);
+  }
+  localStorage.setItem('typography', font);
+}
 
 export default function Sidebar() {
   const [pathname, setPathname] = useState('/');
-  const [isDark, setIsDark] = useState(false);
+  const [theme, setTheme] = useState<Theme>('light');
+  const [typography, setTypography] = useState<Typography>('helvetica');
+  const [shuffleOpen, setShuffleOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [avatarSrc, setAvatarSrc] = useState(() => Math.random() < 0.5 ? '/avatar-original.webp' : '/avatar.webp');
+  const [hoveredAction, setHoveredAction] = useState<string | null>(null);
+
+  const popoverRef = useRef<HTMLDivElement>(null);
+  const shuffleBtnRef = useRef<HTMLButtonElement>(null);
+
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     setPathname(window.location.pathname);
-    setIsDark(document.documentElement.classList.contains('dark'));
+    const stored = localStorage.getItem('theme') as Theme | null;
+    if (stored === 'dark') setTheme('dark');
+    else if (stored === 'random') setTheme('random');
+    else setTheme('light');
+
+    const storedFont = localStorage.getItem('typography') as Typography | null;
+    if (storedFont) setTypography(storedFont);
 
     const handleThemeChange = () => {
-      setIsDark(document.documentElement.classList.contains('dark'));
+      const t = localStorage.getItem('theme') as Theme | null;
+      if (t === 'random') setTheme('random');
+      else setTheme(document.documentElement.classList.contains('dark') ? 'dark' : 'light');
     };
     const observer = new MutationObserver(handleThemeChange);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
-    // Close mobile nav on route change
     const handleNavigation = () => {
       setPathname(window.location.pathname);
       setMobileOpen(false);
@@ -57,18 +140,79 @@ export default function Sidebar() {
     };
   }, []);
 
-  const toggleTheme = () => {
+  // Close popover on outside click or Escape
+  useEffect(() => {
+    if (!shuffleOpen) return;
+    function onMouseDown(e: MouseEvent) {
+      if (
+        popoverRef.current && !popoverRef.current.contains(e.target as Node) &&
+        shuffleBtnRef.current && !shuffleBtnRef.current.contains(e.target as Node)
+      ) {
+        setShuffleOpen(false);
+      }
+    }
+    function onKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') setShuffleOpen(false);
+    }
+    document.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, [shuffleOpen]);
+
+  function handleThemeButtonClick() {
     const html = document.documentElement;
-    const newDark = !html.classList.contains('dark');
-    html.classList.toggle('dark', newDark);
-    localStorage.setItem('theme', newDark ? 'dark' : 'light');
-    setIsDark(newDark);
-  };
+    if (theme === 'light') {
+      html.classList.add('dark');
+      clearRandomPalette();
+      localStorage.setItem('theme', 'dark');
+      setTheme('dark');
+      setShuffleOpen(false);
+    } else if (theme === 'dark') {
+      // Advance to random and open the customization popover
+      html.classList.remove('dark');
+      const hue = Math.floor(Math.random() * 360);
+      const sat = Math.floor(Math.random() * 36) + 25;
+      applyRandomPalette(hue, sat);
+      localStorage.setItem('theme', 'random');
+      localStorage.setItem('randomHue', String(hue));
+      localStorage.setItem('randomSat', String(sat));
+      setTheme('random');
+      setShuffleOpen(true);
+    } else {
+      // random -> light
+      html.classList.remove('dark');
+      clearRandomPalette();
+      localStorage.setItem('theme', 'light');
+      setTheme('light');
+      setShuffleOpen(false);
+    }
+  }
+
+  function handleShuffleColors() {
+    // Re-shuffle colors while staying in random state
+    const hue = Math.floor(Math.random() * 360);
+    const sat = Math.floor(Math.random() * 36) + 25;
+    applyRandomPalette(hue, sat);
+    localStorage.setItem('randomHue', String(hue));
+    localStorage.setItem('randomSat', String(sat));
+  }
+
+  function handleShuffleFont() {
+    const others = TYPOGRAPHY_OPTIONS.filter(o => o.id !== typography);
+    const pick = others[Math.floor(Math.random() * others.length)];
+    applyTypography(pick.id);
+    setTypography(pick.id);
+  }
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
     return pathname.startsWith(href);
   };
+
+  const anyActive = NAV_GROUPS.flatMap(g => g.items).some(item => isActive(item.href));
 
   const linkStyle = (href: string, secondary?: boolean): React.CSSProperties => ({
     fontSize: secondary ? '11px' : '12px',
@@ -76,8 +220,10 @@ export default function Sidebar() {
     color: isActive(href)
       ? isDark ? 'rgba(255,255,255,0.88)' : 'rgba(0,0,0,0.85)'
       : secondary
-        ? isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.38)'
-        : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
+        ? isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.28)'
+        : anyActive
+          ? isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.38)'
+          : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
     textDecoration: 'none',
     display: 'block',
     padding: '2px 0',
@@ -89,7 +235,7 @@ export default function Sidebar() {
   const sectionLabelStyle: React.CSSProperties = {
     fontSize: '10px',
     fontVariationSettings: '"wght" 500',
-    color: isDark ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.38)',
+    color: isDark ? 'rgba(255,255,255,0.15)' : 'rgba(0,0,0,0.25)',
     textTransform: 'uppercase',
     letterSpacing: '0.07em',
     marginTop: '16px',
@@ -110,182 +256,325 @@ export default function Sidebar() {
     transition: 'color 0.15s ease',
   };
 
+  const themeLabel = theme === 'light' ? 'Dark' : theme === 'dark' ? 'Shuffle' : 'Light';
+  const themeIcon = theme === 'light' ? Moon02Icon : theme === 'dark' ? ColorsIcon : Sun01Icon;
+
+  const popoverLabel: React.CSSProperties = {
+    fontSize: '9px',
+    fontVariationSettings: '"wght" 600',
+    color: 'var(--muted-foreground)',
+    textTransform: 'uppercase',
+    letterSpacing: '0.08em',
+    margin: '0 0 6px 0',
+    fontFamily: "'Inter var', Inter, sans-serif",
+  };
+
   return (
     <>
       {/* ── Desktop sidebar ── */}
-      <motion.nav
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+      <nav
+        className="hidden-mobile fixed flex-col gap-0.5 bg-transparent border-none overflow-visible z-40"
         style={{
-          position: 'fixed',
           top: '60px',
-          bottom: '24px',
+          bottom: '128px',
           left: 'calc(50% - 320px - 120px - 32px)',
           width: '100px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '2px',
-          background: 'transparent',
-          border: 'none',
-          overflowY: 'auto',
-          overflowX: 'hidden',
-          scrollbarWidth: 'none',
-          zIndex: 40,
         }}
-        className="hidden-mobile"
       >
+
         {/* Profile photo */}
-        <div style={{ marginBottom: 16 }}>
+        <div className="mb-4">
           <img
-            src="/avatar.webp"
+            src={avatarSrc}
             alt="Aryan Randeriya"
             width={32}
             height={32}
-            style={{
-              borderRadius: '50%',
-              display: 'block',
-              opacity: 0.9,
-            }}
+            className="rounded-full block opacity-90 cursor-pointer"
+            onClick={() => setAvatarSrc(s => s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp')}
           />
         </div>
 
         {/* Nav groups */}
         {NAV_GROUPS.map((group, gi) => (
-          <motion.div
+          <div
             key={gi}
-            initial={{ opacity: 0, x: -6 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.35, delay: gi * 0.05, ease: [0.19, 1, 0.22, 1] }}
             style={gi > 0 ? { marginTop: 16 } : undefined}
           >
             {group.label && (
               <div style={sectionLabelStyle}>{group.label}</div>
             )}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              {group.items.map((item, ii) => {
+            <div className="flex flex-col gap-0.5">
+              {group.items.map((item) => {
                 return (
-                <motion.a
+                <a
                   key={item.href}
                   href={item.href}
-                  style={linkStyle(item.href)}
-                  initial={{ opacity: 0, x: -4 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: (gi * 0.05) + (ii * 0.03), ease: [0.19, 1, 0.22, 1] }}
+                  style={{ ...linkStyle(item.href), display: 'flex', alignItems: 'center', gap: '6px' }}
                   onMouseEnter={e => {
                     if (!isActive(item.href)) {
                       (e.currentTarget as HTMLAnchorElement).style.color = isDark
-                        ? 'rgba(255,255,255,0.65)'
-                        : 'rgba(0,0,0,0.65)';
+                        ? 'rgba(255,255,255,0.60)'
+                        : 'rgba(0,0,0,0.58)';
                       (e.currentTarget as HTMLAnchorElement).style.fontVariationSettings = '"wght" 520';
                     }
                   }}
                   onMouseLeave={e => {
                     if (!isActive(item.href)) {
-                      (e.currentTarget as HTMLAnchorElement).style.color = isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)';
+                      (e.currentTarget as HTMLAnchorElement).style.color = isDark ? 'rgba(255,255,255,0.38)' : 'rgba(0,0,0,0.38)';
                       (e.currentTarget as HTMLAnchorElement).style.fontVariationSettings = '"wght" 450';
                     }
                   }}
                 >
+                  <HugeiconsIcon icon={item.icon} size={14} color="currentColor" style={{ flexShrink: 0 }} />
                   {item.label}
-                </motion.a>
+                </a>
                 );
               })}
             </div>
-          </motion.div>
+          </div>
         ))}
 
         {/* Bottom actions */}
-        <div style={{ marginTop: 'auto', paddingTop: '24px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          {/* Made in Astro */}
+        <div className="mt-auto pt-6 flex flex-col gap-1">
+          {/* Built in Astro */}
           <a
             href="https://astro.build"
             target="_blank"
             rel="noopener noreferrer"
             style={{
               ...actionStyle,
-              marginBottom: 8,
-              gap: 5,
+              color: hoveredAction === 'astro'
+                ? isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
+                : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
             }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLAnchorElement).style.color = isDark
-                ? 'rgba(255,255,255,0.6)'
-                : 'rgba(0,0,0,0.6)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLAnchorElement).style.color = isDark
-                ? 'rgba(255,255,255,0.50)'
-                : 'rgba(0,0,0,0.50)';
-            }}
+            onMouseEnter={() => setHoveredAction('astro')}
+            onMouseLeave={() => setHoveredAction(null)}
           >
             <img
-              src="https://www.google.com/s2/favicons?domain=astro.build&sz=32"
+              src={isDark ? "https://astro.build/assets/press/astro-icon-light-gradient.png" : "https://astro.build/assets/press/astro-icon-dark.svg"}
               width={13}
               height={13}
               alt="Astro"
-              style={{ borderRadius: 3, display: 'block' }}
+              className="rounded-[3px]"
             />
-            <span style={{ fontSize: '11px' }}>Astro</span>
+            <span style={{
+              fontSize: '11px',
+              whiteSpace: 'nowrap',
+              display: 'inline-block',
+              opacity: hoveredAction === 'astro' ? 1 : 0,
+              transform: hoveredAction === 'astro'
+                ? 'translateY(0) perspective(300px) rotateX(0deg)'
+                : 'translateY(5px) perspective(300px) rotateX(-40deg)',
+              transformOrigin: '50% 100%',
+              transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+            }}>Built in Astro</span>
           </a>
-          <button
-            onClick={toggleTheme}
-            style={actionStyle}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = isDark
-                ? 'rgba(255,255,255,0.6)'
-                : 'rgba(0,0,0,0.6)';
-            }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLButtonElement).style.color = isDark
-                ? 'rgba(255,255,255,0.50)'
-                : 'rgba(0,0,0,0.50)';
-            }}
-            aria-label="Toggle theme"
-          >
-            <HugeiconsIcon icon={isDark ? Sun01Icon : Moon02Icon} size={13} />
-          </button>
+          {/* Old portfolio */}
           <a
-            href="https://github.com/aryanranderiya"
+            href="https://aryanranderiya.com"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="GitHub"
-            style={actionStyle as React.CSSProperties}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLAnchorElement).style.color = isDark
-                ? 'rgba(255,255,255,0.6)'
-                : 'rgba(0,0,0,0.6)';
+            style={{
+              ...actionStyle,
+              color: hoveredAction === 'old-portfolio'
+                ? isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
+                : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
             }}
-            onMouseLeave={e => {
-              (e.currentTarget as HTMLAnchorElement).style.color = isDark
-                ? 'rgba(255,255,255,0.50)'
-                : 'rgba(0,0,0,0.50)';
-            }}
+            onMouseEnter={() => setHoveredAction('old-portfolio')}
+            onMouseLeave={() => setHoveredAction(null)}
+          >
+            <img
+              src="/old-portfolio-logo.webp"
+              width={13}
+              height={13}
+              alt="Old portfolio"
+              className="rounded-[2px]"
+            />
+            <span style={{
+              fontSize: '11px',
+              whiteSpace: 'nowrap',
+              display: 'inline-block',
+              opacity: hoveredAction === 'old-portfolio' ? 1 : 0,
+              transform: hoveredAction === 'old-portfolio'
+                ? 'translateY(0) perspective(300px) rotateX(0deg)'
+                : 'translateY(5px) perspective(300px) rotateX(-40deg)',
+              transformOrigin: '50% 100%',
+              textDecoration: hoveredAction === 'old-portfolio' ? 'underline' : 'none',
+              textDecorationStyle: 'dotted',
+              textUnderlineOffset: '3px',
+              transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+            }}>Old portfolio</span>
+          </a>
+
+          {/* Theme toggle + shuffle popover */}
+          <div style={{ position: 'relative' }}>
+            <button
+              ref={shuffleBtnRef}
+              onClick={handleThemeButtonClick}
+              style={{
+                ...actionStyle,
+                color: hoveredAction === 'theme' || shuffleOpen
+                  ? isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
+                  : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
+              }}
+              onMouseEnter={() => setHoveredAction('theme')}
+              onMouseLeave={() => setHoveredAction(null)}
+              aria-label="Cycle theme"
+            >
+              <HugeiconsIcon icon={themeIcon} size={13} />
+              <span style={{
+                fontSize: '11px',
+                whiteSpace: 'nowrap',
+                display: 'inline-block',
+                opacity: hoveredAction === 'theme' || shuffleOpen ? 1 : 0,
+                transform: hoveredAction === 'theme' || shuffleOpen
+                  ? 'translateY(0) perspective(300px) rotateX(0deg)'
+                  : 'translateY(5px) perspective(300px) rotateX(-40deg)',
+                transformOrigin: '50% 100%',
+                transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+              }}>{themeLabel}</span>
+            </button>
+
+            <AnimatePresence>
+              {shuffleOpen && (
+                <motion.div
+                  ref={popoverRef}
+                  initial={{ opacity: 0, x: -6, scale: 0.97 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -6, scale: 0.97 }}
+                  transition={{ duration: 0.16, ease: [0.19, 1, 0.22, 1] }}
+                  style={{
+                    position: 'absolute',
+                    left: 'calc(100% + 14px)',
+                    bottom: '-4px',
+                    width: '164px',
+                    background: 'var(--popover)',
+                    borderRadius: '12px',
+                    padding: '12px',
+                    zIndex: 200,
+                    boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)',
+                  }}
+                >
+                  {/* Header */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                    <span style={{ fontSize: '10px', fontVariationSettings: '"wght" 560', color: 'var(--foreground)', fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: '-0.01em' }}>Customize</span>
+                    <button
+                      onClick={() => setShuffleOpen(false)}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0', display: 'flex', color: 'var(--muted-foreground)', lineHeight: 1 }}
+                      onMouseEnter={e => (e.currentTarget.style.color = 'var(--foreground)')}
+                      onMouseLeave={e => (e.currentTarget.style.color = 'var(--muted-foreground)')}
+                      aria-label="Close"
+                    >
+                      <HugeiconsIcon icon={Cancel01Icon} size={12} color="currentColor" />
+                    </button>
+                  </div>
+                  <p style={popoverLabel}>Colors</p>
+                  <button
+                    onClick={handleShuffleColors}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      background: 'var(--muted-bg)',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '6px 8px',
+                      cursor: 'pointer',
+                      fontSize: '11px',
+                      fontVariationSettings: '"wght" 480',
+                      color: 'var(--foreground)',
+                      fontFamily: "'Inter var', Inter, sans-serif",
+                      transition: 'opacity 0.15s ease',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.65')}
+                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                  >
+                    <HugeiconsIcon icon={ShuffleIcon} size={12} color="currentColor" />
+                    Shuffle palette
+                  </button>
+
+                  <p style={{ ...popoverLabel, marginTop: '12px' }}>Typography</p>
+                  <button
+                    onClick={handleShuffleFont}
+                    style={{
+                      width: '100%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      background: 'var(--muted-bg)',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '6px 8px',
+                      cursor: 'pointer',
+                      fontSize: '11px',
+                      fontVariationSettings: '"wght" 480',
+                      color: 'var(--foreground)',
+                      fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+                      transition: 'opacity 0.15s ease',
+                    }}
+                    onMouseEnter={e => (e.currentTarget.style.opacity = '0.65')}
+                    onMouseLeave={e => (e.currentTarget.style.opacity = '1')}
+                  >
+                    <HugeiconsIcon icon={ShuffleIcon} size={12} color="currentColor" />
+                    Shuffle font
+                  </button>
+                  {/* Current font preview */}
+                  <div style={{
+                    fontFamily: TYPOGRAPHY_OPTIONS.find(o => o.id === typography)?.family,
+                    fontSize: typography === 'pixel' ? '13px' : '10px',
+                    color: 'var(--muted-foreground)',
+                    marginTop: '6px',
+                    letterSpacing: typography === 'mono' ? '-0.02em' : '0',
+                  }}>
+                    {TYPOGRAPHY_OPTIONS.find(o => o.id === typography)?.label}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* GitHub */}
+          <a
+            href="https://github.com/aryanranderiya/website"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              ...actionStyle,
+              color: hoveredAction === 'github'
+                ? isDark ? 'rgba(255,255,255,0.6)' : 'rgba(0,0,0,0.6)'
+                : isDark ? 'rgba(255,255,255,0.50)' : 'rgba(0,0,0,0.50)',
+            } as React.CSSProperties}
+            onMouseEnter={() => setHoveredAction('github')}
+            onMouseLeave={() => setHoveredAction(null)}
           >
             <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
               <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
             </svg>
+            <span style={{
+              fontSize: '11px',
+              whiteSpace: 'nowrap',
+              display: 'inline-block',
+              opacity: hoveredAction === 'github' ? 1 : 0,
+              transform: hoveredAction === 'github'
+                ? 'translateY(0) perspective(300px) rotateX(0deg)'
+                : 'translateY(5px) perspective(300px) rotateX(-40deg)',
+              transformOrigin: '50% 100%',
+              textDecoration: hoveredAction === 'github' ? 'underline' : 'none',
+              textDecorationStyle: 'dotted',
+              textUnderlineOffset: '3px',
+              transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+            }}>GitHub</span>
           </a>
         </div>
-      </motion.nav>
+      </nav>
 
       {/* ── Mobile top bar ── */}
       <div
-        className="mobile-nav-bar"
+        className="mobile-nav-bar fixed top-0 left-0 right-0 h-[52px] flex items-center justify-between px-5 backdrop-blur-[12px] border-b z-50"
         style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '52px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 20px',
-          background: isDark ? 'rgba(17,17,17,0.92)' : 'rgba(253,253,252,0.92)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
-          zIndex: 50,
+          background: 'var(--glass-bg)',
+          borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
         }}
       >
         <a href="/" style={{
@@ -297,38 +586,112 @@ export default function Sidebar() {
         }}>
           Aryan Randeriya
         </a>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="flex items-center gap-3">
           <button
-            onClick={toggleTheme}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)',
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
+            onClick={handleThemeButtonClick}
+            className="bg-none border-none cursor-pointer p-1 flex items-center"
+            style={{ color: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)' }}
           >
-            <HugeiconsIcon icon={isDark ? Sun01Icon : Moon02Icon} size={13} />
+            <HugeiconsIcon icon={themeIcon} size={13} />
           </button>
           <button
             onClick={() => setMobileOpen(v => !v)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
-              padding: '4px',
-              display: 'flex',
-              alignItems: 'center',
-            }}
+            className="bg-none border-none cursor-pointer p-1 flex items-center"
+            style={{ color: isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)' }}
             aria-label="Toggle menu"
           >
             <HugeiconsIcon icon={mobileOpen ? Cancel01Icon : Menu01Icon} size={16} />
           </button>
         </div>
       </div>
+
+      {/* ── Mobile shuffle popover ── */}
+      <AnimatePresence>
+        {shuffleOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.18, ease: [0.19, 1, 0.22, 1] }}
+            className="mobile-only-block"
+            style={{
+              position: 'fixed',
+              top: '60px',
+              left: '16px',
+              right: '16px',
+              background: 'var(--popover)',
+              borderRadius: '12px',
+              padding: '14px',
+              zIndex: 60,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <span style={{ fontSize: '11px', fontVariationSettings: '"wght" 560', color: 'var(--foreground)', fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif", letterSpacing: '-0.01em' }}>Customize</span>
+              <button
+                onClick={() => setShuffleOpen(false)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '0', display: 'flex', color: 'var(--muted-foreground)', lineHeight: 1 }}
+                aria-label="Close"
+              >
+                <HugeiconsIcon icon={Cancel01Icon} size={13} color="currentColor" />
+              </button>
+            </div>
+            <p style={popoverLabel}>Colors</p>
+            <button
+              onClick={handleShuffleColors}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'var(--muted-bg)',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontVariationSettings: '"wght" 480',
+                color: 'var(--foreground)',
+                fontFamily: "'Inter var', Inter, sans-serif",
+              }}
+            >
+              <HugeiconsIcon icon={ShuffleIcon} size={13} color="currentColor" />
+              Shuffle palette
+            </button>
+            <p style={{ ...popoverLabel, marginTop: '12px' }}>Typography</p>
+            <button
+              onClick={handleShuffleFont}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'var(--muted-bg)',
+                border: 'none',
+                borderRadius: '6px',
+                padding: '8px 10px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontVariationSettings: '"wght" 480',
+                color: 'var(--foreground)',
+                fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+              }}
+            >
+              <HugeiconsIcon icon={ShuffleIcon} size={13} color="currentColor" />
+              Shuffle font
+            </button>
+            <div style={{
+              fontFamily: TYPOGRAPHY_OPTIONS.find(o => o.id === typography)?.family,
+              fontSize: typography === 'pixel' ? '14px' : '11px',
+              color: 'var(--muted-foreground)',
+              marginTop: '6px',
+              letterSpacing: typography === 'mono' ? '-0.02em' : '0',
+            }}>
+              {TYPOGRAPHY_OPTIONS.find(o => o.id === typography)?.label}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Mobile dropdown menu ── */}
       <AnimatePresence>
@@ -338,17 +701,10 @@ export default function Sidebar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.2, ease: [0.19, 1, 0.22, 1] }}
+            className="fixed top-[52px] left-0 right-0 backdrop-blur-[12px] border-b z-[49] px-5 pt-4 pb-5"
             style={{
-              position: 'fixed',
-              top: '52px',
-              left: 0,
-              right: 0,
-              background: isDark ? 'rgba(17,17,17,0.97)' : 'rgba(253,253,252,0.97)',
-              backdropFilter: 'blur(12px)',
-              WebkitBackdropFilter: 'blur(12px)',
-              borderBottom: `1px solid ${isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'}`,
-              zIndex: 49,
-              padding: '16px 20px 20px',
+              background: 'var(--glass-bg)',
+              borderBottomColor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)',
             }}
           >
             {NAV_GROUPS.map((group, gi) => (
@@ -365,12 +721,15 @@ export default function Sidebar() {
                       href={item.href}
                       style={{
                         ...linkStyle(item.href),
-                        display: 'block',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
                         padding: '7px 0',
                         fontSize: '14px',
                       }}
                       onClick={() => setMobileOpen(false)}
                     >
+                      <HugeiconsIcon icon={item.icon} size={16} style={{ flexShrink: 0, opacity: 0.85 }} />
                       {item.label}
                     </a>
                   );
@@ -385,6 +744,7 @@ export default function Sidebar() {
         @media (min-width: 960px) {
           .hidden-mobile { display: flex !important; }
           .mobile-nav-bar { display: none !important; }
+          .mobile-only-block { display: none !important; }
         }
         @media (max-width: 959px) {
           .hidden-mobile { display: none !important; }

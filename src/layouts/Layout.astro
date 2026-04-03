@@ -4,6 +4,7 @@ import { SITE, SEO } from '@/constants/site';
 import '@/styles/global.css';
 import CommandK from '@/components/layout/CommandK';
 import AgentationOverlay from '@/components/layout/AgentationOverlay';
+import BlurStack from '@/components/ui/blur-stack';
 
 interface Props {
   title?: string;
@@ -80,8 +81,50 @@ const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro
     <!-- Theme init — light by default, dark only if explicitly stored -->
     <script is:inline>
       (function () {
-        if (localStorage.getItem('theme') === 'dark') {
+        var theme = localStorage.getItem('theme');
+        if (theme === 'dark') {
           document.documentElement.classList.add('dark');
+        } else if (theme === 'random') {
+          var hue = parseInt(localStorage.getItem('randomHue') || '200', 10);
+          var sat = parseInt(localStorage.getItem('randomSat') || '38', 10);
+          var l = Math.max(88, Math.round(96 - (sat - 25) * 0.23));
+          var card_s = Math.round(sat * 0.7);
+          var card_l = Math.min(l + 2, 98);
+          var root = document.documentElement;
+          root.style.setProperty('--background',          'hsl(' + hue + ', ' + sat + '%, ' + l + '%)');
+          root.style.setProperty('--foreground',          'hsl(' + hue + ', 22%, 11%)');
+          root.style.setProperty('--card',                'hsl(' + hue + ', ' + card_s + '%, ' + card_l + '%)');
+          root.style.setProperty('--card-foreground',     'hsl(' + hue + ', 22%, 11%)');
+          root.style.setProperty('--popover',             'hsl(' + hue + ', ' + card_s + '%, ' + card_l + '%)');
+          root.style.setProperty('--popover-foreground',  'hsl(' + hue + ', 22%, 11%)');
+          root.style.setProperty('--primary',             'hsl(' + hue + ', 22%, 11%)');
+          root.style.setProperty('--primary-foreground',  'hsl(' + hue + ', ' + sat + '%, ' + l + '%)');
+          root.style.setProperty('--glass-bg',            'hsla(' + hue + ', ' + sat + '%, ' + l + '%, 0.85)');
+          root.style.setProperty('--accent-blue',         'hsl(' + hue + ', 72%, 52%)');
+        }
+        // Restore typography (helvetica is the CSS default — skip it)
+        var typography = localStorage.getItem('typography');
+        if (typography && typography !== 'helvetica') {
+          var fontMap = {
+            inter:     "'Inter var', Inter, sans-serif",
+            georgia:   "Georgia, 'Times New Roman', serif",
+            palatino:  "'Palatino Linotype', Palatino, 'Book Antiqua', serif",
+            mono:      "ui-monospace, 'Courier New', monospace",
+            pixel:     "'VT323', monospace",
+            impact:    "Impact, 'Arial Narrow', sans-serif",
+            comic:     "'Comic Sans MS', 'Chalkboard SE', cursive"
+          };
+          var family = fontMap[typography];
+          if (family) {
+            document.documentElement.style.setProperty('font-family', family);
+            if (typography === 'pixel') {
+              var link = document.createElement('link');
+              link.id = 'pixel-font-link';
+              link.rel = 'stylesheet';
+              link.href = 'https://fonts.googleapis.com/css2?family=VT323&display=swap';
+              document.head.appendChild(link);
+            }
+          }
         }
       })();
     </script>
@@ -94,6 +137,7 @@ const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro
     <div id="main-content" transition:animate="fade" class:list={['min-h-screen flex flex-col', className]}>
       <slot />
     </div>
+    <BlurStack client:only="react" className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none" />
     <CommandK client:only="react" />
     <AgentationOverlay client:only="react" />
   </body>

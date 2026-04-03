@@ -5,6 +5,8 @@ export const SITE = {
   description: 'Developer, designer, and builder. Interested in hardware, robotics, and human-computer interaction.',
   tagline: 'Building things that matter.',
   location: 'Ahmedabad, India',
+  timezone: 'Asia/Kolkata',
+  coords: { lat: 23.0225, lng: 72.5714 },
   email: 'hey@aryanranderiya.com',
   github: 'aryanranderiya',
   twitter: 'aryanranderiya',

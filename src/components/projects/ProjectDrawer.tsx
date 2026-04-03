@@ -4,7 +4,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useState, useEffect } from 'react';
 import { RaisedButton } from '@/components/ui/raised-button';
-import { HugeiconsIcon, Cancel01Icon, GithubIcon, LinkSquare02Icon, ImageNotFound01Icon } from '@icons';
+import { HugeiconsIcon, Cancel01Icon, GithubIcon, LinkSquare02Icon, ImageNotFound01Icon, ArrowLeft01Icon, ArrowRight01Icon } from '@icons';
+import { getTechIconUrl } from '../../utils/techIcons';
+
+const TYPE_LABELS: Record<string, string> = {
+  web:     'Web',
+  mobile:  'Mobile',
+  game:    'Game',
+  cli:     'CLI',
+  desktop: 'Desktop',
+  macos:   'macOS',
+  os:      'macOS',
+  other:   'Other',
+  api:     'API',
+};
 
 interface Project {
   slug: string;
@@ -22,49 +35,6 @@ interface Project {
   coverImage?: string;
 }
 
-// Map tech names to devicon slugs
-const DEVICON_MAP: Record<string, string | null> = {
-  'React': 'react',
-  'React Native': 'react',
-  'TypeScript': 'typescript',
-  'JavaScript': 'javascript',
-  'Python': 'python',
-  'FastAPI': 'fastapi',
-  'MongoDB': 'mongodb',
-  'Node.js': 'nodejs',
-  'Nodejs': 'nodejs',
-  'Tailwind': 'tailwindcss',
-  'TailwindCSS': 'tailwindcss',
-  'Next.js': 'nextjs',
-  'Nextjs': 'nextjs',
-  'Firebase': 'firebase',
-  'PostgreSQL': 'postgresql',
-  'WebSockets': null,
-  'Supabase': 'supabase',
-  'Express': 'express',
-  'Java': 'java',
-  'Android': 'android',
-  'HTML': 'html5',
-  'CSS': 'css3',
-  'Redis': 'redis',
-  'Flask': 'flask',
-  'Astro': 'astro',
-  'Vite': 'vitejs',
-  'OpenAI': null,
-};
-
-function DeviconImg({ slug, size = 12 }: { slug: string; size?: number }) {
-  return (
-    <img
-      src={`https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/${slug}/${slug}-original.svg`}
-      alt=""
-      width={size}
-      height={size}
-      style={{ display: 'inline-block', flexShrink: 0 }}
-      onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
-    />
-  );
-}
 
 function CarouselImage({ src, alt }: { src: string; alt: string }) {
   const [loaded, setLoaded] = useState(false);
@@ -159,34 +129,23 @@ export default function ProjectDrawer({
               />
             </Dialog.Overlay>
 
-            {/* Bottom sheet drawer */}
+            {/* Right-side drawer */}
             <Dialog.Content asChild>
               <motion.div
-                className="fixed bottom-0 left-0 right-0 z-50 flex flex-col"
+                className="fixed top-0 right-0 bottom-0 z-50 flex flex-col"
                 style={{
-                  maxHeight: '85vh',
+                  width: '420px',
+                  maxWidth: '100vw',
                   background: 'var(--background)',
-                  borderRadius: '16px 16px 0 0',
+                  borderRadius: '16px 0 0 16px',
                   overflowX: 'hidden',
                 }}
-                initial={{ y: '100%' }}
-                animate={{ y: 0 }}
-                exit={{ y: '100%' }}
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
                 transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
               >
                 <Dialog.Title className="sr-only">{project.title}</Dialog.Title>
-
-                {/* Drag handle */}
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '10px 0 4px', flexShrink: 0 }}>
-                  <div
-                    style={{
-                      width: '40px',
-                      height: '4px',
-                      borderRadius: '9999px',
-                      background: 'rgba(0,0,0,0.15)',
-                    }}
-                  />
-                </div>
 
                 {/* Close button */}
                 <Dialog.Close asChild>
@@ -226,7 +185,6 @@ export default function ProjectDrawer({
                       position: 'relative',
                       width: '100%',
                       aspectRatio: '16/9',
-                      maxHeight: '260px',
                       background: 'var(--muted-bg)',
                       overflow: 'hidden',
                       flexShrink: 0,
@@ -311,10 +269,9 @@ export default function ProjectDrawer({
                         background: 'var(--muted-bg)',
                         color: 'var(--text-muted)',
                         letterSpacing: '0.02em',
-                        textTransform: 'capitalize',
                       }}
                     >
-                      {project.type}
+                      {TYPE_LABELS[project.type] ?? project.type}
                     </span>
                     {project.folder && project.folder !== 'Projects' && (
                       <span
@@ -347,6 +304,40 @@ export default function ProjectDrawer({
                     </h2>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, paddingTop: '2px' }}>
+                      {images.length > 1 && (
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                          <button
+                            onClick={() => setActiveImage(i => Math.max(0, i - 1))}
+                            disabled={safeActiveImage === 0}
+                            style={{
+                              width: '32px', height: '32px', borderRadius: '6px', border: 'none',
+                              background: 'var(--muted-bg)', cursor: safeActiveImage === 0 ? 'default' : 'pointer',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              opacity: safeActiveImage === 0 ? 0.35 : 1,
+                              transition: 'opacity 150ms ease',
+                              color: 'var(--text-secondary)',
+                            }}
+                            aria-label="Previous image"
+                          >
+                            <HugeiconsIcon icon={ArrowLeft01Icon} size={13} />
+                          </button>
+                          <button
+                            onClick={() => setActiveImage(i => Math.min(images.length - 1, i + 1))}
+                            disabled={safeActiveImage === images.length - 1}
+                            style={{
+                              width: '32px', height: '32px', borderRadius: '6px', border: 'none',
+                              background: 'var(--muted-bg)', cursor: safeActiveImage === images.length - 1 ? 'default' : 'pointer',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              opacity: safeActiveImage === images.length - 1 ? 0.35 : 1,
+                              transition: 'opacity 150ms ease',
+                              color: 'var(--text-secondary)',
+                            }}
+                            aria-label="Next image"
+                          >
+                            <HugeiconsIcon icon={ArrowRight01Icon} size={13} />
+                          </button>
+                        </div>
+                      )}
                       {project.github && (
                         <a
                           href={project.github}
@@ -393,50 +384,6 @@ export default function ProjectDrawer({
                     {project.description}
                   </p>
 
-                  {/* Tech stack */}
-                  {project.tech.length > 0 && (
-                    <div style={{ marginBottom: '20px' }}>
-                      <div
-                        style={{
-                          fontSize: '10px',
-                          fontWeight: 500,
-                          letterSpacing: '0.07em',
-                          textTransform: 'uppercase',
-                          color: 'var(--text-ghost)',
-                          marginBottom: '10px',
-                        }}
-                      >
-                        Tech Stack
-                      </div>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                        {project.tech.map(t => {
-                          const slug = DEVICON_MAP[t];
-                          return (
-                            <span
-                              key={t}
-                              style={{
-                                display: 'inline-flex',
-                                alignItems: 'center',
-                                gap: '5px',
-                                fontSize: '11px',
-                                padding: '4px 9px',
-                                borderRadius: '9999px',
-                                background: 'var(--muted-bg)',
-                                color: 'var(--text-secondary)',
-                                letterSpacing: '0.01em',
-                              }}
-                            >
-                              {slug !== undefined && slug !== null && (
-                                <DeviconImg slug={slug} size={12} />
-                              )}
-                              {t}
-                            </span>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-
                   {/* Tags */}
                   {project.tags.length > 0 && (
                     <div>
@@ -453,20 +400,37 @@ export default function ProjectDrawer({
                         Tags
                       </div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                        {project.tags.map(tag => (
-                          <span
-                            key={tag}
-                            style={{
-                              fontSize: '11px',
-                              padding: '3px 8px',
-                              borderRadius: '9999px',
-                              background: 'var(--muted-bg)',
-                              color: 'var(--text-muted)',
-                            }}
-                          >
-                            {tag}
-                          </span>
-                        ))}
+                        {project.tags.map(tag => {
+                          const iconUrl = getTechIconUrl(tag);
+                          return (
+                            <span
+                              key={tag}
+                              style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '5px',
+                                fontSize: '11px',
+                                padding: '4px 9px',
+                                borderRadius: '9999px',
+                                background: 'var(--muted-bg)',
+                                color: 'var(--text-secondary)',
+                                letterSpacing: '0.01em',
+                              }}
+                            >
+                              {iconUrl && (
+                                <img
+                                  src={iconUrl}
+                                  alt=""
+                                  width={12}
+                                  height={12}
+                                  style={{ display: 'inline-block', flexShrink: 0 }}
+                                  onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                                />
+                              )}
+                              {tag}
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                   )}

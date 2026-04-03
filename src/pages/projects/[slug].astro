@@ -1,0 +1,480 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { getTechIconUrl } from '@/utils/techIcons';
+import { HugeiconsIcon, GithubIcon, LinkSquare02Icon } from '@icons';
+import { RaisedButton } from '@/components/ui/raised-button';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(entry => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+interface Props {
+  entry: CollectionEntry<'projects'>;
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+const p = entry.data;
+
+const FOLDER_CHIP: Record<string, { color: string; label: string }> = {
+  Featured:  { color: '#f59e0b', label: 'Featured' },
+  Client:    { color: '#10b981', label: 'Freelance' },
+  Hackathon: { color: '#a78bfa', label: 'Hackathon' },
+};
+
+const chip = p.folder ? FOLDER_CHIP[p.folder] : undefined;
+const year = new Date(p.date).getFullYear();
+const allImages = p.images ?? [];
+const [heroImage, ...galleryImages] = allImages;
+---
+
+<PageLayout title={p.title} description={p.description} ogImage={heroImage}>
+
+  <!-- Breadcrumb -->
+  <nav style="display: flex; align-items: center; gap: 6px; margin-bottom: 32px;">
+    <a
+      href="/projects"
+      class="breadcrumb-back"
+      style="font-size: 12px; color: var(--text-ghost); text-decoration: none; transition: color 150ms ease;"
+    >
+      Projects
+    </a>
+    <span style="font-size: 12px; color: var(--text-ghost);">/</span>
+    <span style="font-size: 12px; color: var(--text-secondary); letter-spacing: -0.01em;">{p.title}</span>
+  </nav>
+
+  <!-- Header -->
+  <header style="margin-bottom: 36px;">
+    <!-- Badges row -->
+    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;">
+      {p.status === 'in-progress' && (
+        <span style="font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: rgba(0,187,255,0.1); color: #00bbff; font-weight: 500; letter-spacing: 0.02em;">
+          In Progress
+        </span>
+      )}
+      {p.status === 'archived' && (
+        <span style="font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: var(--muted-bg); color: var(--text-ghost); letter-spacing: 0.02em;">
+          Archived
+        </span>
+      )}
+      <span style="font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: var(--muted-bg); color: var(--text-muted); letter-spacing: 0.02em; text-transform: capitalize;">
+        {p.type}
+      </span>
+      {chip && (
+        <span style={`font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: var(--muted-bg); color: ${chip.color}; font-weight: 500; letter-spacing: 0.02em;`}>
+          {chip.label}
+        </span>
+      )}
+      <span style="font-size: 10px; padding: 2px 8px; border-radius: 9999px; background: var(--muted-bg); color: var(--text-ghost); letter-spacing: 0.02em;">
+        {year}
+      </span>
+    </div>
+
+    <!-- Title + CTA row -->
+    <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap;">
+      <h1 style="font-size: 28px; font-weight: 600; letter-spacing: -0.04em; color: var(--text-primary); line-height: 1.15; margin: 0;">
+        {p.title}
+      </h1>
+      <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0; padding-top: 3px;">
+        {p.github && (
+          <a
+            href={p.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="icon-btn"
+            style="height: 32px; padding: 0 12px; border-radius: 8px; display: inline-flex; align-items: center; gap: 6px; background: var(--muted-bg); color: var(--text-secondary); text-decoration: none; transition: opacity 150ms ease; flex-shrink: 0; font-size: 12px; font-weight: 500; letter-spacing: -0.01em;"
+          >
+            <HugeiconsIcon icon={GithubIcon} size={14} color="currentColor" />
+            View GitHub
+          </a>
+        )}
+        {p.url && (
+          <RaisedButton asChild variant="accent" size="sm">
+            <a href={p.url} target="_blank" rel="noopener noreferrer" style="gap: 5px; letter-spacing: -0.01em;">
+              Visit
+              <HugeiconsIcon icon={LinkSquare02Icon} size={11} color="currentColor" />
+            </a>
+          </RaisedButton>
+        )}
+      </div>
+    </div>
+
+    <!-- Description -->
+    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.7; margin: 0; max-width: 560px;">
+      {p.description}
+    </p>
+  </header>
+
+  <!-- Tech stack + Tags -->
+  <section style="margin-bottom: 40px; display: flex; flex-direction: column; gap: 20px;">
+    {p.tech && p.tech.length > 0 && (
+      <div>
+        <div style="font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-ghost); margin-bottom: 10px;">
+          Tech Stack
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          {p.tech.map(t => {
+            const iconUrl = getTechIconUrl(t);
+            return (
+              <span style="display: inline-flex; align-items: center; gap: 5px; font-size: 11px; padding: 4px 10px; border-radius: 9999px; background: var(--muted-bg); color: var(--text-secondary);">
+                {iconUrl && (
+                  <img src={iconUrl} alt="" width="12" height="12" style="flex-shrink: 0; object-fit: contain;" />
+                )}
+                {t}
+              </span>
+            );
+          })}
+        </div>
+      </div>
+    )}
+
+    {p.tags && p.tags.filter(tag => !p.tech?.includes(tag)).length > 0 && (
+      <div>
+        <div style="font-size: 10px; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-ghost); margin-bottom: 10px;">
+          Tags
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+          {p.tags.filter(tag => !p.tech?.includes(tag)).map(tag => (
+            <span style="font-size: 11px; padding: 3px 9px; border-radius: 9999px; background: var(--muted-bg); color: var(--text-muted);">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+
+  <!-- Body content (rendered markdown) -->
+  <div class="project-body" style="margin-bottom: 44px;">
+    <Content />
+  </div>
+
+  <!-- Images -->
+  {allImages.length > 0 && (
+    <section id="project-images" style="margin-bottom: 44px;">
+      <!-- Hero image -->
+      {heroImage && (
+        <div class="img-clickable" style="border-radius: 14px; overflow: hidden; background: var(--muted-bg); margin-bottom: 8px;">
+          <img src={heroImage} alt={p.title} style="width: 100%; height: auto; display: block;" loading="lazy" />
+        </div>
+      )}
+
+      <!-- Gallery grid (remaining images) -->
+      {galleryImages.length === 1 && (
+        <div class="img-clickable" style="border-radius: 10px; overflow: hidden; background: var(--muted-bg);">
+          <img src={galleryImages[0]} alt={`${p.title} screenshot 2`} style="width: 100%; height: auto; display: block;" loading="lazy" />
+        </div>
+      )}
+      {galleryImages.length >= 2 && (
+        <div class="gallery-grid" id="gallery-grid">
+          {galleryImages.map((img, i) => (
+            <div class="gallery-item img-clickable" style="border-radius: 10px; overflow: hidden; background: var(--muted-bg);">
+              <img src={img} alt={`${p.title} screenshot ${i + 2}`} style="width: 100%; height: auto; display: block;" loading="lazy" />
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  )}
+
+  <!-- Video (if present) -->
+  {p.video && (
+    <section style="margin-bottom: 44px;">
+      <div style="border-radius: 14px; overflow: hidden; background: var(--muted-bg); aspect-ratio: 16/9;">
+        <video
+          src={p.video}
+          controls
+          style="width: 100%; height: 100%; display: block; object-fit: cover;"
+        />
+      </div>
+    </section>
+  )}
+
+</PageLayout>
+
+<script>
+  // ── Smart grid: landscape images span both columns ──────────────────────
+  const grid = document.getElementById('gallery-grid');
+  if (grid) {
+    Array.from(grid.querySelectorAll<HTMLElement>('.gallery-item')).forEach(item => {
+      const img = item.querySelector('img');
+      if (!img) return;
+      const applySpan = () => {
+        if (img.naturalWidth > 0 && img.naturalHeight > 0 && img.naturalWidth / img.naturalHeight > 1.3)
+          item.classList.add('landscape');
+      };
+      img.complete ? applySpan() : img.addEventListener('load', applySpan, { once: true });
+    });
+  }
+
+  // ── Lightbox ─────────────────────────────────────────────────────────────
+  // Collect all project images in DOM order (hero + gallery)
+  const allImgEls = Array.from(
+    document.querySelectorAll<HTMLImageElement>('#project-images img')
+  );
+  const srcs = allImgEls.map(el => el.src);
+
+  if (srcs.length === 0) {
+    // nothing to do
+  } else {
+    let currentIndex = 0;
+    const DURATION = 180;
+
+    // Build lightbox DOM
+    const overlay = document.createElement('div');
+    overlay.id = 'lb-overlay';
+    overlay.innerHTML = `
+      <div id="lb-backdrop"></div>
+      <button id="lb-close" aria-label="Close"></button>
+      <button id="lb-prev" aria-label="Previous" ${srcs.length < 2 ? 'hidden' : ''}></button>
+      <button id="lb-next" aria-label="Next" ${srcs.length < 2 ? 'hidden' : ''}></button>
+      <div id="lb-img-wrap"><img id="lb-img" src="" alt="" /></div>
+      <div id="lb-counter"></div>
+    `;
+    document.body.appendChild(overlay);
+
+    const lbImg     = document.getElementById('lb-img') as HTMLImageElement;
+    const lbCounter = document.getElementById('lb-counter')!;
+    const lbPrev    = document.getElementById('lb-prev')!;
+    const lbNext    = document.getElementById('lb-next')!;
+    const lbClose   = document.getElementById('lb-close')!;
+    const pageContent = document.getElementById('page-content') as HTMLElement | null;
+
+    function updateCounter() {
+      lbCounter.textContent = srcs.length > 1 ? `${currentIndex + 1} / ${srcs.length}` : '';
+    }
+
+    function showImage(index: number) {
+      currentIndex = (index + srcs.length) % srcs.length;
+      lbImg.style.opacity = '0';
+      lbImg.src = srcs[currentIndex];
+      lbImg.onload = () => { lbImg.style.opacity = '1'; };
+      updateCounter();
+      (lbPrev as HTMLButtonElement).disabled = false;
+      (lbNext as HTMLButtonElement).disabled = false;
+    }
+
+    function openLightbox(index: number) {
+      currentIndex = index;
+      showImage(currentIndex);
+      overlay.style.display = 'flex';
+      requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+      document.body.style.overflow = 'hidden';
+      if (pageContent) {
+        pageContent.style.transition = `filter ${DURATION}ms ease`;
+        requestAnimationFrame(() => { pageContent.style.filter = 'blur(12px) brightness(0.6)'; });
+      }
+    }
+
+    function closeLightbox() {
+      overlay.style.opacity = '0';
+      setTimeout(() => { overlay.style.display = 'none'; }, DURATION);
+      document.body.style.overflow = '';
+      if (pageContent) {
+        pageContent.style.transition = `filter ${DURATION}ms ease`;
+        pageContent.style.filter = 'blur(0px) brightness(1)';
+        setTimeout(() => { pageContent.style.filter = ''; pageContent.style.transition = ''; }, DURATION + 20);
+      }
+    }
+
+    // Wire up clicks on all project images
+    allImgEls.forEach((img, i) => {
+      img.addEventListener('click', () => openLightbox(i));
+    });
+
+    lbClose.addEventListener('click', closeLightbox);
+    document.getElementById('lb-backdrop')!.addEventListener('click', closeLightbox);
+    lbPrev.addEventListener('click', () => showImage(currentIndex - 1));
+    lbNext.addEventListener('click', () => showImage(currentIndex + 1));
+
+    window.addEventListener('keydown', (e) => {
+      if (overlay.style.display !== 'flex') return;
+      if (e.key === 'Escape')     closeLightbox();
+      if (e.key === 'ArrowLeft')  showImage(currentIndex - 1);
+      if (e.key === 'ArrowRight') showImage(currentIndex + 1);
+    });
+  }
+</script>
+
+<style is:global>
+  #lb-overlay {
+    display: none;
+    opacity: 0;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 180ms ease;
+  }
+
+  #lb-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+  }
+
+  #lb-img-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: min(92vw, 1200px);
+    max-height: 88vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #lb-img {
+    max-width: 100%;
+    max-height: 88vh;
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+    transition: opacity 140ms ease;
+    object-fit: contain;
+  }
+
+  #lb-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 2;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: background 150ms ease;
+  }
+  #lb-close::before,
+  #lb-close::after {
+    content: '';
+    position: absolute;
+    width: 14px;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 2px;
+  }
+  #lb-close::before { transform: rotate(45deg); }
+  #lb-close::after  { transform: rotate(-45deg); }
+  #lb-close:hover { background: rgba(255,255,255,0.2); }
+
+  #lb-prev,
+  #lb-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 2;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 150ms ease;
+  }
+  #lb-prev { left: 20px; }
+  #lb-next { right: 20px; }
+  #lb-prev::after,
+  #lb-next::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-top: 1.5px solid currentColor;
+    border-right: 1.5px solid currentColor;
+    display: block;
+  }
+  #lb-prev::after { transform: rotate(-135deg) translateX(-1px); }
+  #lb-next::after { transform: rotate(45deg) translateX(-1px); }
+  #lb-prev:hover,
+  #lb-next:hover { background: rgba(255,255,255,0.2); }
+  #lb-prev[hidden],
+  #lb-next[hidden] { display: none; }
+
+  #lb-counter {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    font-size: 12px;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.04em;
+    pointer-events: none;
+  }
+</style>
+
+<style>
+  .breadcrumb-back:hover {
+    color: var(--text-muted) !important;
+  }
+
+  .icon-btn:hover {
+    opacity: 0.65;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .gallery-item.landscape {
+    grid-column: span 2;
+  }
+
+  .img-clickable {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .img-clickable img {
+    cursor: pointer;
+    transition: scale 300ms ease, filter 300ms ease;
+    display: block;
+  }
+
+  .img-clickable:hover img {
+    scale: 1.04;
+    filter: brightness(1.04);
+  }
+
+
+
+
+  .project-body {
+    font-size: 14px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    letter-spacing: -0.01em;
+  }
+
+  .project-body p {
+    margin-bottom: 1em;
+  }
+
+  .project-body p:last-child {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 600px) {
+    .gallery-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

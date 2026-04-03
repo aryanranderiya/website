@@ -1,0 +1,180 @@
+---
+import PageLayout from './PageLayout.astro';
+import { formatDate } from '@/lib/utils';
+
+interface NowEntry {
+  slug: string;
+  date: Date;
+  isLatest: boolean;
+}
+
+interface Props {
+  date: Date;
+  location?: string;
+  entries: NowEntry[];
+  currentSlug: string;
+}
+
+const { date, location, entries, currentSlug } = Astro.props;
+---
+
+<PageLayout title="Now" description="What I'm focused on right now." fullWidth={true}>
+  <div class="now-wrapper">
+    <article class="now-content">
+      <header class="now-header">
+        <!-- Breadcrumb -->
+        <nav class="flex items-center gap-1.5 text-xs mb-8" style="color: var(--text-ghost);" aria-label="Breadcrumb">
+          <a href="/now" class="transition-colors hover:text-[var(--text-muted)]" style="color: var(--text-ghost);">Now</a>
+          <span>/</span>
+          <span style="color: var(--text-muted);">{formatDate(date)}</span>
+        </nav>
+        <div class="now-eyebrow">Now</div>
+        <h1 class="text-heading-1">{formatDate(date)}</h1>
+        {location && <p class="now-location">{location}</p>}
+        <p class="now-meta">
+          This is a{' '}
+          <a
+            href="https://nownownow.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="now-meta-link"
+          >/now page</a>{' '}
+          - what I'm focused on at this point in my life.
+        </p>
+      </header>
+
+      <div class="prose">
+        <slot />
+      </div>
+    </article>
+
+    {entries.length > 0 && (
+      <aside class="now-aside">
+        <nav>
+          <p class="aside-label">Past updates</p>
+          <ul>
+            {entries.map(entry => (
+              <li>
+                <a
+                  href={entry.isLatest ? '/now' : `/now/${entry.slug}`}
+                  class:list={['now-link', entry.slug === currentSlug && 'active']}
+                >
+                  {formatDate(entry.date)}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </aside>
+    )}
+  </div>
+</PageLayout>
+
+<style>
+  .now-wrapper {
+    display: flex;
+    margin-left: max(0px, calc((100% - var(--prose-max-width)) / 2));
+    padding: 0 var(--page-inset);
+    gap: 56px;
+    align-items: flex-start;
+  }
+
+  .now-content {
+    flex: 1;
+    min-width: 0;
+    max-width: var(--prose-max-width);
+    padding-bottom: 64px;
+  }
+
+  .now-header {
+    margin-bottom: 40px;
+  }
+
+  .now-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-ghost);
+    margin-bottom: 10px;
+  }
+
+  .now-location {
+    font-size: 13px;
+    color: var(--text-ghost);
+    margin: 6px 0 0;
+  }
+
+  .now-meta {
+    font-size: 12.5px;
+    color: var(--text-ghost);
+    margin: 14px 0 0;
+    line-height: 1.6;
+  }
+
+  .now-meta-link {
+    color: var(--text-muted);
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-underline-offset: 2px;
+    transition: color 150ms ease;
+  }
+
+  .now-meta-link:hover {
+    color: var(--text-secondary);
+  }
+
+  /* Sidebar */
+  .now-aside {
+    display: none;
+    width: 176px;
+    flex-shrink: 0;
+    position: sticky;
+    top: calc(var(--section-padding-top) + 24px);
+  }
+
+  .aside-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-ghost);
+    margin: 0 0 10px 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  .now-link {
+    display: block;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    padding: 3px 0;
+    transition: color 150ms ease;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .now-link:hover {
+    color: var(--text-secondary);
+  }
+
+  .now-link.active {
+    color: var(--text-primary);
+  }
+
+  @media (min-width: 1080px) {
+    .now-aside {
+      display: block;
+    }
+  }
+</style>

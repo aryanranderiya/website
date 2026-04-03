@@ -1,0 +1,62 @@
+---
+// Static newsletter signup UI — wire up the form action when a provider is chosen.
+---
+
+<section class="mt-12">
+  <div class="py-7 px-6 rounded-[var(--radius-xl)] bg-[var(--muted-bg)]">
+    <p class="text-label mb-2" style="color: var(--text-ghost);">Newsletter</p>
+    <h3 class="text-heading-3 mb-1.5">Stay in the loop</h3>
+    <p class="text-sm mb-5" style="color: var(--text-muted);">
+      New posts on engineering, design, and building things. No spam.
+    </p>
+    <form
+      id="newsletter-form"
+      class="flex gap-2"
+      novalidate
+      aria-label="Newsletter signup"
+    >
+      <input
+        type="email"
+        id="newsletter-email"
+        placeholder="your@email.com"
+        class="flex-1 text-sm px-3 py-2 rounded-[var(--radius-md)] bg-[var(--background)] focus:outline-none transition-colors"
+        style="color: var(--text-primary); border: 1px solid var(--border);"
+        aria-label="Email address"
+        autocomplete="email"
+        required
+      />
+      <button
+        type="submit"
+        id="newsletter-btn"
+        class="shrink-0 text-sm font-medium px-4 py-2 rounded-[var(--radius-md)] transition-opacity hover:opacity-80"
+        style="background: var(--text-primary); color: var(--background);"
+      >
+        Subscribe
+      </button>
+    </form>
+    <p id="newsletter-msg" class="text-xs mt-3 hidden" style="color: var(--text-ghost);"></p>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('newsletter-form') as HTMLFormElement | null;
+  const emailInput = document.getElementById('newsletter-email') as HTMLInputElement | null;
+  const btn = document.getElementById('newsletter-btn') as HTMLButtonElement | null;
+  const msg = document.getElementById('newsletter-msg') as HTMLElement | null;
+
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const email = emailInput?.value.trim();
+    if (!email) return;
+
+    // TODO: wire up to a newsletter provider (e.g. Resend, Buttondown, ConvertKit)
+    if (btn) btn.textContent = 'Coming soon';
+    if (msg) {
+      msg.textContent = 'Newsletter integration coming soon. Check back later.';
+      msg.classList.remove('hidden');
+    }
+    setTimeout(() => {
+      if (btn) btn.textContent = 'Subscribe';
+    }, 3000);
+  });
+</script>

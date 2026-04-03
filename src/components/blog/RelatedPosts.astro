@@ -1,0 +1,51 @@
+---
+interface RelatedPost {
+  slug: string;
+  title: string;
+  description: string;
+  tags: string[];
+}
+
+interface Props {
+  posts: RelatedPost[];
+}
+
+const { posts } = Astro.props;
+---
+
+{posts.length > 0 && (
+  <aside class="mt-12">
+    <p class="text-label mb-5" style="color: var(--text-ghost);">Related</p>
+    <div class="flex flex-col gap-1">
+      {posts.map(post => (
+        <a
+          href={`/blog/${post.slug}`}
+          class="group flex flex-col gap-1 py-3 px-3 -mx-3 rounded-[var(--radius-md)] transition-colors hover:bg-[var(--muted-bg)]"
+          style="text-decoration: none;"
+        >
+          <span
+            class="text-sm font-medium transition-colors duration-150 group-hover:text-[var(--text-primary)]"
+            style="color: var(--text-secondary);"
+          >
+            {post.title}
+          </span>
+          <span class="text-xs leading-snug" style="color: var(--text-ghost);">
+            {post.description}
+          </span>
+          {post.tags.length > 0 && (
+            <div class="flex flex-wrap gap-1.5 mt-1">
+              {post.tags.slice(0, 4).map(tag => (
+                <span
+                  class="text-[10px] px-2 py-0.5 rounded-full bg-[var(--muted-bg)]"
+                  style="color: var(--text-ghost);"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </a>
+      ))}
+    </div>
+  </aside>
+)}

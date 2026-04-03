@@ -189,9 +189,7 @@
 }
 
 html {
-  font-family: "Inter var", "Inter", -apple-system, BlinkMacSystemFont,
-    "SF Pro Text", system-ui, sans-serif;
-  font-feature-settings: 'cv11', 'ss01', 'kern' 1, 'liga' 1, 'calt' 1;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
@@ -207,6 +205,7 @@ body {
   letter-spacing: var(--tracking-body);
   margin: 0;
   min-height: 100vh;
+  scrollbar-gutter: stable;
   transition: background-color var(--transition-base), color var(--transition-base);
 }
 

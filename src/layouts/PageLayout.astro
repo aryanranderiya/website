@@ -16,7 +16,7 @@ const { fullWidth = false, ...layoutProps } = Astro.props;
 ---
 
 <Layout {...layoutProps}>
-  <Sidebar client:only="react" />
+  <Sidebar client:only="react" transition:persist />
   <main
     id="page-content"
     class:list={[

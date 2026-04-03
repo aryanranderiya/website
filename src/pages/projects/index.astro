@@ -4,8 +4,14 @@ import ProjectsGrid from '@/components/projects/ProjectsGrid';
 import { getCollection } from 'astro:content';
 
 const projectEntries = await getCollection('projects');
+const FOLDER_PRIORITY: Record<string, number> = { Featured: 0, Client: 1, Hackathon: 2, Projects: 3 };
 const projects = projectEntries
-  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99))
+  .sort((a, b) => {
+    const fa = FOLDER_PRIORITY[a.data.folder] ?? 9;
+    const fb = FOLDER_PRIORITY[b.data.folder] ?? 9;
+    if (fa !== fb) return fa - fb;
+    return (a.data.order ?? 99) - (b.data.order ?? 99);
+  })
   .map(entry => ({
     slug: entry.slug,
     title: entry.data.title,

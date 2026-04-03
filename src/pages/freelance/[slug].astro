@@ -1,0 +1,102 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+import FreelanceWork from '@/components/freelance/FreelanceWork.tsx';
+import { pastWork } from '@/data/freelance';
+import {
+  HugeiconsIcon,
+  InformationCircleIcon,
+  BrowserIcon,
+  SmartPhone01Icon,
+  FigmaIcon,
+  DatabaseIcon,
+} from '@icons';
+
+export async function getStaticPaths() {
+  return pastWork.map(p => ({ params: { slug: p.slug } }));
+}
+
+const { slug } = Astro.params;
+const currentWork = pastWork.find(p => p.slug === slug);
+
+const services = [
+  {
+    title: 'Web Development',
+    description: 'React, Next.js, Astro. Landing pages to complex SaaS products.',
+    icon: BrowserIcon,
+  },
+  {
+    title: 'Mobile Development',
+    description: 'React Native & Expo. Cross-platform iOS and Android.',
+    icon: SmartPhone01Icon,
+  },
+  {
+    title: 'UI/UX Design',
+    description: 'Figma to code. I design and build — no handoff overhead.',
+    icon: FigmaIcon,
+  },
+  {
+    title: 'Backend & APIs',
+    description: 'FastAPI, Node.js, PostgreSQL. Scalable and clean.',
+    icon: DatabaseIcon,
+  },
+];
+---
+
+<PageLayout title="Freelance" description="Freelance web and mobile development services.">
+  <div class="pb-16">
+
+    <!-- Breadcrumb -->
+    {currentWork && (
+      <nav class="flex items-center gap-1.5 text-xs mb-8" style="color: var(--text-ghost);" aria-label="Breadcrumb">
+        <a href="/freelance" class="transition-colors hover:text-[var(--text-muted)]" style="color: var(--text-ghost);">Freelance</a>
+        <span>/</span>
+        <span style="color: var(--text-muted);">{currentWork.name}</span>
+      </nav>
+    )}
+
+    <!-- Hero -->
+    <section class="pb-10">
+      <div class="section-header">FREELANCE</div>
+      <h1 class="text-heading-1 mb-4">
+        Building products<br/>people actually use.
+      </h1>
+      <p class="text-sm text-[var(--text-muted)] max-w-[28rem] leading-relaxed mb-5">
+        I work with founders and teams to design and ship digital products. Fast, clean, no bloat.
+      </p>
+
+      <!-- Notice -->
+      <div class="inline-flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-[var(--muted-bg)] max-w-[28rem]">
+        <HugeiconsIcon icon={InformationCircleIcon} size={13} color="var(--text-ghost)" className="shrink-0 mt-px opacity-50" />
+        <p class="text-[12px] text-[var(--text-muted)] leading-relaxed">
+          I'm not actively taking freelance work right now — fully focused on building my startup.
+          This page documents past client work.
+        </p>
+      </div>
+    </section>
+
+    <!-- Selected Work -->
+    <section class="py-10">
+      <div class="section-header">SELECTED WORK</div>
+      <FreelanceWork client:load initialSlug={slug} />
+    </section>
+
+    <!-- What I Do -->
+    <section class="py-10">
+      <div class="section-header">WHAT I DO</div>
+      <div class="grid grid-cols-2 gap-3">
+        {services.map((service) => (
+          <div class="p-4 rounded-xl bg-[var(--muted-bg)] flex flex-col gap-2">
+            <HugeiconsIcon icon={service.icon} size={16} color="var(--text-ghost)" className="opacity-40" />
+            <div class="text-[13px] font-semibold text-[var(--text-primary)]">
+              {service.title}
+            </div>
+            <p class="text-[11px] text-[var(--text-muted)] leading-relaxed">
+              {service.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+  </div>
+</PageLayout>

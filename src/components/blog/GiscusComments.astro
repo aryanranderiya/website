@@ -1,0 +1,56 @@
+---
+// Giscus comments — powered by GitHub Discussions.
+// Setup: visit https://giscus.app, connect your repo, then replace the
+// REPO, REPO_ID, and CATEGORY_ID placeholders below with the generated values.
+---
+
+<section class="mt-12">
+  <p class="text-label mb-6" style="color: var(--text-ghost);">Discussion</p>
+  <div id="giscus-container"></div>
+</section>
+
+<script>
+  function loadGiscus() {
+    const container = document.getElementById('giscus-container');
+    if (!container) return;
+
+    const isDark = document.documentElement.classList.contains('dark');
+    const theme = isDark ? 'dark' : 'light';
+
+    const script = document.createElement('script');
+    script.src = 'https://giscus.app/client.js';
+    // Replace the values below with your own from https://giscus.app
+    script.setAttribute('data-repo', 'aryanranderiya/portfolio');
+    script.setAttribute('data-repo-id', 'YOUR_REPO_ID');
+    script.setAttribute('data-category', 'Comments');
+    script.setAttribute('data-category-id', 'YOUR_CATEGORY_ID');
+    script.setAttribute('data-mapping', 'pathname');
+    script.setAttribute('data-strict', '0');
+    script.setAttribute('data-reactions-enabled', '0');
+    script.setAttribute('data-emit-metadata', '0');
+    script.setAttribute('data-input-position', 'bottom');
+    script.setAttribute('data-theme', theme);
+    script.setAttribute('data-lang', 'en');
+    script.setAttribute('crossorigin', 'anonymous');
+    script.async = true;
+    container.appendChild(script);
+
+    // Sync theme when dark mode toggles
+    const observer = new MutationObserver(() => {
+      const newTheme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+      const frame = document.querySelector<HTMLIFrameElement>('.giscus-frame');
+      frame?.contentWindow?.postMessage(
+        { giscus: { setConfig: { theme: newTheme } } },
+        'https://giscus.app'
+      );
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  // Load after the page is interactive
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadGiscus);
+  } else {
+    loadGiscus();
+  }
+</script>

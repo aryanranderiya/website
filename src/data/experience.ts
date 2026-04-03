@@ -8,6 +8,7 @@ export interface Experience {
   description: string;
   highlights: string[];
   logo?: string;       // clearbit URL or manual
+  logoInvert?: boolean; // true if logo is white/black and needs invert in light mode
   website?: string;
   skills: string[];
   featured?: boolean;  // show on home page
@@ -28,7 +29,8 @@ export const experience: Experience[] = [
       'Selected for buildspace nights & weekends S5',
       'Designed the full product experience from 0 → 1',
     ],
-    logo: 'https://www.google.com/s2/favicons?domain=heygaia.io&sz=128',
+    logo: 'https://experience.heygaia.io/logo.svg',
+    logoInvert: true,
     website: 'https://heygaia.io',
     skills: ['React Native', 'TypeScript', 'Python', 'FastAPI', 'OpenAI'],
     featured: true,
@@ -37,8 +39,8 @@ export const experience: Experience[] = [
     company: 'IGNOSIS',
     role: 'Software Engineer',
     employmentType: 'full-time',
-    startDate: '2024',
-    endDate: 'Present',
+    startDate: 'Jan 2026',
+    endDate: 'May 2026',
     location: 'Remote',
     description: 'Full-stack software engineering at an AI company. Building production systems and integrations.',
     highlights: [],
@@ -60,10 +62,10 @@ export const experience: Experience[] = [
       'Mentored junior developers in React and modern web practices',
       'Organized coding events and hackathons for 200+ students',
     ],
-    logo: 'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Encode_Official%20Website/encode.png',
+    logo: '/ProjectMedia/Encode_Official Website/encode_main.jpg',
     website: 'https://encodepdeu.vercel.app',
     skills: ['React', 'Node.js', 'MongoDB'],
-    featured: true,
+    featured: false,
   },
   {
     company: 'Developer Student Clubs PDEU',
@@ -79,6 +81,24 @@ export const experience: Experience[] = [
     featured: false,
   },
   {
+    company: 'F4LLOUT Esports',
+    role: 'Founder & CEO',
+    employmentType: 'volunteer',
+    startDate: 'Jan 2020',
+    endDate: 'Dec 2023',
+    location: 'Remote',
+    description: 'Founded and ran F4LLOUT Esports — a competitive esports organization. Handled everything from team management and recruitment to brand identity, sponsorships, and content strategy.',
+    highlights: [
+      'Built and managed multiple competitive rosters across titles',
+      'Designed the full brand identity — logo, banners, apparel, social assets',
+      'Grew the organization\'s social presence and community from the ground up',
+      'Handled sponsorship outreach, partnerships, and org operations',
+    ],
+    website: '/f4llout',
+    skills: ['Team Management', 'Brand Design', 'Photoshop', 'Illustrator', 'Content Strategy'],
+    featured: false,
+  },
+  {
     company: 'Rezrek',
     role: 'Full Stack Developer',
     employmentType: 'internship',
@@ -90,10 +110,10 @@ export const experience: Experience[] = [
       'End-to-end development of content e-commerce platform',
       'React, Node.js, Redis stack',
     ],
-    logo: 'https://storage.googleapis.com/aryanranderiya-portfolio.appspot.com/ProjectMedia/Rezrek/image%20(1).png',
+    logo: '/ProjectMedia/Rezrek/rezrek_logo.jpg',
     website: 'https://rezrek.vercel.app',
     skills: ['React', 'Node.js', 'Redis', 'MongoDB'],
-    featured: true,
+    featured: false,
   },
   {
     company: 'Govardhan Infotech',
@@ -104,7 +124,6 @@ export const experience: Experience[] = [
     location: 'Surat, India',
     description: '6-month Android development internship building native Android applications.',
     highlights: [],
-    logo: 'https://www.google.com/s2/favicons?domain=govardhaninfotech.com&sz=128',
     skills: ['Android', 'Java', 'Kotlin'],
     featured: false,
   },
@@ -119,10 +138,10 @@ export const experience: Experience[] = [
     highlights: [
       'BlinkAnalytics — analytics dashboard (React, TypeScript)',
       'MWI — brand and web presence (Next.js, TypeScript)',
-      'Brushstroke Studio — agency website (Astro)',
+      'Brushstroke Studio — agency website (Astro) → brushstroke-studio.pages.dev',
       'LyfeLane — platform MVP (React, Node.js)',
     ],
-    logo: undefined,
+    logo: '/ClientWork/BrushstrokeStudio/logo.png',
     skills: ['React', 'Next.js', 'TypeScript', 'Node.js', 'Figma'],
     featured: false,
   },

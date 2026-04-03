@@ -1,5 +1,10 @@
 ---
 import BlogLayout from '@/layouts/BlogLayout.astro';
+import ShareButtons from '@/components/blog/ShareButtons.astro';
+import RelatedPosts from '@/components/blog/RelatedPosts.astro';
+import NewsletterSignup from '@/components/blog/NewsletterSignup.astro';
+import GiscusComments from '@/components/blog/GiscusComments.astro';
+import { calculateReadingTime } from '@/lib/reading-time';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -15,7 +20,27 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { Content } = await post.render();
+const { Content, headings } = await post.render();
+
+const readingTime = calculateReadingTime(post.body);
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const currentTags = new Set(post.data.tags);
+const related = allPosts
+  .filter(p => p.slug !== post.slug)
+  .map(p => ({
+    ...p,
+    score: p.data.tags.filter(t => currentTags.has(t)).length,
+  }))
+  .filter(p => p.score > 0)
+  .sort((a, b) => b.score - a.score || b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3)
+  .map(p => ({
+    slug: p.slug,
+    title: p.data.title,
+    description: p.data.description,
+    tags: p.data.tags,
+  }));
 ---
 
 <BlogLayout
@@ -26,20 +51,30 @@ const { Content } = await post.render();
   tags={post.data.tags}
   category={post.data.category}
   cover={post.data.cover}
+  headings={headings}
+  readingTime={readingTime}
 >
   <Content />
 
-  <!-- Back link -->
-  <div class="mt-12 pt-8 border-t" style="border-color: var(--border);">
-    <a
-      href="/blog"
-      class="inline-flex items-center gap-2 text-sm transition-opacity hover:opacity-60"
-      style="color: var(--muted-foreground);"
-    >
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
-        <path d="M19 12H5M12 19l-7-7 7-7"/>
-      </svg>
-      Back to Blog
-    </a>
+  <!-- Post footer — single divider, then all sections flow without further lines -->
+  <div class="mt-16 pt-10" style="border-top: 1px solid var(--border);">
+    <ShareButtons title={post.data.title} url={Astro.url.href} />
+    <RelatedPosts posts={related} />
+    <NewsletterSignup />
+    <GiscusComments />
+
+    <!-- Back link -->
+    <div class="mt-10">
+      <a
+        href="/blog"
+        class="inline-flex items-center gap-2 text-sm transition-opacity hover:opacity-60"
+        style="color: var(--muted-foreground);"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        Back to Blog
+      </a>
+    </div>
   </div>
 </BlogLayout>

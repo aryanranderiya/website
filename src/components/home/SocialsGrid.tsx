@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import useSWR from "swr";
+import { createPortal } from "react-dom";
+import { useQuery, QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/utils/queryClient";
 import {
   HugeiconsIcon,
   KeyboardIcon,
@@ -12,7 +14,7 @@ import {
 } from "@icons";
 import GithubGraph, { fetchContributions } from "./GithubGraph";
 
-const AVATAR_URL = "/avatar.webp";
+const AVATAR_URL = "/avatar-original.webp";
 const INSTAGRAM_GRADIENT =
   "linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)";
 
@@ -81,16 +83,10 @@ function InstagramLogo({ size = 18 }: { size?: number }) {
 // ── Preview cards ─────────────────────────────────────────────────────────────
 
 function GitHubPreview() {
-  const { data } = useSWR(
-    "github-contributions-aryanranderiya",
-    () => fetchContributions("aryanranderiya"),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      revalidateIfStale: false,
-      dedupingInterval: 3_600_000,
-    },
-  );
+  const { data } = useQuery({
+    queryKey: ['github-contributions', 'aryanranderiya'],
+    queryFn: () => fetchContributions('aryanranderiya'),
+  });
   const total = data?.total;
 
   return (
@@ -151,10 +147,7 @@ function GitHubPreview() {
           Contributions this year
         </div>
         {total !== undefined && (
-          <div
-            className="text-sm font-semibold text-[#e6edf3]"
-            style={{ letterSpacing: "-0.02em" }}
-          >
+          <div className="text-sm font-semibold text-[#e6edf3] tracking-[-0.02em]">
             {total.toLocaleString()}
           </div>
         )}
@@ -328,69 +321,67 @@ async function fetchMonkeytype() {
 }
 
 function MonkeytypePreview() {
-  const { data, isLoading } = useSWR('monkeytype-aryanranderiya', fetchMonkeytype, {
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    revalidateIfStale: false,
-    dedupingInterval: 3_600_000,
+  const { data, isLoading } = useQuery({
+    queryKey: ['monkeytype', 'aryanranderiya'],
+    queryFn: fetchMonkeytype,
   });
 
   return (
     <div
-      className="bg-[#323437] border border-[#2c2e31] rounded-xl p-4 w-[300px] shadow-2xl text-[#d1d0c5]"
+      className="bg-[#323437] border border-[#2c2e31] rounded-xl p-4 w-[360px] shadow-2xl text-[#d1d0c5]"
       style={{ fontFamily: '"Roboto Mono", "Courier New", monospace' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <HugeiconsIcon icon={KeyboardIcon} size={16} />
+        <div className="flex items-center gap-2.5">
+          <HugeiconsIcon icon={KeyboardIcon} size={20} />
           <div>
-            <div className="text-[13px] font-bold text-[#e2b714] tracking-tight leading-none">monkeytype</div>
-            <div className="text-[10px] text-[#646669] mt-0.5">aryanranderiya</div>
+            <div className="text-[17px] font-bold text-[#e2b714] tracking-tight leading-none">monkeytype</div>
+            <div className="text-[13px] text-[#646669] mt-1">aryanranderiya</div>
           </div>
         </div>
         {!isLoading && data?.streak != null && (
           <div className="text-right">
-            <div className="text-sm font-bold text-[#e2b714]">{data.streak}d</div>
-            <div className="text-[10px] text-[#646669]">streak</div>
+            <div className="text-2xl font-bold text-[#e2b714]">{data.streak}d</div>
+            <div className="text-[12px] text-[#646669]">streak</div>
           </div>
         )}
       </div>
 
       {/* PB table */}
-      <div className="border-t border-[#2c2e31] pt-2.5 mb-3">
-        <div className="grid grid-cols-4 gap-1 mb-1.5">
+      <div className="border-t border-[#2c2e31] pt-2 mb-3">
+        <div className="grid grid-cols-4 gap-2 mb-1">
           {['mode', 'wpm', 'raw', 'acc'].map(h => (
-            <div key={h} className="text-[9px] text-[#646669] uppercase tracking-wider text-center first:text-left">{h}</div>
+            <div key={h} className="text-[12px] text-[#646669] uppercase tracking-wider text-center first:text-left">{h}</div>
           ))}
         </div>
         {isLoading
           ? [0,1,2].map(i => (
-            <div key={i} className="grid grid-cols-4 gap-1 py-1">
-              {[0,1,2,3].map(j => <div key={j} className="text-[11px] text-[#646669] text-center first:text-left">···</div>)}
+            <div key={i} className="grid grid-cols-4 gap-2 py-2">
+              {[0,1,2,3].map(j => <div key={j} className="text-[14px] text-[#646669] text-center first:text-left">···</div>)}
             </div>
           ))
           : data?.modes.map(({ label, pb }) => (
-            <div key={label} className="grid grid-cols-4 gap-1 py-1 border-b border-[#2c2e31] last:border-0">
-              <div className="text-[11px] text-[#646669]">{label}</div>
-              <div className="text-[11px] text-[#e2b714] font-bold text-center">{pb ? Math.round(pb.wpm) : '—'}</div>
-              <div className="text-[11px] text-[#d1d0c5] text-center">{pb ? Math.round(pb.raw) : '—'}</div>
-              <div className="text-[11px] text-[#d1d0c5] text-center">{pb ? `${Math.round(pb.acc)}%` : '—'}</div>
+            <div key={label} className="grid grid-cols-4 gap-2 py-1.5 border-b border-[#2c2e31] last:border-0">
+              <div className="text-[14px] text-[#646669]">{label}</div>
+              <div className="text-[17px] text-[#e2b714] font-bold text-center">{pb ? Math.round(pb.wpm) : '—'}</div>
+              <div className="text-[14px] text-[#d1d0c5] text-center">{pb ? Math.round(pb.raw) : '—'}</div>
+              <div className="text-[14px] text-[#d1d0c5] text-center">{pb ? `${Math.round(pb.acc)}%` : '—'}</div>
             </div>
           ))
         }
       </div>
 
       {/* Footer stats */}
-      <div className="grid grid-cols-3 gap-2 pt-2.5 border-t border-[#2c2e31]">
+      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#2c2e31]">
         {[
           { label: 'tests', value: isLoading ? '···' : (data?.tests?.toLocaleString() ?? '—') },
           { label: 'time', value: isLoading ? '···' : (data?.timeTyping ? fmtTime(data.timeTyping) : '—') },
           { label: 'top rank', value: isLoading ? '···' : (data?.rank15 ? `#${data.rank15.toLocaleString()}` : '—') },
         ].map(s => (
           <div key={s.label} className="text-center">
-            <div className="text-[12px] font-bold text-[#d1d0c5] leading-tight">{s.value}</div>
-            <div className="text-[9px] text-[#646669] mt-0.5">{s.label}</div>
+            <div className="text-[17px] font-bold text-[#d1d0c5] leading-tight">{s.value}</div>
+            <div className="text-[12px] text-[#646669] mt-1">{s.label}</div>
           </div>
         ))}
       </div>
@@ -460,7 +451,6 @@ function PreviewCard({ visible, rect, children, onMouseEnter, onMouseLeave }: Pr
   const above = rect.top > window.innerHeight * 0.55;
   const anchorY = above ? rect.top : rect.bottom;
   const anchorX = rect.left + rect.width / 2;
-  const offset = visible ? 8 : 4;
 
   return (
     <div
@@ -470,10 +460,10 @@ function PreviewCard({ visible, rect, children, onMouseEnter, onMouseLeave }: Pr
       style={{
         top: anchorY,
         left: anchorX,
-        transform: `translateX(-50%) translateY(${above ? `calc(-100% - ${offset}px)` : `${offset}px`})`,
+        transform: `translateX(-50%) translateY(${above ? `calc(-100% - 4px)` : `4px`})`,
         opacity: visible ? 1 : 0,
         pointerEvents: visible ? 'auto' : 'none',
-        transition: 'opacity 0.15s ease, transform 0.15s ease',
+        transition: 'opacity 0.15s ease',
       }}
     >
       {children}
@@ -483,23 +473,34 @@ function PreviewCard({ visible, rect, children, onMouseEnter, onMouseLeave }: Pr
 
 // ── Chip ──────────────────────────────────────────────────────────────────────
 
-function SocialChip({ social }: { social: SocialItem }) {
-  const [hovered, setHovered] = useState(false);
+interface SocialChipProps {
+  social: SocialItem;
+  activeId: string | null;
+  setActiveId: (id: string | null) => void;
+  leaveTimer: React.MutableRefObject<ReturnType<typeof setTimeout> | undefined>;
+}
+
+function SocialChip({ social, activeId, setActiveId, leaveTimer }: SocialChipProps) {
+  const hovered = activeId === social.id;
   const [rect, setRect] = useState<DOMRect | null>(null);
   const anchorRef = useRef<HTMLDivElement>(null);
-  const leaveTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const show = useCallback(() => {
     clearTimeout(leaveTimer.current);
     if (anchorRef.current) setRect(anchorRef.current.getBoundingClientRect());
-    setHovered(true);
-  }, []);
+    setActiveId(social.id);
+  }, [social.id, setActiveId, leaveTimer]);
 
-  const hide = useCallback(() => {
-    leaveTimer.current = setTimeout(() => setHovered(false), 150);
-  }, []);
+  // Small delay when leaving anchor so the user can reach the popover card
+  const hideFromAnchor = useCallback(() => {
+    leaveTimer.current = setTimeout(() => setActiveId(null), 150);
+  }, [setActiveId, leaveTimer]);
 
-  useEffect(() => () => clearTimeout(leaveTimer.current), []);
+  // Instant hide when leaving the popover card itself
+  const hideFromCard = useCallback(() => {
+    clearTimeout(leaveTimer.current);
+    setActiveId(null);
+  }, [setActiveId, leaveTimer]);
 
   return (
     <>
@@ -507,14 +508,14 @@ function SocialChip({ social }: { social: SocialItem }) {
         ref={anchorRef}
         className="inline-flex"
         onMouseEnter={show}
-        onMouseLeave={hide}
+        onMouseLeave={hideFromAnchor}
       >
         <a
           href={social.href}
           target="_blank"
           rel="noopener noreferrer"
           className={[
-            "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[var(--border)]",
+            "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[var(--border)] outline-none",
             "text-xs font-medium tracking-[-0.01em] whitespace-nowrap select-none no-underline",
             "transition-all duration-150",
             hovered
@@ -528,10 +529,11 @@ function SocialChip({ social }: { social: SocialItem }) {
           {social.label}
         </a>
       </div>
-      {rect && (
-        <PreviewCard visible={hovered} rect={rect} onMouseEnter={show} onMouseLeave={hide}>
+      {rect && typeof document !== 'undefined' && createPortal(
+        <PreviewCard visible={hovered} rect={rect} onMouseEnter={show} onMouseLeave={hideFromCard}>
           {social.preview}
-        </PreviewCard>
+        </PreviewCard>,
+        document.body
       )}
     </>
   );
@@ -539,12 +541,25 @@ function SocialChip({ social }: { social: SocialItem }) {
 
 // ── Export ────────────────────────────────────────────────────────────────────
 
-export default function SocialsGrid() {
+function SocialsGridInner() {
+  const [activeId, setActiveId] = useState<string | null>(null);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout>>();
+
+  useEffect(() => () => clearTimeout(leaveTimer.current), []);
+
   return (
     <div className="flex flex-wrap gap-2 items-center">
       {SOCIALS.map((social) => (
-        <SocialChip key={social.id} social={social} />
+        <SocialChip key={social.id} social={social} activeId={activeId} setActiveId={setActiveId} leaveTimer={leaveTimer} />
       ))}
     </div>
+  );
+}
+
+export default function SocialsGrid() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <SocialsGridInner />
+    </QueryClientProvider>
   );
 }

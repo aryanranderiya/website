@@ -17,16 +17,15 @@ const photos = [
 ];
 ---
 
-<PageLayout title="Camera Roll" description="Photos from my camera roll.">
-  <div class="pb-16">
+<PageLayout title="Camera Roll" description="Photos from my camera roll." fullWidth>
+  <!-- Header -->
+  <div class="page-container mb-8">
+    <div class="section-header">PHOTOS</div>
+    <h1 class="text-heading-1 mb-1.5">Camera Roll</h1>
+    <p class="text-sm text-[var(--text-muted)] mb-6">Moments.</p>
+  </div>
 
-    <!-- Header -->
-    <div class="mb-8">
-      <div class="section-header">PHOTOS</div>
-      <h1 class="text-heading-1 mb-1.5">Camera Roll</h1>
-      <p class="text-sm text-[var(--text-muted)]">Moments.</p>
-    </div>
-
+  <div class="gallery-wrap pb-16">
     <!-- Masonry grid -->
     <div class="columns-2 sm:columns-3 gap-1.5 [column-gap:6px]">
       {photos.map(photo => (
@@ -51,6 +50,11 @@ const photos = [
 </PageLayout>
 
 <style>
+  .gallery-wrap {
+    padding-left: max(var(--page-inset), calc(50vw - 320px + var(--page-inset)));
+    padding-right: var(--page-inset);
+  }
+
   .photo-item {
     position: relative;
     overflow: hidden;
