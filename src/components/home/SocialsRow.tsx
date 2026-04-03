@@ -8,42 +8,42 @@ const SOCIALS = [
   {
     name: 'GitHub',
     url: 'https://github.com/aryanranderiya',
-    domain: 'github.com',
+    icon: '/icons/favicons/github-com.png',
   },
   {
     name: 'LinkedIn',
     url: 'https://linkedin.com/in/aryanranderiya',
-    domain: 'linkedin.com',
+    icon: '/icons/favicons/linkedin-com.png',
   },
   {
     name: 'Twitter',
     url: 'https://twitter.com/aryanranderiya',
-    domain: 'twitter.com',
+    icon: '/icons/favicons/twitter-com.png',
   },
   {
     name: 'Instagram',
     url: 'https://instagram.com/aryanranderiya',
-    domain: 'instagram.com',
+    icon: '/icons/favicons/instagram-com.png',
   },
   {
     name: 'Behance',
     url: 'https://behance.net/aryanranderiya',
-    domain: 'behance.net',
+    icon: '/icons/favicons/behance-net.png',
   },
   {
     name: 'Stack Overflow',
     url: 'https://stackoverflow.com/users/21615084/aryan',
-    domain: 'stackoverflow.com',
+    icon: '/icons/favicons/stackoverflow-com.png',
   },
   {
     name: 'Monkeytype',
     url: 'https://monkeytype.com/profile/aryanranderiya',
-    domain: 'monkeytype.com',
+    icon: '/icons/favicons/monkeytype-com.png',
   },
   {
     name: 'Discord',
     url: 'https://discord.com/users/521279231284609032',
-    domain: 'discord.com',
+    icon: '/icons/favicons/discord-com.png',
   },
 ];
 
@@ -80,7 +80,7 @@ export default function SocialsRow() {
           >
             {/* Favicon icon */}
             <img
-              src={`https://www.google.com/s2/favicons?domain=${social.domain}&sz=64`}
+              src={social.icon}
               width={24}
               height={24}
               alt={social.name}

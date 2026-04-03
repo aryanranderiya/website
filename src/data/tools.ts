@@ -164,7 +164,7 @@ export const TOOLS: Tool[] = [
     website: 'https://claude.ai',
     category: 'AI',
     tagline: 'Primary AI assistant',
-    icon: 'https://www.google.com/s2/favicons?domain=claude.ai&sz=128',
+    icon: '/icons/favicons/claude-ai.png',
     thoughts:
       'My go-to for almost everything AI-related. Best reasoning, best long-context handling, and the writing quality is noticeably higher. Claude Code in the terminal has changed how I prototype — I think in terms of what I want and let it scaffold.',
   },

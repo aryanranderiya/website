@@ -44,7 +44,7 @@ export const experience: Experience[] = [
     location: 'Remote',
     description: 'Full-stack software engineering at an AI company. Building production systems and integrations.',
     highlights: [],
-    logo: 'https://www.google.com/s2/favicons?domain=ignosis.ai&sz=128',
+    logo: '/icons/favicons/ignosis-ai.png',
     website: 'https://ignosis.ai',
     skills: ['TypeScript', 'React', 'Python', 'FastAPI'],
     featured: true,
@@ -76,7 +76,7 @@ export const experience: Experience[] = [
     location: 'PDEU, Ahmedabad',
     description: 'Leading web development for the Google Developer Student Club at PDEU.',
     highlights: [],
-    logo: 'https://www.google.com/s2/favicons?domain=gdsc.community.dev&sz=128',
+    logo: '/icons/favicons/gdsc-community-dev.png',
     skills: ['React', 'TypeScript'],
     featured: false,
   },
@@ -156,7 +156,7 @@ export const education = [
     startYear: '2023',
     endYear: '2026',
     location: 'Ahmedabad, India',
-    logo: 'https://www.google.com/s2/favicons?domain=pdeu.ac.in&sz=128',
+    logo: '/icons/favicons/pdeu-ac-in.png',
   },
   {
     institution: 'Gujarat Technological University',
@@ -166,7 +166,7 @@ export const education = [
     startYear: '2020',
     endYear: '2023',
     location: 'Gujarat, India',
-    logo: 'https://www.google.com/s2/favicons?domain=gtu.ac.in&sz=128',
+    logo: '/icons/favicons/gtu-ac-in.png',
   },
 ];
 

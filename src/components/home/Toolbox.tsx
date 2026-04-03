@@ -3,14 +3,14 @@
 import { motion } from 'motion/react';
 
 const TOOLS = [
-  { name: 'Arc',     domain: 'arc.net' },
-  { name: 'VS Code', domain: 'code.visualstudio.com' },
-  { name: 'Linear',  domain: 'linear.app' },
-  { name: 'Mymind',  domain: 'mymind.com' },
-  { name: 'Ghostty', domain: 'ghostty.org' },
-  { name: 'Claude',  domain: 'claude.ai' },
-  { name: 'Figma',   domain: 'figma.com' },
-  { name: 'Notion',  domain: 'notion.so' },
+  { name: 'Arc',     icon: '/icons/favicons/arc-net.png' },
+  { name: 'VS Code', icon: '/icons/favicons/code-visualstudio-com.png' },
+  { name: 'Linear',  icon: '/icons/favicons/linear-app.png' },
+  { name: 'Mymind',  icon: '/icons/favicons/mymind-com.png' },
+  { name: 'Ghostty', icon: '/icons/favicons/ghostty-org.png' },
+  { name: 'Claude',  icon: '/icons/favicons/claude-ai.png' },
+  { name: 'Figma',   icon: '/icons/favicons/figma-com.png' },
+  { name: 'Notion',  icon: '/icons/favicons/notion-so.png' },
 ];
 
 const EASE = [0.19, 1, 0.22, 1] as const;
@@ -62,7 +62,7 @@ export default function Toolbox() {
           >
             {/* Favicon icon */}
             <img
-              src={`https://www.google.com/s2/favicons?domain=${tool.domain}&sz=64`}
+              src={tool.icon}
               width={24}
               height={24}
               alt={tool.name}
