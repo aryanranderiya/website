@@ -5,7 +5,7 @@ date: 2024-05-01
 tags: [Open Source, Objective-C]
 tech: [Objective-C]
 featured: false
-type: macos
+type: os
 folder: Projects
 coverImage: /ProjectMedia/Bauhaus_Screensaver/screenshot-1.png
 images:

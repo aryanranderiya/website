@@ -30,7 +30,7 @@ const projects = defineCollection({
     url: z.string().url().optional(),
     github: z.string().url().optional(),
     featured: z.boolean().default(false),
-    type: z.enum(['mobile', 'web', 'os', 'design', 'other']).default('web'),
+    type: z.enum(['mobile', 'web', 'os', 'design', 'other', 'cli', 'game', 'desktop']).default('web'),
     folder: z.string().default('Projects'),
     coverImage: z.string().optional(),
     status: z.enum(['completed', 'in-progress', 'archived']).default('completed'),
