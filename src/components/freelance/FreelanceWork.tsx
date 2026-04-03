@@ -15,6 +15,21 @@ import { pastWork, type FreelanceProject } from '@/data/freelance';
 
 const PANEL_WIDTH = 580;
 
+const DEVICON_MAP: Record<string, string> = {
+  'React': 'react',
+  'TypeScript': 'typescript',
+  'TailwindCSS': 'tailwindcss',
+  'Next.js': 'nextjs',
+  'Node.js': 'nodejs',
+  'MongoDB': 'mongodb',
+  'Redis': 'redis',
+  'Express': 'express',
+  'PostgreSQL': 'postgresql',
+  'Python': 'python',
+  'FastAPI': 'fastapi',
+  'Figma': 'figma',
+};
+
 function DeviconImg({ slug, size = 12 }: { slug: string; size?: number }) {
   return (
     <img
@@ -326,21 +341,24 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
   }, []);
 
   // Collapse content width to fit left of the panel.
-  // Always use explicit px values (never 'auto') so CSS can interpolate smoothly.
+  // Only applies on wide viewports where there's room for both content + panel side-by-side.
+  // On narrow screens the panel overlays the full screen, so no layout manipulation needed.
   useEffect(() => {
     const el = document.getElementById('page-content');
     if (!el) return;
     const CONTENT_MAX_WIDTH = 640;
+    const MIN_VIEWPORT_FOR_SIDE_BY_SIDE = PANEL_WIDTH + 400; // ~980px
     const TRANSITION = 'max-width 0.35s cubic-bezier(0.19, 1, 0.22, 1), margin-left 0.35s cubic-bezier(0.19, 1, 0.22, 1), margin-right 0.35s cubic-bezier(0.19, 1, 0.22, 1)';
-    el.style.transition = TRANSITION;
 
-    if (selected) {
+    if (selected && window.innerWidth >= MIN_VIEWPORT_FOR_SIDE_BY_SIDE) {
+      el.style.transition = TRANSITION;
       const currentLeft = (window.innerWidth - Math.min(window.innerWidth, CONTENT_MAX_WIDTH)) / 2;
       const panelLeft = window.innerWidth - PANEL_WIDTH;
       el.style.marginLeft = `${currentLeft}px`;
       el.style.marginRight = '0px';
       el.style.maxWidth = `${panelLeft - currentLeft}px`;
-    } else {
+    } else if (!selected) {
+      el.style.transition = TRANSITION;
       // Animate back to centered px values — can't transition to 'auto'
       const centeredMargin = Math.max(0, (window.innerWidth - CONTENT_MAX_WIDTH) / 2);
       el.style.marginLeft = `${centeredMargin}px`;
@@ -355,6 +373,7 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
       }, 400);
       return () => clearTimeout(t);
     }
+    // On narrow viewports with selected: leave layout alone, panel overlays content
   }, [selected]);
 
 
