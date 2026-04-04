@@ -38,9 +38,14 @@ export default function Hero() {
     >
       <motion.h1
         variants={item}
-        className="text-[36px] font-semibold tracking-[-0.035em] leading-[1.1] text-[var(--text-primary)] m-0 mb-4"
+        className="text-2xl font-semibold text-[var(--text-primary)] m-0 mb-4"
       >
-        Hey! Welcome to my digital world.
+        Hey! Welcome to my digital world.{" "}
+        <img
+          src="/images/waving-hand.png"
+          alt="Waving hand"
+          className="inline align-middle w-auto h-[0.9em] mb-[2px]"
+        />
       </motion.h1>
 
       <motion.p variants={item} className={`mb-3 ${paraWide}`}>
@@ -50,11 +55,15 @@ export default function Hero() {
           alt="Aryan Randeriya"
           className="inline align-middle rounded-full w-auto h-[1.4em] mb-0.5 ml-2"
         />{" "}
-        Aryan Randeriya and I'm a Designer, Developer, and the Founder & CEO of
+        Aryan Randeriya and I'm a Designer, Developer,
+        <br />
+        and the Founder & CEO of
         <LogoLink
           href="https://experience.heygaia.io"
-          logo="/images/theexperiencecompany.webp"
+          logo="/images/experience-company-logo.svg"
           name="The Experience Company"
+          logoClassName="logo-invert"
+          rounded={false}
         />
         . The name comes from two things: our belief that our mission is to
         improve the human experience, and our deep care about the experience of
@@ -64,7 +73,7 @@ export default function Hero() {
       <motion.p variants={item} className={`mb-3 ${paraWide}`}>
         Currently building{" "}
         <LogoLink href="https://heygaia.io" logo="/gaia-logo.png" name="GAIA" />
-        - a proactive personal AI assistant that acts before you even need to
+        , a proactive personal AI assistant that acts before you even need to
         ask. The goal: every person in the world should have their own truly
         intelligent assistant.
       </motion.p>
@@ -77,33 +86,27 @@ export default function Hero() {
         <img
           src="/images/flag-uk.webp"
           alt="UK"
-          className="inline align-middle w-auto h-[1em] mb-[1px]"
+          className="inline align-middle w-auto h-[1.3em] mb-[1px]"
         />{" "}
         the United Kingdom, based in{" "}
         <img
           src="/images/flag-india.webp"
           alt="India"
-          className="inline align-middle w-auto h-[1em] mb-[1px]"
+          className="inline align-middle w-auto h-[1.3em] mb-[1px]"
         />{" "}
-        India. I love building products - I'm a product guy but a developer and
-        designer by heart. I love music - fun fact, I have a{" "}
+        India. I love building products; I'm a product guy but a developer and
+        designer by heart. I love music (I have a{" "}
         <LogoLink
           href="https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"
           logo="https://cdn.simpleicons.org/spotify/1DB954"
           name="Spotify playlist"
         />{" "}
-        with 2000+ songs. I absolutely love movies and am extremely passionate
-        about them. I also love food - I love trying different cuisines and
-        having a variety of different foods. I love tinkering around with code
-        and shipping things and exploring new things - maybe that's the ADHD
-        too, lol.
+        with 2000+ songs), movies, and food. I love tinkering around with code,
+        shipping things, and exploring new ideas. Maybe that's just my ADHD lol
       </motion.p>
 
       <motion.p variants={item} className={`mb-7 ${paraWide}`}>
-        Some things I want to explore: Rust, hardware, robotics, energy
-        infrastructure, personal companions and smart wearables (both through
-        GAIA), and low-level programming - hardcore C, OS internals, all of
-        that.
+        Some things I want to explore in the future: Hardware, robotics, personal companions, smart wearables, and some low-level (hardware?) programming with stuff like Rust
       </motion.p>
 
       <motion.div variants={item} className="flex gap-2 mb-6 flex-wrap">
