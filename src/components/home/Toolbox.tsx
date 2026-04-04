@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'motion/react';
+import { ChevronRight } from '@icons';
 
 const TOOLS = [
   { name: 'Arc',     icon: '/icons/favicons/arc-net.png' },
@@ -32,7 +33,7 @@ export default function Toolbox() {
           onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-muted)'; }}
           onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-ghost)'; }}
         >
-          See all →
+          See all <ChevronRight size={11} />
         </a>
       </div>
       <div

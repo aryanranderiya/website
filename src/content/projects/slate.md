@@ -2,7 +2,7 @@
 title: Slate
 description: Minimalistic color-coded note-taking app with a clean interface for organizing thoughts and ideas.
 date: 2025-04-01
-tags: [Hackathon, Next.js]
+tags: [Productivity, Notes]
 tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: web

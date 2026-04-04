@@ -2,7 +2,7 @@
 title: Intelli-Transport
 description: AI-driven transportation system with traffic prediction, accident detection, and driver safety monitoring - built for TechNova Hackathon.
 date: 2024-12-01
-tags: [Hackathon, AI / ML, FastAPI]
+tags: [AI / ML, Transportation]
 tech: [Next.js, TypeScript, FastAPI, Python]
 featured: false
 type: web

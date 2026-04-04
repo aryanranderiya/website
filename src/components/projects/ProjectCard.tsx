@@ -2,8 +2,15 @@
 
 import { useRef, useState } from 'react';
 import { motion } from 'motion/react';
-import { HugeiconsIcon, ArrowUpRight01Icon } from '@icons';
-import { getTechIconUrl } from '../../utils/techIcons';
+import {
+  HugeiconsIcon,
+  ArrowUpRight01Icon,
+  WebDesignIcon,
+  MobileProgramming02Icon,
+  ComputerTerminalIcon,
+  ComputerProgrammingIcon,
+  GameController03Icon,
+} from '@icons';
 
 interface Project {
   slug: string;
@@ -40,6 +47,17 @@ const TYPE_LABELS: Record<string, string> = {
   api:     'API',
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const TYPE_ICONS: Record<string, any> = {
+  web:     WebDesignIcon,
+  mobile:  MobileProgramming02Icon,
+  cli:     ComputerTerminalIcon,
+  desktop: ComputerProgrammingIcon,
+  macos:   ComputerProgrammingIcon,
+  os:      ComputerProgrammingIcon,
+  game:    GameController03Icon,
+};
+
 export default function ProjectCard({
   project,
   index,
@@ -53,6 +71,7 @@ export default function ProjectCard({
   const ref = useRef<HTMLDivElement>(null);
   const chip = FOLDER_CHIP[project.folder];
   const typeLabel = TYPE_LABELS[project.type] ?? project.type;
+  const TypeIcon = TYPE_ICONS[project.type] ?? null;
 
   return (
     <motion.div
@@ -112,7 +131,7 @@ export default function ProjectCard({
                 letterSpacing: '0.02em',
               }}
             >
-              WIP
+              In Progress
             </span>
           )}
         </div>
@@ -137,6 +156,9 @@ export default function ProjectCard({
         {/* Type badge */}
         <span
           style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 4,
             fontSize: '10px',
             padding: '2px 7px',
             borderRadius: '9999px',
@@ -145,41 +167,9 @@ export default function ProjectCard({
             letterSpacing: '0.01em',
           }}
         >
+          {TypeIcon && <HugeiconsIcon icon={TypeIcon} size={10} color="currentColor" />}
           {typeLabel}
         </span>
-
-        {/* Tag chips */}
-        {project.tags.slice(0, 2).map(t => {
-          const iconUrl = getTechIconUrl(t);
-          return (
-            <span
-              key={t}
-              style={{
-                fontSize: '10px',
-                padding: '2px 7px',
-                borderRadius: '9999px',
-                background: 'var(--border)',
-                color: 'var(--text-muted)',
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 3,
-                transition: 'background 120ms ease',
-              }}
-            >
-              {iconUrl && (
-                <img
-                  src={iconUrl}
-                  alt={t}
-                  width={10}
-                  height={10}
-                  style={{ objectFit: 'contain', flexShrink: 0 }}
-                  loading="lazy"
-                />
-              )}
-              {t}
-            </span>
-          );
-        })}
 
         {chip && (
           <span

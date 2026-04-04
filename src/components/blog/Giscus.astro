@@ -1,0 +1,74 @@
+---
+// Giscus comments — theme syncs with the site's light/dark/random toggle
+---
+
+<div class="giscus-wrapper" id="giscus-container">
+  <script
+    src="https://giscus.app/client.js"
+    data-repo="aryanranderiya/website"
+    data-repo-id="R_kgDOR32Z8A"
+    data-category="Announcements"
+    data-category-id="DIC_kwDOR32Z8M4C6Coh"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="1"
+    data-emit-metadata="1"
+    data-input-position="top"
+    data-theme="light"
+    data-lang="en"
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async
+  ></script>
+</div>
+
+<script is:inline>
+  function getGiscusTheme() {
+    var isDark = document.documentElement.classList.contains('dark');
+    return isDark ? 'dark' : 'light';
+  }
+
+  function sendGiscusTheme(theme) {
+    var iframe = document.querySelector('iframe.giscus-frame');
+    if (!iframe) return;
+    iframe.contentWindow.postMessage(
+      { giscus: { setConfig: { theme: theme } } },
+      'https://giscus.app'
+    );
+  }
+
+  function syncGiscusTheme() {
+    sendGiscusTheme(getGiscusTheme());
+  }
+
+  // Wait for the iframe to load before syncing
+  window.addEventListener('message', function onGiscusLoad(event) {
+    if (event.origin !== 'https://giscus.app') return;
+    if (event.data && event.data.giscus && event.data.giscus.discussion !== undefined) {
+      // Giscus loaded — sync theme once
+      syncGiscusTheme();
+      window.removeEventListener('message', onGiscusLoad);
+    }
+  });
+
+  // Watch for theme class changes on <html>
+  var observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+      if (mutation.attributeName === 'class') {
+        syncGiscusTheme();
+      }
+    });
+  });
+  observer.observe(document.documentElement, { attributes: true });
+
+  // Also re-sync on Astro view transitions
+  document.addEventListener('astro:after-swap', syncGiscusTheme);
+</script>
+
+<style>
+  .giscus-wrapper {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--border);
+  }
+</style>

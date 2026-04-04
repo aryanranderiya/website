@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'motion/react';
+import { ChevronRight } from '@icons';
 import { getTechIconUrl } from '../../utils/techIcons';
 
 interface Project {
@@ -111,7 +112,7 @@ export default function FeaturedProjects() {
           href="/projects"
           className="text-[12px] font-medium text-[var(--text-secondary)] no-underline inline-flex items-center gap-1 bg-[var(--muted-bg)] rounded-full px-[14px] py-[6px] transition-[filter] duration-150 hover:brightness-[0.96]"
         >
-          View all projects →
+          View all projects <ChevronRight size={12} />
         </a>
       </div>
     </section>

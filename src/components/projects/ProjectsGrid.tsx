@@ -3,7 +3,17 @@
 import { useState, useMemo, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { HugeiconsIcon, Search01Icon, FilterIcon, Delete01Icon } from '@icons';
+import {
+  HugeiconsIcon,
+  Search01Icon,
+  FilterIcon,
+  Delete01Icon,
+  WebDesignIcon,
+  MobileProgramming02Icon,
+  ComputerTerminalIcon,
+  ComputerProgrammingIcon,
+  GameController03Icon,
+} from '@icons';
 import ProjectCard from './ProjectCard';
 import { getTechIconUrl } from '../../utils/techIcons';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
@@ -33,11 +43,23 @@ interface HoveredState {
 // Alternating tilt: even rows lean left, odd rows lean right
 const ROTATIONS = [-7, 6] as const;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const TYPE_CHIPS: { value: string; label: string; icon?: any }[] = [
+  { value: 'web',     label: 'Web',     icon: WebDesignIcon },
+  { value: 'mobile',  label: 'Mobile',  icon: MobileProgramming02Icon },
+  { value: 'cli',     label: 'CLI',     icon: ComputerTerminalIcon },
+  { value: 'desktop', label: 'Desktop', icon: ComputerProgrammingIcon },
+  { value: 'game',    label: 'Game',    icon: GameController03Icon },
+  { value: 'os',      label: 'OS',      icon: ComputerProgrammingIcon },
+  { value: 'other',   label: 'Other' },
+];
+
 export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   const [search, setSearch] = useState('');
   const [searchFocused, setSearchFocused] = useState(false);
   const [hovered, setHovered] = useState<HoveredState | null>(null);
   const [activeTagFilters, setActiveTagFilters] = useState<string[]>([]);
+  const [activeTypeFilter, setActiveTypeFilter] = useState<string | null>(null);
   const [tagPopoverOpen, setTagPopoverOpen] = useState(false);
   const ready = useAfterPreloader();
   const filterBtnRef = useRef<HTMLButtonElement>(null);
@@ -86,6 +108,10 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
   const filtered = useMemo(() => {
     let list = projects;
 
+    if (activeTypeFilter) {
+      list = list.filter(p => p.type === activeTypeFilter);
+    }
+
     if (activeTagFilters.length > 0) {
       list = list.filter(p =>
         activeTagFilters.every(t => p.tags.includes(t))
@@ -102,7 +128,14 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
     }
 
     return list;
-  }, [projects, activeTagFilters, search]);
+  }, [projects, activeTypeFilter, activeTagFilters, search]);
+
+  // Only show type chips for types that have at least one project
+  const availableTypes = useMemo(() => {
+    const typeCounts: Record<string, number> = {};
+    projects.forEach(p => { typeCounts[p.type] = (typeCounts[p.type] || 0) + 1; });
+    return TYPE_CHIPS.filter(c => typeCounts[c.value] > 0);
+  }, [projects]);
 
   const handleHoverChange = (data: { project: Project; index: number; el: HTMLElement } | null) => {
     if (!data) { setHovered(null); return; }
@@ -125,6 +158,51 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
       animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
       transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
     >
+      {/* Type filter chips */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '16px', flexWrap: 'wrap' }}>
+        <button
+          onClick={() => setActiveTypeFilter(null)}
+          style={{
+            padding: '3px 10px',
+            borderRadius: '9999px',
+            border: 'none',
+            background: activeTypeFilter === null ? 'var(--text-primary)' : 'var(--muted-bg)',
+            color: activeTypeFilter === null ? 'var(--background)' : 'var(--text-muted)',
+            cursor: 'pointer',
+            fontSize: '11px',
+            fontWeight: activeTypeFilter === null ? 500 : 400,
+            letterSpacing: '-0.01em',
+            transition: 'all 150ms ease',
+          }}
+        >
+          All
+        </button>
+        {availableTypes.map(chip => (
+          <button
+            key={chip.value}
+            onClick={() => setActiveTypeFilter(activeTypeFilter === chip.value ? null : chip.value)}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 5,
+              padding: '3px 10px',
+              borderRadius: '9999px',
+              border: 'none',
+              background: activeTypeFilter === chip.value ? 'var(--text-primary)' : 'var(--muted-bg)',
+              color: activeTypeFilter === chip.value ? 'var(--background)' : 'var(--text-muted)',
+              cursor: 'pointer',
+              fontSize: '11px',
+              fontWeight: activeTypeFilter === chip.value ? 500 : 400,
+              letterSpacing: '-0.01em',
+              transition: 'all 150ms ease',
+            }}
+          >
+            {chip.icon && <HugeiconsIcon icon={chip.icon} size={11} color="currentColor" />}
+            {chip.label}
+          </button>
+        ))}
+      </div>
+
       {/* Filter button + search */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '28px', width: '100%' }}>
 
@@ -296,7 +374,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
       <AnimatePresence mode="sync" initial={false}>
         {filtered.length > 0 ? (
           <motion.div
-            key={search + activeTagFilters.join(',')}
+            key={search + activeTagFilters.join(',') + (activeTypeFilter ?? '')}
             initial="hidden"
             animate={ready ? 'show' : 'hidden'}
             exit={{ opacity: 0 }}
@@ -350,6 +428,8 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
               overflow: 'hidden',
               pointerEvents: 'none',
               zIndex: 9999,
+              background: 'var(--background)',
+              boxShadow: 'var(--shadow-lg)',
             }}
           >
             <img
@@ -357,6 +437,20 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
               alt={hovered.project.title}
               style={{ width: '100%', height: 'auto', display: 'block' }}
             />
+            <div style={{
+              padding: '8px 10px 10px',
+              background: 'var(--background)',
+            }}>
+              <p style={{
+                fontSize: '10px',
+                color: 'var(--text-muted)',
+                lineHeight: 1.5,
+                letterSpacing: '-0.01em',
+                margin: 0,
+              }}>
+                {hovered.project.description}
+              </p>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>,

@@ -2,7 +2,7 @@
 title: Spotify Tools
 description: Python desktop app with Spotify API integration - playlist management, mini player, and profile viewing.
 date: 2023-08-01
-tags: [Python, Spotify]
+tags: [Music, Automation]
 tech: [Python, Spotify API]
 featured: false
 type: desktop

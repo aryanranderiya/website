@@ -2,7 +2,7 @@
 title: Expense Management System
 description: Full-stack expense management system with role-based access, dashboards, and category tracking - built for Odoo Winter 2025 Hackathon.
 date: 2025-01-15
-tags: [Hackathon, Full Stack, PostgreSQL]
+tags: [Finance, Enterprise]
 tech: [Next.js, TailwindCSS, NestJS, PostgreSQL, Prisma, Docker, TypeScript]
 featured: false
 type: web

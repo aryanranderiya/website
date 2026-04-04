@@ -2,7 +2,7 @@
 title: OS Concepts Visualizer
 description: Interactive web app visualizing operating system algorithms - page replacement, producer-consumer, and disk scheduling.
 date: 2024-01-01
-tags: [Education, Python]
+tags: [Education, Visualization]
 tech: [Python, Flask, HTML, CSS, JavaScript]
 featured: false
 type: web

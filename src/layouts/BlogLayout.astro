@@ -1,6 +1,7 @@
 ---
 import PageLayout from './PageLayout.astro';
 import TableOfContents from '@/components/blog/TableOfContents.astro';
+import Giscus from '@/components/blog/Giscus.astro';
 import { formatDate } from '@/lib/utils';
 
 interface Heading {
@@ -83,6 +84,8 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
       <div class="prose">
         <slot />
       </div>
+
+      <Giscus />
     </article>
 
     {tocHeadings.length > 1 && (

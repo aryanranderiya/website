@@ -2,7 +2,7 @@
 title: Student Management System
 description: Web-based academic management platform with attendance tracking, timetable, study materials, and library management.
 date: 2023-03-01
-tags: [Education, PHP]
+tags: [Education]
 tech: [PHP, MySQL, HTML, CSS, JavaScript]
 featured: false
 type: web

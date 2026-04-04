@@ -2,7 +2,7 @@
 title: RezRek
 description: Social commerce platform for Indian streetwear and fashion - discover brands, browse curated feeds, save inspo boards, and shop.
 date: 2024-01-20
-tags: [Social, Supabase]
+tags: [Social]
 tech: [Next.js, Python, Supabase]
 featured: true
 type: mobile

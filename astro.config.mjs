@@ -37,6 +37,9 @@ export default defineConfig({
         '@icons': fileURLToPath(new URL('./src/components/icons/index.ts', import.meta.url)),
       },
     },
+    optimizeDeps: {
+      exclude: ['@mlc-ai/web-llm'],
+    },
   },
   markdown: {
     shikiConfig: {

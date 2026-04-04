@@ -3,7 +3,6 @@ import BlogLayout from '@/layouts/BlogLayout.astro';
 import ShareButtons from '@/components/blog/ShareButtons.astro';
 import RelatedPosts from '@/components/blog/RelatedPosts.astro';
 import NewsletterSignup from '@/components/blog/NewsletterSignup.astro';
-import GiscusComments from '@/components/blog/GiscusComments.astro';
 import { calculateReadingTime } from '@/lib/reading-time';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
@@ -61,7 +60,6 @@ const related = allPosts
     <ShareButtons title={post.data.title} url={Astro.url.href} />
     <RelatedPosts posts={related} />
     <NewsletterSignup />
-    <GiscusComments />
 
     <!-- Back link -->
     <div class="mt-10">

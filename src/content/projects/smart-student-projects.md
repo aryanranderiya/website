@@ -2,7 +2,7 @@
 title: Smart Student Projects
 description: Platform to showcase student projects from universities across India - built for Smart India Hackathon 2023.
 date: 2023-09-01
-tags: [Hackathon, Firebase]
+tags: [Education]
 tech: [HTML, CSS, JavaScript, Firebase]
 featured: false
 type: web

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { HugeiconsIcon, Briefcase01Icon } from '@icons';
+import { HugeiconsIcon, Briefcase01Icon, ChevronRight } from '@icons';
 import { experience } from '@/data/experience';
 import type { Experience } from '@/data/experience';
 
@@ -227,7 +227,7 @@ export default function ExperienceList({
             href="/resume"
             className="text-[12px] font-medium text-[var(--text-secondary)] no-underline inline-flex items-center gap-1 bg-[var(--muted-bg)] rounded-full px-[14px] py-[6px] transition-[filter] duration-150 hover:brightness-[0.96]"
           >
-            Full resume →
+            Full resume <ChevronRight size={12} />
           </a>
         </div>
       )}
