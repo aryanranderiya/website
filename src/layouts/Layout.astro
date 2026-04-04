@@ -1,11 +1,17 @@
 ---
 import { ViewTransitions } from 'astro:transitions';
+import { getCollection } from 'astro:content';
 import { SITE, SEO } from '@/constants/site';
 import '@/styles/global.css';
 import CommandK from '@/components/layout/CommandK';
 import AgentationOverlay from '@/components/layout/AgentationOverlay';
 import BlurStack from '@/components/ui/blur-stack';
 import Preloader from '@/components/layout/Preloader';
+import AIChat from '@/components/ui/AIChat';
+import { buildAIPrompt } from '@/lib/build-ai-prompt';
+import { experience, education, certifications } from '@/data/experience';
+import { pastWork } from '@/data/freelance';
+import { PetLauncher } from '@/components/ui/PetLauncher';
 
 interface Props {
   title?: string;
@@ -28,6 +34,12 @@ const {
 const metaTitle = title ? `${title} — ${SITE.name}` : SEO.defaultTitle;
 const canonicalURL = new URL(canonical, Astro.site ?? Astro.url.origin);
 const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro.site ?? Astro.url.origin).toString();
+
+const [projects, blogPosts] = await Promise.all([
+  getCollection('projects'),
+  getCollection('blog'),
+]);
+const aiSystemPrompt = buildAIPrompt({ projects, blogPosts, experience, education, certifications, pastWork, site: SITE });
 ---
 
 <!doctype html>
@@ -87,17 +99,19 @@ const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro
 
     <!-- Theme init — light by default, dark only if explicitly stored -->
     <script is:inline>
-      (function () {
+      function applyTheme() {
         var theme = localStorage.getItem('theme');
+        var root = document.documentElement;
+        // Reset dark class first
+        root.classList.remove('dark');
         if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
+          root.classList.add('dark');
         } else if (theme === 'random') {
           var hue = parseInt(localStorage.getItem('randomHue') || '200', 10);
           var sat = parseInt(localStorage.getItem('randomSat') || '38', 10);
           var l = Math.max(88, Math.round(96 - (sat - 25) * 0.23));
           var card_s = Math.round(sat * 0.7);
           var card_l = Math.min(l + 2, 98);
-          var root = document.documentElement;
           root.style.setProperty('--background',          'hsl(' + hue + ', ' + sat + '%, ' + l + '%)');
           root.style.setProperty('--foreground',          'hsl(' + hue + ', 22%, 11%)');
           root.style.setProperty('--card',                'hsl(' + hue + ', ' + card_s + '%, ' + card_l + '%)');
@@ -123,8 +137,8 @@ const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro
           };
           var family = fontMap[typography];
           if (family) {
-            document.documentElement.style.setProperty('font-family', family);
-            if (typography === 'pixel') {
+            root.style.setProperty('font-family', family);
+            if (typography === 'pixel' && !document.getElementById('pixel-font-link')) {
               var link = document.createElement('link');
               link.id = 'pixel-font-link';
               link.rel = 'stylesheet';
@@ -133,7 +147,10 @@ const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro
             }
           }
         }
-      })();
+      }
+      applyTheme();
+      // Re-apply after each View Transition swap so dark class persists across navigation
+      document.addEventListener('astro:after-swap', applyTheme);
     </script>
   </head>
   <body>
@@ -147,7 +164,9 @@ const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro
     <Preloader client:load />
     <BlurStack client:only="react" className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none" />
     <CommandK client:only="react" />
+    <AIChat client:only="react" systemPrompt={aiSystemPrompt} />
     <script>import '@/bones/registry'</script>
     <AgentationOverlay client:only="react" />
+    <PetLauncher client:only="react" />
   </body>
 </html>
