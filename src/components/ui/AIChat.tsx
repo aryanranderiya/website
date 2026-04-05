@@ -5,7 +5,7 @@ import './message-bubble.css';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HugeiconsIcon, ChatBotIcon, Cancel01Icon, ArrowUp02Icon } from '@icons';
-import { AI_SYSTEM_PROMPT, SUGGESTED_QUESTIONS, FOLLOWUP_SYSTEM_PROMPT } from '@/data/ai-context';
+import { SUGGESTED_QUESTIONS, FOLLOWUP_SYSTEM_PROMPT } from '@/data/ai-context';
 
 interface AIChatProps {
   /** Dynamically built at build time from live content collections + data files. Falls back to static prompt. */
@@ -162,7 +162,7 @@ function AssistantBubble({
 }
 
 export default function AIChat({ systemPrompt }: AIChatProps) {
-  const activePrompt = systemPrompt ?? AI_SYSTEM_PROMPT;
+  const activePrompt = systemPrompt ?? '';
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([WELCOME]);
   const [input, setInput] = useState('');

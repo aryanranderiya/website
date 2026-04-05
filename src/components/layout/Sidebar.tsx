@@ -391,10 +391,10 @@ export default function Sidebar() {
           </a>
           {/* Old portfolio */}
           <a
-            href="https://aryanranderiya.com"
+            href="https://old.aryanranderiya.com"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Old portfolio (aryanranderiya.com)"
+            aria-label="Old portfolio (old.aryanranderiya.com)"
             style={{
               ...actionStyle,
               color: hoveredAction === 'old-portfolio'

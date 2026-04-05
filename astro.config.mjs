@@ -11,7 +11,30 @@ export default defineConfig({
   integrations: [
     react(),
     mdx(),
-    sitemap(),
+    sitemap({
+      filter: (page) =>
+        !page.includes('/api/') &&
+        !page.includes('/f4llout/') &&
+        !page.includes('/404'),
+      serialize(item) {
+        const url = item.url;
+        let priority = 0.5;
+        let changefreq = /** @type {const} */ ('monthly');
+
+        if (url === 'https://aryanranderiya.com/') {
+          priority = 1.0;
+          changefreq = 'weekly';
+        } else if (/\/(blog|projects|resume|now|tools|books|movies|freelance|graphic-design|camera-roll)\/?$/.test(url)) {
+          priority = 0.9;
+          changefreq = 'weekly';
+        } else if (/\/(blog|projects|now|freelance)\//.test(url)) {
+          priority = 0.8;
+          changefreq = 'monthly';
+        }
+
+        return { ...item, priority, changefreq };
+      },
+    }),
   ],
   prefetch: {
     prefetchAll: true,

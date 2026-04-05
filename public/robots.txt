@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /f4llout/
 
 Sitemap: https://aryanranderiya.com/sitemap-index.xml

@@ -3,6 +3,7 @@ import PageLayout from './PageLayout.astro';
 import TableOfContents from '@/components/blog/TableOfContents.astro';
 import Giscus from '@/components/blog/Giscus.astro';
 import { formatDate } from '@/lib/utils';
+import { SITE } from '@/constants/site';
 
 interface Heading {
   depth: number;
@@ -24,9 +25,53 @@ interface Props {
 
 const { title, description, date, updated, tags = [], category, cover, headings = [], readingTime } = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+const canonicalURL = new URL(Astro.url.pathname, SITE.url).toString();
+const articleJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": title,
+  "description": description,
+  "datePublished": date.toISOString(),
+  ...(updated ? { "dateModified": updated.toISOString() } : {}),
+  "author": {
+    "@type": "Person",
+    "name": SITE.name,
+    "url": SITE.url,
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": SITE.name,
+    "url": SITE.url,
+  },
+  ...(cover ? { "image": cover.startsWith('http') ? cover : new URL(cover, SITE.url).toString() } : {}),
+  "url": canonicalURL,
+  "inLanguage": "en-US",
+  "isPartOf": { "@type": "Blog", "url": `${SITE.url}/blog` },
+});
+
+const breadcrumbJsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE.url },
+    { "@type": "ListItem", "position": 2, "name": "Blog", "item": `${SITE.url}/blog` },
+    { "@type": "ListItem", "position": 3, "name": title, "item": canonicalURL },
+  ],
+});
 ---
 
-<PageLayout title={title} description={description} fullWidth={true}>
+<PageLayout
+  title={title}
+  description={description}
+  ogImage={cover}
+  ogType="article"
+  articleDate={date}
+  articleModified={updated}
+  fullWidth={true}
+>
+  <script is:inline type="application/ld+json" set:html={articleJsonLd} />
+  <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
   <div class="blog-wrapper">
     <article class="blog-content" style="padding-bottom: 64px;">
 

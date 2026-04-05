@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { HugeiconsIcon, Github01Icon, Add01Icon } from '@icons';
 import { WebPet } from './web-pet';
+import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 
 const ANIMAL_MAP: Record<string, { color: string; label: string }> = {
   chicken:      { color: 'brown',     label: 'Chicken' },
@@ -48,6 +49,7 @@ function getStored(): { animal: string; color: string } {
 }
 
 export function PetLauncher() {
+  const preloaderDone = useAfterPreloader();
   const [pet, setPet] = useState<{ animal: string; color: string }>({ animal: 'dog', color: 'brown' });
   const [open, setOpen] = useState(false);
   const [petPos, setPetPos] = useState<{ x: number; y: number } | null>(null);
@@ -120,7 +122,7 @@ export function PetLauncher() {
 
   return (
     <>
-      {!isNone && (
+      {preloaderDone && !isNone && (
         <WebPet
           animal={pet.animal}
           color={pet.color}
@@ -212,7 +214,7 @@ export function PetLauncher() {
       )}
 
       {/* Floating trigger when pet is hidden */}
-      {isNone && (
+      {preloaderDone && isNone && (
         <button
           onClick={() => setOpen(o => !o)}
           style={{

@@ -17,18 +17,24 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  ogType?: 'website' | 'article';
   canonical?: string;
   noindex?: boolean;
   class?: string;
+  articleDate?: Date;
+  articleModified?: Date;
 }
 
 const {
   title,
   description = SITE.description,
   ogImage = '/og-image.jpg',
+  ogType = 'website',
   canonical = Astro.url.pathname,
   noindex = false,
   class: className,
+  articleDate,
+  articleModified,
 } = Astro.props;
 
 const metaTitle = title ? `${title} — ${SITE.name}` : SEO.defaultTitle;
@@ -66,17 +72,23 @@ const aiSystemPrompt = buildAIPrompt({ projects, blogPosts, experience, educatio
     <link rel="manifest" href="/favicon/site.webmanifest" />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={Astro.url.toString()} />
     <meta property="og:title" content={metaTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content={SITE.name} />
     <meta property="og:locale" content="en_US" />
+    {articleDate && <meta property="article:published_time" content={articleDate.toISOString()} />}
+    {articleModified && <meta property="article:modified_time" content={articleModified.toISOString()} />}
+    {articleDate && <meta property="article:author" content={`${SITE.url}/`} />}
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content={`@${SITE.twitter}`} />
+    <meta name="twitter:creator" content={`@${SITE.twitter}`} />
     <meta name="twitter:title" content={metaTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageURL} />
@@ -93,6 +105,25 @@ const aiSystemPrompt = buildAIPrompt({ projects, blogPosts, experience, educatio
     <link rel="dns-prefetch" href="https://api.github.com" />
     <link rel="dns-prefetch" href="https://github-contributions-api.jogruber.de" />
     <link rel="dns-prefetch" href="https://open.spotify.com" />
+
+    <!-- Structured Data: Person -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": SITE.name,
+      "url": SITE.url,
+      "image": `https://github.com/${SITE.github}.png`,
+      "description": SITE.description,
+      "jobTitle": "Developer & Designer",
+      "worksFor": { "@type": "Organization", "name": "GAIA" },
+      "address": { "@type": "PostalAddress", "addressLocality": SITE.location },
+      "sameAs": [
+        `https://github.com/${SITE.github}`,
+        `https://twitter.com/${SITE.twitter}`,
+        `https://linkedin.com/in/${SITE.linkedin}`,
+        `https://instagram.com/${SITE.instagram}`,
+      ],
+    })} />
 
     <!-- View Transitions -->
     <ViewTransitions />

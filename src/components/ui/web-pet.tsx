@@ -97,7 +97,7 @@ const DEFAULT_BEHAVIOR = {
     { name: "run", speedMultiplier: 1.8 },
   ],
   speed: 4.5,
-  scale: 0.5,
+  scale: 0.42,
   followMouse: false,
 } satisfies Required<WebPetBehaviorOptions>;
 

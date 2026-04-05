@@ -7,15 +7,18 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  ogType?: 'website' | 'article';
   canonical?: string;
   noindex?: boolean;
   fullWidth?: boolean;
+  articleDate?: Date;
+  articleModified?: Date;
 }
 
-const { fullWidth = false, ...layoutProps } = Astro.props;
+const { fullWidth = false, ogType = 'website', articleDate, articleModified, ...layoutProps } = Astro.props;
 ---
 
-<Layout {...layoutProps}>
+<Layout {...layoutProps} ogType={ogType} articleDate={articleDate} articleModified={articleModified}>
   <Sidebar client:only="react" transition:persist />
   <main
     id="page-content"
