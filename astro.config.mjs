@@ -24,10 +24,10 @@ export default defineConfig({
         if (url === 'https://aryanranderiya.com/') {
           priority = 1.0;
           changefreq = 'weekly';
-        } else if (/\/(blog|projects|resume|now|tools|books|movies|freelance|graphic-design|camera-roll)\/?$/.test(url)) {
+        } else if (/\/(blog|projects|resume|now|tools|books|movies|freelance|graphic-design|camera-roll|agent-convos)\/?$/.test(url)) {
           priority = 0.9;
           changefreq = 'weekly';
-        } else if (/\/(blog|projects|now|freelance)\//.test(url)) {
+        } else if (/\/(blog|projects|now|freelance|agent-convos)\//.test(url)) {
           priority = 0.8;
           changefreq = 'monthly';
         }

@@ -1,0 +1,51 @@
+---
+title: "Performance Profiling a Website via Chrome DevTools MCP"
+description: "Used Chrome DevTools MCP to run a full Lighthouse-style performance audit on a portfolio website -- identifying render-blocking resources, layout shifts, unoptimized images, and implementing fixes including skeleton loading."
+date: 2026-04-03
+platform: claude-code
+model: claude-sonnet-4-6
+harness: "Claude Code v2.1.92"
+category: browser-automation
+featured: false
+tokens: "~10.4MB session"
+messageCount: 280
+duration: "~3 hours"
+filesChanged: 16
+linesChanged: "+420 / -180"
+agents: []
+agentCount: 0
+project: "Portfolio"
+branch: "master"
+---
+
+The portfolio site was functional but slow. Instead of running Lighthouse manually and interpreting a report, I connected an agent to Chrome DevTools MCP and asked it to do a full performance audit and fix what it found. It measured baselines, diagnosed root causes, implemented fixes, and re-measured — the full engineer workflow, end to end.
+
+## Baseline measurements
+
+The agent navigated to the live site and ran Chrome's performance tooling directly. First Contentful Paint: 1.8 seconds. Largest Contentful Paint: 3.2 seconds. Cumulative Layout Shift: 0.18 — firmly in the "needs improvement" band. Total Blocking Time: 340 milliseconds. Time to Interactive: 2.9 seconds. None of these were catastrophic, but all were worse than they needed to be, and the CLS score in particular was bad enough to affect Core Web Vitals classification.
+
+## Finding the causes
+
+The agent didn't guess at fixes — it traced each metric to a specific cause.
+
+For First Contentful Paint, the Coverage tab showed that Google Fonts CSS, two icon font stylesheets, and the Inter variable font were all loaded synchronously in the `<head>`, blocking paint until all three external requests completed. The browser couldn't render anything until those finished.
+
+For Largest Contentful Paint, the LCP element was a project screenshot image — a 4.2MB PNG being served full-resolution with no `width` or `height` attributes and no lazy loading. Every page load fetched the full image before the browser could complete layout.
+
+The 0.18 CLS score had two main contributors: the Spotify "Now Playing" widget and the GitHub contribution graph. Both loaded data asynchronously after mount with no reserved space, causing the page to reflow as they populated. The agent measured the exact dimensions each element occupied after loading — 280×64px for Spotify, 722×112px for the GitHub graph — to build correctly-sized skeletons.
+
+For Total Blocking Time, the culprit was a 3.2MB Web-LLM JavaScript bundle being loaded on every page, even pages where the chat widget was never opened. The Coverage tab showed 97% of that bundle was unused on most page loads.
+
+## Fixes, one layer at a time
+
+Font blocking: added `font-display: swap` to the Google Fonts import, preconnected to `fonts.googleapis.com` and `fonts.gstatic.com` with `<link rel="preconnect">`, and deferred the icon font stylesheets with the standard async CSS trick. For the Inter variable font specifically, added an explicit preload for the woff2 file and changed to `font-display: optional` — showing fallback text immediately rather than waiting for the font, which eliminated the 200ms FOIT.
+
+Images: converted project screenshots to WebP using Astro's `<Image>` component (automatic format conversion and srcset generation), added explicit width and height attributes to every image so the browser could reserve space before the image loaded, and added `loading="lazy"` to below-the-fold images.
+
+Layout shifts: added skeleton components for the Spotify widget and GitHub graph with exact pixel dimensions matching the loaded state. The skeletons used `bg-[var(--muted-bg)]` with a shimmer animation so the reserved space felt intentional rather than blank.
+
+Web-LLM bundle: wrapped the chat widget in `React.lazy()` with a `Suspense` boundary, loading the bundle only when the user clicked the chat button for the first time. This required moving the Web-LLM initialization logic into the lazy-loaded component rather than at module import time, but the chat functionality was otherwise unchanged.
+
+## After
+
+First Contentful Paint: 0.9s (down from 1.8s, −50%). Largest Contentful Paint: 1.4s (down from 3.2s, −56%). Cumulative Layout Shift: 0.02 (down from 0.18, −89%). Total Blocking Time: 120ms (down from 340ms, −65%). Time to Interactive: 1.3s (down from 2.9s, −55%). The CLS improvement alone moved the site from "needs improvement" to "good" in Core Web Vitals. The Web-LLM split reduced the initial JavaScript parse burden by 3.2MB on every page load that doesn't open the chat widget.

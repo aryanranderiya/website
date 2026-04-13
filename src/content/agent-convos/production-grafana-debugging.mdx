@@ -1,0 +1,41 @@
+---
+title: "Debugging a Production Grafana Outage via Browser MCP"
+description: "After a deploy broke all Grafana dashboards, an AI agent navigated the live production Grafana instance through Chrome DevTools MCP, diagnosed Docker volume misconfigurations, and fixed the observability stack."
+date: 2026-04-06
+platform: claude-code
+model: claude-opus-4-6
+harness: "Claude Code v2.1.92"
+category: browser-automation
+featured: true
+tokens: "~17MB session"
+messageCount: 350
+duration: "~4 hours"
+filesChanged: 12
+linesChanged: "+180 / -95"
+agents: []
+agentCount: 0
+project: "GAIA"
+branch: "develop"
+---
+
+A routine deploy to production and everything broke. Every single Grafana dashboard — Docker containers, databases, application logs, API metrics — went completely empty. Data was still being collected; I could confirm it by curling the Prometheus endpoints directly on the VM. But nothing was rendering in Grafana. I handed the incident to the agent and it resolved it entirely through a combination of Chrome DevTools MCP navigation and SSH diagnostics, without me touching a terminal.
+
+## Establishing what was broken
+
+The agent opened Chrome and navigated to the production Grafana instance. It methodically opened each dashboard: Docker Containers — empty. Databases — showing MongoDB metrics from local dev instead of production. API Metrics — no results. Application Logs — empty arrays. The pattern pointed to a data source configuration problem rather than a collection problem, since the data was physically present on the VM.
+
+The agent SSH'd into the production machine and ran a systematic diagnostic pass. `docker compose ps` confirmed all containers were healthy — they were running, just not talking to each other correctly. Hitting `localhost:9090/api/v1/targets` on the Prometheus API returned the clearest signal: every single scrape target was listed as DOWN. Not degraded, not intermittent — completely DOWN. Prometheus couldn't reach any of the services it was supposed to monitor. A check on Loki at `localhost:3100/ready` returned a 503. Promtail's container logs showed it was failing to tail log files that didn't exist at the configured path.
+
+## Tracing the cascade
+
+The root cause was a naming cleanup that had happened in the deploy. The Docker Compose service names had been prefixed for clarity — `prometheus` became `gaia-prometheus`, `loki` became `gaia-loki`, `grafana` became `gaia-grafana`. The Docker network was renamed from `default` to `gaia-monitoring`. Completely reasonable changes in isolation. The problem was that four separate config files all referenced these names independently, and none of them had been updated.
+
+`prometheus.yml`'s `scrape_configs` section still listed the old short service names as scrape targets — names that no longer existed on the network. Promtail's config had `__path__` patterns pointing to Docker log directories that assumed the old container naming convention. The Grafana provisioning YAML in `provisioning/datasources/` still had hostnames pointing to `loki:3100` and `prometheus:9090` rather than `gaia-loki:3100` and `gaia-prometheus:9090`. And `docker-compose.prod.yml`'s network aliases weren't updated to reflect the new network name.
+
+## Fixing and verifying live
+
+The agent fixed all four files in sequence, with each change targeted at one specific layer of the broken chain. It updated the `scrape_configs` job names and target addresses in `prometheus.yml`. It corrected the `__path__` glob patterns in `promtail-config.yml` to match the new container name prefix. It updated both datasource hostnames in the Grafana provisioning file. It fixed the network aliases in the compose override file.
+
+After redeploying, the agent went back into Chrome DevTools and navigated through each Grafana dashboard, refreshing and confirming that live data was populating. Docker container metrics came back first. Database metrics — real production MongoDB, not local dev — appeared next. API metrics started flowing. Application logs populated in Loki Explorer. The entire observability stack was restored.
+
+What made this session notable wasn't the complexity of the fix — four config file edits is modest work. It was the diagnostic process: navigating a live production Grafana instance through Chrome DevTools, running targeted API queries against Prometheus to get machine-readable target status rather than guessing from UI screenshots, and correlating four independent symptoms back to a single root cause in a deploy that changed service naming conventions. A human incident responder would have taken hours toggling between browser, terminal, and documentation. The agent did it in one continuous session without ever losing the thread.

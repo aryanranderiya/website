@@ -45,32 +45,32 @@
   --foreground: #111111;
 
   /* Opacity-based text hierarchy */
-  --text-primary:    rgba(0, 0, 0, 0.85);
-  --text-secondary:  rgba(0, 0, 0, 0.55);
-  --text-muted:      rgba(0, 0, 0, 0.54);
-  --text-ghost:      rgba(0, 0, 0, 0.55);
+  --text-primary: rgba(0, 0, 0, 0.85);
+  --text-secondary: rgba(0, 0, 0, 0.55);
+  --text-muted: rgba(0, 0, 0, 0.54);
+  --text-ghost: rgba(0, 0, 0, 0.55);
 
   /* Borders — opacity based */
-  --border:         rgba(0, 0, 0, 0.08);
-  --border-strong:  rgba(0, 0, 0, 0.14);
-  --muted:          rgba(0, 0, 0, 0.04);
-  --muted-bg:       rgba(0, 0, 0, 0.04);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.14);
+  --muted: rgba(0, 0, 0, 0.04);
+  --muted-bg: rgba(0, 0, 0, 0.04);
   --muted-foreground: rgba(0, 0, 0, 0.45);
 
   /* Input / Ring */
   --input: rgba(0, 0, 0, 0.08);
-  --ring:  rgba(0, 0, 0, 0.2);
+  --ring: rgba(0, 0, 0, 0.2);
 
   /* Surfaces */
-  --card:            #ffffff;
+  --card: #ffffff;
   --card-foreground: #111111;
-  --popover:         #ffffff;
+  --popover: #ffffff;
   --popover-foreground: #111111;
 
   /* Primary/Secondary */
-  --primary:           #111111;
+  --primary: #111111;
   --primary-foreground: #fdfdfc;
-  --secondary:          rgba(0, 0, 0, 0.05);
+  --secondary: rgba(0, 0, 0, 0.05);
   --secondary-foreground: #111111;
 
   /* States */
@@ -80,38 +80,48 @@
   --accent-blue: #00bbff;
 
   /* Glassmorphism */
-  --glass-bg:     rgba(253, 253, 252, 0.82);
+  --glass-bg: rgba(253, 253, 252, 0.82);
   --glass-border: rgba(0, 0, 0, 0.07);
-  --glass-blur:   12px;
+  --glass-blur: 12px;
 
   /* Typography scale — editorial (13px body, NOT 16px) */
-  --text-2xs:  0.625rem;   /* 10px */
-  --text-xs:   0.75rem;    /* 12px */
-  --text-sm:   0.8125rem;  /* 13px — body */
-  --text-base: 0.875rem;   /* 14px */
-  --text-lg:   1rem;       /* 16px */
-  --text-xl:   1.125rem;   /* 18px */
-  --text-2xl:  1.375rem;   /* 22px */
-  --text-3xl:  1.75rem;    /* 28px */
-  --text-4xl:  2.25rem;    /* 36px */
-  --text-5xl:  3rem;       /* 48px */
+  --text-2xs: 0.625rem;
+  /* 10px */
+  --text-xs: 0.75rem;
+  /* 12px */
+  --text-sm: 0.8125rem;
+  /* 13px — body */
+  --text-base: 0.875rem;
+  /* 14px */
+  --text-lg: 1rem;
+  /* 16px */
+  --text-xl: 1.125rem;
+  /* 18px */
+  --text-2xl: 1.375rem;
+  /* 22px */
+  --text-3xl: 1.75rem;
+  /* 28px */
+  --text-4xl: 2.25rem;
+  /* 36px */
+  --text-5xl: 3rem;
+  /* 48px */
 
   /* Font weights */
-  --font-normal:   400;
-  --font-medium:   500;
+  --font-normal: 400;
+  --font-medium: 500;
   --font-semibold: 600;
 
   /* Letter spacing — always negative on headings */
   --tracking-tighter: -0.04em;
-  --tracking-tight:   -0.025em;
-  --tracking-snug:    -0.015em;
-  --tracking-body:    -0.01em;
-  --tracking-label:    0.06em;
+  --tracking-tight: -0.025em;
+  --tracking-snug: -0.015em;
+  --tracking-body: -0.01em;
+  --tracking-label: 0.06em;
 
   /* Line heights */
-  --leading-tight:   1.25;
-  --leading-snug:    1.4;
-  --leading-normal:  1.6;
+  --leading-tight: 1.25;
+  --leading-snug: 1.4;
+  --leading-normal: 1.6;
   --leading-relaxed: 1.7;
 
   /* Spacing */
@@ -130,9 +140,9 @@
   --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.07), 0 4px 8px rgba(0, 0, 0, 0.04);
 
   /* Transitions */
-  --transition-fast:  150ms ease;
-  --transition-base:  250ms ease;
-  --transition-slow:  400ms ease;
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 400ms ease;
   --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
 }
@@ -144,28 +154,28 @@
   --background: #111111;
   --foreground: #fdfdfc;
 
-  --text-primary:    rgba(255, 255, 255, 0.88);
-  --text-secondary:  rgba(255, 255, 255, 0.55);
-  --text-muted:      rgba(255, 255, 255, 0.54);
-  --text-ghost:      rgba(255, 255, 255, 0.55);
+  --text-primary: rgba(255, 255, 255, 0.88);
+  --text-secondary: rgba(255, 255, 255, 0.55);
+  --text-muted: rgba(255, 255, 255, 0.54);
+  --text-ghost: rgba(255, 255, 255, 0.55);
 
-  --border:         rgba(255, 255, 255, 0.08);
-  --border-strong:  rgba(255, 255, 255, 0.14);
-  --muted:          rgba(255, 255, 255, 0.05);
-  --muted-bg:       rgba(255, 255, 255, 0.05);
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.14);
+  --muted: rgba(255, 255, 255, 0.05);
+  --muted-bg: rgba(255, 255, 255, 0.05);
   --muted-foreground: rgba(255, 255, 255, 0.45);
 
   --input: rgba(255, 255, 255, 0.08);
-  --ring:  rgba(255, 255, 255, 0.2);
+  --ring: rgba(255, 255, 255, 0.2);
 
-  --card:            #1a1a1a;
+  --card: #1a1a1a;
   --card-foreground: #fdfdfc;
-  --popover:         #1a1a1a;
+  --popover: #1a1a1a;
   --popover-foreground: #fdfdfc;
 
-  --primary:            #fdfdfc;
+  --primary: #fdfdfc;
   --primary-foreground: #111111;
-  --secondary:          rgba(255, 255, 255, 0.06);
+  --secondary: rgba(255, 255, 255, 0.06);
   --secondary-foreground: #fdfdfc;
 
   --destructive: #f87171;
@@ -173,7 +183,7 @@
   /* Accent */
   --accent-blue: #00bbff;
 
-  --glass-bg:     rgba(17, 17, 17, 0.82);
+  --glass-bg: rgba(17, 17, 17, 0.82);
   --glass-border: rgba(255, 255, 255, 0.07);
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -184,7 +194,9 @@
 /* ============================================
    BASE STYLES
    ============================================ */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -199,7 +211,8 @@ html {
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-size: var(--text-sm);        /* 13px — editorial, not generic */
+  font-size: var(--text-sm);
+  /* 13px — editorial, not generic */
   line-height: var(--leading-normal);
   letter-spacing: var(--tracking-body);
   margin: 0;
@@ -265,14 +278,15 @@ body {
 .section-header {
   font-size: 10px;
   font-weight: var(--font-medium);
-  letter-spacing: 0.08em;
+  /* letter-spacing: 0.08em; */
   text-transform: uppercase;
   color: var(--text-ghost);
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 24px;
+  margin-bottom: 5px;
 }
+
 .section-header::after {
   content: '';
   flex: 1;
@@ -309,6 +323,7 @@ body {
   padding: 16px;
   transition: border-color var(--transition-fast), transform var(--transition-fast);
 }
+
 .card:hover {
   border-color: var(--border-strong);
   transform: translateY(-1px);
@@ -348,9 +363,11 @@ body {
   width: 4px;
   height: 4px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--border-strong);
   border-radius: 9999px;
@@ -363,6 +380,7 @@ body {
   background: rgba(0, 0, 0, 0.1);
   color: inherit;
 }
+
 .dark ::selection {
   background: rgba(255, 255, 255, 0.15);
 }
@@ -382,6 +400,7 @@ body {
 .logo-invert {
   filter: brightness(0);
 }
+
 .dark .logo-invert {
   filter: none;
 }
@@ -446,6 +465,7 @@ a {
   text-underline-offset: 3px;
   transition: text-decoration-color var(--transition-fast);
 }
+
 .prose a:hover {
   text-decoration-color: var(--text-muted);
 }
@@ -483,7 +503,8 @@ a {
   margin-left: 0;
 }
 
-.prose ul, .prose ol {
+.prose ul,
+.prose ol {
   color: var(--text-secondary);
   padding-left: 1.5em;
 }
@@ -514,48 +535,98 @@ a {
    ANIMATION UTILITIES
    ============================================ */
 @keyframes fade-in-blur {
-  from { opacity: 0; transform: translateY(6px); filter: blur(4px); }
-  to   { opacity: 1; transform: translateY(0);   filter: blur(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes scale-in {
-  from { opacity: 0; transform: scale(0.97); }
-  to   { opacity: 1; transform: scale(1); }
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 @keyframes fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
 }
 
 .animate-fade-in {
   animation: fade-in-blur 0.4s var(--ease-expo) both;
 }
+
 .animate-fade-in-up {
   animation: fade-in-up 0.35s var(--ease-expo) both;
 }
+
 .animate-scale-in {
   animation: scale-in 0.25s var(--ease-expo) both;
 }
 
 /* Stagger delays */
-.stagger-1 { animation-delay: 0.04s; }
-.stagger-2 { animation-delay: 0.08s; }
-.stagger-3 { animation-delay: 0.12s; }
-.stagger-4 { animation-delay: 0.16s; }
-.stagger-5 { animation-delay: 0.20s; }
-.stagger-6 { animation-delay: 0.24s; }
+.stagger-1 {
+  animation-delay: 0.04s;
+}
+
+.stagger-2 {
+  animation-delay: 0.08s;
+}
+
+.stagger-3 {
+  animation-delay: 0.12s;
+}
+
+.stagger-4 {
+  animation-delay: 0.16s;
+}
+
+.stagger-5 {
+  animation-delay: 0.20s;
+}
+
+.stagger-6 {
+  animation-delay: 0.24s;
+}
 
 /* ============================================
    REDUCED MOTION
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
+
+  *,
+  *::before,
+  *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -589,5 +660,7 @@ a {
    UTILITY KEYFRAMES
    ============================================ */
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }

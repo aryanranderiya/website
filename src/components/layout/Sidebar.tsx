@@ -9,6 +9,7 @@ import {
   Home12Icon, Folder03Icon, BrushIcon, QuillWrite01Icon,
   NoteIcon, Briefcase01Icon, Books02Icon, Film01Icon, CarouselHorizontalIcon,
   SparklesIcon, ColorsIcon, Clock01Icon, ShuffleIcon,
+  AiChat02Icon,
 } from '@icons';
 import type { ComponentType } from 'react';
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
@@ -25,18 +26,19 @@ const NAV_GROUPS: { label: string | null; items: { href: string; label: string; 
       { href: '/blog',          label: 'Blog',      icon: QuillWrite01Icon },
       { href: '/resume',        label: 'Resume',    icon: NoteIcon },
       { href: '/freelance',     label: 'Freelance', icon: Briefcase01Icon },
+      { href: '/agent-convos', label: 'Agent Logs', icon: AiChat02Icon },
       { href: '/now',           label: 'Now',       icon: Clock01Icon },
     ],
   },
-  {
-    label: 'Extra',
-    items: [
-      { href: '/tools',        label: 'Tools',   icon: SparklesIcon },
-      { href: '/books',        label: 'Books',   icon: Books02Icon },
-      { href: '/movies',       label: 'Movies',  icon: Film01Icon },
-      { href: '/camera-roll',  label: 'Gallery', icon: CarouselHorizontalIcon },
-    ],
-  },
+  // {
+  //   label: 'Extra',
+  //   items: [
+  //     { href: '/tools',        label: 'Tools',   icon: SparklesIcon },
+  //     { href: '/books',        label: 'Books',   icon: Books02Icon },
+  //     { href: '/movies',       label: 'Movies',  icon: Film01Icon },
+  //     { href: '/camera-roll',  label: 'Gallery', icon: CarouselHorizontalIcon },
+  //   ],
+  // },
 ];
 
 type Theme = 'light' | 'dark' | 'random';

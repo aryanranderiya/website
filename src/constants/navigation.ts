@@ -63,6 +63,12 @@ export const PAGES: NavPage[] = [
     icon: 'QuillWrite02Icon',
   },
   {
+    href: '/agent-convos',
+    label: 'Agent Logs',
+    description: 'Curated AI coding sessions — infrastructure, multi-agent, browser automation',
+    icon: 'AiChat02Icon',
+  },
+  {
     href: '/resume',
     label: 'Resume',
     description: 'My work experience and skills',

@@ -1,0 +1,44 @@
+---
+title: "A 13-Agent Swarm for Mobile UI Migration"
+description: "An orchestrator agent spawned 3 explorer agents and 10 worker agents -- each named after a scientist -- to execute a 9-task mobile HeroUI adoption plan with disjoint file ownership and TDD enforcement."
+date: 2026-03-11
+platform: codex
+model: gpt-5.4
+harness: "Codex CLI v0.114.0"
+category: multi-agent
+featured: true
+tokens: "63M"
+tokenCount: 63282197
+messageCount: 500
+duration: "~6 hours"
+filesChanged: 120
+linesChanged: "+8,000 / -3,200"
+agents: ["Euler (explorer)", "Halley (explorer)", "Tesla (explorer)", "Volta (worker)", "Beauvoir (worker)", "Chandrasekhar (worker)", "Archimedes (worker)", "Dalton (worker)", "Ohm (worker)", "Schrodinger (worker)", "Erdos (worker)", "Peirce (worker)", "Pauli (planner)", "Herschel (planner)"]
+agentCount: 14
+project: "GAIA"
+branch: "feat/mobile-web-streaming-parity"
+---
+
+The prompt was deliberately open-ended: "spawn subagents and complete the mobile HeroUI adoption plan." No further instructions. What followed was one of the most architecturally sophisticated multi-agent coding sessions I've run — sixty-three million tokens, fourteen named agents, six hours, and a complete mobile UI library migration that touched 120 files.
+
+## Phase one: understanding before building
+
+The orchestrator's first decision was to not start building. Instead, it read the 9-task migration plan from `docs/plans/mobile-heroui-adoption.md` and dispatched three explorer agents to understand the codebase before any worker touched a line of code.
+
+Euler took tasks one through four — package setup, UI primitives, auth flows, and settings screens — and returned a structured inventory: what components currently existed, their file paths, which HeroUI components would replace them, and which had no direct equivalent and would need custom wrappers. Halley took tasks five through seven, auditing integrations, notifications, and workflow screens specifically for conflict zones — files that multiple tasks would need to modify, which if touched simultaneously would produce merge conflicts. Tesla got the hardest slice: chat chrome, BottomSheet, and the provider wiring in `app/_layout.tsx`, which everything downstream depended on.
+
+Each explorer didn't just return a task checklist. They returned a dependency graph showing the order in which tasks needed to execute to avoid cascading failures, and explicit warnings about files that multiple workers should stay away from until their dependencies were resolved. This pre-work is what made the parallel execution safe.
+
+## Phase two: disjoint file ownership
+
+With the exploration reports in hand, the orchestrator spawned ten worker agents — each named after a scientist. The key design decision: each worker received an explicit, non-overlapping manifest of files they were allowed to modify. Volta owned `vitest.config.ts` and the `__tests__/` directory. Beauvoir owned `components/ui/` primitives. Chandrasekhar controlled `app/_layout.tsx` and the auth screens. Ohm handled the notifications panel. Schrodinger got the workflow builder components.
+
+This is essentially a runtime CODEOWNERS enforcement. Human teams solve this problem with code review gates; the orchestrator solved it by giving each agent a declared file manifest and instructing them to reject any change that fell outside their ownership boundary. Six agents ran concurrently at peak — the orchestrator maintained a hard cap to prevent context exhaustion — with workers rotating in as their predecessors completed.
+
+Every worker followed test-driven development without exception: write the failing test first, implement until it passes, then move on. This meant every one of the 120 changed files came with a passing test as proof of correctness.
+
+## The second pass
+
+After the initial ten workers completed, two more agents launched as coordinators. Erdos and Peirce ran the full test suite, audited for import cycles the workers might have introduced, and handled the cross-boundary issues that had been flagged during the main wave — places where Beauvoir's shared primitives needed a small adjustment to work correctly with Ohm's notification components. This second-pass pattern caught issues that pure parallelism misses: the interaction bugs between independently-correct modules.
+
+The final numbers: 63 million tokens, 120 files changed, 8,000 lines added, 3,200 removed. What made it work wasn't the scale — it was the orchestration design. Explorers building shared context first prevented workers from re-discovering the same information independently. Disjoint file ownership eliminated merge conflicts entirely. TDD per agent provided a correctness guarantee at the module level. The concurrency cap with rotation kept the system stable. These aren't novel ideas individually; applying them dynamically to a swarm of AI agents, emergently, from a single open-ended prompt, is.

@@ -1,0 +1,60 @@
+---
+title: "Streaming Architecture: An 18MB Debug Session"
+description: "When real-time message streaming broke after a deploy -- data visible in network tab but not rendering until page reload -- an 18MB session traced the issue through SSE, IndexedDB, Zustand state management, and React reconciliation."
+date: 2026-03-16
+platform: claude-code
+model: claude-opus-4-6
+harness: "Claude Code v2.1.75"
+category: debugging
+featured: false
+tokens: "~18MB session"
+messageCount: 450
+duration: "~5 hours"
+filesChanged: 22
+linesChanged: "+600 / -380"
+agents: ["Conductor Paris subagents"]
+agentCount: 3
+project: "GAIA"
+branch: "fix/streaming-architecture"
+---
+
+After a deploy, real-time chat streaming broke in a way that looked like a rendering bug but wasn't. First messages streamed perfectly. Any message after the first in a conversation would show up in the Network tab — SSE events arriving, payloads complete, nothing dropped — but the chat UI wouldn't update. Reload the page and all the messages appeared instantly. The data was there. The screen just wasn't showing it.
+
+## Ruling out the obvious layers
+
+The agent started by confirming what wasn't broken. Chrome DevTools showed SSE events arriving correctly, with complete message payloads including tool call results, content chunks, and metadata — the transport layer was healthy. Opening the browser's IndexedDB inspector confirmed messages were being written to persistent storage correctly and completely, which explained why page reload showed them — they were being persisted fine. That left the rendering pipeline: somewhere between "SSE event arrives" and "React re-renders the component," the update was being lost.
+
+The agent instrumented the Zustand store with a `subscribe()` call to log every state change. It also added a `useEffect` that logged whenever the messages array that the chat component received changed reference identity. This revealed the problem precisely: the store was updating (state changes were logged), but the messages array that the component was subscribed to was never changing reference.
+
+## The stale closure
+
+The SSE event handler was defined inside a `useEffect` in the chat component. At connection establishment time, the handler captured a reference to `messages` from the current Zustand state — an empty array when the conversation started. The handler was then registered as the SSE `onmessage` callback.
+
+When the first message arrived, the handler appended it to the captured empty array, called `setState`, and everything worked — the component received a new array reference and re-rendered. But Zustand's `setState` uses the value you pass it, not a merge with current state. After the first message, the store's `messages` array had one item. The handler still held a reference to the original empty array from closure time. When the second message arrived, the handler appended it to that stale empty array, called `setState` with a single-item array (the stale empty array plus the new message), and React compared the new array to the current array of two items — same length as the previous render, which was the first message being replaced, not accumulated. The IndexedDB write happened separately using `getState()` which always returns fresh state, which is why persistence worked even as rendering broke.
+
+## The fix
+
+The handler needed to stop relying on its captured closure value and instead always call `getState()` at the moment of update:
+
+```ts
+// Before: stale closure
+useEffect(() => {
+  const currentMessages = useStore.getState().messages;
+  sse.onmessage = (e) => {
+    const updated = [...currentMessages, parseChunk(e.data)];
+    useStore.setState({ messages: updated });
+  };
+}, []);
+
+// After: fresh state at call time
+useEffect(() => {
+  sse.onmessage = (e) => {
+    const current = useStore.getState().messages;
+    useStore.setState({ messages: [...current, parseChunk(e.data)] });
+  };
+}, []);
+```
+
+The agent also moved the IndexedDB writes out of the synchronous event handler into a debounced background task triggered by a Zustand subscription — they were happening on the main thread during the event handler and causing occasional frame drops during rapid streaming.
+
+Five lines changed. Four hundred fifty messages and eighteen megabytes of session data to find them. The bug was invisible because every individual layer was working correctly — SSE, IndexedDB, Zustand, React — and the failure only appeared at the intersection of Zustand's closure behavior and React's reference-equality reconciliation check.

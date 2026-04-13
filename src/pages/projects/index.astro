@@ -1,10 +1,15 @@
 ---
-import PageLayout from '@/layouts/PageLayout.astro';
-import ProjectsGrid from '@/components/projects/ProjectsGrid';
-import { getCollection } from 'astro:content';
+import PageLayout from "@/layouts/PageLayout.astro";
+import ProjectsGrid from "@/components/projects/ProjectsGrid";
+import { getCollection } from "astro:content";
 
-const projectEntries = await getCollection('projects');
-const FOLDER_PRIORITY: Record<string, number> = { Featured: 0, Client: 1, Hackathon: 2, Projects: 3 };
+const projectEntries = await getCollection("projects");
+const FOLDER_PRIORITY: Record<string, number> = {
+  Featured: 0,
+  Client: 1,
+  Hackathon: 2,
+  Projects: 3,
+};
 const projects = projectEntries
   .sort((a, b) => {
     const fa = FOLDER_PRIORITY[a.data.folder] ?? 9;
@@ -12,7 +17,7 @@ const projects = projectEntries
     if (fa !== fb) return fa - fb;
     return (a.data.order ?? 99) - (b.data.order ?? 99);
   })
-  .map(entry => ({
+  .map((entry) => ({
     slug: entry.slug,
     title: entry.data.title,
     description: entry.data.description,
@@ -35,11 +40,9 @@ const projects = projectEntries
 >
   <!-- Header -->
   <div class="mb-10">
-    <div class="section-header animate-fade-in stagger-1">Work</div>
     <h1 class="text-heading-1 mb-3 animate-fade-in stagger-2">Projects</h1>
     <p class="text-body animate-fade-in stagger-3">
-      A collection of things I have built, from AI-powered apps to mobile experiences.
-      Click any project to learn more.
+      A collection of things I have built!
     </p>
   </div>
 

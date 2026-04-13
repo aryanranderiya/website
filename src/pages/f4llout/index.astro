@@ -1,7 +1,10 @@
 ---
-import PageLayout from '@/layouts/PageLayout.astro';
+import PageLayout from "@/layouts/PageLayout.astro";
 
-const images = Array.from({ length: 9 }, (_, i) => `/media/fallout/${i + 1}.webp`);
+const images = Array.from(
+  { length: 9 },
+  (_, i) => `/media/fallout/${i + 1}.webp`,
+);
 ---
 
 <PageLayout
@@ -14,24 +17,27 @@ const images = Array.from({ length: 9 }, (_, i) => `/media/fallout/${i + 1}.webp
     <div class="section-header">Community</div>
     <h1 class="text-heading-1 mb-3">F4LLOUT Esports</h1>
     <p class="text-body max-w-[560px]">
-      Brand identity and graphic design work for F4LLOUT Esports. Created team banners, social headers,
-      apparel graphics, and promotional materials over the course of the organization's branding era.
+      Brand identity and graphic design work for F4LLOUT Esports. Created team
+      banners, social headers, apparel graphics, and promotional materials over
+      the course of the organization's branding era.
     </p>
-  </div>
 
-  <!-- Full-width image stack -->
-  <div class="fallout-gallery">
-    {images.map((src, i) => (
-      <div class="fallout-img-wrap">
-        <img
-          src={src}
-          alt={`F4LLOUT Esports — ${i + 1}`}
-          loading={i === 0 ? 'eager' : 'lazy'}
-          decoding="async"
-          class="fallout-img"
-        />
-      </div>
-    ))}
+    <!-- Full-width image stack -->
+    <div class="w-full mt-5">
+      {
+        images.map((src, i) => (
+          <div class="fallout-img-wrap">
+            <img
+              src={src}
+              alt={`F4LLOUT Esports — ${i + 1}`}
+              loading={i === 0 ? "eager" : "lazy"}
+              decoding="async"
+              class="fallout-img"
+            />
+          </div>
+        ))
+      }
+    </div>
   </div>
 </PageLayout>
 

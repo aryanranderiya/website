@@ -87,10 +87,42 @@ const now = defineCollection({
   }),
 });
 
+// Agent conversations — impressive agentic coding sessions
+const agentConvos = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.coerce.date(),
+    // Platform & tooling
+    platform: z.enum(['claude-code', 'opencode', 'codex']),
+    model: z.string(), // e.g. "claude-sonnet-4", "gpt-5.4", "gemini-2.5-pro"
+    harness: z.string(), // e.g. "Claude Code v1.0.12", "OpenCode v1.4.3", "Codex CLI v0.118.0"
+    // Classification
+    category: z.enum(['infrastructure', 'multi-agent', 'browser-automation', 'debugging', 'full-stack', 'autonomous', 'knowledge-engineering']),
+    featured: z.boolean().default(false),
+    // Session metrics
+    tokens: z.string().optional(), // human-readable e.g. "75M", "41.9M"
+    tokenCount: z.number().optional(), // raw number for sorting
+    messageCount: z.number().optional(),
+    duration: z.string().optional(), // e.g. "~4 hours", "overnight"
+    filesChanged: z.number().optional(),
+    linesChanged: z.string().optional(), // e.g. "+1,200 / -340"
+    // Multi-agent metadata
+    agents: z.array(z.string()).default([]),
+    agentCount: z.number().optional(),
+    // Context
+    project: z.string().optional(), // e.g. "GAIA", "Portfolio", "On-Call Assist"
+    repo: z.string().optional(), // github repo if public
+    branch: z.string().optional(),
+  }),
+});
+
 export const collections = {
   blog,
   projects,
   books,
   movies,
   now,
+  'agent-convos': agentConvos,
 };

@@ -1,0 +1,39 @@
+---
+title: "Building an Autonomous On-Call Agent with LangGraph and MCP"
+description: "Built an autonomous incident response system from scratch: Sentry webhooks trigger a LangGraph agent that investigates errors using Grafana, Prometheus, GitLab, and Sentry MCP servers, then posts structured analysis to Slack."
+date: 2026-03-19
+platform: claude-code
+model: claude-opus-4-6
+harness: "Claude Code v2.1.79"
+category: full-stack
+featured: true
+tokens: "~8MB across sessions"
+messageCount: 300
+duration: "~2 days (23 sessions)"
+filesChanged: 45
+linesChanged: "+4,200 / -800"
+agents: []
+agentCount: 0
+project: "On-Call Assist (Ignosis)"
+branch: "main"
+---
+
+Over two days and twenty-three sessions, a complete autonomous incident response system was built from a blank directory. No boilerplate, no starter template — just conversation. The system receives Sentry error webhooks, investigates them across five different observability tools via MCP, and posts structured incident analysis to Slack. Every layer — FastAPI backend, PostgreSQL storage, LangGraph agent graph, MCP server integrations, Slack bot — was designed, implemented, and tested in conversation with Claude Code.
+
+## What the system does
+
+When Sentry fires an error webhook, it hits a FastAPI endpoint that stores the incident in PostgreSQL and enqueues it for the LangGraph agent. The agent runs a directed investigation graph: it first groups the incoming errors by type and frequency to understand the blast radius, then queries Prometheus at the error timestamp to look for correlated metric anomalies — CPU spikes, memory pressure, latency increases. If something shows up in Prometheus, it pulls the relevant Grafana dashboard panels to get a visual confirmation. It then queries GitLab for commits and deployments in the twenty-minute window before the errors started. Finally, it searches DeepWiki — an internal runbook — for known patterns matching the error signature and any documented resolution steps from previous incidents.
+
+All of this gets synthesized into a single structured Slack message: the error summary, correlated metric charts linked directly to Grafana panels, the suspected root cause with confidence level, suggested resolution steps ranked by likelihood, and a severity assessment. On-call engineers get a fully-researched incident report instead of a raw stack trace.
+
+## How it was built, session by session
+
+The first session set up the project skeleton: FastAPI with `mise` for environment management, Docker Compose with PostgreSQL for incident storage and ChromaDB for embedding search, and the basic webhook receiver endpoint with input validation. The second session built the LangGraph agent itself — defining the graph nodes (receive → group → prometheus → grafana → gitlab → correlate → generate), the state schema that threads context between nodes, and the tool definitions for each MCP server.
+
+The third session was the most technically interesting: wiring DeepWiki as a runbook search tool. DeepWiki isn't an observability tool — it's a semantic search layer over internal documentation. The agent needed to translate error messages into natural-language queries, search for relevant runbook sections, and extract resolution steps from unstructured prose. The session worked through the query formulation strategy: use the error type and the service name as the primary search terms, then re-rank results by recency since older runbooks often describe outdated resolution steps.
+
+The fourth session built a simulation harness for testing the full pipeline locally: a script that generates realistic Sentry webhook payloads with randomized error types, timestamps, and stack traces, fires them at the local FastAPI server, waits for the LangGraph agent to complete its investigation, and renders the resulting Slack message in the terminal so the formatting could be verified before anything went near production.
+
+The twenty-three sessions after that handled progressively harder edge cases: what happens when Prometheus has no data for the timestamp (the agent falls back to a wider window), what happens when GitLab returns no relevant commits (the agent notes it and adjusts the confidence rating on the deploy hypothesis), how to handle Sentry rate-limiting the webhook endpoint during an error storm. The final system handles all of these gracefully.
+
+The meta-observation: this is an AI coding assistant building an autonomous AI agent. Claude Code architected the system, wrote the LangGraph graph definition, integrated five MCP servers, and tested the output — all through conversation. The thing it built then goes and autonomously investigates production incidents using those same kinds of tools. Two layers of AI, built in two days.

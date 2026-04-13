@@ -1,6 +1,6 @@
 ---
-import PageLayout from './PageLayout.astro';
-import { formatDate } from '@/lib/utils';
+import PageLayout from "./PageLayout.astro";
+import { formatDate } from "@/lib/utils";
 
 interface NowEntry {
   slug: string;
@@ -18,27 +18,38 @@ interface Props {
 const { date, location, entries, currentSlug } = Astro.props;
 ---
 
-<PageLayout title="Now" description="What I'm focused on right now." fullWidth={true}>
+<PageLayout
+  title="Now"
+  description="What I'm focused on right now."
+  fullWidth={true}
+>
   <div class="now-wrapper">
     <article class="now-content">
       <header class="now-header">
         <!-- Breadcrumb -->
-        <nav class="flex items-center gap-1.5 text-xs mb-8" style="color: var(--text-ghost);" aria-label="Breadcrumb">
-          <a href="/now" class="transition-colors hover:text-[var(--text-muted)]" style="color: var(--text-ghost);">Now</a>
+        <nav
+          class="flex items-center gap-1.5 text-xs mb-8"
+          style="color: var(--text-ghost);"
+          aria-label="Breadcrumb"
+        >
+          <a
+            href="/now"
+            class="transition-colors hover:text-[var(--text-muted)]"
+            style="color: var(--text-ghost);">Now</a
+          >
           <span>/</span>
           <span style="color: var(--text-muted);">{formatDate(date)}</span>
         </nav>
-        <div class="now-eyebrow">Now</div>
         <h1 class="text-heading-1">{formatDate(date)}</h1>
         {location && <p class="now-location">{location}</p>}
         <p class="now-meta">
-          This is a{' '}
+          This is a{" "}
           <a
             href="https://nownownow.com"
             target="_blank"
             rel="noopener noreferrer"
-            class="now-meta-link"
-          >/now page</a>{' '}
+            class="now-meta-link">/now page</a
+          >{" "}
           - what I'm focused on at this point in my life.
         </p>
       </header>
@@ -48,25 +59,30 @@ const { date, location, entries, currentSlug } = Astro.props;
       </div>
     </article>
 
-    {entries.length > 0 && (
-      <aside class="now-aside">
-        <nav>
-          <p class="aside-label">Past updates</p>
-          <ul>
-            {entries.map(entry => (
-              <li>
-                <a
-                  href={entry.isLatest ? '/now' : `/now/${entry.slug}`}
-                  class:list={['now-link', entry.slug === currentSlug && 'active']}
-                >
-                  {formatDate(entry.date)}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </aside>
-    )}
+    {
+      entries.length > 0 && (
+        <aside class="now-aside">
+          <nav>
+            <p class="aside-label">Past updates</p>
+            <ul>
+              {entries.map((entry) => (
+                <li>
+                  <a
+                    href={entry.isLatest ? "/now" : `/now/${entry.slug}`}
+                    class:list={[
+                      "now-link",
+                      entry.slug === currentSlug && "active",
+                    ]}
+                  >
+                    {formatDate(entry.date)}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+      )
+    }
   </div>
 </PageLayout>
 

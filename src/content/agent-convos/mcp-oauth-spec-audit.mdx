@@ -1,0 +1,38 @@
+---
+title: "MCP OAuth Spec Audit: 342 Messages of Protocol Compliance"
+description: "A 342-message marathon session that used Context7 to pull the live MCP specification, cross-referenced it against the existing implementation, discovered missing auth types, upstream library bugs, and produced a comprehensive improvement roadmap."
+date: 2026-01-15
+platform: opencode
+model: antigravity-claude-opus-4-5-thinking
+harness: "OpenCode v1.1.21"
+category: full-stack
+featured: false
+tokens: "4.9M"
+tokenCount: 4900000
+messageCount: 342
+duration: "~6 hours"
+filesChanged: 14
+linesChanged: "+4,876 / -52"
+agents: []
+agentCount: 0
+project: "GAIA"
+branch: "feat/mcp-oauth"
+---
+
+GAIA's MCP OAuth implementation had been built incrementally across many sessions — each session adding what was needed at the time. Six months in, no one had done a systematic pass to check how closely it tracked the actual specification. This session was that pass: 342 messages, six hours, Context7 pulling the live MCP spec, and a line-by-line comparison against the codebase.
+
+## Establishing the spec baseline
+
+The agent queried Context7 for the full MCP specification, specifically the sections covering OAuth 2.1 authorization flows, Bearer token handling, API key authentication, dynamic client registration, token refresh and revocation lifecycle, and error response format requirements. This wasn't documentation skimming — it pulled the full normative text for each section and used it as the reference. Then it went through the GAIA implementation service by service, mapping each spec requirement to a code path and classifying it: implemented correctly, partially implemented, missing entirely, or implemented with a bug.
+
+The audit matrix looked like this. OAuth 2.1 Authorization Code flow: implemented, but PKCE (Proof Key for Code Exchange) was missing — the code_challenge and code_verifier parameters weren't being generated or validated, making the flow vulnerable to authorization code interception. Bearer token forwarding: partially implemented — tokens were attached to the initial MCP connection correctly, but on reconnect after a network interruption, the reconnection logic wasn't re-attaching the Bearer token, leaving the reconnected session unauthenticated until the user explicitly re-authorized. API Key authentication: not implemented, but the MCP spec supports it as an alternative auth type alongside Bearer. Dynamic Client Registration: not implemented, which was acceptable for private MCP servers but would be a requirement for public ones. Token Refresh: implemented but had a race condition — if three tools all tried to refresh the same expired token simultaneously, all three refresh requests fired, and whichever completed second would try to revoke the token that the first had just issued. Token Revocation on disconnect: not implemented, leaving tokens alive indefinitely after session end. Error responses: partially correct but missing the `error_description` field in several error types the spec required it for. Scope validation: not implemented — the server was accepting any scope string the client sent without validating against the scopes the server had advertised.
+
+## Upstream library bugs
+
+While tracing the implementation, the agent found problems in the upstream `mcp-use` library that GAIA depended on. The library was accessing server tool lists via a deprecated `.tools` property that had been replaced with `.list_tools()` in a recent version — this was working only because of a compatibility shim that was scheduled for removal. Connection health checks were supposed to be called during the reconnection sequence but the reconnect handler wasn't invoking `health_check()`, so reconnected sessions could appear healthy while the underlying transport was silently broken. The library was also defaulting to the `stdio` transport rather than `streamable-http`, which the spec recommended as the primary transport for production use.
+
+## Fixes and what was deferred
+
+The agent fixed fourteen files in one session. PKCE: generated code_verifier as a cryptographically random 43-character string, derived code_challenge via SHA-256 hash, and added the parameters to both the authorization request and the token exchange. Bearer token reconnect: stored the current token in the connection state and re-attached it in the reconnect handler. Token refresh race condition: wrapped the refresh operation in an asyncio `Lock` per-token so only one refresh could run at a time for a given token; subsequent refresh attempts waited for the lock and then used the fresh token rather than issuing redundant requests. Token revocation: added a `disconnect()` handler that called the revocation endpoint before tearing down the session. Error responses: added `error_description` to all error types that had been returning only `error`. Scope validation: fetched the server's advertised scopes during discovery and validated client-requested scopes against that list before proceeding. Upstream library: updated all `.tools` references to `.list_tools()`, added the `health_check()` call to the reconnect handler, and switched the default transport to `streamable-http`.
+
+Three features were scoped to a follow-up PR rather than added in-session: Dynamic Client Registration (correct but large enough to deserve its own review), sampling and elicitation support for unused MCP capabilities, and resource subscription for server-push data models. The session produced a prioritized roadmap for these with spec references and estimated implementation complexity for each.

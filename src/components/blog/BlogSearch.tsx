@@ -55,12 +55,16 @@ export default function BlogSearch({ posts }: { posts: Post[] }) {
       animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
       transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const }}
     >
+
+
+
       {/* Header row: title left, search right */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 600, letterSpacing: '-0.02em', color: 'var(--text-primary)', lineHeight: 1.2 }}>
-            Blog
-          </h1>
+          <h1 className="text-heading-1 mb-3 animate-fade-in stagger-2">Blog</h1>
+          <p className="text-body animate-fade-in stagger-3">
+            I don't really write often, but when I do you can read them here
+          </p>
         </div>
 
         {/* Pill search — matches ProjectsGrid style */}

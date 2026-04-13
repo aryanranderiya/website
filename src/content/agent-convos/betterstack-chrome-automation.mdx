@@ -1,0 +1,29 @@
+---
+title: "Automating BetterStack Cleanup via Chrome DevTools"
+description: "Instead of manually clicking through dozens of incident reports, an AI agent used Chrome DevTools MCP to programmatically navigate BetterStack's UI, click context menus, and bulk-delete status reports and incidents."
+date: 2026-04-08
+platform: claude-code
+model: claude-opus-4-6
+harness: "Claude Code v2.1.94"
+category: browser-automation
+featured: false
+tokens: "~5.8MB session"
+messageCount: 180
+duration: "~45 minutes"
+filesChanged: 0
+linesChanged: "0 (pure browser automation)"
+agents: []
+agentCount: 0
+project: "GAIA"
+branch: "fix/streaming-race-condition"
+---
+
+I had accumulated dozens of stale "API Down" status reports in BetterStack — artifacts from earlier in the project when monitoring thresholds were misconfigured and the system was generating false alarms. Deleting them manually means opening each report, clicking a three-dot menu, clicking Delete, and confirming a dialog. Thirty times. I asked the agent to handle it instead.
+
+The agent navigated to the BetterStack status reports page via Chrome DevTools MCP and immediately started inspecting the DOM structure before attempting any automation. It ran `document.querySelectorAll('[data-testid="report-row"]')` to understand how many rows existed and what the DOM shape looked like, then located the three-dot overflow menu button within each row. BetterStack doesn't expose these buttons until you hover the row — the agent handled this by dispatching a `mouseover` event on each row before attempting to click the menu.
+
+The automation sequence for each report: dispatch `mouseover` on the row element to reveal the overflow button, call `Runtime.evaluate` to click the button, wait for the dropdown menu to appear by polling `document.querySelector('[role="menu"]')`, click the "Delete" option within the menu, wait for a confirmation dialog to appear, click the confirm button, then wait for the row to be removed from the DOM before advancing to the next one. This last step — waiting for DOM removal — was important because BetterStack animates the row out before fetching the next page, and clicking too early would target a row that was mid-animation and miss it.
+
+After clearing all thirty reports from the status reports page, the agent navigated to the incidents page. Different page, different DOM structure — the overflow menus used a different CSS class, the confirmation dialog had a different button label ("Remove" instead of "Delete"), and the row selector was different. The agent inspected the new structure and adapted the same automation pattern without needing new instructions.
+
+BetterStack's API doesn't expose bulk delete for status reports. It's a SaaS product where the only supported deletion path is the UI. This session is a clean example of what Chrome DevTools MCP enables as a general-purpose SaaS automation layer: any web application can be automated this way, regardless of whether an API exists, by inspecting the DOM and driving interactions through Chrome DevTools Protocol. The agent finished the entire cleanup — thirty reports, one incidents page — in under a minute.
