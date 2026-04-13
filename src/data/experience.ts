@@ -97,6 +97,8 @@ export const experience: Experience[] = [
     website: '/f4llout',
     skills: ['Team Management', 'Brand Design', 'Photoshop', 'Illustrator', 'Content Strategy'],
     featured: false,
+    logo: '/icons/favicons/f4llout.png',
+
   },
   {
     company: 'Rezrek',
@@ -110,7 +112,6 @@ export const experience: Experience[] = [
       'End-to-end development of content e-commerce platform',
       'React, Node.js, Redis stack',
     ],
-    logo: '/ProjectMedia/Rezrek/rezrek_logo.jpg',
     website: 'https://rezrek.vercel.app',
     skills: ['React', 'Node.js', 'Redis', 'MongoDB'],
     featured: false,

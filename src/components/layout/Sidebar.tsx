@@ -1,20 +1,28 @@
 'use client';
 
+import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- icons used in JSX
-import {
-  HugeiconsIcon,
-  Sun01Icon, Moon02Icon, Cancel01Icon, SidebarRightIcon,
-  Home12Icon, Folder03Icon, BrushIcon, QuillWrite01Icon,
-  NoteIcon, Briefcase01Icon, Books02Icon, Film01Icon, CarouselHorizontalIcon,
-  SparklesIcon, ColorsIcon, Clock01Icon, ShuffleIcon,
-  AiChat02Icon,
-} from '@icons';
-import type { ComponentType } from 'react';
-import type { IconProps } from '@theexperiencecompany/gaia-icons';
-import { PAGES } from '@/constants/navigation';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
+import {
+    Briefcase01Icon,
+    BrushIcon,
+    Cancel01Icon,
+    Clock01Icon,
+    ColorsIcon,
+    Folder03Icon,
+    Home12Icon,
+    HugeiconsIcon,
+    Moon02Icon,
+    NoteIcon,
+    QuillWrite01Icon,
+    RoboticIcon,
+    ShuffleIcon,
+    SidebarRightIcon,
+    Sun01Icon
+} from '@icons';
+import type { IconProps } from '@theexperiencecompany/gaia-icons';
+import type { ComponentType } from 'react';
 
 const NAV_GROUPS: { label: string | null; items: { href: string; label: string; icon: ComponentType<IconProps> }[] }[] = [
   {
@@ -26,7 +34,7 @@ const NAV_GROUPS: { label: string | null; items: { href: string; label: string; 
       { href: '/blog',          label: 'Blog',      icon: QuillWrite01Icon },
       { href: '/resume',        label: 'Resume',    icon: NoteIcon },
       { href: '/freelance',     label: 'Freelance', icon: Briefcase01Icon },
-      { href: '/agent-convos', label: 'Agent Logs', icon: AiChat02Icon },
+      { href: '/agent-convos', label: 'Agent Convos', icon: RoboticIcon },
       { href: '/now',           label: 'Now',       icon: Clock01Icon },
     ],
   },
@@ -221,12 +229,8 @@ export default function Sidebar() {
     fontSize: secondary ? '11px' : '12px',
     fontVariationSettings: isActive(href) ? '"wght" 580' : '"wght" 450',
     color: isActive(href)
-      ? isDark ? 'rgba(255,255,255,0.88)' : 'rgba(0,0,0,0.85)'
-      : secondary
-        ? isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)'
-        : anyActive
-          ? isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)'
-          : isDark ? 'rgba(255,255,255,0.55)' : 'rgba(0,0,0,0.55)',
+      ? isDark ? 'rgba(255,255,255)' : 'rgba(0,0,0)'
+      : isDark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.3)',
     textDecoration: 'none',
     display: 'block',
     padding: '2px 0',

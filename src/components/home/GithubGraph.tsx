@@ -207,7 +207,7 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 
   return (
     <section style={{ paddingBottom: 48 }}>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-4 mt-20">
         <div className="section-header" style={{ marginBottom: 0 }}>GitHub Contributions</div>
         {!isLoading && (
           <div className="text-right">

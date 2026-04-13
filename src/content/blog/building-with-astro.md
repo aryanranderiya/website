@@ -5,7 +5,7 @@ date: 2024-11-15
 tags: [astro, web, performance]
 category: engineering
 featured: true
-cover: https://images.unsplash.com/photo-1555066931-4365d14431b9?w=1200&h=630&fit=crop
+cover: https://heygaia.io/og-image.webp
 ---
 
 Astro's island architecture is genuinely one of the best ideas in frontend development. You get the DX of React but ship HTML. Here's what I've learned building with it.
