@@ -1,83 +1,90 @@
 ---
-import Giscus from '@/components/blog/Giscus.astro';
-import TableOfContents from '@/components/blog/TableOfContents.astro';
-import { SITE } from '@/constants/site';
-import { formatDate } from '@/lib/utils';
-import { Calendar01Icon, Clock01Icon, PencilEdit01Icon, Tag01Icon } from '@/components/icons';
-import PageLayout from './PageLayout.astro';
+import Giscus from "@/components/blog/Giscus.astro";
+import TableOfContents from "@/components/blog/TableOfContents.astro";
+import { SITE } from "@/constants/site";
+import { formatDate } from "@/lib/utils";
+import {
+  Calendar01Icon,
+  Clock01Icon,
+  PencilEdit01Icon,
+  Tag01Icon,
+} from "@/components/icons";
+import PageLayout from "./PageLayout.astro";
 
 interface Heading {
-	depth: number;
-	slug: string;
-	text: string;
+  depth: number;
+  slug: string;
+  text: string;
 }
 
 interface Props {
-	title: string;
-	description: string;
-	date: Date;
-	updated?: Date;
-	tags?: string[];
-	category?: string;
-	cover?: string;
-	headings?: Heading[];
-	readingTime?: number;
+  title: string;
+  description: string;
+  date: Date;
+  updated?: Date;
+  tags?: string[];
+  category?: string;
+  cover?: string;
+  headings?: Heading[];
+  readingTime?: number;
 }
 
 const {
-	title,
-	description,
-	date,
-	updated,
-	tags = [],
-	category,
-	cover,
-	headings = [],
-	readingTime,
+  title,
+  description,
+  date,
+  updated,
+  tags = [],
+  category,
+  cover,
+  headings = [],
+  readingTime,
 } = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 const canonicalURL = new URL(Astro.url.pathname, SITE.url).toString();
 const articleJsonLd = JSON.stringify({
-	'@context': 'https://schema.org',
-	'@type': 'Article',
-	headline: title,
-	description: description,
-	datePublished: date.toISOString(),
-	...(updated ? { dateModified: updated.toISOString() } : {}),
-	author: {
-		'@type': 'Person',
-		name: SITE.name,
-		url: SITE.url,
-	},
-	publisher: {
-		'@type': 'Person',
-		name: SITE.name,
-		url: SITE.url,
-	},
-	...(cover
-		? {
-				image: cover.startsWith('http') ? cover : new URL(cover, SITE.url).toString(),
-			}
-		: {}),
-	url: canonicalURL,
-	inLanguage: 'en-US',
-	isPartOf: { '@type': 'Blog', url: `${SITE.url}/blog` },
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: title,
+  description: description,
+  datePublished: date.toISOString(),
+  ...(updated ? { dateModified: updated.toISOString() } : {}),
+  author: {
+    "@type": "Person",
+    name: SITE.name,
+    url: SITE.url,
+  },
+  publisher: {
+    "@type": "Person",
+    name: SITE.name,
+    url: SITE.url,
+  },
+  ...(cover
+    ? {
+        image: cover.startsWith("http")
+          ? cover
+          : new URL(cover, SITE.url).toString(),
+      }
+    : {}),
+  url: canonicalURL,
+  inLanguage: "en-US",
+  isPartOf: { "@type": "Blog", url: `${SITE.url}/blog` },
 });
 
 const breadcrumbJsonLd = JSON.stringify({
-	'@context': 'https://schema.org',
-	'@type': 'BreadcrumbList',
-	itemListElement: [
-		{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
-		{
-			'@type': 'ListItem',
-			position: 2,
-			name: 'Blog',
-			item: `${SITE.url}/blog`,
-		},
-		{ '@type': 'ListItem', position: 3, name: title, item: canonicalURL },
-	],
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Blog",
+      item: `${SITE.url}/blog`,
+    },
+    { "@type": "ListItem", position: 3, name: title, item: canonicalURL },
+  ],
 });
 ---
 
@@ -94,35 +101,47 @@ const breadcrumbJsonLd = JSON.stringify({
   <script is:inline type="application/ld+json" set:html={articleJsonLd} />
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
 
-  <div class="flex ml-[max(0px,calc((100%-var(--prose-max-width))/2))] px-[var(--page-inset)] gap-14 items-start">
+  <div
+    class="flex ml-[max(0px,calc((100%-var(--prose-max-width))/2))] px-[var(--page-inset)] gap-14 items-start"
+  >
     <article class="flex-1 min-w-0 max-w-[var(--prose-max-width)] pb-16">
-
       <!-- Breadcrumb -->
-      <nav class="flex items-center gap-1.5 text-xs mb-8 text-[var(--text-ghost)]" aria-label="Breadcrumb">
-        <a href="/blog" class="text-[var(--text-ghost)] transition-colors hover:text-[var(--text-muted)]">Blog</a>
+      <nav
+        class="flex items-center gap-1.5 text-xs mb-8 text-[var(--text-ghost)]"
+        aria-label="Breadcrumb"
+      >
+        <a
+          href="/blog"
+          class="text-[var(--text-ghost)] transition-colors hover:text-[var(--text-muted)]"
+          >Blog</a
+        >
         <span>/</span>
         <span class="truncate text-[var(--text-muted)]">{title}</span>
       </nav>
 
-      {cover && (
-        <img
-          src={cover}
-          alt={title}
-          class="w-full aspect-video object-cover rounded-xl mb-10"
-        />
-      )}
+      {
+        cover && (
+          <img
+            src={cover}
+            alt={title}
+            class="w-full object-contain rounded-xl mb-10"
+          />
+        )
+      }
 
       <!-- Header -->
       <header class="mb-12">
         <h1 class="text-heading-1 mb-4">{title}</h1>
         <p class="text-body mb-5 text-[var(--text-muted)]">{description}</p>
         <div class="flex flex-wrap items-center gap-1.5">
-          {category && (
-            <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
-              <Tag01Icon width={11} height={11} />
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </span>
-          )}
+          {
+            category && (
+              <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
+                <Tag01Icon width={11} height={11} />
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </span>
+            )
+          }
           <time
             datetime={date.toISOString()}
             class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none"
@@ -130,28 +149,37 @@ const breadcrumbJsonLd = JSON.stringify({
             <Calendar01Icon width={11} height={11} />
             {formatDate(date)}
           </time>
-          {readingTime && (
-            <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
-              <Clock01Icon width={11} height={11} />
-              {readingTime} min read
-            </span>
-          )}
-          {updated && (
-            <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
-              <PencilEdit01Icon width={11} height={11} />
-              Updated {formatDate(updated)}
-            </span>
-          )}
-        </div>
-        {tags.length > 0 && (
-          <div class="flex flex-wrap gap-1.5 mt-3">
-            {tags.map(tag => (
-              <span class="text-xs px-2.5 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)]">
-                {tag.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+          {
+            readingTime && (
+              <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
+                <Clock01Icon width={11} height={11} />
+                {readingTime} min read
               </span>
-            ))}
-          </div>
-        )}
+            )
+          }
+          {
+            updated && (
+              <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
+                <PencilEdit01Icon width={11} height={11} />
+                Updated {formatDate(updated)}
+              </span>
+            )
+          }
+        </div>
+        {
+          tags.length > 0 && (
+            <div class="flex flex-wrap gap-1.5 mt-3">
+              {tags.map((tag) => (
+                <span class="text-xs px-2.5 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)]">
+                  {tag
+                    .split(" ")
+                    .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
+                    .join(" ")}
+                </span>
+              ))}
+            </div>
+          )
+        }
       </header>
 
       <!-- Content -->
@@ -162,10 +190,12 @@ const breadcrumbJsonLd = JSON.stringify({
       <Giscus />
     </article>
 
-    {tocHeadings.length > 1 && (
-      <aside class="hidden min-[1080px]:block w-56 shrink-0 sticky top-[calc(var(--section-padding-top)+24px)]">
-        <TableOfContents headings={headings} />
-      </aside>
-    )}
+    {
+      tocHeadings.length > 1 && (
+        <aside class="hidden min-[1080px]:block w-56 shrink-0 sticky top-[calc(var(--section-padding-top)+24px)]">
+          <TableOfContents headings={headings} />
+        </aside>
+      )
+    }
   </div>
 </PageLayout>

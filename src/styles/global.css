@@ -57,6 +57,7 @@
   --nav-text: rgba(0, 0, 0, 0.28);
   --nav-text-hover: rgba(0, 0, 0, 0.48);
   --nav-text-active: rgba(0, 0, 0, 0.64);
+  --nav-text-dim-hover: rgba(0, 0, 0, 0.85);
 
   /* Borders — opacity based */
   --border: rgba(0, 0, 0, 0.08);
@@ -170,6 +171,7 @@
   --nav-text: rgba(255, 255, 255, 0.28);
   --nav-text-hover: rgba(255, 255, 255, 0.48);
   --nav-text-active: rgba(255, 255, 255, 0.64);
+  --nav-text-dim-hover: rgba(255, 255, 255, 0.92);
 
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.14);
@@ -686,6 +688,14 @@ a {
 .nav-link--active {
   color: var(--nav-text-active);
   font-variation-settings: "wght" 560;
+}
+
+.nav-link--dim {
+  color: var(--nav-text-active);
+}
+
+.nav-link--dim:hover {
+  color: var(--nav-text-dim-hover);
 }
 
 /* ============================================

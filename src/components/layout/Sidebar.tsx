@@ -428,7 +428,7 @@ export default function Sidebar() {
 								type="button"
 								ref={shuffleBtnRef}
 								onClick={handleThemeButtonClick}
-								className="nav-link flex items-center gap-1.5 py-[2px] bg-transparent border-0 cursor-pointer text-[12px]"
+								className="nav-link nav-link--dim flex items-center gap-1.5 py-[2px] bg-transparent border-0 cursor-pointer text-[12px]"
 								onMouseEnter={() => setHoveredAction('theme')}
 								onMouseLeave={() => setHoveredAction(null)}
 								aria-label="Cycle theme"
