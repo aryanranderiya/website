@@ -1,0 +1,272 @@
+diff a/src/components/books/BookDetail.tsx b/src/components/books/BookDetail.tsx	(rejected hunks)
+@@ -3 +3 @@
+-import { motion, AnimatePresence } from 'motion/react';
++import { Cancel01Icon, HugeiconsIcon } from '@icons';
+@@ -5 +5 @@ import * as Dialog from '@radix-ui/react-dialog';
+-import { HugeiconsIcon, Cancel01Icon } from '@icons';
++import { AnimatePresence, motion } from 'motion/react';
+@@ -8,11 +8,11 @@ interface Book {
+-  slug: string;
+-  title: string;
+-  author: string;
+-  cover?: string;
+-  status: string;
+-  rating?: number;
+-  review?: string;
+-  genre: string[];
+-  year?: number;
+-  pages?: number;
+-  dateRead?: string;
++	slug: string;
++	title: string;
++	author: string;
++	cover?: string;
++	status: string;
++	rating?: number;
++	review?: string;
++	genre: string[];
++	year?: number;
++	pages?: number;
++	dateRead?: string;
+@@ -22,12 +22,13 @@ function Stars({ rating, max = 5 }: { rating: number; max?: number }) {
+-  return (
+-    <div className="flex gap-0.5">
+-      {Array.from({ length: max }).map((_, i) => (
+-        <span
+-          key={i}
+-          className={`text-[16px] ${i < rating ? 'text-[#00bbff]' : 'text-[var(--muted-foreground)]'}`}
+-        >
+-          {i < rating ? '★' : '☆'}
+-        </span>
+-      ))}
+-    </div>
+-  );
++	return (
++		<div className="flex gap-0.5">
++			{Array.from({ length: max }).map((_, i) => (
++				<span
++					// biome-ignore lint/suspicious/noArrayIndexKey: static decorative stars, order never changes
++					key={i}
++					className={`text-[16px] ${i < rating ? 'text-[#00bbff]' : 'text-[var(--muted-foreground)]'}`}
++				>
++					{i < rating ? '★' : '☆'}
++				</span>
++			))}
++		</div>
++	);
+@@ -36,2 +37,10 @@ function Stars({ rating, max = 5 }: { rating: number; max?: number }) {
+-export default function BookDetail({ book, open, onClose }: { book: Book | null; open: boolean; onClose: () => void }) {
+-  if (!book) return null;
++export default function BookDetail({
++	book,
++	open,
++	onClose,
++}: {
++	book: Book | null;
++	open: boolean;
++	onClose: () => void;
++}) {
++	if (!book) return null;
+@@ -39,5 +48,10 @@ export default function BookDetail({ book, open, onClose }: { book: Book | null;
+-  const statusColors: Record<string, { bg: string; text: string; label: string }> = {
+-    read: { bg: 'rgba(34,197,94,0.1)', text: '#16a34a', label: 'Read' },
+-    reading: { bg: 'rgba(0,187,255,0.1)', text: '#00bbff', label: 'Reading' },
+-    'to-read': { bg: 'rgba(161,161,170,0.1)', text: 'var(--muted-foreground)', label: 'Want to Read' },
+-  };
++	const statusLabels: Record<string, string> = {
++		read: 'Read',
++		reading: 'Reading',
++		'to-read': 'Want to Read',
++	};
++	const statusClasses: Record<string, string> = {
++		read: 'bg-[rgba(34,197,94,0.1)] text-[#16a34a]',
++		reading: 'bg-[rgba(0,187,255,0.1)] text-[#00bbff]',
++		'to-read': 'bg-[rgba(161,161,170,0.1)] text-[var(--muted-foreground)]',
++	};
+@@ -45 +59,2 @@ export default function BookDetail({ book, open, onClose }: { book: Book | null;
+-  const statusStyle = statusColors[book.status] ?? statusColors['to-read'];
++	const statusLabel = statusLabels[book.status] ?? statusLabels['to-read'];
++	const statusClass = statusClasses[book.status] ?? statusClasses['to-read'];
+@@ -47,29 +62,32 @@ export default function BookDetail({ book, open, onClose }: { book: Book | null;
+-  return (
+-    <Dialog.Root open={open} onOpenChange={v => !v && onClose()}>
+-      <AnimatePresence>
+-        {open && (
+-          <Dialog.Portal forceMount>
+-            <Dialog.Overlay asChild>
+-              <motion.div
+-                className="fixed inset-0 z-50 bg-black/60 backdrop-blur-[6px]"
+-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+-                transition={{ duration: 0.2 }}
+-              />
+-            </Dialog.Overlay>
+-            <Dialog.Content asChild>
+-              <motion.div
+-                className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl overflow-hidden bg-[var(--card)]"
+-                initial={{ opacity: 0, scale: 0.95, y: 12 }}
+-                animate={{ opacity: 1, scale: 1, y: 0 }}
+-                exit={{ opacity: 0, scale: 0.95, y: 12 }}
+-                transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+-              >
+-                <Dialog.Title className="sr-only">{book.title}</Dialog.Title>
+-                <Dialog.Close asChild>
+-                  <button
+-                    className="absolute top-4 right-4 z-10 w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--muted)] text-[var(--muted-foreground)] cursor-pointer"
+-                    aria-label="Close"
+-                  >
+-                    <HugeiconsIcon icon={Cancel01Icon} size={14} color="currentColor" />
+-                  </button>
+-                </Dialog.Close>
++	return (
++		<Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
++			<AnimatePresence>
++				{open && (
++					<Dialog.Portal forceMount>
++						<Dialog.Overlay asChild>
++							<motion.div
++								className="fixed inset-0 z-50 bg-black/60 backdrop-blur-[6px]"
++								initial={{ opacity: 0 }}
++								animate={{ opacity: 1 }}
++								exit={{ opacity: 0 }}
++								transition={{ duration: 0.2 }}
++							/>
++						</Dialog.Overlay>
++						<Dialog.Content asChild>
++							<motion.div
++								className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl overflow-hidden bg-[var(--card)]"
++								initial={{ opacity: 0, scale: 0.95, y: 12 }}
++								animate={{ opacity: 1, scale: 1, y: 0 }}
++								exit={{ opacity: 0, scale: 0.95, y: 12 }}
++								transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
++							>
++								<Dialog.Title className="sr-only">{book.title}</Dialog.Title>
++								<Dialog.Close asChild>
++									<button
++										type="button"
++										className="absolute top-4 right-4 z-10 w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--muted)] text-[var(--muted-foreground)] cursor-pointer"
++										aria-label="Close"
++									>
++										<HugeiconsIcon icon={Cancel01Icon} size={14} color="currentColor" />
++									</button>
++								</Dialog.Close>
+@@ -77,19 +95,24 @@ export default function BookDetail({ book, open, onClose }: { book: Book | null;
+-                <div className="p-6">
+-                  <div className="flex gap-4 mb-5">
+-                    {/* Book mini cover */}
+-                    <div className="w-16 h-24 rounded-lg overflow-hidden shrink-0 bg-[var(--muted)]">
+-                      {book.cover && <img src={book.cover} alt={book.title} className="w-full h-full object-cover" />}
+-                    </div>
+-                    <div className="flex-1 min-w-0">
+-                      <h2 className="text-lg font-bold mb-1 tracking-[-0.02em] text-[var(--foreground)] m-0">
+-                        {book.title}
+-                      </h2>
+-                      <div className="text-sm mb-2 text-[var(--muted-foreground)]">{book.author}</div>
+-                      <span
+-                        className="text-xs px-2 py-0.5 rounded-full"
+-                        style={{ background: statusStyle.bg, color: statusStyle.text }}
+-                      >
+-                        {statusStyle.label}
+-                      </span>
+-                    </div>
+-                  </div>
++								<div className="p-6">
++									<div className="flex gap-4 mb-5">
++										{/* Book mini cover */}
++										<div className="w-16 h-24 rounded-lg overflow-hidden shrink-0 bg-[var(--muted)]">
++											{book.cover && (
++												<img
++													src={book.cover}
++													alt={book.title}
++													className="w-full h-full object-cover"
++												/>
++											)}
++										</div>
++										<div className="flex-1 min-w-0">
++											<h2 className="text-lg font-bold mb-1 tracking-[-0.02em] text-[var(--foreground)] m-0">
++												{book.title}
++											</h2>
++											<div className="text-sm mb-2 text-[var(--muted-foreground)]">
++												{book.author}
++											</div>
++											<span className={`text-xs px-2 py-0.5 rounded-full ${statusClass}`}>
++												{statusLabel}
++											</span>
++										</div>
++									</div>
+@@ -97,5 +120,5 @@ export default function BookDetail({ book, open, onClose }: { book: Book | null;
+-                  {book.rating && (
+-                    <div className="mb-4">
+-                      <Stars rating={book.rating} />
+-                    </div>
+-                  )}
++									{book.rating && (
++										<div className="mb-4">
++											<Stars rating={book.rating} />
++										</div>
++									)}
+@@ -103,5 +126,5 @@ export default function BookDetail({ book, open, onClose }: { book: Book | null;
+-                  <div className="flex gap-4 mb-4 text-xs text-[var(--muted-foreground)]">
+-                    {book.year && <span>{book.year}</span>}
+-                    {book.pages && <span>{book.pages} pages</span>}
+-                    {book.dateRead && <span>Read {new Date(book.dateRead).getFullYear()}</span>}
+-                  </div>
++									<div className="flex gap-4 mb-4 text-xs text-[var(--muted-foreground)]">
++										{book.year && <span>{book.year}</span>}
++										{book.pages && <span>{book.pages} pages</span>}
++										{book.dateRead && <span>Read {new Date(book.dateRead).getFullYear()}</span>}
++									</div>
+@@ -109,9 +132,12 @@ export default function BookDetail({ book, open, onClose }: { book: Book | null;
+-                  {book.genre.length > 0 && (
+-                    <div className="flex flex-wrap gap-1.5 mb-4">
+-                      {book.genre.map(g => (
+-                        <span key={g} className="text-xs px-2 py-0.5 rounded-full capitalize text-[var(--muted-foreground)] bg-[var(--muted-bg)]">
+-                          {g}
+-                        </span>
+-                      ))}
+-                    </div>
+-                  )}
++									{book.genre.length > 0 && (
++										<div className="flex flex-wrap gap-1.5 mb-4">
++											{book.genre.map((g) => (
++												<span
++													key={g}
++													className="text-xs px-2 py-0.5 rounded-full capitalize text-[var(--muted-foreground)] bg-[var(--muted-bg)]"
++												>
++													{g}
++												</span>
++											))}
++										</div>
++									)}
+@@ -119,14 +145,18 @@ export default function BookDetail({ book, open, onClose }: { book: Book | null;
+-                  {book.review && (
+-                    <div className="p-3 rounded-xl bg-[var(--muted)]">
+-                      <div className="text-xs font-semibold uppercase tracking-widest mb-2 text-[var(--muted-foreground)]">My thoughts</div>
+-                      <p className="text-sm leading-relaxed text-[var(--foreground)] m-0">{book.review}</p>
+-                    </div>
+-                  )}
+-                </div>
+-              </motion.div>
+-            </Dialog.Content>
+-          </Dialog.Portal>
+-        )}
+-      </AnimatePresence>
+-    </Dialog.Root>
+-  );
++									{book.review && (
++										<div className="p-3 rounded-xl bg-[var(--muted)]">
++											<div className="text-xs font-semibold uppercase tracking-widest mb-2 text-[var(--muted-foreground)]">
++												My thoughts
++											</div>
++											<p className="text-sm leading-relaxed text-[var(--foreground)] m-0">
++												{book.review}
++											</p>
++										</div>
++									)}
++								</div>
++							</motion.div>
++						</Dialog.Content>
++					</Dialog.Portal>
++				)}
++			</AnimatePresence>
++		</Dialog.Root>
++	);

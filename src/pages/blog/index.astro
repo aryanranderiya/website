@@ -1,20 +1,20 @@
 ---
-import PageLayout from "@/layouts/PageLayout.astro";
-import BlogSearch from "@/components/blog/BlogSearch";
-import { getCollection } from "astro:content";
+import { getCollection } from 'astro:content';
+import BlogSearch from '@/components/blog/BlogSearch';
+import PageLayout from '@/layouts/PageLayout.astro';
 
-const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const posts = allPosts
-  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .map((p) => ({
-    slug: p.slug,
-    title: p.data.title,
-    date: p.data.date.toISOString(),
-    description: p.data.description,
-    tags: p.data.tags,
-    category: p.data.category,
-    featured: p.data.featured ?? false,
-  }));
+	.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+	.map((p) => ({
+		slug: p.slug,
+		title: p.data.title,
+		date: p.data.date.toISOString(),
+		description: p.data.description,
+		tags: p.data.tags,
+		category: p.data.category,
+		featured: p.data.featured ?? false,
+	}));
 ---
 
 <PageLayout

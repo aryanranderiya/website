@@ -1,0 +1,13 @@
+diff a/src/components/blog/RelatedPosts.astro b/src/components/blog/RelatedPosts.astro	(rejected hunks)
+@@ -3,4 +3,4 @@ interface RelatedPost {
+-  slug: string;
+-  title: string;
+-  description: string;
+-  tags: string[];
++	slug: string;
++	title: string;
++	description: string;
++	tags: string[];
+@@ -10 +10 @@ interface Props {
+-  posts: RelatedPost[];
++	posts: RelatedPost[];

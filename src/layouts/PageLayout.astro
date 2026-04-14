@@ -1,21 +1,27 @@
 ---
-import Layout from './Layout.astro';
-import Sidebar from '@/components/layout/Sidebar';
 import Footer from '@/components/layout/Footer.astro';
+import Sidebar from '@/components/layout/Sidebar';
+import Layout from './Layout.astro';
 
 interface Props {
-  title?: string;
-  description?: string;
-  ogImage?: string;
-  ogType?: 'website' | 'article';
-  canonical?: string;
-  noindex?: boolean;
-  fullWidth?: boolean;
-  articleDate?: Date;
-  articleModified?: Date;
+	title?: string;
+	description?: string;
+	ogImage?: string;
+	ogType?: 'website' | 'article';
+	canonical?: string;
+	noindex?: boolean;
+	fullWidth?: boolean;
+	articleDate?: Date;
+	articleModified?: Date;
 }
 
-const { fullWidth = false, ogType = 'website', articleDate, articleModified, ...layoutProps } = Astro.props;
+const {
+	fullWidth = false,
+	ogType = 'website',
+	articleDate,
+	articleModified,
+	...layoutProps
+} = Astro.props;
 ---
 
 <Layout {...layoutProps} ogType={ogType} articleDate={articleDate} articleModified={articleModified}>
@@ -23,21 +29,11 @@ const { fullWidth = false, ogType = 'website', articleDate, articleModified, ...
   <main
     id="page-content"
     class:list={[
-      'flex-1',
+      'flex-1 pt-[var(--section-padding-top)] max-[959px]:pt-[84px]',
       fullWidth ? '' : 'page-container',
     ]}
-    style="padding-top: var(--section-padding-top);"
   >
     <slot />
   </main>
   <Footer />
 </Layout>
-
-<style>
-  /* On mobile, push content below the fixed top bar */
-  @media (max-width: 959px) {
-    main {
-      padding-top: calc(52px + 32px) !important;
-    }
-  }
-</style>

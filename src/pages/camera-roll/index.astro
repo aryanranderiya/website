@@ -2,18 +2,78 @@
 import PageLayout from '@/layouts/PageLayout.astro';
 
 const photos = [
-  { url: 'https://images.unsplash.com/photo-1477346611705-65d1883cee1e?w=800&q=80', alt: 'Mountain landscape at dawn', location: 'Ahmedabad', date: '2024' },
-  { url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80', alt: 'Sunset over the city', location: 'Ahmedabad', date: '2024' },
-  { url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&q=80', alt: 'Starry night sky', location: 'Gujarat', date: '2023' },
-  { url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80', alt: 'Green hills and clouds', location: 'Ahmedabad', date: '2024' },
-  { url: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=800&q=80', alt: 'Lake in the mountains', location: 'Gujarat', date: '2023' },
-  { url: 'https://images.unsplash.com/photo-1444723121867-7a241cacace9?w=800&q=80', alt: 'City streets at night', location: 'Ahmedabad', date: '2024' },
-  { url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800&q=80', alt: 'Desert road at dusk', location: 'Rajasthan', date: '2023' },
-  { url: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800&q=80', alt: 'Forest path in morning light', location: 'Gujarat', date: '2024' },
-  { url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=80', alt: 'Monsoon clouds', location: 'Ahmedabad', date: '2024' },
-  { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80', alt: 'Portrait', location: 'Home', date: '2024' },
-  { url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80', alt: 'Coffee and laptop', location: 'Home', date: '2024' },
-  { url: 'https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=800&q=80', alt: 'Workspace', location: 'Home', date: '2024' },
+	{
+		url: 'https://images.unsplash.com/photo-1477346611705-65d1883cee1e?w=800&q=80',
+		alt: 'Mountain landscape at dawn',
+		location: 'Ahmedabad',
+		date: '2024',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+		alt: 'Sunset over the city',
+		location: 'Ahmedabad',
+		date: '2024',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&q=80',
+		alt: 'Starry night sky',
+		location: 'Gujarat',
+		date: '2023',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80',
+		alt: 'Green hills and clouds',
+		location: 'Ahmedabad',
+		date: '2024',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1470770841072-f978cf4d019e?w=800&q=80',
+		alt: 'Lake in the mountains',
+		location: 'Gujarat',
+		date: '2023',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1444723121867-7a241cacace9?w=800&q=80',
+		alt: 'City streets at night',
+		location: 'Ahmedabad',
+		date: '2024',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=800&q=80',
+		alt: 'Desert road at dusk',
+		location: 'Rajasthan',
+		date: '2023',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1426604966848-d7adac402bff?w=800&q=80',
+		alt: 'Forest path in morning light',
+		location: 'Gujarat',
+		date: '2024',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=80',
+		alt: 'Monsoon clouds',
+		location: 'Ahmedabad',
+		date: '2024',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80',
+		alt: 'Portrait',
+		location: 'Home',
+		date: '2024',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&q=80',
+		alt: 'Coffee and laptop',
+		location: 'Home',
+		date: '2024',
+	},
+	{
+		url: 'https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=800&q=80',
+		alt: 'Workspace',
+		location: 'Home',
+		date: '2024',
+	},
 ];
 ---
 
@@ -25,56 +85,22 @@ const photos = [
     <p class="text-sm text-[var(--text-muted)] mb-6 animate-fade-in stagger-3">Moments.</p>
   </div>
 
-  <div class="gallery-wrap pb-16">
-    <!-- Masonry grid -->
-    <div class="columns-2 sm:columns-3 gap-1.5 [column-gap:6px]">
+  <div class="pb-16 pl-[max(var(--page-inset),calc(50vw-320px+var(--page-inset)))] pr-[var(--page-inset)]">
+    <div class="columns-2 sm:columns-3 [column-gap:6px]">
       {photos.map(photo => (
-        <div class="photo-item break-inside-avoid mb-1.5">
+        <div class="group relative overflow-hidden rounded-md cursor-default break-inside-avoid mb-1.5">
           <img
             src={photo.url}
             alt={photo.alt}
             loading="lazy"
-            class="w-full h-auto block transition-transform duration-200 ease-out"
-            onmouseover="this.style.transform='scale(1.02)'"
-            onmouseout="this.style.transform='scale(1)'"
+            class="w-full h-auto block transition-[scale] duration-200 ease-out group-hover:scale-[1.02]"
           />
-          <div class="photo-overlay">
+          <div class="absolute bottom-0 left-0 right-0 pt-6 px-2.5 pb-2.5 bg-[linear-gradient(to_top,rgba(0,0,0,0.6),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
             <div class="text-white text-xs font-medium leading-tight">{photo.location}</div>
             <div class="text-white/60 text-[11px]">{photo.date}</div>
           </div>
         </div>
       ))}
     </div>
-
   </div>
 </PageLayout>
-
-<style>
-  .gallery-wrap {
-    padding-left: max(var(--page-inset), calc(50vw - 320px + var(--page-inset)));
-    padding-right: var(--page-inset);
-  }
-
-  .photo-item {
-    position: relative;
-    overflow: hidden;
-    border-radius: var(--radius-md, 8px);
-    cursor: default;
-  }
-
-  .photo-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 24px 10px 10px;
-    background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
-    opacity: 0;
-    transition: opacity 200ms ease;
-    pointer-events: none;
-  }
-
-  .photo-item:hover .photo-overlay {
-    opacity: 1;
-  }
-</style>

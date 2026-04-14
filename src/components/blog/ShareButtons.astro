@@ -1,9 +1,9 @@
 ---
-import { CopyLinkIcon } from "../icons";
+import { CopyLinkIcon } from '../icons';
 
 interface Props {
-  title: string;
-  url: string;
+	title: string;
+	url: string;
 }
 const { title, url } = Astro.props;
 const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
@@ -11,12 +11,11 @@ const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encod
 ---
 
 <div class="flex items-center gap-2">
-  <span class="text-xs mr-1" style="color: var(--text-ghost);">Share</span>
+  <span class="text-xs mr-1 text-[var(--text-ghost)]">Share</span>
 
   <button
     id="copy-link-btn"
-    class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-[var(--radius-md)] bg-[var(--muted-bg)] transition-opacity hover:opacity-70"
-    style="color: var(--text-muted);"
+    class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-[var(--radius-md)] bg-[var(--muted-bg)] text-[var(--text-muted)] transition-opacity hover:opacity-70"
     aria-label="Copy link"
     data-url={url}
   >
@@ -28,8 +27,7 @@ const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encod
     href={twitterUrl}
     target="_blank"
     rel="noopener noreferrer"
-    class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-[var(--radius-md)] bg-[var(--muted-bg)] transition-opacity hover:opacity-70"
-    style="color: var(--text-muted);"
+    class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-[var(--radius-md)] bg-[var(--muted-bg)] text-[var(--text-muted)] transition-opacity hover:opacity-70"
     aria-label="Share on X"
   >
     <!-- X / Twitter logo -->
@@ -45,8 +43,7 @@ const linkedinUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encod
     href={linkedinUrl}
     target="_blank"
     rel="noopener noreferrer"
-    class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-[var(--radius-md)] bg-[var(--muted-bg)] transition-opacity hover:opacity-70"
-    style="color: var(--text-muted);"
+    class="inline-flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-[var(--radius-md)] bg-[var(--muted-bg)] text-[var(--text-muted)] transition-opacity hover:opacity-70"
     aria-label="Share on LinkedIn"
   >
     <!-- LinkedIn logo -->

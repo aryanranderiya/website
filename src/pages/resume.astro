@@ -1,84 +1,85 @@
 ---
-import PageLayout from "@/layouts/PageLayout.astro";
-import ExperienceList from "@/components/resume/ExperienceList";
-import GithubGraph from "@/components/home/GithubGraph";
-import ButtonLink from "@/components/ui/ButtonLink";
-import { education, certifications } from "@/data/experience";
+import GithubGraph from '@/components/home/GithubGraph';
+import ExperienceList from '@/components/resume/ExperienceList';
+import ButtonLink from '@/components/ui/ButtonLink';
+import { certifications, education } from '@/data/experience';
+import PageLayout from '@/layouts/PageLayout.astro';
 
 const skillCategories = [
-  {
-    label: "Languages",
-    items: [
-      { name: "TypeScript", slug: "typescript", icon: "typescript-original" },
-      { name: "JavaScript", slug: "javascript", icon: "javascript-original" },
-      { name: "Python", slug: "python", icon: "python-original" },
-      { name: "Java", slug: "java", icon: "java-original" },
-      { name: "Kotlin", slug: "kotlin", icon: "kotlin-original" },
-      { name: "Go", slug: "go", icon: "go-original" },
-      { name: "C", slug: "c", icon: "c-original" },
-      { name: "C++", slug: "cplusplus", icon: "cplusplus-original" },
-      { name: "PHP", slug: "php", icon: "php-original" },
-    ],
-  },
-  {
-    label: "Frontend",
-    items: [
-      { name: "React", slug: "react", icon: "react-original" },
-      { name: "React Native", slug: "react", icon: "react-original" },
-      { name: "Next.js", slug: "nextjs", icon: "nextjs-original" },
-      { name: "Astro", slug: "astro", icon: "astro-original" },
-      {
-        name: "TailwindCSS",
-        slug: "tailwindcss",
-        icon: "tailwindcss-original",
-      },
-      { name: "HTML", slug: "html5", icon: "html5-original" },
-      { name: "CSS", slug: "css3", icon: "css3-original" },
-      { name: "Vite", slug: "vitejs", icon: "vitejs-original" },
-    ],
-  },
-  {
-    label: "Backend",
-    items: [
-      { name: "FastAPI", slug: "fastapi", icon: "fastapi-original" },
-      { name: "Node.js", slug: "nodejs", icon: "nodejs-original" },
-      { name: "Express", slug: "express", icon: "express-original" },
-      { name: "Flask", slug: "flask", icon: "flask-original" },
-      { name: "PostgreSQL", slug: "postgresql", icon: "postgresql-original" },
-      { name: "MongoDB", slug: "mongodb", icon: "mongodb-original" },
-      { name: "Redis", slug: "redis", icon: "redis-original" },
-      { name: "Firebase", slug: "firebase", icon: "firebase-original" },
-      { name: "MySQL", slug: "mysql", icon: "mysql-original" },
-      { name: "SQLite", slug: "sqlite", icon: "sqlite-original" },
-      { name: "Supabase", slug: "supabase", icon: "supabase-original" },
-    ],
-  },
-  {
-    label: "Tools",
-    items: [
-      { name: "Figma", slug: "figma", icon: "figma-original" },
-      { name: "Git", slug: "git", icon: "git-original" },
-      { name: "Docker", slug: "docker", icon: "docker-original" },
-      { name: "Postman", slug: "postman", icon: "postman-original" },
-      { name: "Linux", slug: "linux", icon: "linux-original" },
-      {
-        name: "Android Studio",
-        slug: "androidstudio",
-        icon: "androidstudio-original",
-      },
-      { name: "VSCode", slug: "vscode", icon: "vscode-original" },
-    ],
-  },
+	{
+		label: 'Languages',
+		items: [
+			{ name: 'TypeScript', slug: 'typescript', icon: 'typescript-original' },
+			{ name: 'JavaScript', slug: 'javascript', icon: 'javascript-original' },
+			{ name: 'Python', slug: 'python', icon: 'python-original' },
+			{ name: 'Java', slug: 'java', icon: 'java-original' },
+			{ name: 'Kotlin', slug: 'kotlin', icon: 'kotlin-original' },
+			{ name: 'Go', slug: 'go', icon: 'go-original' },
+			{ name: 'C', slug: 'c', icon: 'c-original' },
+			{ name: 'C++', slug: 'cplusplus', icon: 'cplusplus-original' },
+			{ name: 'PHP', slug: 'php', icon: 'php-original' },
+		],
+	},
+	{
+		label: 'Frontend',
+		items: [
+			{ name: 'React', slug: 'react', icon: 'react-original' },
+			{ name: 'React Native', slug: 'react', icon: 'react-original' },
+			{ name: 'Next.js', slug: 'nextjs', icon: 'nextjs-original' },
+			{ name: 'Astro', slug: 'astro', icon: 'astro-original' },
+			{
+				name: 'TailwindCSS',
+				slug: 'tailwindcss',
+				icon: 'tailwindcss-original',
+			},
+			{ name: 'HTML', slug: 'html5', icon: 'html5-original' },
+			{ name: 'CSS', slug: 'css3', icon: 'css3-original' },
+			{ name: 'Vite', slug: 'vitejs', icon: 'vitejs-original' },
+		],
+	},
+	{
+		label: 'Backend',
+		items: [
+			{ name: 'FastAPI', slug: 'fastapi', icon: 'fastapi-original' },
+			{ name: 'Node.js', slug: 'nodejs', icon: 'nodejs-original' },
+			{ name: 'Express', slug: 'express', icon: 'express-original' },
+			{ name: 'Flask', slug: 'flask', icon: 'flask-original' },
+			{ name: 'PostgreSQL', slug: 'postgresql', icon: 'postgresql-original' },
+			{ name: 'MongoDB', slug: 'mongodb', icon: 'mongodb-original' },
+			{ name: 'Redis', slug: 'redis', icon: 'redis-original' },
+			{ name: 'Firebase', slug: 'firebase', icon: 'firebase-original' },
+			{ name: 'MySQL', slug: 'mysql', icon: 'mysql-original' },
+			{ name: 'SQLite', slug: 'sqlite', icon: 'sqlite-original' },
+			{ name: 'Supabase', slug: 'supabase', icon: 'supabase-original' },
+		],
+	},
+	{
+		label: 'Tools',
+		items: [
+			{ name: 'Figma', slug: 'figma', icon: 'figma-original' },
+			{ name: 'Git', slug: 'git', icon: 'git-original' },
+			{ name: 'Docker', slug: 'docker', icon: 'docker-original' },
+			{ name: 'Postman', slug: 'postman', icon: 'postman-original' },
+			{ name: 'Linux', slug: 'linux', icon: 'linux-original' },
+			{
+				name: 'Android Studio',
+				slug: 'androidstudio',
+				icon: 'androidstudio-original',
+			},
+			{ name: 'VSCode', slug: 'vscode', icon: 'vscode-original' },
+		],
+	},
 ];
 
-const DEVICON_BASE = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
+const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
 ---
 
 <PageLayout
   title="Resume"
   description="Aryan Randeriya — Developer and designer with a focus on full-stack web and mobile development."
 >
-  <div class="pb-16">
+  <div class="pb-16 print:pb-0">
+
     <!-- ── Header ───────────────────────────────────────────────── -->
     <div class="mb-3 pb-8">
       <h1
@@ -93,7 +94,27 @@ const DEVICON_BASE = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
         Developer · Designer · Builder
       </p>
 
-      <!-- <div class="mt-5 overflow-hidden">
+      <div class="flex flex-wrap items-center gap-1.5 text-xs">
+        <a
+          href="mailto:hey@aryanranderiya.com"
+          class="text-xs text-[var(--text-ghost)] no-underline transition-colors duration-150 hover:text-[var(--text-secondary)]"
+        >
+          hey@aryanranderiya.com
+        </a>
+        <span class="text-[var(--text-ghost)]">·</span>
+        <a
+          href="https://github.com/aryanranderiya"
+          target="_blank"
+          rel="noopener"
+          class="text-xs text-[var(--text-ghost)] no-underline transition-colors duration-150 hover:text-[var(--text-secondary)]"
+        >
+          github.com/aryanranderiya
+        </a>
+        <span class="text-[var(--text-ghost)]">·</span>
+        <span class="text-[11px] text-[var(--text-ghost)]">Ahmedabad, India</span>
+      </div>
+
+      <div class="mt-5 overflow-hidden print:hidden">
         <ButtonLink
           href="/resume.pdf"
           label="Download PDF"
@@ -104,7 +125,7 @@ const DEVICON_BASE = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
           variant="accent"
           client:load
         />
-      </div> -->
+      </div>
     </div>
 
     <!-- ── Experience ────────────────────────────────────────────── -->
@@ -123,46 +144,42 @@ const DEVICON_BASE = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
     <section class="mb-10">
       <p class="section-header">Education</p>
       <div class="flex flex-col">
-        {
-          education.map((edu, i) => (
-            <div
-              class:list={[
-                "education-item",
-                i === education.length - 1 && "border-b-0!",
-              ]}
-            >
-              <div class="pt-px shrink-0">
-                <img
-                  src={edu.logo}
-                  alt={edu.institution}
-                  width="28"
-                  height="28"
-                  class="w-7 h-7 rounded-md object-contain"
-                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-                />
-                <div style="display:none;width:28px;height:28px;border-radius:6px;background:var(--muted-bg);align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text-muted);">
-                  {edu.shortName.charAt(0)}
-                </div>
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="flex items-baseline gap-2 flex-wrap">
-                  <span class="text-sm font-semibold text-[var(--text-secondary)] tracking-[-0.01em]">
-                    {edu.shortName}
-                  </span>
-                  <span class="text-xs text-[var(--text-muted)]">
-                    {edu.degree} · {edu.field}
-                  </span>
-                  <span class="text-[11px] text-[var(--text-ghost)] ml-auto whitespace-nowrap">
-                    {edu.startYear} — {edu.endYear}
-                  </span>
-                </div>
-                <div class="text-[11px] text-[var(--text-ghost)] mt-0.5">
-                  {edu.institution} · {edu.location}
-                </div>
+        {education.map((edu, i) => (
+          <div class:list={[
+            'flex gap-3 items-start py-3.5',
+            i < education.length - 1 && 'border-b border-[var(--border)]',
+          ]}>
+            <div class="pt-px shrink-0">
+              <img
+                src={edu.logo}
+                alt={edu.institution}
+                width="28"
+                height="28"
+                class="w-7 h-7 rounded-md object-contain"
+                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+              />
+              <div class="hidden w-7 h-7 rounded-md bg-[var(--muted-bg)] items-center justify-center text-[10px] font-semibold text-[var(--text-muted)]">
+                {edu.shortName.charAt(0)}
               </div>
             </div>
-          ))
-        }
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline gap-2 flex-wrap">
+                <span class="text-sm font-semibold text-[var(--text-secondary)] tracking-[-0.01em]">
+                  {edu.shortName}
+                </span>
+                <span class="text-xs text-[var(--text-muted)]">
+                  {edu.degree} · {edu.field}
+                </span>
+                <span class="text-[11px] text-[var(--text-ghost)] ml-auto whitespace-nowrap">
+                  {edu.startYear} — {edu.endYear}
+                </span>
+              </div>
+              <div class="text-[11px] text-[var(--text-ghost)] mt-0.5">
+                {edu.institution} · {edu.location}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
 
@@ -170,106 +187,38 @@ const DEVICON_BASE = "https://cdn.jsdelivr.net/gh/devicons/devicon/icons";
     <section class="mb-5">
       <p class="section-header pb-4">Skills</p>
       <div class="flex flex-col gap-4">
-        {
-          skillCategories.map((cat) => (
-            <div class="skill-category pb-3">
-              <div class="skill-category-label">{cat.label}</div>
-              <div class="skill-items">
-                {cat.items.map((item) => (
-                  <div class="skill-item">
-                    {item.slug && item.icon ? (
-                      <img
-                        src={`${DEVICON_BASE}/${item.slug}/${item.icon}.svg`}
-                        alt={item.name}
-                        width="18"
-                        height="18"
-                        class="w-[18px] h-[18px] shrink-0"
-                        onerror="this.style.display='none';"
-                      />
-                    ) : (
-                      <span class="w-[18px] h-[18px] inline-flex items-center justify-center text-[10px] font-bold text-[var(--text-ghost)] shrink-0">
-                        ✦
-                      </span>
-                    )}
-                    <span class="skill-name">{item.name}</span>
-                  </div>
-                ))}
-              </div>
+        {skillCategories.map((cat) => (
+          <div class="grid grid-cols-[96px_1fr] gap-3 items-start">
+            <div class="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] pt-0.5">
+              {cat.label}
             </div>
-          ))
-        }
+            <div class="flex flex-wrap gap-y-1.5 gap-x-3.5">
+              {cat.items.map((item) => (
+                <div class="flex items-center gap-1.5">
+                  {item.slug && item.icon ? (
+                    <img
+                      src={`${DEVICON_BASE}/${item.slug}/${item.icon}.svg`}
+                      alt={item.name}
+                      width="18"
+                      height="18"
+                      class="w-[18px] h-[18px] opacity-70 shrink-0"
+                      onerror="this.style.display='none';"
+                    />
+                  ) : (
+                    <span class="w-[18px] h-[18px] inline-flex items-center justify-center text-[10px] font-bold text-[var(--text-ghost)] shrink-0">✦</span>
+                  )}
+                  <span class="text-xs text-[var(--text-secondary)]">{item.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
     </section>
 
     <!-- ── GitHub Graph ───────────────────────────────────────────── -->
-    <section>
+    <section class="print:hidden">
       <GithubGraph client:load />
     </section>
   </div>
 </PageLayout>
-
-<style>
-  .contact-link {
-    font-size: 12px;
-    color: var(--text-ghost);
-    text-decoration: none;
-    transition: color 0.15s ease;
-  }
-  .contact-link:hover {
-    color: var(--text-secondary);
-  }
-
-  .education-item {
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .skill-category {
-    display: grid;
-    grid-template-columns: 96px 1fr;
-    gap: 12px;
-    align-items: start;
-  }
-
-  .skill-category-label {
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: var(--text-ghost);
-    padding-top: 2px;
-  }
-
-  .skill-items {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 14px;
-  }
-
-  .skill-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-
-  .skill-name {
-    font-size: 12px;
-    color: var(--text-secondary);
-    font-weight: 400;
-  }
-
-  @media print {
-    header,
-    footer,
-    nav {
-      display: none !important;
-    }
-    body {
-      background: white !important;
-      color: black !important;
-    }
-  }
-</style>

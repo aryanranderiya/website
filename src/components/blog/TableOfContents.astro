@@ -2,13 +2,13 @@
 import { HugeiconsIcon, TextAlignLeftIcon } from '@icons';
 
 interface Heading {
-  depth: number;
-  slug: string;
-  text: string;
+	depth: number;
+	slug: string;
+	text: string;
 }
 
 interface Props {
-  headings: Heading[];
+	headings: Heading[];
 }
 
 const { headings } = Astro.props;
@@ -18,16 +18,21 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 {
   toc.length > 0 && (
     <nav id="toc" aria-label="Table of contents">
-      <p class="toc-label">
+      <p class="flex items-center gap-[5px] text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--text-ghost)] mb-[10px]">
         <HugeiconsIcon icon={TextAlignLeftIcon} size={11} color="var(--text-ghost)" />
         On this page
       </p>
-      <ul>
+      <ul class="list-none p-0 m-0 flex flex-col gap-px">
         {toc.map((h) => (
           <li>
             <a
               href={`#${h.slug}`}
-              class:list={['toc-link', h.depth === 3 && 'toc-link--sub']}
+              class:list={[
+                'toc-link block leading-[1.5] py-[3px] transition-colors duration-150 no-underline overflow-hidden text-ellipsis hover:text-[var(--text-secondary)]',
+                h.depth === 3
+                  ? 'pl-[10px] text-[11px] text-[var(--text-ghost)]'
+                  : 'text-[11.5px] text-[var(--text-muted)]',
+              ]}
               data-heading={h.slug}
             >
               {h.text}
@@ -40,49 +45,6 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 }
 
 <style>
-  .toc-label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-ghost);
-    margin: 0 0 10px 0;
-  }
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-  }
-
-  .toc-link {
-    display: block;
-    font-size: 11.5px;
-    color: var(--text-muted);
-    line-height: 1.5;
-    padding: 3px 0;
-    transition: color 150ms ease;
-    text-decoration: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .toc-link--sub {
-    padding-left: 10px;
-    font-size: 11px;
-    color: var(--text-ghost);
-  }
-
-  .toc-link:hover {
-    color: var(--text-secondary);
-  }
-
   .toc-link.active {
     color: var(--text-primary);
   }

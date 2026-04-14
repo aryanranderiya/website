@@ -1,10 +1,10 @@
 ---
 interface Props {
-  label?: string;
-  title: string;
-  description?: string;
-  align?: 'left' | 'center';
-  class?: string;
+	label?: string;
+	title: string;
+	description?: string;
+	align?: 'left' | 'center';
+	class?: string;
 }
 
 const { label, title, description, align = 'left', class: className } = Astro.props;
@@ -16,7 +16,7 @@ const { label, title, description, align = 'left', class: className } = Astro.pr
   className,
 ]}>
   {label && (
-    <div class="text-label mb-3" style="color: var(--accent-blue);">{label}</div>
+    <div class="text-label mb-3 text-[var(--accent-blue)]">{label}</div>
   )}
   <h2 class="text-heading-2">{title}</h2>
   {description && (

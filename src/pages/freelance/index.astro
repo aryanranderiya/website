@@ -1,36 +1,36 @@
 ---
-import PageLayout from '@/layouts/PageLayout.astro';
-import FreelanceWork from '@/components/freelance/FreelanceWork.tsx';
 import {
-  HugeiconsIcon,
-  InformationCircleIcon,
-  BrowserIcon,
-  SmartPhone01Icon,
-  FigmaIcon,
-  DatabaseIcon,
+	BrowserIcon,
+	DatabaseIcon,
+	FigmaIcon,
+	HugeiconsIcon,
+	InformationCircleIcon,
+	SmartPhone01Icon,
 } from '@icons';
+import FreelanceWork from '@/components/freelance/FreelanceWork.tsx';
+import PageLayout from '@/layouts/PageLayout.astro';
 
 const services = [
-  {
-    title: 'Web Development',
-    description: 'React, Next.js, Astro. Landing pages to complex SaaS products.',
-    icon: BrowserIcon,
-  },
-  {
-    title: 'Mobile Development',
-    description: 'React Native & Expo. Cross-platform iOS and Android.',
-    icon: SmartPhone01Icon,
-  },
-  {
-    title: 'UI/UX Design',
-    description: 'Figma to code. I design and build — no handoff overhead.',
-    icon: FigmaIcon,
-  },
-  {
-    title: 'Backend & APIs',
-    description: 'FastAPI, Node.js, PostgreSQL. Scalable and clean.',
-    icon: DatabaseIcon,
-  },
+	{
+		title: 'Web Development',
+		description: 'React, Next.js, Astro. Landing pages to complex SaaS products.',
+		icon: BrowserIcon,
+	},
+	{
+		title: 'Mobile Development',
+		description: 'React Native & Expo. Cross-platform iOS and Android.',
+		icon: SmartPhone01Icon,
+	},
+	{
+		title: 'UI/UX Design',
+		description: 'Figma to code. I design and build — no handoff overhead.',
+		icon: FigmaIcon,
+	},
+	{
+		title: 'Backend & APIs',
+		description: 'FastAPI, Node.js, PostgreSQL. Scalable and clean.',
+		icon: DatabaseIcon,
+	},
 ];
 ---
 

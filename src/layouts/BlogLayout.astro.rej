@@ -1,0 +1,133 @@
+diff a/src/layouts/BlogLayout.astro b/src/layouts/BlogLayout.astro	(rejected hunks)
+@@ -2,5 +2,5 @@
+-import PageLayout from "./PageLayout.astro";
+-import TableOfContents from "@/components/blog/TableOfContents.astro";
+-import Giscus from "@/components/blog/Giscus.astro";
+-import { formatDate } from "@/lib/utils";
+-import { SITE } from "@/constants/site";
++import Giscus from '@/components/blog/Giscus.astro';
++import TableOfContents from '@/components/blog/TableOfContents.astro';
++import { SITE } from '@/constants/site';
++import { formatDate } from '@/lib/utils';
++import PageLayout from './PageLayout.astro';
+@@ -9,3 +9,3 @@ interface Heading {
+-  depth: number;
+-  slug: string;
+-  text: string;
++	depth: number;
++	slug: string;
++	text: string;
+@@ -15,9 +15,9 @@ interface Props {
+-  title: string;
+-  description: string;
+-  date: Date;
+-  updated?: Date;
+-  tags?: string[];
+-  category?: string;
+-  cover?: string;
+-  headings?: Heading[];
+-  readingTime?: number;
++	title: string;
++	description: string;
++	date: Date;
++	updated?: Date;
++	tags?: string[];
++	category?: string;
++	cover?: string;
++	headings?: Heading[];
++	readingTime?: number;
+@@ -27,9 +27,9 @@ const {
+-  title,
+-  description,
+-  date,
+-  updated,
+-  tags = [],
+-  category,
+-  cover,
+-  headings = [],
+-  readingTime,
++	title,
++	description,
++	date,
++	updated,
++	tags = [],
++	category,
++	cover,
++	headings = [],
++	readingTime,
+@@ -41,26 +41,24 @@ const articleJsonLd = JSON.stringify({
+-  "@context": "https://schema.org",
+-  "@type": "Article",
+-  headline: title,
+-  description: description,
+-  datePublished: date.toISOString(),
+-  ...(updated ? { dateModified: updated.toISOString() } : {}),
+-  author: {
+-    "@type": "Person",
+-    name: SITE.name,
+-    url: SITE.url,
+-  },
+-  publisher: {
+-    "@type": "Person",
+-    name: SITE.name,
+-    url: SITE.url,
+-  },
+-  ...(cover
+-    ? {
+-        image: cover.startsWith("http")
+-          ? cover
+-          : new URL(cover, SITE.url).toString(),
+-      }
+-    : {}),
+-  url: canonicalURL,
+-  inLanguage: "en-US",
+-  isPartOf: { "@type": "Blog", url: `${SITE.url}/blog` },
++	'@context': 'https://schema.org',
++	'@type': 'Article',
++	headline: title,
++	description: description,
++	datePublished: date.toISOString(),
++	...(updated ? { dateModified: updated.toISOString() } : {}),
++	author: {
++		'@type': 'Person',
++		name: SITE.name,
++		url: SITE.url,
++	},
++	publisher: {
++		'@type': 'Person',
++		name: SITE.name,
++		url: SITE.url,
++	},
++	...(cover
++		? {
++				image: cover.startsWith('http') ? cover : new URL(cover, SITE.url).toString(),
++			}
++		: {}),
++	url: canonicalURL,
++	inLanguage: 'en-US',
++	isPartOf: { '@type': 'Blog', url: `${SITE.url}/blog` },
+@@ -70,12 +68,12 @@ const breadcrumbJsonLd = JSON.stringify({
+-  "@context": "https://schema.org",
+-  "@type": "BreadcrumbList",
+-  itemListElement: [
+-    { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+-    {
+-      "@type": "ListItem",
+-      position: 2,
+-      name: "Blog",
+-      item: `${SITE.url}/blog`,
+-    },
+-    { "@type": "ListItem", position: 3, name: title, item: canonicalURL },
+-  ],
++	'@context': 'https://schema.org',
++	'@type': 'BreadcrumbList',
++	itemListElement: [
++		{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
++		{
++			'@type': 'ListItem',
++			position: 2,
++			name: 'Blog',
++			item: `${SITE.url}/blog`,
++		},
++		{ '@type': 'ListItem', position: 3, name: title, item: canonicalURL },
++	],

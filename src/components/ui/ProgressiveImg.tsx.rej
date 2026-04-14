@@ -1,0 +1,185 @@
+diff a/src/components/ui/ProgressiveImg.tsx b/src/components/ui/ProgressiveImg.tsx	(rejected hunks)
+@@ -3 +3 @@
+-import { useState, useEffect, useRef } from 'react';
++import { useEffect, useRef, useState } from 'react';
+@@ -7,8 +7,8 @@ interface ProgressiveImgProps {
+-  src: string;
+-  alt: string;
+-  hash?: string; // base64-encoded thumbhash — optional, falls back to plain img
+-  className?: string;
+-  imgClassName?: string;
+-  onClick?: () => void;
+-  style?: React.CSSProperties;
+-  imgStyle?: React.CSSProperties;
++	src: string;
++	alt: string;
++	hash?: string; // base64-encoded thumbhash — optional, falls back to plain img
++	className?: string;
++	imgClassName?: string;
++	onClick?: () => void;
++	style?: React.CSSProperties;
++	imgStyle?: React.CSSProperties;
+@@ -26,8 +26,8 @@ export default function ProgressiveImg({
+-  src,
+-  alt,
+-  hash,
+-  className,
+-  imgClassName,
+-  onClick,
+-  style,
+-  imgStyle,
++	src,
++	alt,
++	hash,
++	className,
++	imgClassName,
++	onClick,
++	style: _style,
++	imgStyle: _imgStyle,
+@@ -35,6 +35,6 @@ export default function ProgressiveImg({
+-  const [loaded, setLoaded] = useState(false);
+-  // Once the opacity fade-in finishes we clear the inline transition so
+-  // Tailwind's group-hover transition classes (scale, filter) take over cleanly.
+-  const [faded, setFaded] = useState(false);
+-  const [placeholder, setPlaceholder] = useState<string | null>(null);
+-  const imgRef = useRef<HTMLImageElement>(null);
++	const [loaded, setLoaded] = useState(false);
++	// Once the opacity fade-in finishes we clear the inline transition so
++	// Tailwind's group-hover transition classes (scale, filter) take over cleanly.
++	const [_faded, setFaded] = useState(false);
++	const [placeholder, setPlaceholder] = useState<string | null>(null);
++	const imgRef = useRef<HTMLImageElement>(null);
+@@ -42,10 +42,10 @@ export default function ProgressiveImg({
+-  // Decode thumbhash → data URL on mount (pure JS, instant)
+-  useEffect(() => {
+-    if (!hash) return;
+-    try {
+-      const bytes = Uint8Array.from(atob(hash), c => c.charCodeAt(0));
+-      setPlaceholder(thumbHashToDataURL(bytes));
+-    } catch {
+-      // Bad hash — silently fall back to no placeholder
+-    }
+-  }, [hash]);
++	// Decode thumbhash → data URL on mount (pure JS, instant)
++	useEffect(() => {
++		if (!hash) return;
++		try {
++			const bytes = Uint8Array.from(atob(hash), (c) => c.charCodeAt(0));
++			setPlaceholder(thumbHashToDataURL(bytes));
++		} catch {
++			// Bad hash — silently fall back to no placeholder
++		}
++	}, [hash]);
+@@ -53,7 +53,7 @@ export default function ProgressiveImg({
+-  // Handle images already cached — onLoad won't fire, so skip straight to faded
+-  useEffect(() => {
+-    if (imgRef.current?.complete) {
+-      setLoaded(true);
+-      setFaded(true);
+-    }
+-  }, []);
++	// Handle images already cached — onLoad won't fire, so skip straight to faded
++	useEffect(() => {
++		if (imgRef.current?.complete) {
++			setLoaded(true);
++			setFaded(true);
++		}
++	}, []);
+@@ -61,14 +61,15 @@ export default function ProgressiveImg({
+-  // No hash — plain lazy image, no extra DOM
+-  if (!hash) {
+-    return (
+-      <img
+-        src={src}
+-        alt={alt}
+-        loading="lazy"
+-        decoding="async"
+-        className={imgClassName}
+-        style={imgStyle}
+-        onClick={onClick}
+-      />
+-    );
+-  }
++	// No hash — plain lazy image, no extra DOM
++	if (!hash) {
++		if (onClick) {
++			return (
++				<button
++					type="button"
++					className={cn('p-0 border-0 bg-transparent cursor-pointer', className)}
++					onClick={onClick}
++				>
++					<img src={src} alt={alt} loading="lazy" decoding="async" className={imgClassName} />
++				</button>
++			);
++		}
++		return <img src={src} alt={alt} loading="lazy" decoding="async" className={imgClassName} />;
++	}
+@@ -76,15 +77,18 @@ export default function ProgressiveImg({
+-  return (
+-    <div
+-      className={cn('relative overflow-hidden', className)}
+-      onClick={onClick}
+-      style={style}
+-    >
+-      {/* Thumbhash placeholder — visible until real image loads */}
+-      {placeholder && !loaded && (
+-        <img
+-          src={placeholder}
+-          alt=""
+-          aria-hidden
+-          className="absolute inset-0 w-full h-full object-cover scale-[1.05] blur-[6px] z-0"
+-        />
+-      )}
++	return (
++		<button
++			type="button"
++			className={cn(
++				'relative overflow-hidden p-0 border-0 bg-transparent cursor-pointer',
++				className
++			)}
++			onClick={onClick}
++		>
++			{/* Thumbhash placeholder — visible until real image loads */}
++			{placeholder && !loaded && (
++				<img
++					src={placeholder}
++					alt=""
++					aria-hidden
++					className="absolute inset-0 w-full h-full object-cover scale-[1.05] blur-[6px] z-0"
++				/>
++			)}
+@@ -92,20 +96,13 @@ export default function ProgressiveImg({
+-      {/* Real image — fades in over the placeholder */}
+-      <img
+-        ref={imgRef}
+-        src={src}
+-        alt={alt}
+-        loading="lazy"
+-        decoding="async"
+-        className={cn('relative z-[1] w-full h-full object-cover', imgClassName)}
+-        onLoad={() => setLoaded(true)}
+-        onTransitionEnd={() => setFaded(true)}
+-        style={{
+-          opacity: loaded ? 1 : 0,
+-          // Only set transition during the fade-in. Once faded, remove it so
+-          // Tailwind hover transitions (scale, filter, etc.) work normally.
+-          transition: faded ? undefined : loaded ? 'opacity 0.4s ease' : 'none',
+-          ...imgStyle,
+-        }}
+-      />
+-    </div>
+-  );
++			{/* Real image — fades in over the placeholder */}
++			<img
++				ref={imgRef}
++				src={src}
++				alt={alt}
++				loading="lazy"
++				decoding="async"
++				className={cn('relative z-[1] w-full h-full object-cover', imgClassName)}
++				onLoad={() => setLoaded(true)}
++				onTransitionEnd={() => setFaded(true)}
++			/>
++		</button>
++	);

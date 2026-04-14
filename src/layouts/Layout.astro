@@ -1,51 +1,58 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
 import { getCollection } from 'astro:content';
-import { SITE, SEO } from '@/constants/site';
+import { ViewTransitions } from 'astro:transitions';
+import { SEO, SITE } from '@/constants/site';
 import '@/styles/global.css';
-import CommandK from '@/components/layout/CommandK';
 import AgentationOverlay from '@/components/layout/AgentationOverlay';
-import BlurStack from '@/components/ui/blur-stack';
+import CommandK from '@/components/layout/CommandK';
 import Preloader from '@/components/layout/Preloader';
 import AIChat from '@/components/ui/AIChat';
-import { buildAIPrompt } from '@/lib/build-ai-prompt';
-import { experience, education, certifications } from '@/data/experience';
-import { pastWork } from '@/data/freelance';
+import BlurStack from '@/components/ui/blur-stack';
 import { PetLauncher } from '@/components/ui/PetLauncher';
+import { certifications, education, experience } from '@/data/experience';
+import { pastWork } from '@/data/freelance';
+import { buildAIPrompt } from '@/lib/build-ai-prompt';
 
 interface Props {
-  title?: string;
-  description?: string;
-  ogImage?: string;
-  ogType?: 'website' | 'article';
-  canonical?: string;
-  noindex?: boolean;
-  class?: string;
-  articleDate?: Date;
-  articleModified?: Date;
+	title?: string;
+	description?: string;
+	ogImage?: string;
+	ogType?: 'website' | 'article';
+	canonical?: string;
+	noindex?: boolean;
+	class?: string;
+	articleDate?: Date;
+	articleModified?: Date;
 }
 
 const {
-  title,
-  description = SITE.description,
-  ogImage = '/og-image.jpg',
-  ogType = 'website',
-  canonical = Astro.url.pathname,
-  noindex = false,
-  class: className,
-  articleDate,
-  articleModified,
+	title,
+	description = SITE.description,
+	ogImage = '/og-image.jpg',
+	ogType = 'website',
+	canonical = Astro.url.pathname,
+	noindex = false,
+	class: className,
+	articleDate,
+	articleModified,
 } = Astro.props;
 
 const metaTitle = title ? `${title} — ${SITE.name}` : SEO.defaultTitle;
 const canonicalURL = new URL(canonical, Astro.site ?? Astro.url.origin);
-const ogImageURL = ogImage.startsWith('http') ? ogImage : new URL(ogImage, Astro.site ?? Astro.url.origin).toString();
+const ogImageURL = ogImage.startsWith('http')
+	? ogImage
+	: new URL(ogImage, Astro.site ?? Astro.url.origin).toString();
 
-const [projects, blogPosts] = await Promise.all([
-  getCollection('projects'),
-  getCollection('blog'),
-]);
-const aiSystemPrompt = buildAIPrompt({ projects, blogPosts, experience, education, certifications, pastWork, site: SITE });
+const [projects, blogPosts] = await Promise.all([getCollection('projects'), getCollection('blog')]);
+const aiSystemPrompt = buildAIPrompt({
+	projects,
+	blogPosts,
+	experience,
+	education,
+	certifications,
+	pastWork,
+	site: SITE,
+});
 ---
 
 <!doctype html>

@@ -9,6 +9,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --breakpoint-sidebar: 60rem; /* 960px — sidebar visibility threshold */
+
   --radius-sm: 4px;
   --radius-md: 6px;
   --radius-lg: 10px;
@@ -660,7 +662,10 @@ a {
    UTILITY KEYFRAMES
    ============================================ */
 @keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }

@@ -1,32 +1,32 @@
 ---
-import PageLayout from "@/layouts/PageLayout.astro";
-import AgentConvosList from "@/components/agent-convos/AgentConvosList";
-import { getCollection } from "astro:content";
+import { getCollection } from 'astro:content';
+import AgentConvosList from '@/components/agent-convos/AgentConvosList';
+import PageLayout from '@/layouts/PageLayout.astro';
 
-const allConvos = await getCollection("agent-convos");
+const allConvos = await getCollection('agent-convos');
 const convos = allConvos
-  .sort((a, b) => {
-    // Featured first, then by date
-    if (a.data.featured && !b.data.featured) return -1;
-    if (!a.data.featured && b.data.featured) return 1;
-    return b.data.date.valueOf() - a.data.date.valueOf();
-  })
-  .map((c) => ({
-    slug: c.slug,
-    title: c.data.title,
-    description: c.data.description,
-    date: c.data.date.toISOString(),
-    platform: c.data.platform,
-    model: c.data.model,
-    harness: c.data.harness,
-    featured: c.data.featured,
-    tokens: c.data.tokens,
-    tokenCount: c.data.tokenCount,
-    messageCount: c.data.messageCount,
-    duration: c.data.duration,
-    agentCount: c.data.agentCount,
-    agents: c.data.agents,
-  }));
+	.sort((a, b) => {
+		// Featured first, then by date
+		if (a.data.featured && !b.data.featured) return -1;
+		if (!a.data.featured && b.data.featured) return 1;
+		return b.data.date.valueOf() - a.data.date.valueOf();
+	})
+	.map((c) => ({
+		slug: c.slug,
+		title: c.data.title,
+		description: c.data.description,
+		date: c.data.date.toISOString(),
+		platform: c.data.platform,
+		model: c.data.model,
+		harness: c.data.harness,
+		featured: c.data.featured,
+		tokens: c.data.tokens,
+		tokenCount: c.data.tokenCount,
+		messageCount: c.data.messageCount,
+		duration: c.data.duration,
+		agentCount: c.data.agentCount,
+		agents: c.data.agents,
+	}));
 ---
 
 <PageLayout

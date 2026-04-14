@@ -1,0 +1,79 @@
+diff a/src/pages/projects/[slug].astro b/src/pages/projects/[slug].astro	(rejected hunks)
+@@ -1,0 +2,3 @@
++import { type CollectionEntry, getCollection } from 'astro:content';
++import { GithubIcon, HugeiconsIcon, LinkSquare02Icon } from '@icons';
++import { SITE } from '@/constants/site';
+@@ -3 +5,0 @@ import PageLayout from '@/layouts/PageLayout.astro';
+-import { getCollection, type CollectionEntry } from 'astro:content';
+@@ -5,2 +6,0 @@ import { getTechIconUrl } from '@/utils/techIcons';
+-import { HugeiconsIcon, LinkSquare02Icon, GithubIcon } from '@icons';
+-import { SITE } from '@/constants/site';
+@@ -9,5 +9,5 @@ export async function getStaticPaths() {
+-  const projects = await getCollection('projects');
+-  return projects.map(entry => ({
+-    params: { slug: entry.slug },
+-    props: { entry },
+-  }));
++	const projects = await getCollection('projects');
++	return projects.map((entry) => ({
++		params: { slug: entry.slug },
++		props: { entry },
++	}));
+@@ -17 +17 @@ interface Props {
+-  entry: CollectionEntry<'projects'>;
++	entry: CollectionEntry<'projects'>;
+@@ -25,3 +25,3 @@ const FOLDER_CHIP: Record<string, { color: string; label: string }> = {
+-  Featured:  { color: '#f59e0b', label: 'Featured' },
+-  Client:    { color: '#10b981', label: 'Freelance' },
+-  Hackathon: { color: '#a78bfa', label: 'Hackathon' },
++	Featured: { color: '#f59e0b', label: 'Featured' },
++	Client: { color: '#10b981', label: 'Freelance' },
++	Hackathon: { color: '#a78bfa', label: 'Hackathon' },
+@@ -36,7 +36,7 @@ const breadcrumbJsonLd = JSON.stringify({
+-  "@context": "https://schema.org",
+-  "@type": "BreadcrumbList",
+-  "itemListElement": [
+-    { "@type": "ListItem", "position": 1, "name": "Home", "item": SITE.url },
+-    { "@type": "ListItem", "position": 2, "name": "Projects", "item": `${SITE.url}/projects` },
+-    { "@type": "ListItem", "position": 3, "name": p.title, "item": canonicalURL },
+-  ],
++	'@context': 'https://schema.org',
++	'@type': 'BreadcrumbList',
++	itemListElement: [
++		{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
++		{ '@type': 'ListItem', position: 2, name: 'Projects', item: `${SITE.url}/projects` },
++		{ '@type': 'ListItem', position: 3, name: p.title, item: canonicalURL },
++	],
+@@ -46,13 +46,19 @@ const projectJsonLd = JSON.stringify({
+-  "@context": "https://schema.org",
+-  "@type": "SoftwareApplication",
+-  "name": p.title,
+-  "description": p.description,
+-  "url": p.url ?? canonicalURL,
+-  "dateCreated": new Date(p.date).toISOString(),
+-  "author": {
+-    "@type": "Person",
+-    "name": SITE.name,
+-    "url": SITE.url,
+-  },
+-  ...(p.tech && p.tech.length > 0 ? { "keywords": p.tech.join(', ') } : {}),
+-  ...(allImages[0] ? { "image": allImages[0].startsWith('http') ? allImages[0] : new URL(allImages[0], SITE.url).toString() } : {}),
++	'@context': 'https://schema.org',
++	'@type': 'SoftwareApplication',
++	name: p.title,
++	description: p.description,
++	url: p.url ?? canonicalURL,
++	dateCreated: new Date(p.date).toISOString(),
++	author: {
++		'@type': 'Person',
++		name: SITE.name,
++		url: SITE.url,
++	},
++	...(p.tech && p.tech.length > 0 ? { keywords: p.tech.join(', ') } : {}),
++	...(allImages[0]
++		? {
++				image: allImages[0].startsWith('http')
++					? allImages[0]
++					: new URL(allImages[0], SITE.url).toString(),
++			}
++		: {}),

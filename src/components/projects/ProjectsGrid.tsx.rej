@@ -1,0 +1,712 @@
+diff a/src/components/projects/ProjectsGrid.tsx b/src/components/projects/ProjectsGrid.tsx	(rejected hunks)
+@@ -3,3 +2,0 @@
+-import { useState, useMemo, useRef, useEffect } from 'react';
+-import { createPortal } from 'react-dom';
+-import { motion, AnimatePresence } from 'motion/react';
+@@ -7,9 +4,9 @@ import {
+-  HugeiconsIcon,
+-  Search01Icon,
+-  FilterIcon,
+-  Delete01Icon,
+-  WebDesignIcon,
+-  MobileProgramming02Icon,
+-  ComputerTerminalIcon,
+-  ComputerProgrammingIcon,
+-  GameController03Icon,
++	ComputerProgrammingIcon,
++	ComputerTerminalIcon,
++	Delete01Icon,
++	FilterIcon,
++	GameController03Icon,
++	HugeiconsIcon,
++	MobileProgramming02Icon,
++	Search01Icon,
++	WebDesignIcon,
+@@ -17,2 +14,3 @@ import {
+-import ProjectCard from './ProjectCard';
+-import { getTechIconUrl } from '../../utils/techIcons';
++import { AnimatePresence, motion } from 'motion/react';
++import { useEffect, useMemo, useRef, useState } from 'react';
++import { createPortal } from 'react-dom';
+@@ -22,13 +22,13 @@ interface Project {
+-  slug: string;
+-  title: string;
+-  description: string;
+-  tags: string[];
+-  tech: string[];
+-  type: string;
+-  status: string;
+-  featured: boolean;
+-  images: string[];
+-  folder: string;
+-  url?: string;
+-  github?: string;
+-  coverImage?: string;
++	slug: string;
++	title: string;
++	description: string;
++	tags: string[];
++	tech: string[];
++	type: string;
++	status: string;
++	featured: boolean;
++	images: string[];
++	folder: string;
++	url?: string;
++	github?: string;
++	coverImage?: string;
+@@ -38,3 +38,3 @@ interface HoveredState {
+-  project: Project;
+-  index: number;
+-  rect: DOMRect;
++	project: Project;
++	index: number;
++	rect: DOMRect;
+@@ -46,9 +46,14 @@ const ROTATIONS = [-7, 6] as const;
+-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+-const TYPE_CHIPS: { value: string; label: string; icon?: any }[] = [
+-  { value: 'web',     label: 'Web',     icon: WebDesignIcon },
+-  { value: 'mobile',  label: 'Mobile',  icon: MobileProgramming02Icon },
+-  { value: 'cli',     label: 'CLI',     icon: ComputerTerminalIcon },
+-  { value: 'desktop', label: 'Desktop', icon: ComputerProgrammingIcon },
+-  { value: 'game',    label: 'Game',    icon: GameController03Icon },
+-  { value: 'os',      label: 'OS',      icon: ComputerProgrammingIcon },
+-  { value: 'other',   label: 'Other' },
++import type { ComponentType } from 'react';
++
++const TYPE_CHIPS: {
++	value: string;
++	label: string;
++	icon?: ComponentType<{ size?: number; color?: string }>;
++}[] = [
++	{ value: 'web', label: 'Web', icon: WebDesignIcon },
++	{ value: 'mobile', label: 'Mobile', icon: MobileProgramming02Icon },
++	{ value: 'cli', label: 'CLI', icon: ComputerTerminalIcon },
++	{ value: 'desktop', label: 'Desktop', icon: ComputerProgrammingIcon },
++	{ value: 'game', label: 'Game', icon: GameController03Icon },
++	{ value: 'os', label: 'OS', icon: ComputerProgrammingIcon },
++	{ value: 'other', label: 'Other' },
+@@ -58,36 +63,10 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-  const [search, setSearch] = useState('');
+-  const [searchFocused, setSearchFocused] = useState(false);
+-  const [hovered, setHovered] = useState<HoveredState | null>(null);
+-  const [activeTagFilters, setActiveTagFilters] = useState<string[]>([]);
+-  const [activeTypeFilter, setActiveTypeFilter] = useState<string | null>(null);
+-  const [tagPopoverOpen, setTagPopoverOpen] = useState(false);
+-  const ready = useAfterPreloader();
+-  const filterBtnRef = useRef<HTMLButtonElement>(null);
+-  const popoverRef = useRef<HTMLDivElement>(null);
+-  const searchRef = useRef<HTMLInputElement>(null);
+-
+-  useEffect(() => {
+-    const handler = (e: KeyboardEvent) => {
+-      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+-        e.preventDefault();
+-        searchRef.current?.focus();
+-        searchRef.current?.select();
+-      }
+-    };
+-    window.addEventListener('keydown', handler);
+-    return () => window.removeEventListener('keydown', handler);
+-  }, []);
+-
+-  useEffect(() => {
+-    if (!tagPopoverOpen) return;
+-    const handler = (e: MouseEvent) => {
+-      if (
+-        popoverRef.current && !popoverRef.current.contains(e.target as Node) &&
+-        filterBtnRef.current && !filterBtnRef.current.contains(e.target as Node)
+-      ) {
+-        setTagPopoverOpen(false);
+-      }
+-    };
+-    document.addEventListener('mousedown', handler);
+-    return () => document.removeEventListener('mousedown', handler);
+-  }, [tagPopoverOpen]);
++	const [search, setSearch] = useState('');
++	const [searchFocused, setSearchFocused] = useState(false);
++	const [hovered, setHovered] = useState<HoveredState | null>(null);
++	const [activeTagFilters, setActiveTagFilters] = useState<string[]>([]);
++	const [activeTypeFilter, setActiveTypeFilter] = useState<string | null>(null);
++	const [tagPopoverOpen, setTagPopoverOpen] = useState(false);
++	const ready = useAfterPreloader();
++	const filterBtnRef = useRef<HTMLButtonElement>(null);
++	const popoverRef = useRef<HTMLDivElement>(null);
++	const searchRef = useRef<HTMLInputElement>(null);
+@@ -95,8 +74,11 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-  // Count projects per tag
+-  const tagCounts = useMemo(() => {
+-    const counts: Record<string, number> = {};
+-    projects.forEach(p => {
+-      p.tags.forEach(t => { counts[t] = (counts[t] || 0) + 1; });
+-    });
+-    return counts;
+-  }, [projects]);
++	useEffect(() => {
++		const handler = (e: KeyboardEvent) => {
++			if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
++				e.preventDefault();
++				searchRef.current?.focus();
++				searchRef.current?.select();
++			}
++		};
++		window.addEventListener('keydown', handler);
++		return () => window.removeEventListener('keydown', handler);
++	}, []);
+@@ -104,3 +86,15 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-  const sortedTags = useMemo(() =>
+-    Object.entries(tagCounts).sort((a, b) => b[1] - a[1]),
+-  [tagCounts]);
++	useEffect(() => {
++		if (!tagPopoverOpen) return;
++		const handler = (e: MouseEvent) => {
++			if (
++				popoverRef.current &&
++				!popoverRef.current.contains(e.target as Node) &&
++				filterBtnRef.current &&
++				!filterBtnRef.current.contains(e.target as Node)
++			) {
++				setTagPopoverOpen(false);
++			}
++		};
++		document.addEventListener('mousedown', handler);
++		return () => document.removeEventListener('mousedown', handler);
++	}, [tagPopoverOpen]);
+@@ -108,2 +102,10 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-  const filtered = useMemo(() => {
+-    let list = projects;
++	// Count projects per tag
++	const tagCounts = useMemo(() => {
++		const counts: Record<string, number> = {};
++		projects.forEach((p) => {
++			p.tags.forEach((t) => {
++				counts[t] = (counts[t] || 0) + 1;
++			});
++		});
++		return counts;
++	}, [projects]);
+@@ -111,3 +113,4 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-    if (activeTypeFilter) {
+-      list = list.filter(p => p.type === activeTypeFilter);
+-    }
++	const sortedTags = useMemo(
++		() => Object.entries(tagCounts).sort((a, b) => b[1] - a[1]),
++		[tagCounts]
++	);
+@@ -115,5 +118,2 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-    if (activeTagFilters.length > 0) {
+-      list = list.filter(p =>
+-        activeTagFilters.every(t => p.tags.includes(t))
+-      );
+-    }
++	const filtered = useMemo(() => {
++		let list = projects;
+@@ -121,8 +121,3 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-    if (search.trim()) {
+-      const q = search.toLowerCase();
+-      list = list.filter(p =>
+-        p.title.toLowerCase().includes(q) ||
+-        p.description.toLowerCase().includes(q) ||
+-        p.tags.some(t => t.toLowerCase().includes(q))
+-      );
+-    }
++		if (activeTypeFilter) {
++			list = list.filter((p) => p.type === activeTypeFilter);
++		}
+@@ -130,2 +125,3 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-    return list;
+-  }, [projects, activeTypeFilter, activeTagFilters, search]);
++		if (activeTagFilters.length > 0) {
++			list = list.filter((p) => activeTagFilters.every((t) => p.tags.includes(t)));
++		}
+@@ -133,6 +129,9 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-  // Only show type chips for types that have at least one project
+-  const availableTypes = useMemo(() => {
+-    const typeCounts: Record<string, number> = {};
+-    projects.forEach(p => { typeCounts[p.type] = (typeCounts[p.type] || 0) + 1; });
+-    return TYPE_CHIPS.filter(c => typeCounts[c.value] > 0);
+-  }, [projects]);
++		if (search.trim()) {
++			const q = search.toLowerCase();
++			list = list.filter(
++				(p) =>
++					p.title.toLowerCase().includes(q) ||
++					p.description.toLowerCase().includes(q) ||
++					p.tags.some((t) => t.toLowerCase().includes(q))
++			);
++		}
+@@ -140,4 +139,2 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-  const handleHoverChange = (data: { project: Project; index: number; el: HTMLElement } | null) => {
+-    if (!data) { setHovered(null); return; }
+-    setHovered({ project: data.project, index: data.index, rect: data.el.getBoundingClientRect() });
+-  };
++		return list;
++	}, [projects, activeTypeFilter, activeTagFilters, search]);
+@@ -145,2 +142,8 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-  const rotation = hovered ? ROTATIONS[hovered.index % 2] : 0;
+-  const previewTop = hovered ? hovered.rect.top + hovered.rect.height / 2 : 0;
++	// Only show type chips for types that have at least one project
++	const availableTypes = useMemo(() => {
++		const typeCounts: Record<string, number> = {};
++		projects.forEach((p) => {
++			typeCounts[p.type] = (typeCounts[p.type] || 0) + 1;
++		});
++		return TYPE_CHIPS.filter((c) => typeCounts[c.value] > 0);
++	}, [projects]);
+@@ -148,5 +151,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-  const toggleTagFilter = (tag: string) => {
+-    setActiveTagFilters(prev =>
+-      prev.includes(tag) ? prev.filter(t => t !== tag) : [...prev, tag]
+-    );
+-  };
++	const handleHoverChange = (data: { project: Project; index: number; el: HTMLElement } | null) => {
++		if (!data) {
++			setHovered(null);
++			return;
++		}
++		setHovered({ project: data.project, index: data.index, rect: data.el.getBoundingClientRect() });
++	};
+@@ -154,51 +159,2 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-  return (
+-    <>
+-    <motion.div
+-      initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+-      animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+-      transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
+-    >
+-      {/* Type filter chips */}
+-      <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '16px', flexWrap: 'wrap' }}>
+-        <button
+-          onClick={() => setActiveTypeFilter(null)}
+-          style={{
+-            padding: '3px 10px',
+-            borderRadius: '9999px',
+-            border: 'none',
+-            background: activeTypeFilter === null ? 'var(--text-primary)' : 'var(--muted-bg)',
+-            color: activeTypeFilter === null ? 'var(--background)' : 'var(--text-muted)',
+-            cursor: 'pointer',
+-            fontSize: '11px',
+-            fontWeight: activeTypeFilter === null ? 500 : 400,
+-            letterSpacing: '-0.01em',
+-            transition: 'all 150ms ease',
+-          }}
+-        >
+-          All
+-        </button>
+-        {availableTypes.map(chip => (
+-          <button
+-            key={chip.value}
+-            onClick={() => setActiveTypeFilter(activeTypeFilter === chip.value ? null : chip.value)}
+-            style={{
+-              display: 'inline-flex',
+-              alignItems: 'center',
+-              gap: 5,
+-              padding: '3px 10px',
+-              borderRadius: '9999px',
+-              border: 'none',
+-              background: activeTypeFilter === chip.value ? 'var(--text-primary)' : 'var(--muted-bg)',
+-              color: activeTypeFilter === chip.value ? 'var(--background)' : 'var(--text-muted)',
+-              cursor: 'pointer',
+-              fontSize: '11px',
+-              fontWeight: activeTypeFilter === chip.value ? 500 : 400,
+-              letterSpacing: '-0.01em',
+-              transition: 'all 150ms ease',
+-            }}
+-          >
+-            {chip.icon && <HugeiconsIcon icon={chip.icon} size={11} color="currentColor" />}
+-            {chip.label}
+-          </button>
+-        ))}
+-      </div>
++	const rotation = hovered ? ROTATIONS[hovered.index % 2] : 0;
++	const previewTop = hovered ? hovered.rect.top + hovered.rect.height / 2 : 0;
+@@ -206,2 +162,5 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-      {/* Filter button + search */}
+-      <div className="flex items-center gap-2 mb-7 w-full">
++	const toggleTagFilter = (tag: string) => {
++		setActiveTagFilters((prev) =>
++			prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
++		);
++	};
+@@ -209,12 +168,25 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-        {/* Tag filter button */}
+-        <div className="relative shrink-0">
+-          <button
+-            ref={filterBtnRef}
+-            onClick={() => setTagPopoverOpen(o => !o)}
+-            className={`inline-flex items-center gap-[5px] px-[10px] py-1 rounded-full bg-[var(--muted-bg)] cursor-pointer transition-all duration-150 text-[11px] tracking-[0.01em] leading-[1.45] ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-muted)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
+-          >
+-            <HugeiconsIcon icon={FilterIcon} size={11} color="currentColor" />
+-            <span>
+-              {activeTagFilters.length > 0 ? `${activeTagFilters.length} filter${activeTagFilters.length > 1 ? 's' : ''}` : 'Filter'}
+-            </span>
+-          </button>
++	return (
++		<>
++			<motion.div
++				initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
++				animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
++				transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
++			>
++				{/* Type filter chips */}
++				<div>
++					<button type="button" onClick={() => setActiveTypeFilter(null)}>
++						All
++					</button>
++					{availableTypes.map((chip) => (
++						<button
++							type="button"
++							key={chip.value}
++							onClick={() =>
++								setActiveTypeFilter(activeTypeFilter === chip.value ? null : chip.value)
++							}
++						>
++							{chip.icon && <HugeiconsIcon icon={chip.icon} size={11} color="currentColor" />}
++							{chip.label}
++						</button>
++					))}
++				</div>
+@@ -222,51 +194,17 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-          {tagPopoverOpen && (
+-            <div
+-              ref={popoverRef}
+-              className="absolute top-[calc(100%+6px)] left-0 z-[100] bg-[var(--background)] rounded-[20px] p-1.5 min-w-[210px] max-h-[300px] overflow-y-auto shadow-[var(--shadow-lg)]"
+-            >
+-              <div className="flex items-center justify-between px-2 pb-1.5 pt-1">
+-                <span className="text-[11px] font-normal text-[var(--text-ghost)] tracking-[-0.01em]">
+-                  Filter by tag
+-                </span>
+-                {activeTagFilters.length > 0 && (
+-                  <button
+-                    onClick={() => setActiveTagFilters([])}
+-                    className="inline-flex items-center gap-1 px-1.5 py-[2px] text-[10px] text-[#ef4444] bg-transparent cursor-pointer rounded-[6px] tracking-[0.01em]"
+-                  >
+-                    Clear
+-                    <HugeiconsIcon icon={Delete01Icon} size={11} color="currentColor" />
+-                  </button>
+-                )}
+-              </div>
+-              {sortedTags.map(([tag, count]) => {
+-                const isOn = activeTagFilters.includes(tag);
+-                const iconUrl = getTechIconUrl(tag);
+-                return (
+-                  <button
+-                    key={tag}
+-                    onClick={() => toggleTagFilter(tag)}
+-                    className={`flex items-center w-full px-2 py-[5px] rounded-lg cursor-pointer text-[12px] tracking-[-0.01em] transition-[background] duration-100 gap-[7px] ${isOn ? 'bg-[var(--muted-bg)] text-[var(--text-primary)] font-medium' : 'bg-transparent text-[var(--text-secondary)] font-normal'}`}
+-                  >
+-                    {/* Checkbox */}
+-                    <span className={`w-3.5 h-3.5 rounded-[4px] shrink-0 flex items-center justify-center transition-all duration-100 ${isOn ? 'bg-[var(--text-primary)]' : 'bg-[var(--muted-bg)]'}`}>
+-                      {isOn && (
+-                        <svg width="9" height="9" viewBox="0 0 12 12" fill="none">
+-                          <path d="M2.5 6L5 8.5L9.5 3.5" stroke="var(--popover)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+-                        </svg>
+-                      )}
+-                    </span>
+-                    {iconUrl ? (
+-                      <img src={iconUrl} alt={tag} width={13} height={13} className={`object-contain shrink-0 ${isOn ? 'opacity-100' : 'opacity-70'}`} />
+-                    ) : (
+-                      <span className="w-[13px] shrink-0" />
+-                    )}
+-                    <span className="flex-1 text-left">{tag}</span>
+-                    <span className="text-[10px] text-[var(--text-muted)] [font-variant-numeric:tabular-nums]">
+-                      {count}
+-                    </span>
+-                  </button>
+-                );
+-              })}
+-            </div>
+-          )}
+-        </div>
++				{/* Filter button + search */}
++				<div className="flex items-center gap-2 mb-7 w-full">
++					{/* Tag filter button */}
++					<div className="relative shrink-0">
++						<button
++							type="button"
++							ref={filterBtnRef}
++							onClick={() => setTagPopoverOpen((o) => !o)}
++							className={`inline-flex items-center gap-[5px] px-[10px] py-1 rounded-full bg-[var(--muted-bg)] cursor-pointer transition-all duration-150 text-[11px] tracking-[0.01em] leading-[1.45] ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-muted)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
++						>
++							<HugeiconsIcon icon={FilterIcon} size={11} color="currentColor" />
++							<span>
++								{activeTagFilters.length > 0
++									? `${activeTagFilters.length} filter${activeTagFilters.length > 1 ? 's' : ''}`
++									: 'Filter'}
++							</span>
++						</button>
+@@ -274 +212,74 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-        <div className="flex-1" />
++						{tagPopoverOpen && (
++							<div
++								ref={popoverRef}
++								className="absolute top-[calc(100%+6px)] left-0 z-[100] bg-[var(--background)] rounded-[20px] p-1.5 min-w-[210px] max-h-[300px] overflow-y-auto shadow-[var(--shadow-lg)]"
++							>
++								<div className="flex items-center justify-between px-2 pb-1.5 pt-1">
++									<span className="text-[11px] font-normal text-[var(--text-ghost)] tracking-[-0.01em]">
++										Filter by tag
++									</span>
++									{activeTagFilters.length > 0 && (
++										<button
++											type="button"
++											onClick={() => setActiveTagFilters([])}
++											className="inline-flex items-center gap-1 px-1.5 py-[2px] text-[10px] text-[#ef4444] bg-transparent cursor-pointer rounded-[6px] tracking-[0.01em]"
++										>
++											Clear
++											<HugeiconsIcon icon={Delete01Icon} size={11} color="currentColor" />
++										</button>
++									)}
++								</div>
++								{sortedTags.map(([tag, count]) => {
++									const isOn = activeTagFilters.includes(tag);
++									const iconUrl = getTechIconUrl(tag);
++									return (
++										<button
++											type="button"
++											key={tag}
++											onClick={() => toggleTagFilter(tag)}
++											className={`flex items-center w-full px-2 py-[5px] rounded-lg cursor-pointer text-[12px] tracking-[-0.01em] transition-[background] duration-100 gap-[7px] ${isOn ? 'bg-[var(--muted-bg)] text-[var(--text-primary)] font-medium' : 'bg-transparent text-[var(--text-secondary)] font-normal'}`}
++										>
++											{/* Checkbox */}
++											<span
++												className={`w-3.5 h-3.5 rounded-[4px] shrink-0 flex items-center justify-center transition-all duration-100 ${isOn ? 'bg-[var(--text-primary)]' : 'bg-[var(--muted-bg)]'}`}
++											>
++												{isOn && (
++													<svg
++														width="9"
++														height="9"
++														viewBox="0 0 12 12"
++														fill="none"
++														aria-hidden="true"
++													>
++														<title>checked</title>
++														<path
++															d="M2.5 6L5 8.5L9.5 3.5"
++															stroke="var(--popover)"
++															strokeWidth="1.8"
++															strokeLinecap="round"
++															strokeLinejoin="round"
++														/>
++													</svg>
++												)}
++											</span>
++											{iconUrl ? (
++												<img
++													src={iconUrl}
++													alt={tag}
++													width={13}
++													height={13}
++													className={`object-contain shrink-0 ${isOn ? 'opacity-100' : 'opacity-70'}`}
++												/>
++											) : (
++												<span className="w-[13px] shrink-0" />
++											)}
++											<span className="flex-1 text-left">{tag}</span>
++											<span className="text-[10px] text-[var(--text-muted)] [font-variant-numeric:tabular-nums]">
++												{count}
++											</span>
++										</button>
++									);
++								})}
++							</div>
++						)}
++					</div>
+@@ -276,21 +287 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-        <div className="relative shrink-0">
+-          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 flex items-center text-[var(--text-ghost)] pointer-events-none">
+-            <HugeiconsIcon icon={Search01Icon} size={12} />
+-          </span>
+-          <input
+-            ref={searchRef}
+-            type="text"
+-            value={search}
+-            onChange={e => setSearch(e.target.value)}
+-            onFocus={() => setSearchFocused(true)}
+-            onBlur={() => setSearchFocused(false)}
+-            placeholder="Search..."
+-            className={`bg-[var(--muted-bg)] rounded-full pl-7 text-[12px] text-[var(--text-primary)] outline-none tracking-[-0.01em] w-[140px] py-[5px] ${(!searchFocused && !search) ? 'pr-9' : 'pr-3.5'}`}
+-          />
+-          {!searchFocused && !search && (
+-            <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--text-ghost)] pointer-events-none font-[inherit] tracking-[0]">
+-              ⌘F
+-            </kbd>
+-          )}
+-        </div>
+-      </div>
++					<div className="flex-1" />
+@@ -298,35 +289,21 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-      {/* Project list */}
+-      <AnimatePresence mode="sync" initial={false}>
+-        {filtered.length > 0 ? (
+-          <motion.div
+-            key={search + activeTagFilters.join(',') + (activeTypeFilter ?? '')}
+-            initial="hidden"
+-            animate={ready ? 'show' : 'hidden'}
+-            exit={{ opacity: 0 }}
+-            variants={{
+-              hidden: {},
+-              show: { transition: { staggerChildren: 0.04, delayChildren: 0.15 } },
+-            }}
+-            className="flex flex-col gap-0.5"
+-          >
+-            {filtered.map((project: Project, i: number) => (
+-              <ProjectCard
+-                key={project.slug}
+-                project={project}
+-                index={i}
+-                onHoverChange={handleHoverChange}
+-              />
+-            ))}
+-          </motion.div>
+-        ) : (
+-          <motion.div
+-            key="empty"
+-            initial={{ opacity: 0 }}
+-            animate={{ opacity: 1 }}
+-            exit={{ opacity: 0 }}
+-            className="py-16 text-center text-[13px] text-[var(--text-ghost)]"
+-          >
+-            No projects found.
+-          </motion.div>
+-        )}
+-      </AnimatePresence>
++					<div className="relative shrink-0">
++						<span className="absolute left-2.5 top-1/2 -translate-y-1/2 flex items-center text-[var(--text-ghost)] pointer-events-none">
++							<HugeiconsIcon icon={Search01Icon} size={12} />
++						</span>
++						<input
++							ref={searchRef}
++							type="text"
++							value={search}
++							onChange={(e) => setSearch(e.target.value)}
++							onFocus={() => setSearchFocused(true)}
++							onBlur={() => setSearchFocused(false)}
++							placeholder="Search..."
++							className={`bg-[var(--muted-bg)] rounded-full pl-7 text-[12px] text-[var(--text-primary)] outline-none tracking-[-0.01em] w-[140px] py-[5px] ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
++						/>
++						{!searchFocused && !search && (
++							<kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--text-ghost)] pointer-events-none font-[inherit] tracking-[0]">
++								⌘F
++							</kbd>
++						)}
++					</div>
++				</div>
+@@ -334 +311,36 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-    </motion.div>
++				{/* Project list */}
++				<AnimatePresence mode="sync" initial={false}>
++					{filtered.length > 0 ? (
++						<motion.div
++							key={search + activeTagFilters.join(',') + (activeTypeFilter ?? '')}
++							initial="hidden"
++							animate={ready ? 'show' : 'hidden'}
++							exit={{ opacity: 0 }}
++							variants={{
++								hidden: {},
++								show: { transition: { staggerChildren: 0.04, delayChildren: 0.15 } },
++							}}
++							className="flex flex-col gap-0.5"
++						>
++							{filtered.map((project: Project, i: number) => (
++								<ProjectCard
++									key={project.slug}
++									project={project}
++									index={i}
++									onHoverChange={handleHoverChange}
++								/>
++							))}
++						</motion.div>
++					) : (
++						<motion.div
++							key="empty"
++							initial={{ opacity: 0 }}
++							animate={{ opacity: 1 }}
++							exit={{ opacity: 0 }}
++							className="py-16 text-center text-[13px] text-[var(--text-ghost)]"
++						>
++							No projects found.
++						</motion.div>
++					)}
++				</AnimatePresence>
++			</motion.div>
+@@ -336,43 +348,37 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+-    {/* Preview image portal — rendered at body to avoid filter/transform containing block */}
+-    {typeof document !== 'undefined' && createPortal(
+-      <AnimatePresence>
+-        {hovered?.project.coverImage && (
+-          <motion.div
+-            key={hovered.project.slug}
+-            initial={{ opacity: 0, scale: 0.84, rotate: rotation > 0 ? rotation + 12 : rotation - 12 }}
+-            animate={{ opacity: 1, scale: 1, rotate: rotation }}
+-            exit={{ opacity: 0, scale: 0.84 }}
+-            transition={{ duration: 0.22, ease: [0.19, 1, 0.22, 1] }}
+-            className="fixed rounded-xl overflow-hidden pointer-events-none z-[9999] w-[200px]"
+-            style={{
+-              left: hovered.rect.right + 24,
+-              top: previewTop,
+-              y: '-50%',
+-            }}
+-          >
+-            <img
+-              src={hovered.project.coverImage}
+-              alt={hovered.project.title}
+-              className="w-full h-auto block"
+-            />
+-            <div style={{
+-              padding: '8px 10px 10px',
+-              background: 'var(--background)',
+-            }}>
+-              <p style={{
+-                fontSize: '10px',
+-                color: 'var(--text-muted)',
+-                lineHeight: 1.5,
+-                letterSpacing: '-0.01em',
+-                margin: 0,
+-              }}>
+-                {hovered.project.description}
+-              </p>
+-            </div>
+-          </motion.div>
+-        )}
+-      </AnimatePresence>,
+-      document.body
+-    )}
+-    </>
+-  );
++			{/* Preview image portal — rendered at body to avoid filter/transform containing block */}
++			{typeof document !== 'undefined' &&
++				createPortal(
++					<AnimatePresence>
++						{hovered?.project.coverImage && (
++							<motion.div
++								key={hovered.project.slug}
++								initial={{
++									opacity: 0,
++									scale: 0.84,
++									rotate: rotation > 0 ? rotation + 12 : rotation - 12,
++								}}
++								animate={{ opacity: 1, scale: 1, rotate: rotation }}
++								exit={{ opacity: 0, scale: 0.84 }}
++								transition={{ duration: 0.22, ease: [0.19, 1, 0.22, 1] }}
++								className="fixed rounded-xl overflow-hidden pointer-events-none z-[9999] w-[200px]"
++								style={{
++									left: hovered.rect.right + 24,
++									top: previewTop,
++									y: '-50%',
++								}}
++							>
++								<img
++									src={hovered.project.coverImage}
++									alt={hovered.project.title}
++									className="w-full h-auto block"
++								/>
++								<div>
++									<p>{hovered.project.description}</p>
++								</div>
++							</motion.div>
++						)}
++					</AnimatePresence>,
++					document.body
++				)}
++		</>
++	);

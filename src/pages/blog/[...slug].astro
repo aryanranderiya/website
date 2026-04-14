@@ -1,22 +1,22 @@
 ---
-import BlogLayout from "@/layouts/BlogLayout.astro";
-import ShareButtons from "@/components/blog/ShareButtons.astro";
-import RelatedPosts from "@/components/blog/RelatedPosts.astro";
-import NewsletterSignup from "@/components/blog/NewsletterSignup.astro";
-import { calculateReadingTime } from "@/lib/reading-time";
-import { getCollection, type CollectionEntry } from "astro:content";
-import { CircleArrowLeft02Icon } from "@/components/icons";
+import { type CollectionEntry, getCollection } from 'astro:content';
+import NewsletterSignup from '@/components/blog/NewsletterSignup.astro';
+import RelatedPosts from '@/components/blog/RelatedPosts.astro';
+import ShareButtons from '@/components/blog/ShareButtons.astro';
+import { CircleArrowLeft02Icon } from '@/components/icons';
+import BlogLayout from '@/layouts/BlogLayout.astro';
+import { calculateReadingTime } from '@/lib/reading-time';
 
 export async function getStaticPaths() {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
-  return posts.map((post) => ({
-    params: { slug: post.slug },
-    props: { post },
-  }));
+	const posts = await getCollection('blog', ({ data }) => !data.draft);
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: { post },
+	}));
 }
 
 interface Props {
-  post: CollectionEntry<"blog">;
+	post: CollectionEntry<'blog'>;
 }
 
 const { post } = Astro.props;
@@ -24,26 +24,23 @@ const { Content, headings } = await post.render();
 
 const readingTime = calculateReadingTime(post.body);
 
-const allPosts = await getCollection("blog", ({ data }) => !data.draft);
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const currentTags = new Set(post.data.tags);
 const related = allPosts
-  .filter((p) => p.slug !== post.slug)
-  .map((p) => ({
-    ...p,
-    score: p.data.tags.filter((t) => currentTags.has(t)).length,
-  }))
-  .filter((p) => p.score > 0)
-  .sort(
-    (a, b) =>
-      b.score - a.score || b.data.date.valueOf() - a.data.date.valueOf(),
-  )
-  .slice(0, 3)
-  .map((p) => ({
-    slug: p.slug,
-    title: p.data.title,
-    description: p.data.description,
-    tags: p.data.tags,
-  }));
+	.filter((p) => p.slug !== post.slug)
+	.map((p) => ({
+		...p,
+		score: p.data.tags.filter((t) => currentTags.has(t)).length,
+	}))
+	.filter((p) => p.score > 0)
+	.sort((a, b) => b.score - a.score || b.data.date.valueOf() - a.data.date.valueOf())
+	.slice(0, 3)
+	.map((p) => ({
+		slug: p.slug,
+		title: p.data.title,
+		description: p.data.description,
+		tags: p.data.tags,
+	}));
 ---
 
 <BlogLayout
@@ -60,7 +57,7 @@ const related = allPosts
   <Content />
 
   <!-- Post footer — single divider, then all sections flow without further lines -->
-  <div class="mt-16 pt-10" style="border-top: 1px solid var(--border);">
+  <div class="mt-16 pt-10 border-t border-[var(--border)]">
     <ShareButtons title={post.data.title} url={Astro.url.href} />
     <RelatedPosts posts={related} />
     <NewsletterSignup />
@@ -69,8 +66,7 @@ const related = allPosts
     <div class="mt-10">
       <a
         href="/blog"
-        class="inline-flex items-center gap-2 text-sm transition-opacity hover:opacity-60"
-        style="color: var(--muted-foreground);"
+        class="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] transition-opacity hover:opacity-60"
       >
         <CircleArrowLeft02Icon width={16} height={16} />
         Back to Blog

@@ -1,0 +1,32 @@
+diff a/src/layouts/PageLayout.astro b/src/layouts/PageLayout.astro	(rejected hunks)
+@@ -2,2 +1,0 @@
+-import Layout from './Layout.astro';
+-import Sidebar from '@/components/layout/Sidebar';
+@@ -7,9 +7,9 @@ interface Props {
+-  title?: string;
+-  description?: string;
+-  ogImage?: string;
+-  ogType?: 'website' | 'article';
+-  canonical?: string;
+-  noindex?: boolean;
+-  fullWidth?: boolean;
+-  articleDate?: Date;
+-  articleModified?: Date;
++	title?: string;
++	description?: string;
++	ogImage?: string;
++	ogType?: 'website' | 'article';
++	canonical?: string;
++	noindex?: boolean;
++	fullWidth?: boolean;
++	articleDate?: Date;
++	articleModified?: Date;
+@@ -18 +18,7 @@ interface Props {
+-const { fullWidth = false, ogType = 'website', articleDate, articleModified, ...layoutProps } = Astro.props;
++const {
++	fullWidth = false,
++	ogType = 'website',
++	articleDate,
++	articleModified,
++	...layoutProps
++} = Astro.props;

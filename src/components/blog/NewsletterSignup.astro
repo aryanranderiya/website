@@ -4,9 +4,9 @@
 
 <section class="mt-12">
   <div class="py-7 px-6 rounded-[var(--radius-xl)] bg-[var(--muted-bg)]">
-    <p class="text-label mb-2" style="color: var(--text-ghost);">Newsletter</p>
+    <p class="text-label mb-2 text-[var(--text-ghost)]">Newsletter</p>
     <h3 class="text-heading-3 mb-1.5">Stay in the loop</h3>
-    <p class="text-sm mb-5" style="color: var(--text-muted);">
+    <p class="text-sm mb-5 text-[var(--text-muted)]">
       New posts on engineering, design, and building things. No spam.
     </p>
     <form
@@ -19,8 +19,7 @@
         type="email"
         id="newsletter-email"
         placeholder="your@email.com"
-        class="flex-1 text-sm px-3 py-2 rounded-[var(--radius-md)] bg-[var(--background)] focus:outline-none transition-colors"
-        style="color: var(--text-primary); border: 1px solid var(--border);"
+        class="flex-1 text-sm px-3 py-2 rounded-[var(--radius-md)] bg-[var(--background)] text-[var(--text-primary)] focus:outline-none transition-colors"
         aria-label="Email address"
         autocomplete="email"
         required
@@ -28,13 +27,12 @@
       <button
         type="submit"
         id="newsletter-btn"
-        class="shrink-0 text-sm font-medium px-4 py-2 rounded-[var(--radius-md)] transition-opacity hover:opacity-80"
-        style="background: var(--text-primary); color: var(--background);"
+        class="shrink-0 text-sm font-medium px-4 py-2 rounded-[var(--radius-md)] transition-opacity hover:opacity-80 bg-[var(--text-primary)] text-[var(--background)]"
       >
         Subscribe
       </button>
     </form>
-    <p id="newsletter-msg" class="text-xs mt-3 hidden" style="color: var(--text-ghost);"></p>
+    <p id="newsletter-msg" class="text-xs mt-3 hidden text-[var(--text-ghost)]"></p>
   </div>
 </section>
 

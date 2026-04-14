@@ -12,8 +12,7 @@ import ThemeToggle from './ThemeToggle';
     <!-- Logo / Name -->
     <a
       href="/"
-      class="font-semibold text-sm tracking-tight flex-shrink-0 transition-opacity hover:opacity-70"
-      style="letter-spacing: -0.02em;"
+      class="font-semibold text-sm tracking-[-0.02em] shrink-0 transition-opacity hover:opacity-70"
       aria-label="Home"
     >
       {SITE.name}
@@ -28,14 +27,13 @@ import ThemeToggle from './ThemeToggle';
         id="hamburger-toggle"
         aria-label="Toggle menu"
         aria-expanded="false"
-        class="w-9 h-9 flex items-center justify-center rounded-lg transition-opacity hover:opacity-70"
-        style="color: var(--foreground);"
+        class="w-9 h-9 flex items-center justify-center rounded-lg transition-opacity hover:opacity-70 text-[var(--foreground)]"
       >
         <!-- Hamburger lines / X — animated via CSS classes -->
-        <span id="hamburger-icon" class="hamburger-icon">
-          <span class="line line-1"></span>
-          <span class="line line-2"></span>
-          <span class="line line-3"></span>
+        <span id="hamburger-icon" class="hamburger-icon flex flex-col justify-center items-center w-[18px] h-[18px] gap-1">
+          <span class="line block w-[18px] h-[1.5px] bg-current rounded-[2px] [transform-origin:center] transition-[transform,opacity,width] duration-200 line-1"></span>
+          <span class="line block w-[18px] h-[1.5px] bg-current rounded-[2px] [transform-origin:center] transition-[transform,opacity,width] duration-200 line-2"></span>
+          <span class="line block w-[18px] h-[1.5px] bg-current rounded-[2px] [transform-origin:center] transition-[transform,opacity,width] duration-200 line-3"></span>
         </span>
       </button>
     </div>
@@ -46,22 +44,13 @@ import ThemeToggle from './ThemeToggle';
 <div
   id="overlay-menu"
   aria-hidden="true"
-  class="overlay-menu fixed inset-0 z-50 flex flex-col"
-  style="
-    background: color-mix(in srgb, var(--background) 85%, transparent);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s ease;
-  "
+  class="overlay-menu fixed inset-0 z-50 flex flex-col bg-[color-mix(in_srgb,var(--background)_85%,transparent)] backdrop-blur-[20px] opacity-0 pointer-events-none transition-opacity duration-200"
 >
   <!-- Top bar: logo + close button -->
-  <div class="page-container h-14 flex items-center justify-between flex-shrink-0">
+  <div class="page-container h-14 flex items-center justify-between shrink-0">
     <a
       href="/"
-      class="font-semibold text-sm tracking-tight transition-opacity hover:opacity-70 overlay-nav-link"
-      style="letter-spacing: -0.02em;"
+      class="font-semibold text-sm tracking-[-0.02em] transition-opacity hover:opacity-70 overlay-nav-link"
       aria-label="Home"
     >
       {SITE.name}
@@ -70,8 +59,7 @@ import ThemeToggle from './ThemeToggle';
     <button
       id="overlay-close"
       aria-label="Close menu"
-      class="w-9 h-9 flex items-center justify-center rounded-lg transition-opacity hover:opacity-70"
-      style="color: var(--foreground);"
+      class="w-9 h-9 flex items-center justify-center rounded-lg transition-opacity hover:opacity-70 text-[var(--foreground)]"
     >
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
         <line x1="18" y1="6" x2="6" y2="18"/>
@@ -88,14 +76,13 @@ import ThemeToggle from './ThemeToggle';
     {PAGES.map(page => (
       <a
         href={page.href}
-        class="overlay-nav-link overlay-link flex items-baseline gap-3 py-2 transition-opacity hover:opacity-60"
-        style="color: var(--foreground);"
+        class="overlay-nav-link overlay-link flex items-baseline gap-3 py-2 transition-opacity hover:opacity-60 text-[var(--foreground)]"
       >
-        <span class="font-semibold" style="font-size: 1.75rem; letter-spacing: -0.03em; line-height: 1.15;">
+        <span class="font-semibold text-[1.75rem] tracking-[-0.03em] leading-[1.15]">
           {page.label}
         </span>
         {page.description && (
-          <span class="text-sm hidden sm:inline" style="color: var(--muted-foreground);">
+          <span class="text-sm hidden sm:inline text-[var(--muted-foreground)]">
             {page.description}
           </span>
         )}
@@ -105,28 +92,7 @@ import ThemeToggle from './ThemeToggle';
 </div>
 
 <style>
-  /* Hamburger icon lines */
-  .hamburger-icon {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 18px;
-    height: 18px;
-    gap: 4px;
-  }
-
-  .line {
-    display: block;
-    width: 18px;
-    height: 1.5px;
-    background: currentColor;
-    border-radius: 2px;
-    transform-origin: center;
-    transition: transform 0.2s ease, opacity 0.2s ease, width 0.2s ease;
-  }
-
-  /* Open state: animate to X */
+  /* Open state: animate hamburger to X */
   .hamburger-icon.is-open .line-1 {
     transform: translateY(5.5px) rotate(45deg);
   }

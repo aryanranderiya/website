@@ -1,44 +1,44 @@
 ---
-import PageLayout from '@/layouts/PageLayout.astro';
+import {
+	BrowserIcon,
+	DatabaseIcon,
+	FigmaIcon,
+	HugeiconsIcon,
+	InformationCircleIcon,
+	SmartPhone01Icon,
+} from '@icons';
 import FreelanceWork from '@/components/freelance/FreelanceWork.tsx';
 import { pastWork } from '@/data/freelance';
-import {
-  HugeiconsIcon,
-  InformationCircleIcon,
-  BrowserIcon,
-  SmartPhone01Icon,
-  FigmaIcon,
-  DatabaseIcon,
-} from '@icons';
+import PageLayout from '@/layouts/PageLayout.astro';
 
 export async function getStaticPaths() {
-  return pastWork.map(p => ({ params: { slug: p.slug } }));
+	return pastWork.map((p) => ({ params: { slug: p.slug } }));
 }
 
 const { slug } = Astro.params;
-const currentWork = pastWork.find(p => p.slug === slug);
+const currentWork = pastWork.find((p) => p.slug === slug);
 
 const services = [
-  {
-    title: 'Web Development',
-    description: 'React, Next.js, Astro. Landing pages to complex SaaS products.',
-    icon: BrowserIcon,
-  },
-  {
-    title: 'Mobile Development',
-    description: 'React Native & Expo. Cross-platform iOS and Android.',
-    icon: SmartPhone01Icon,
-  },
-  {
-    title: 'UI/UX Design',
-    description: 'Figma to code. I design and build — no handoff overhead.',
-    icon: FigmaIcon,
-  },
-  {
-    title: 'Backend & APIs',
-    description: 'FastAPI, Node.js, PostgreSQL. Scalable and clean.',
-    icon: DatabaseIcon,
-  },
+	{
+		title: 'Web Development',
+		description: 'React, Next.js, Astro. Landing pages to complex SaaS products.',
+		icon: BrowserIcon,
+	},
+	{
+		title: 'Mobile Development',
+		description: 'React Native & Expo. Cross-platform iOS and Android.',
+		icon: SmartPhone01Icon,
+	},
+	{
+		title: 'UI/UX Design',
+		description: 'Figma to code. I design and build — no handoff overhead.',
+		icon: FigmaIcon,
+	},
+	{
+		title: 'Backend & APIs',
+		description: 'FastAPI, Node.js, PostgreSQL. Scalable and clean.',
+		icon: DatabaseIcon,
+	},
 ];
 ---
 
@@ -47,10 +47,10 @@ const services = [
 
     <!-- Breadcrumb -->
     {currentWork && (
-      <nav class="flex items-center gap-1.5 text-xs mb-8" style="color: var(--text-ghost);" aria-label="Breadcrumb">
-        <a href="/freelance" class="transition-colors hover:text-[var(--text-muted)]" style="color: var(--text-ghost);">Freelance</a>
+      <nav class="flex items-center gap-1.5 text-xs mb-8 text-[var(--text-ghost)]" aria-label="Breadcrumb">
+        <a href="/freelance" class="text-[var(--text-ghost)] transition-colors hover:text-[var(--text-muted)]">Freelance</a>
         <span>/</span>
-        <span style="color: var(--text-muted);">{currentWork.name}</span>
+        <span class="text-[var(--text-muted)]">{currentWork.name}</span>
       </nav>
     )}
 

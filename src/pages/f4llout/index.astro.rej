@@ -1,0 +1,10 @@
+diff a/src/pages/f4llout/index.astro b/src/pages/f4llout/index.astro	(rejected hunks)
+@@ -2 +2 @@
+-import PageLayout from "@/layouts/PageLayout.astro";
++import PageLayout from '@/layouts/PageLayout.astro';
+@@ -4,4 +4 @@ import PageLayout from "@/layouts/PageLayout.astro";
+-const images = Array.from(
+-  { length: 9 },
+-  (_, i) => `/media/fallout/${i + 1}.webp`,
+-);
++const images = Array.from({ length: 9 }, (_, i) => `/media/fallout/${i + 1}.webp`);

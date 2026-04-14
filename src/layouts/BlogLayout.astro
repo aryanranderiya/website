@@ -1,85 +1,82 @@
 ---
-import PageLayout from "./PageLayout.astro";
-import TableOfContents from "@/components/blog/TableOfContents.astro";
-import Giscus from "@/components/blog/Giscus.astro";
-import { formatDate } from "@/lib/utils";
-import { SITE } from "@/constants/site";
-import { Calendar02Icon, Clock01Icon, HugeiconsIcon } from "@/components/icons";
+import Giscus from '@/components/blog/Giscus.astro';
+import TableOfContents from '@/components/blog/TableOfContents.astro';
+import { SITE } from '@/constants/site';
+import { formatDate } from '@/lib/utils';
+import PageLayout from './PageLayout.astro';
 
 interface Heading {
-  depth: number;
-  slug: string;
-  text: string;
+	depth: number;
+	slug: string;
+	text: string;
 }
 
 interface Props {
-  title: string;
-  description: string;
-  date: Date;
-  updated?: Date;
-  tags?: string[];
-  category?: string;
-  cover?: string;
-  headings?: Heading[];
-  readingTime?: number;
+	title: string;
+	description: string;
+	date: Date;
+	updated?: Date;
+	tags?: string[];
+	category?: string;
+	cover?: string;
+	headings?: Heading[];
+	readingTime?: number;
 }
 
 const {
-  title,
-  description,
-  date,
-  updated,
-  tags = [],
-  category,
-  cover,
-  headings = [],
-  readingTime,
+	title,
+	description,
+	date,
+	updated,
+	tags = [],
+	category,
+	cover,
+	headings = [],
+	readingTime,
 } = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 const canonicalURL = new URL(Astro.url.pathname, SITE.url).toString();
 const articleJsonLd = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: title,
-  description: description,
-  datePublished: date.toISOString(),
-  ...(updated ? { dateModified: updated.toISOString() } : {}),
-  author: {
-    "@type": "Person",
-    name: SITE.name,
-    url: SITE.url,
-  },
-  publisher: {
-    "@type": "Person",
-    name: SITE.name,
-    url: SITE.url,
-  },
-  ...(cover
-    ? {
-        image: cover.startsWith("http")
-          ? cover
-          : new URL(cover, SITE.url).toString(),
-      }
-    : {}),
-  url: canonicalURL,
-  inLanguage: "en-US",
-  isPartOf: { "@type": "Blog", url: `${SITE.url}/blog` },
+	'@context': 'https://schema.org',
+	'@type': 'Article',
+	headline: title,
+	description: description,
+	datePublished: date.toISOString(),
+	...(updated ? { dateModified: updated.toISOString() } : {}),
+	author: {
+		'@type': 'Person',
+		name: SITE.name,
+		url: SITE.url,
+	},
+	publisher: {
+		'@type': 'Person',
+		name: SITE.name,
+		url: SITE.url,
+	},
+	...(cover
+		? {
+				image: cover.startsWith('http') ? cover : new URL(cover, SITE.url).toString(),
+			}
+		: {}),
+	url: canonicalURL,
+	inLanguage: 'en-US',
+	isPartOf: { '@type': 'Blog', url: `${SITE.url}/blog` },
 });
 
 const breadcrumbJsonLd = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Blog",
-      item: `${SITE.url}/blog`,
-    },
-    { "@type": "ListItem", position: 3, name: title, item: canonicalURL },
-  ],
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: [
+		{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+		{
+			'@type': 'ListItem',
+			position: 2,
+			name: 'Blog',
+			item: `${SITE.url}/blog`,
+		},
+		{ '@type': 'ListItem', position: 3, name: title, item: canonicalURL },
+	],
 });
 ---
 
@@ -94,69 +91,58 @@ const breadcrumbJsonLd = JSON.stringify({
 >
   <script is:inline type="application/ld+json" set:html={articleJsonLd} />
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
-  <div class="blog-wrapper">
-    <article class="blog-content" style="padding-bottom: 64px;">
-      {
-        cover && (
-          <img
-            src={cover}
-            alt={title}
-            class="w-full aspect-video object-cover rounded-2xl mb-10"
-          />
-        )
-      }
+
+  <div class="flex ml-[max(0px,calc((100%-var(--prose-max-width))/2))] px-[var(--page-inset)] gap-14 items-start">
+    <article class="flex-1 min-w-0 max-w-[var(--prose-max-width)] pb-16">
+
+      <!-- Breadcrumb -->
+      <nav class="flex items-center gap-1.5 text-xs mb-8 text-[var(--text-ghost)]" aria-label="Breadcrumb">
+        <a href="/blog" class="text-[var(--text-ghost)] transition-colors hover:text-[var(--text-muted)]">Blog</a>
+        <span>/</span>
+        <span class="truncate text-[var(--text-muted)]">{title}</span>
+      </nav>
+
+      {cover && (
+        <img
+          src={cover}
+          alt={title}
+          class="w-full aspect-video object-cover rounded-xl mb-10"
+        />
+      )}
 
       <!-- Header -->
-      <header class="mb-10">
-        <!-- Meta row: category chip + date + reading time -->
-        <div class="flex flex-wrap items-center gap-2 mb-4 text-caption">
-          {
-            category && (
-              <span
-                class="px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--muted-bg)]"
-                style="color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; font-size: 10px;"
-              >
-                {category}
-              </span>
-            )
-          }
-          {category && <span style="color: var(--text-ghost);">·</span>}
-          <span class="flex items-center gap-1" style="color: var(--text-ghost);">
-            <Calendar02Icon width={12} height={12} />
-            <time datetime={date.toISOString()}>{formatDate(date)}</time>
-          </span>
-          {
-            readingTime && (
-              <>
-                <span style="color: var(--text-ghost);">·</span>
-                <span class="flex items-center gap-1" style="color: var(--text-ghost);">
-                  <Clock01Icon width={12} height={12} />
-                  <span>{readingTime} min read</span>
-                </span>
-              </>
-            )
-          }
+      <header class="mb-12">
+        {category && (
+          <div class="text-label mb-3 text-[var(--accent-blue)]">
+            {category}
+          </div>
+        )}
+        <h1 class="text-heading-1 mb-4">{title}</h1>
+        <p class="text-body mb-5 text-[var(--text-muted)]">{description}</p>
+        <div class="flex items-center gap-3 text-caption">
+          <time datetime={date.toISOString()}>{formatDate(date)}</time>
+          {updated && (
+            <>
+              <span class="text-[var(--text-ghost)]">·</span>
+              <span>Updated {formatDate(updated)}</span>
+            </>
+          )}
+          {readingTime && (
+            <>
+              <span class="text-[var(--text-ghost)]">·</span>
+              <span>{readingTime} min read</span>
+            </>
+          )}
         </div>
-
-        <h1 class="text-heading-1 mb-5">{title}</h1>
-
-        {
-          tags.length > 0 && (
-            <div class="flex flex-wrap gap-1.5">
-              {tags.map((tag) => (
-                <span
-                  class="text-xs px-2.5 py-1 rounded-full bg-[var(--muted-bg)]"
-                  style="color: var(--text-ghost);"
-                >
-                  {tag
-                    .split(" ")
-                    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-                    .join(" ")}
-                </span>
-              ))}
-            </div>
-          )
-        }
+        {tags.length > 0 && (
+          <div class="flex flex-wrap gap-1.5 mt-4">
+            {tags.map(tag => (
+              <span class="text-xs px-2.5 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)]">
+                {tag.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+              </span>
+            ))}
+          </div>
+        )}
       </header>
 
       <!-- Content -->
@@ -167,44 +153,10 @@ const breadcrumbJsonLd = JSON.stringify({
       <Giscus />
     </article>
 
-    {
-      tocHeadings.length > 1 && (
-        <aside class="blog-toc-aside">
-          <TableOfContents headings={headings} />
-        </aside>
-      )
-    }
+    {tocHeadings.length > 1 && (
+      <aside class="hidden min-[1080px]:block w-44 shrink-0 sticky top-[calc(var(--section-padding-top)+24px)]">
+        <TableOfContents headings={headings} />
+      </aside>
+    )}
   </div>
 </PageLayout>
-
-<style>
-  .blog-wrapper {
-    display: flex;
-    /* Align left edge with page-container so sidebar isn't encroached;
-       TOC extends to the right naturally instead of centering the wider box */
-    margin-left: max(0px, calc((100% - var(--prose-max-width)) / 2));
-    padding: 0 var(--page-inset);
-    gap: 56px;
-    align-items: flex-start;
-  }
-
-  .blog-content {
-    flex: 1;
-    min-width: 0;
-    max-width: var(--prose-max-width);
-  }
-
-  .blog-toc-aside {
-    display: none;
-    width: 176px;
-    flex-shrink: 0;
-    position: sticky;
-    top: calc(var(--section-padding-top) + 24px);
-  }
-
-  @media (min-width: 1080px) {
-    .blog-toc-aside {
-      display: block;
-    }
-  }
-</style>

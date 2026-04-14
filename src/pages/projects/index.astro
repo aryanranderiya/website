@@ -1,37 +1,37 @@
 ---
-import PageLayout from "@/layouts/PageLayout.astro";
-import ProjectsGrid from "@/components/projects/ProjectsGrid";
-import { getCollection } from "astro:content";
+import { getCollection } from 'astro:content';
+import ProjectsGrid from '@/components/projects/ProjectsGrid';
+import PageLayout from '@/layouts/PageLayout.astro';
 
-const projectEntries = await getCollection("projects");
+const projectEntries = await getCollection('projects');
 const FOLDER_PRIORITY: Record<string, number> = {
-  Featured: 0,
-  Client: 1,
-  Hackathon: 2,
-  Projects: 3,
+	Featured: 0,
+	Client: 1,
+	Hackathon: 2,
+	Projects: 3,
 };
 const projects = projectEntries
-  .sort((a, b) => {
-    const fa = FOLDER_PRIORITY[a.data.folder] ?? 9;
-    const fb = FOLDER_PRIORITY[b.data.folder] ?? 9;
-    if (fa !== fb) return fa - fb;
-    return (a.data.order ?? 99) - (b.data.order ?? 99);
-  })
-  .map((entry) => ({
-    slug: entry.slug,
-    title: entry.data.title,
-    description: entry.data.description,
-    tags: entry.data.tags,
-    tech: entry.data.tech,
-    type: entry.data.type,
-    status: entry.data.status,
-    featured: entry.data.featured,
-    images: entry.data.images,
-    folder: entry.data.folder,
-    url: entry.data.url,
-    github: entry.data.github,
-    coverImage: entry.data.coverImage,
-  }));
+	.sort((a, b) => {
+		const fa = FOLDER_PRIORITY[a.data.folder] ?? 9;
+		const fb = FOLDER_PRIORITY[b.data.folder] ?? 9;
+		if (fa !== fb) return fa - fb;
+		return (a.data.order ?? 99) - (b.data.order ?? 99);
+	})
+	.map((entry) => ({
+		slug: entry.slug,
+		title: entry.data.title,
+		description: entry.data.description,
+		tags: entry.data.tags,
+		tech: entry.data.tech,
+		type: entry.data.type,
+		status: entry.data.status,
+		featured: entry.data.featured,
+		images: entry.data.images,
+		folder: entry.data.folder,
+		url: entry.data.url,
+		github: entry.data.github,
+		coverImage: entry.data.coverImage,
+	}));
 ---
 
 <PageLayout

@@ -1,10 +1,7 @@
 ---
-import PageLayout from "@/layouts/PageLayout.astro";
+import PageLayout from '@/layouts/PageLayout.astro';
 
-const images = Array.from(
-  { length: 9 },
-  (_, i) => `/media/fallout/${i + 1}.webp`,
-);
+const images = Array.from({ length: 9 }, (_, i) => `/media/fallout/${i + 1}.webp`);
 ---
 
 <PageLayout
@@ -22,42 +19,18 @@ const images = Array.from(
       the course of the organization's branding era.
     </p>
 
-    <!-- Full-width image stack -->
-    <div class="w-full mt-5">
-      {
-        images.map((src, i) => (
-          <div class="fallout-img-wrap">
-            <img
-              src={src}
-              alt={`F4LLOUT Esports — ${i + 1}`}
-              loading={i === 0 ? "eager" : "lazy"}
-              decoding="async"
-              class="fallout-img"
-            />
-          </div>
-        ))
-      }
-    </div>
+  <!-- Full-width image stack -->
+  <div class="w-full flex flex-col gap-1">
+    {images.map((src, i) => (
+      <div class="w-full leading-[0]">
+        <img
+          src={src}
+          alt={`F4LLOUT Esports — ${i + 1}`}
+          loading={i === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+          class="w-full h-auto block object-cover"
+        />
+      </div>
+    ))}
   </div>
 </PageLayout>
-
-<style>
-  .fallout-gallery {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .fallout-img-wrap {
-    width: 100%;
-    line-height: 0;
-  }
-
-  .fallout-img {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: cover;
-  }
-</style>

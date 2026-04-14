@@ -1,0 +1,222 @@
+diff a/src/components/home/ClockWidget.tsx b/src/components/home/ClockWidget.tsx	(rejected hunks)
+@@ -3 +2,0 @@
+-import { useState, useEffect } from 'react';
+@@ -7,7 +7,7 @@ function formatTime(date: Date): string {
+-  return date.toLocaleTimeString('en-US', {
+-    timeZone: 'Asia/Kolkata',
+-    hour: '2-digit',
+-    minute: '2-digit',
+-    second: '2-digit',
+-    hour12: false,
+-  });
++	return date.toLocaleTimeString('en-US', {
++		timeZone: 'Asia/Kolkata',
++		hour: '2-digit',
++		minute: '2-digit',
++		second: '2-digit',
++		hour12: false,
++	});
+@@ -17,6 +17,6 @@ function formatDate(date: Date): string {
+-  return date.toLocaleDateString('en-US', {
+-    timeZone: 'Asia/Kolkata',
+-    weekday: 'long',
+-    month: 'long',
+-    day: 'numeric',
+-  });
++	return date.toLocaleDateString('en-US', {
++		timeZone: 'Asia/Kolkata',
++		weekday: 'long',
++		month: 'long',
++		day: 'numeric',
++	});
+@@ -26,3 +26,3 @@ function AnalogClock({ date }: { date: Date }) {
+-  const hours = date.getHours() % 12;
+-  const minutes = date.getMinutes();
+-  const seconds = date.getSeconds();
++	const hours = date.getHours() % 12;
++	const minutes = date.getMinutes();
++	const seconds = date.getSeconds();
+@@ -30,3 +30,3 @@ function AnalogClock({ date }: { date: Date }) {
+-  const secondDeg = seconds * 6;
+-  const minuteDeg = minutes * 6 + seconds * 0.1;
+-  const hourDeg = hours * 30 + minutes * 0.5;
++	const secondDeg = seconds * 6;
++	const minuteDeg = minutes * 6 + seconds * 0.1;
++	const hourDeg = hours * 30 + minutes * 0.5;
+@@ -34,5 +34,12 @@ function AnalogClock({ date }: { date: Date }) {
+-  return (
+-    <svg width="48" height="48" viewBox="0 0 48 48" className="flex-shrink-0">
+-      {/* Clock face */}
+-      <circle cx="24" cy="24" r="22" fill="none" stroke="var(--border)" strokeWidth="1.5" />
+-      <circle cx="24" cy="24" r="21" fill="var(--card)" />
++	return (
++		<svg
++			width="48"
++			height="48"
++			viewBox="0 0 48 48"
++			className="flex-shrink-0"
++			aria-label="Analog clock"
++		>
++			<title>Analog clock</title>
++			{/* Clock face */}
++			<circle cx="24" cy="24" r="22" fill="none" stroke="var(--border)" strokeWidth="1.5" />
++			<circle cx="24" cy="24" r="21" fill="var(--card)" />
+@@ -40,18 +47,22 @@ function AnalogClock({ date }: { date: Date }) {
+-      {/* Hour markers */}
+-      {[...Array(12)].map((_, i) => {
+-        const angle = (i * 30 * Math.PI) / 180;
+-        const x1 = 24 + 17 * Math.sin(angle);
+-        const y1 = 24 - 17 * Math.cos(angle);
+-        const x2 = 24 + (i % 3 === 0 ? 14 : 15.5) * Math.sin(angle);
+-        const y2 = 24 - (i % 3 === 0 ? 14 : 15.5) * Math.cos(angle);
+-        return (
+-          <line
+-            key={i}
+-            x1={x1} y1={y1} x2={x2} y2={y2}
+-            stroke="var(--muted-foreground)"
+-            strokeWidth={i % 3 === 0 ? 1.5 : 0.75}
+-            strokeLinecap="round"
+-            opacity={0.5}
+-          />
+-        );
+-      })}
++			{/* Hour markers */}
++			{[...Array(12)].map((_, i) => {
++				const angle = (i * 30 * Math.PI) / 180;
++				const x1 = 24 + 17 * Math.sin(angle);
++				const y1 = 24 - 17 * Math.cos(angle);
++				const x2 = 24 + (i % 3 === 0 ? 14 : 15.5) * Math.sin(angle);
++				const y2 = 24 - (i % 3 === 0 ? 14 : 15.5) * Math.cos(angle);
++				return (
++					<line
++						// biome-ignore lint/suspicious/noArrayIndexKey: static 12-hour markers, order is fixed
++						key={i}
++						x1={x1}
++						y1={y1}
++						x2={x2}
++						y2={y2}
++						stroke="var(--muted-foreground)"
++						strokeWidth={i % 3 === 0 ? 1.5 : 0.75}
++						strokeLinecap="round"
++						opacity={0.5}
++					/>
++				);
++			})}
+@@ -59,7 +70,10 @@ function AnalogClock({ date }: { date: Date }) {
+-      {/* Hour hand */}
+-      <line
+-        x1="24" y1="24"
+-        x2={24 + 10 * Math.sin((hourDeg * Math.PI) / 180)}
+-        y2={24 - 10 * Math.cos((hourDeg * Math.PI) / 180)}
+-        stroke="var(--foreground)" strokeWidth="2" strokeLinecap="round"
+-      />
++			{/* Hour hand */}
++			<line
++				x1="24"
++				y1="24"
++				x2={24 + 10 * Math.sin((hourDeg * Math.PI) / 180)}
++				y2={24 - 10 * Math.cos((hourDeg * Math.PI) / 180)}
++				stroke="var(--foreground)"
++				strokeWidth="2"
++				strokeLinecap="round"
++			/>
+@@ -67,7 +81,10 @@ function AnalogClock({ date }: { date: Date }) {
+-      {/* Minute hand */}
+-      <line
+-        x1="24" y1="24"
+-        x2={24 + 14 * Math.sin((minuteDeg * Math.PI) / 180)}
+-        y2={24 - 14 * Math.cos((minuteDeg * Math.PI) / 180)}
+-        stroke="var(--foreground)" strokeWidth="1.5" strokeLinecap="round"
+-      />
++			{/* Minute hand */}
++			<line
++				x1="24"
++				y1="24"
++				x2={24 + 14 * Math.sin((minuteDeg * Math.PI) / 180)}
++				y2={24 - 14 * Math.cos((minuteDeg * Math.PI) / 180)}
++				stroke="var(--foreground)"
++				strokeWidth="1.5"
++				strokeLinecap="round"
++			/>
+@@ -75,7 +92,11 @@ function AnalogClock({ date }: { date: Date }) {
+-      {/* Second hand */}
+-      <line
+-        x1="24" y1="28"
+-        x2={24 + 16 * Math.sin((secondDeg * Math.PI) / 180)}
+-        y2={24 - 16 * Math.cos((secondDeg * Math.PI) / 180)}
+-        stroke="var(--foreground)" strokeWidth="1" strokeLinecap="round" opacity={0.6}
+-      />
++			{/* Second hand */}
++			<line
++				x1="24"
++				y1="28"
++				x2={24 + 16 * Math.sin((secondDeg * Math.PI) / 180)}
++				y2={24 - 16 * Math.cos((secondDeg * Math.PI) / 180)}
++				stroke="var(--foreground)"
++				strokeWidth="1"
++				strokeLinecap="round"
++				opacity={0.6}
++			/>
+@@ -83,5 +104,5 @@ function AnalogClock({ date }: { date: Date }) {
+-      {/* Center dot */}
+-      <circle cx="24" cy="24" r="2" fill="var(--foreground)" />
+-      <circle cx="24" cy="24" r="1" fill="var(--background)" />
+-    </svg>
+-  );
++			{/* Center dot */}
++			<circle cx="24" cy="24" r="2" fill="var(--foreground)" />
++			<circle cx="24" cy="24" r="1" fill="var(--background)" />
++		</svg>
++	);
+@@ -91 +112 @@ export default function ClockWidget() {
+-  const [now, setNow] = useState<Date | null>(null);
++	const [now, setNow] = useState<Date | null>(null);
+@@ -93,5 +114,5 @@ export default function ClockWidget() {
+-  useEffect(() => {
+-    setNow(new Date());
+-    const interval = setInterval(() => setNow(new Date()), 1000);
+-    return () => clearInterval(interval);
+-  }, []);
++	useEffect(() => {
++		setNow(new Date());
++		const interval = setInterval(() => setNow(new Date()), 1000);
++		return () => clearInterval(interval);
++	}, []);
+@@ -99 +120 @@ export default function ClockWidget() {
+-  if (!now) return null;
++	if (!now) return null;
+@@ -101,18 +122,16 @@ export default function ClockWidget() {
+-  return (
+-    <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 flex items-center gap-4">
+-      <AnalogClock date={now} />
+-      <div>
+-        <motion.div
+-          key={formatTime(now).slice(0, 5)}
+-          initial={{ opacity: 0.7 }}
+-          animate={{ opacity: 1 }}
+-          className="text-2xl font-semibold tabular-nums tracking-[-0.03em] [font-variant-numeric:tabular-nums]"
+-        >
+-          {formatTime(now)}
+-        </motion.div>
+-        <div className="text-xs mt-0.5 text-[var(--muted-foreground)]">
+-          {formatDate(now)} · IST
+-        </div>
+-      </div>
+-    </div>
+-  );
++	return (
++		<div className="rounded-2xl bg-[var(--card)] p-5 flex items-center gap-4">
++			<AnalogClock date={now} />
++			<div>
++				<motion.div
++					key={formatTime(now).slice(0, 5)}
++					initial={{ opacity: 0.7 }}
++					animate={{ opacity: 1 }}
++					className="text-2xl font-semibold tabular-nums tracking-[-0.03em] [font-variant-numeric:tabular-nums]"
++				>
++					{formatTime(now)}
++				</motion.div>
++				<div className="text-xs mt-0.5 text-[var(--muted-foreground)]">{formatDate(now)} · IST</div>
++			</div>
++		</div>
++	);

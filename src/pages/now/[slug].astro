@@ -1,37 +1,37 @@
 ---
-import { getCollection, type CollectionEntry } from 'astro:content';
+import { type CollectionEntry, getCollection } from 'astro:content';
 import NowLayout from '@/layouts/NowLayout.astro';
 
 export async function getStaticPaths() {
-  const allEntries = await getCollection('now');
-  const sorted = allEntries.sort(
-    (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-  );
+	const allEntries = await getCollection('now');
+	const sorted = allEntries.sort(
+		(a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+	);
 
-  // All entries except the latest get their own slug page
-  // (latest is served at /now)
-  return sorted.slice(1).map((entry) => ({
-    params: { slug: entry.slug },
-    props: { entry, allEntries: sorted },
-  }));
+	// All entries except the latest get their own slug page
+	// (latest is served at /now)
+	return sorted.slice(1).map((entry) => ({
+		params: { slug: entry.slug },
+		props: { entry, allEntries: sorted },
+	}));
 }
 
 interface Props {
-  entry: CollectionEntry<'now'>;
-  allEntries: CollectionEntry<'now'>[];
+	entry: CollectionEntry<'now'>;
+	allEntries: CollectionEntry<'now'>[];
 }
 
 const { entry, allEntries } = Astro.props;
 const { Content } = await entry.render();
 
 const sorted = allEntries.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+	(a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 
 const entries = sorted.map((e, i) => ({
-  slug: e.slug,
-  date: e.data.date,
-  isLatest: i === 0,
+	slug: e.slug,
+	date: e.data.date,
+	isLatest: i === 0,
 }));
 ---
 

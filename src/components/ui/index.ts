@@ -1,7 +1,7 @@
-export { RaisedButton } from './raised-button';
-export { default as BlurStack } from './blur-stack';
-export type { BlurLayer } from './blur-stack';
 export { Badge } from './badge';
-export { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from './card';
-export { FadeIn, StaggerList, StaggerItem } from './fade-in';
+export type { BlurLayer } from './blur-stack';
+export { default as BlurStack } from './blur-stack';
+export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from './card';
+export { FadeIn, StaggerItem, StaggerList } from './fade-in';
 export { Modal } from './modal';
+export { RaisedButton } from './raised-button';

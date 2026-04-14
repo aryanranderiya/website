@@ -1,0 +1,22 @@
+diff a/src/layouts/NowLayout.astro b/src/layouts/NowLayout.astro	(rejected hunks)
+@@ -2,2 +2,2 @@
+-import PageLayout from "./PageLayout.astro";
+-import { formatDate } from "@/lib/utils";
++import { formatDate } from '@/lib/utils';
++import PageLayout from './PageLayout.astro';
+@@ -6,3 +6,3 @@ interface NowEntry {
+-  slug: string;
+-  date: Date;
+-  isLatest: boolean;
++	slug: string;
++	date: Date;
++	isLatest: boolean;
+@@ -12,4 +12,4 @@ interface Props {
+-  date: Date;
+-  location?: string;
+-  entries: NowEntry[];
+-  currentSlug: string;
++	date: Date;
++	location?: string;
++	entries: NowEntry[];
++	currentSlug: string;

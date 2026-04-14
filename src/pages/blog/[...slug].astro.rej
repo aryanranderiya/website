@@ -1,0 +1,65 @@
+diff a/src/pages/blog/[...slug].astro b/src/pages/blog/[...slug].astro	(rejected hunks)
+@@ -2,7 +2,7 @@
+-import BlogLayout from "@/layouts/BlogLayout.astro";
+-import ShareButtons from "@/components/blog/ShareButtons.astro";
+-import RelatedPosts from "@/components/blog/RelatedPosts.astro";
+-import NewsletterSignup from "@/components/blog/NewsletterSignup.astro";
+-import { calculateReadingTime } from "@/lib/reading-time";
+-import { getCollection, type CollectionEntry } from "astro:content";
+-import { CircleArrowLeft02Icon } from "@/components/icons";
++import { type CollectionEntry, getCollection } from 'astro:content';
++import NewsletterSignup from '@/components/blog/NewsletterSignup.astro';
++import RelatedPosts from '@/components/blog/RelatedPosts.astro';
++import ShareButtons from '@/components/blog/ShareButtons.astro';
++import { CircleArrowLeft02Icon } from '@/components/icons';
++import BlogLayout from '@/layouts/BlogLayout.astro';
++import { calculateReadingTime } from '@/lib/reading-time';
+@@ -11,5 +11,5 @@ export async function getStaticPaths() {
+-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+-  return posts.map((post) => ({
+-    params: { slug: post.slug },
+-    props: { post },
+-  }));
++	const posts = await getCollection('blog', ({ data }) => !data.draft);
++	return posts.map((post) => ({
++		params: { slug: post.slug },
++		props: { post },
++	}));
+@@ -19 +19 @@ interface Props {
+-  post: CollectionEntry<"blog">;
++	post: CollectionEntry<'blog'>;
+@@ -27 +27 @@ const readingTime = calculateReadingTime(post.body);
+-const allPosts = await getCollection("blog", ({ data }) => !data.draft);
++const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+@@ -30,17 +30,14 @@ const related = allPosts
+-  .filter((p) => p.slug !== post.slug)
+-  .map((p) => ({
+-    ...p,
+-    score: p.data.tags.filter((t) => currentTags.has(t)).length,
+-  }))
+-  .filter((p) => p.score > 0)
+-  .sort(
+-    (a, b) =>
+-      b.score - a.score || b.data.date.valueOf() - a.data.date.valueOf(),
+-  )
+-  .slice(0, 3)
+-  .map((p) => ({
+-    slug: p.slug,
+-    title: p.data.title,
+-    description: p.data.description,
+-    tags: p.data.tags,
+-  }));
++	.filter((p) => p.slug !== post.slug)
++	.map((p) => ({
++		...p,
++		score: p.data.tags.filter((t) => currentTags.has(t)).length,
++	}))
++	.filter((p) => p.score > 0)
++	.sort((a, b) => b.score - a.score || b.data.date.valueOf() - a.data.date.valueOf())
++	.slice(0, 3)
++	.map((p) => ({
++		slug: p.slug,
++		title: p.data.title,
++		description: p.data.description,
++		tags: p.data.tags,
++	}));

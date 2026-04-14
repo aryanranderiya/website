@@ -1,208 +1,149 @@
 'use client';
 
-import { useState, useMemo, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { HugeiconsIcon, Search01Icon, ChevronRight } from '@icons';
+import { ChevronRight, HugeiconsIcon, Search01Icon } from '@icons';
+import { AnimatePresence, motion } from 'motion/react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 
 interface Post {
-  slug: string;
-  title: string;
-  date: string;
-  description: string;
-  tags: string[];
-  category?: string;
-  featured?: boolean;
+	slug: string;
+	title: string;
+	date: string;
+	description: string;
+	tags: string[];
+	category?: string;
+	featured?: boolean;
 }
 
 function formatDateShort(dateStr: string): string {
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+	return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
 }
 
 export default function BlogSearch({ posts }: { posts: Post[] }) {
-  const [query, setQuery] = useState('');
-  const [focused, setFocused] = useState(false);
-  const searchRef = useRef<HTMLInputElement>(null);
+	const [query, setQuery] = useState('');
+	const [focused, setFocused] = useState(false);
+	const searchRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-        e.preventDefault();
-        searchRef.current?.focus();
-        searchRef.current?.select();
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, []);
+	useEffect(() => {
+		const handler = (e: KeyboardEvent) => {
+			if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+				e.preventDefault();
+				searchRef.current?.focus();
+				searchRef.current?.select();
+			}
+		};
+		window.addEventListener('keydown', handler);
+		return () => window.removeEventListener('keydown', handler);
+	}, []);
 
-  const ready = useAfterPreloader();
+	const ready = useAfterPreloader();
 
-  const filtered = useMemo(() => {
-    if (!query.trim()) return posts;
-    const q = query.toLowerCase();
-    return posts.filter(
-      p =>
-        p.title.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.tags.some(t => t.toLowerCase().includes(q))
-    );
-  }, [posts, query]);
+	const filtered = useMemo(() => {
+		if (!query.trim()) return posts;
+		const q = query.toLowerCase();
+		return posts.filter(
+			(p) =>
+				p.title.toLowerCase().includes(q) ||
+				p.description.toLowerCase().includes(q) ||
+				p.tags.some((t) => t.toLowerCase().includes(q))
+		);
+	}, [posts, query]);
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-      animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
-      transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const }}
-    >
+	return (
+		<motion.div
+			initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+			animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+			transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const }}
+		>
+			{/* Header row: title left, search right */}
+			<div className="flex items-center justify-between mb-6">
+				<div>
+					<h1 className="text-[1.5rem] font-semibold tracking-[-0.02em] text-[var(--text-primary)] leading-[1.2] m-0">
+						Blog
+					</h1>
+				</div>
 
+				{/* Pill search */}
+				<div className="relative shrink-0">
+					<span className="absolute left-2.5 top-1/2 -translate-y-1/2 flex items-center text-[var(--text-ghost)] pointer-events-none">
+						<HugeiconsIcon icon={Search01Icon} size={12} color="var(--text-ghost)" />
+					</span>
+					<input
+						ref={searchRef}
+						type="text"
+						value={query}
+						onChange={(e) => setQuery(e.target.value)}
+						onFocus={() => setFocused(true)}
+						onBlur={() => setFocused(false)}
+						placeholder="Search..."
+						className={`bg-[var(--muted-bg)] rounded-full pl-7 text-[12px] text-[var(--text-primary)] outline-none tracking-[-0.01em] w-[140px] py-[5px] ${!focused && !query ? 'pr-9' : 'pr-3.5'}`}
+						aria-label="Search blog posts"
+					/>
+					{!focused && !query && (
+						<kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--text-ghost)] pointer-events-none font-[inherit] tracking-[0]">
+							⌘F
+						</kbd>
+					)}
+				</div>
+			</div>
 
+			<AnimatePresence mode="popLayout">
+				{filtered.length === 0 ? (
+					<motion.p
+						key="empty"
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						className="text-[14px] text-[var(--text-muted)] mt-8 m-0"
+					>
+						No posts match that search.
+					</motion.p>
+				) : (
+					<div className="flex flex-col">
+						{filtered.map((post, i) => (
+							<motion.a
+								key={post.slug}
+								href={`/blog/${post.slug}`}
+								layout
+								initial={{ opacity: 0, y: 6 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0 }}
+								transition={{
+									duration: 0.3,
+									delay: query ? 0 : Math.min(i, 5) * 0.05,
+									ease: [0.19, 1, 0.22, 1],
+								}}
+								className={`flex items-center gap-4 py-[10px] px-2 -mx-2 rounded-[var(--radius-sm)] no-underline cursor-pointer transition-[background] duration-150 hover:bg-[var(--muted-bg)] ${i < filtered.length - 1 ? 'border-b border-[var(--border)]' : ''}`}
+							>
+								<time className="w-[72px] shrink-0 text-[11px] text-[var(--text-ghost)] leading-none">
+									{formatDateShort(post.date)}
+								</time>
 
-      {/* Header row: title left, search right */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-        <div>
-          <h1 className="text-heading-1 mb-3 animate-fade-in stagger-2">Blog</h1>
-          <p className="text-body animate-fade-in stagger-3">
-            I don't really write often, but when I do you can read them here
-          </p>
-        </div>
+								<div className="flex-1 min-w-0 flex items-center gap-2">
+									<span className="text-[14px] font-medium text-[var(--text-secondary)] tracking-[-0.01em] truncate">
+										{post.title}
+									</span>
+									{post.featured && (
+										<span className="text-[10px] font-medium px-1.5 py-[2px] rounded-full bg-[var(--border)] text-[var(--text-muted)] shrink-0 tracking-[0.02em]">
+											Featured
+										</span>
+									)}
+								</div>
 
-        {/* Pill search — matches ProjectsGrid style */}
-        <div style={{ position: 'relative', flexShrink: 0 }}>
-          <span style={{
-            position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)',
-            display: 'flex', alignItems: 'center', color: 'var(--text-ghost)', pointerEvents: 'none',
-          }}>
-            <HugeiconsIcon icon={Search01Icon} size={12} color="var(--text-ghost)" />
-          </span>
-          <input
-            ref={searchRef}
-            type="text"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            onFocus={() => setFocused(true)}
-            onBlur={() => setFocused(false)}
-            placeholder="Search..."
-            style={{
-              background: 'var(--muted-bg)',
-              border: 'none',
-              borderRadius: '9999px',
-              padding: `5px ${!focused && !query ? '36px' : '14px'} 5px 28px`,
-              fontSize: '12px',
-              color: 'var(--text-primary)',
-              outline: 'none',
-              letterSpacing: '-0.01em',
-              width: '140px',
-            }}
-            aria-label="Search blog posts"
-          />
-          {!focused && !query && (
-            <kbd style={{
-              position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)',
-              fontSize: '10px', color: 'var(--text-ghost)', pointerEvents: 'none',
-              fontFamily: 'inherit', letterSpacing: '0',
-            }}>
-              ⌘F
-            </kbd>
-          )}
-        </div>
-      </div>
+								{post.category && (
+									<span className="text-[11px] font-medium text-[var(--text-ghost)] shrink-0 tracking-[0.02em] capitalize">
+										{post.category}
+									</span>
+								)}
 
-      <AnimatePresence mode="popLayout">
-        {filtered.length === 0 ? (
-          <motion.p
-            key="empty"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            style={{ fontSize: '14px', color: 'var(--text-muted)', marginTop: 32 }}
-          >
-            No posts match that search.
-          </motion.p>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {filtered.map((post, i) => (
-              <motion.a
-                key={post.slug}
-                href={`/blog/${post.slug}`}
-                layout
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: 0.3,
-                  delay: query ? 0 : Math.min(i, 5) * 0.05,
-                  ease: [0.19, 1, 0.22, 1],
-                }}
-                className="group"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 16,
-                  padding: '10px 8px',
-                  margin: '0 -8px',
-                  borderBottom: i < filtered.length - 1 ? '1px solid var(--border)' : 'none',
-                  borderRadius: 'var(--radius-sm)',
-                  textDecoration: 'none',
-                  transition: 'background 150ms ease',
-                  cursor: 'pointer',
-                }}
-                onMouseEnter={e => (e.currentTarget.style.background = 'var(--muted-bg)')}
-                onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-              >
-                <time style={{ width: 72, flexShrink: 0, fontSize: 11, color: 'var(--text-ghost)', lineHeight: 1 }}>
-                  {formatDateShort(post.date)}
-                </time>
-
-                <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span style={{
-                    fontSize: '14px',
-                    fontWeight: 500,
-                    color: 'var(--text-secondary)',
-                    letterSpacing: '-0.01em',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                  }}>
-                    {post.title}
-                  </span>
-                  {post.featured && (
-                    <span style={{
-                      fontSize: 10,
-                      fontWeight: 500,
-                      padding: '2px 6px',
-                      borderRadius: '9999px',
-                      background: 'var(--border)',
-                      color: 'var(--text-muted)',
-                      flexShrink: 0,
-                      letterSpacing: '0.02em',
-                    }}>
-                      Featured
-                    </span>
-                  )}
-                </div>
-
-                {post.category && (
-                  <span style={{
-                    fontSize: 11,
-                    fontWeight: 500,
-                    color: 'var(--text-ghost)',
-                    flexShrink: 0,
-                    letterSpacing: '0.02em',
-                    textTransform: 'capitalize',
-                  }}>
-                    {post.category}
-                  </span>
-                )}
-
-                <span style={{ flexShrink: 0, display: 'flex', alignItems: 'center', color: 'var(--text-ghost)' }}>
-                  <ChevronRight size={12} />
-                </span>
-              </motion.a>
-            ))}
-          </div>
-        )}
-      </AnimatePresence>
-    </motion.div>
-  );
+								<span className="shrink-0 flex items-center text-[var(--text-ghost)]">
+									<ChevronRight size={12} />
+								</span>
+							</motion.a>
+						))}
+					</div>
+				)}
+			</AnimatePresence>
+		</motion.div>
+	);
 }

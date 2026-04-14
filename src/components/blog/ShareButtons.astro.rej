@@ -1,0 +1,9 @@
+diff a/src/components/blog/ShareButtons.astro b/src/components/blog/ShareButtons.astro	(rejected hunks)
+@@ -2 +2 @@
+-import { CopyLinkIcon } from "../icons";
++import { CopyLinkIcon } from '../icons';
+@@ -5,2 +5,2 @@ interface Props {
+-  title: string;
+-  url: string;
++	title: string;
++	url: string;

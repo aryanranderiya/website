@@ -1,50 +1,60 @@
 ---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import {
+	ArrowLeft01Icon,
+	BubbleChatIcon,
+	Calendar03Icon,
+	Clock01Icon,
+	Database01Icon,
+	File01Icon,
+	HugeiconsIcon,
+} from '@icons';
 import PageLayout from '@/layouts/PageLayout.astro';
-import { getCollection, type CollectionEntry } from 'astro:content';
 import { formatDate } from '@/lib/utils';
-import { HugeiconsIcon, Calendar03Icon, Database01Icon, BubbleChatIcon, Clock01Icon, File01Icon, ArrowLeft01Icon } from '@icons';
 
 export async function getStaticPaths() {
-  const convos = await getCollection('agent-convos');
-  return convos.map(convo => ({
-    params: { slug: convo.slug },
-    props: { convo },
-  }));
+	const convos = await getCollection('agent-convos');
+	return convos.map((convo) => ({
+		params: { slug: convo.slug },
+		props: { convo },
+	}));
 }
 
 interface Props {
-  convo: CollectionEntry<'agent-convos'>;
+	convo: CollectionEntry<'agent-convos'>;
 }
 
 const { convo } = Astro.props;
 const { Content } = await convo.render();
 
 const platformLabels: Record<string, string> = {
-  'claude-code': 'Claude Code',
-  opencode: 'OpenCode',
-  codex: 'Codex CLI',
+	'claude-code': 'Claude Code',
+	opencode: 'OpenCode',
+	codex: 'Codex CLI',
 };
 
 const platformIcons: Record<string, string> = {
-  'claude-code': 'https://www.google.com/s2/favicons?domain=claude.ai&sz=32',
-  opencode: 'https://www.google.com/s2/favicons?domain=opencode.ai&sz=32',
-  codex: 'https://www.google.com/s2/favicons?domain=openai.com&sz=32',
+	'claude-code': 'https://www.google.com/s2/favicons?domain=claude.ai&sz=32',
+	opencode: 'https://www.google.com/s2/favicons?domain=opencode.ai&sz=32',
+	codex: 'https://www.google.com/s2/favicons?domain=openai.com&sz=32',
 };
 
 function formatTokensExact(tokenCount?: number, tokens?: string): string | null {
-  if (tokenCount) {
-    if (tokenCount >= 1_000_000) return `${(tokenCount / 1_000_000).toFixed(1)}M`;
-    if (tokenCount >= 1_000) return `${(tokenCount / 1_000).toFixed(0)}K`;
-    return tokenCount.toLocaleString();
-  }
-  if (tokens) {
-    return tokens
-      .replace(/~/g, '')
-      .replace(/\s+(session|across\s+sessions?|across\s+\d+\s+sessions?).*/i, '')
-      .replace(/MB/gi, 'M')
-      .trim() || null;
-  }
-  return null;
+	if (tokenCount) {
+		if (tokenCount >= 1_000_000) return `${(tokenCount / 1_000_000).toFixed(1)}M`;
+		if (tokenCount >= 1_000) return `${(tokenCount / 1_000).toFixed(0)}K`;
+		return tokenCount.toLocaleString();
+	}
+	if (tokens) {
+		return (
+			tokens
+				.replace(/~/g, '')
+				.replace(/\s+(session|across\s+sessions?|across\s+\d+\s+sessions?).*/i, '')
+				.replace(/MB/gi, 'M')
+				.trim() || null
+		);
+	}
+	return null;
 }
 
 const tokensDisplay = formatTokensExact(convo.data.tokenCount, convo.data.tokens);

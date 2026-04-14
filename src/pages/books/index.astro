@@ -1,22 +1,22 @@
 ---
-import PageLayout from '@/layouts/PageLayout.astro';
-import Bookshelf from '@/components/books/Bookshelf';
 import { getCollection } from 'astro:content';
+import Bookshelf from '@/components/books/Bookshelf';
+import PageLayout from '@/layouts/PageLayout.astro';
 
 const bookEntries = await getCollection('books');
-const books = bookEntries.map(entry => ({
-  slug: entry.slug,
-  title: entry.data.title,
-  author: entry.data.author,
-  cover: entry.data.cover,
-  status: entry.data.status,
-  rating: entry.data.rating,
-  review: entry.data.review,
-  genre: entry.data.genre,
-  year: entry.data.year,
-  pages: entry.data.pages,
-  dateRead: entry.data.dateRead?.toISOString(),
-  featured: entry.data.featured,
+const books = bookEntries.map((entry) => ({
+	slug: entry.slug,
+	title: entry.data.title,
+	author: entry.data.author,
+	cover: entry.data.cover,
+	status: entry.data.status,
+	rating: entry.data.rating,
+	review: entry.data.review,
+	genre: entry.data.genre,
+	year: entry.data.year,
+	pages: entry.data.pages,
+	dateRead: entry.data.dateRead?.toISOString(),
+	featured: entry.data.featured,
 }));
 ---
 

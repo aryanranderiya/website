@@ -1,52 +1,52 @@
 ---
-import { getCollection } from "astro:content";
-import PageLayout from "@/layouts/PageLayout.astro";
-import Hero from "@/components/home/Hero";
-import ExperienceList from "@/components/resume/ExperienceList";
-import FeaturedProjects from "@/components/home/FeaturedProjects";
-import SpotifyWidget from "@/components/home/SpotifyWidget";
-import MapWidget from "@/components/home/MapWidget";
-import Toolbox from "@/components/home/Toolbox";
-import BlogPreview from "@/components/home/BlogPreview";
-import Signature from "@/components/home/Signature";
+import { getCollection } from 'astro:content';
+import BlogPreview from '@/components/home/BlogPreview';
+import FeaturedProjects from '@/components/home/FeaturedProjects';
+import Hero from '@/components/home/Hero';
+import MapWidget from '@/components/home/MapWidget';
+import Signature from '@/components/home/Signature';
+import SpotifyWidget from '@/components/home/SpotifyWidget';
+import Toolbox from '@/components/home/Toolbox';
+import ExperienceList from '@/components/resume/ExperienceList';
+import PageLayout from '@/layouts/PageLayout.astro';
 
 // Fetch and sort blog posts by date descending
-const allPosts = await getCollection("blog");
+const allPosts = await getCollection('blog');
 const posts = allPosts.sort(
-  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
+	(a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 
 // Fetch projects for FeaturedProjects component
 const FOLDER_PRIORITY: Record<string, number> = {
-  Featured: 0,
-  Client: 1,
-  Hackathon: 2,
-  Projects: 3,
+	Featured: 0,
+	Client: 1,
+	Hackathon: 2,
+	Projects: 3,
 };
-const allProjectEntries = await getCollection("projects");
+const allProjectEntries = await getCollection('projects');
 const allProjects = allProjectEntries
-  .sort((a, b) => {
-    const fa = FOLDER_PRIORITY[a.data.folder] ?? 9;
-    const fb = FOLDER_PRIORITY[b.data.folder] ?? 9;
-    if (fa !== fb) return fa - fb;
-    return (a.data.order ?? 99) - (b.data.order ?? 99);
-  })
-  .map((entry) => ({
-    slug: entry.slug,
-    title: entry.data.title,
-    description: entry.data.description,
-    tags: entry.data.tags,
-    tech: entry.data.tech,
-    type: entry.data.type,
-    status: entry.data.status,
-    featured: entry.data.featured,
-    images: entry.data.images,
-    folder: entry.data.folder,
-    url: entry.data.url,
-    github: entry.data.github,
-    coverImage: entry.data.coverImage,
-    date: entry.data.date?.toISOString(),
-  }));
+	.sort((a, b) => {
+		const fa = FOLDER_PRIORITY[a.data.folder] ?? 9;
+		const fb = FOLDER_PRIORITY[b.data.folder] ?? 9;
+		if (fa !== fb) return fa - fb;
+		return (a.data.order ?? 99) - (b.data.order ?? 99);
+	})
+	.map((entry) => ({
+		slug: entry.slug,
+		title: entry.data.title,
+		description: entry.data.description,
+		tags: entry.data.tags,
+		tech: entry.data.tech,
+		type: entry.data.type,
+		status: entry.data.status,
+		featured: entry.data.featured,
+		images: entry.data.images,
+		folder: entry.data.folder,
+		url: entry.data.url,
+		github: entry.data.github,
+		coverImage: entry.data.coverImage,
+		date: entry.data.date?.toISOString(),
+	}));
 ---
 
 <PageLayout

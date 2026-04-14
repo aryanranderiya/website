@@ -1,0 +1,248 @@
+diff a/src/components/home/MapWidget.tsx b/src/components/home/MapWidget.tsx	(rejected hunks)
+@@ -3 +3 @@
+-import { useEffect, useRef } from 'react';
++import { Skeleton } from 'boneyard-js/react';
+@@ -6 +7,0 @@ import { useAfterPreloader } from '@/hooks/useAfterPreloader';
+-import { Skeleton } from 'boneyard-js/react';
+@@ -8 +8,0 @@ import { useLazyMount } from '@/hooks/useLazyMount';
+-import { SITE } from '@/constants/site';
+@@ -19 +19 @@ const STYLE_LIGHT = 'mapbox://styles/mapbox/light-v11';
+-const STYLE_DARK  = 'mapbox://styles/mapbox/dark-v11';
++const STYLE_DARK = 'mapbox://styles/mapbox/dark-v11';
+@@ -22 +22 @@ function isDarkMode() {
+-  return document.documentElement.classList.contains('dark');
++	return document.documentElement.classList.contains('dark');
+@@ -25 +25,2 @@ function isDarkMode() {
+-const TOKEN = (import.meta as any).env?.PUBLIC_MAPBOX_TOKEN as string | undefined;
++const TOKEN = (import.meta as ImportMeta & { env?: Record<string, string> }).env
++	?.PUBLIC_MAPBOX_TOKEN as string | undefined;
+@@ -28,2 +29,2 @@ function createAvatarMarkerEl() {
+-  const el = document.createElement('div');
+-  el.style.cssText = `
++	const el = document.createElement('div');
++	el.style.cssText = `
+@@ -40 +41 @@ function createAvatarMarkerEl() {
+-  return el;
++	return el;
+@@ -44,3 +45 @@ function MapWidgetFixture() {
+-  return (
+-    <div className="h-40 rounded-[20px] bg-black/[0.06]" />
+-  );
++	return <div className="h-40 rounded-[20px] bg-black/[0.06]" />;
+@@ -50,90 +49,95 @@ function MapWidgetInner() {
+-  const containerRef = useRef<HTMLDivElement>(null);
+-  const ready = useAfterPreloader();
+-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+-  const mapRef = useRef<any>(null);
+-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+-  const markerRef = useRef<any>(null);
+-  const observerRef = useRef<MutationObserver | null>(null);
+-
+-  useEffect(() => {
+-    if (!containerRef.current || mapRef.current || !TOKEN) return;
+-
+-    let cancelled = false;
+-
+-    async function initMap() {
+-      // Dynamic import — mapbox-gl JS (240kB) only downloads when widget is in view
+-      const { default: mapboxgl } = await import('mapbox-gl');
+-
+-      if (cancelled || !containerRef.current) return;
+-
+-      mapboxgl.accessToken = TOKEN!;
+-
+-      const map = new mapboxgl.Map({
+-        container: containerRef.current,
+-        style: isDarkMode() ? STYLE_DARK : STYLE_LIGHT,
+-        center: [LNG, LAT],
+-        zoom: 10.5,
+-        interactive: true,
+-        attributionControl: false,
+-      });
+-
+-      markerRef.current = new mapboxgl.Marker({ element: createAvatarMarkerEl(), offset: [0, -35] })
+-        .setLngLat([LNG, LAT])
+-        .addTo(map);
+-
+-      mapRef.current = map;
+-
+-      // Sync style when the `dark` class is toggled on <html>
+-      observerRef.current = new MutationObserver(() => {
+-        mapRef.current?.setStyle(isDarkMode() ? STYLE_DARK : STYLE_LIGHT);
+-      });
+-      observerRef.current.observe(document.documentElement, {
+-        attributes: true,
+-        attributeFilter: ['class'],
+-      });
+-
+-      // Re-add marker after style reload (setStyle removes all layers/sources)
+-      map.on('style.load', () => {
+-        if (markerRef.current) {
+-          markerRef.current.remove();
+-          markerRef.current = new mapboxgl.Marker({ element: createAvatarMarkerEl(), offset: [0, -35] })
+-            .setLngLat([LNG, LAT])
+-            .addTo(map);
+-        }
+-      });
+-    }
+-
+-    initMap();
+-
+-    return () => {
+-      cancelled = true;
+-      observerRef.current?.disconnect();
+-      observerRef.current = null;
+-      if (mapRef.current) {
+-        mapRef.current.remove();
+-        mapRef.current = null;
+-        markerRef.current = null;
+-      }
+-    };
+-  }, []);
+-
+-  if (!TOKEN) {
+-    return (
+-      <div className="rounded-2xl bg-[var(--muted-bg)] flex items-center justify-center h-40">
+-        <span className="text-xs text-[var(--text-ghost)]">
+-          Set <code className="font-mono">PUBLIC_MAPBOX_TOKEN</code> to enable map
+-        </span>
+-      </div>
+-    );
+-  }
+-
+-  return (
+-    <motion.div
+-      className="rounded-2xl overflow-hidden h-40"
+-      initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+-      animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+-      transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.39 }}
+-    >
+-      <div ref={containerRef} className="w-full h-full" />
+-    </motion.div>
+-  );
++	const containerRef = useRef<HTMLDivElement>(null);
++	const ready = useAfterPreloader();
++	const mapRef = useRef<{ setStyle: (s: string) => void; remove: () => void } | null>(null);
++	const markerRef = useRef<{
++		remove: () => void;
++		setLngLat: (c: [number, number]) => unknown;
++	} | null>(null);
++	const observerRef = useRef<MutationObserver | null>(null);
++
++	useEffect(() => {
++		if (!containerRef.current || mapRef.current || !TOKEN) return;
++
++		let cancelled = false;
++
++		async function initMap() {
++			// Dynamic import — mapbox-gl JS (240kB) only downloads when widget is in view
++			const { default: mapboxgl } = await import('mapbox-gl');
++
++			if (cancelled || !containerRef.current) return;
++
++			if (!TOKEN) return;
++			mapboxgl.accessToken = TOKEN;
++
++			const map = new mapboxgl.Map({
++				container: containerRef.current,
++				style: isDarkMode() ? STYLE_DARK : STYLE_LIGHT,
++				center: [LNG, LAT],
++				zoom: 10.5,
++				interactive: true,
++				attributionControl: false,
++			});
++
++			markerRef.current = new mapboxgl.Marker({ element: createAvatarMarkerEl(), offset: [0, -35] })
++				.setLngLat([LNG, LAT])
++				.addTo(map);
++
++			mapRef.current = map;
++
++			// Sync style when the `dark` class is toggled on <html>
++			observerRef.current = new MutationObserver(() => {
++				mapRef.current?.setStyle(isDarkMode() ? STYLE_DARK : STYLE_LIGHT);
++			});
++			observerRef.current.observe(document.documentElement, {
++				attributes: true,
++				attributeFilter: ['class'],
++			});
++
++			// Re-add marker after style reload (setStyle removes all layers/sources)
++			map.on('style.load', () => {
++				if (markerRef.current) {
++					markerRef.current.remove();
++					markerRef.current = new mapboxgl.Marker({
++						element: createAvatarMarkerEl(),
++						offset: [0, -35],
++					})
++						.setLngLat([LNG, LAT])
++						.addTo(map);
++				}
++			});
++		}
++
++		initMap();
++
++		return () => {
++			cancelled = true;
++			observerRef.current?.disconnect();
++			observerRef.current = null;
++			if (mapRef.current) {
++				mapRef.current.remove();
++				mapRef.current = null;
++				markerRef.current = null;
++			}
++		};
++	}, []);
++
++	if (!TOKEN) {
++		return (
++			<div className="rounded-2xl bg-[var(--muted-bg)] flex items-center justify-center h-40">
++				<span className="text-xs text-[var(--text-ghost)]">
++					Set <code className="font-mono">PUBLIC_MAPBOX_TOKEN</code> to enable map
++				</span>
++			</div>
++		);
++	}
++
++	return (
++		<motion.div
++			className="rounded-2xl overflow-hidden h-40"
++			initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
++			animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
++			transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.39 }}
++		>
++			<div ref={containerRef} className="w-full h-full" />
++		</motion.div>
++	);
+@@ -143,15 +147,15 @@ export default function MapWidget() {
+-  const { ref, mounted } = useLazyMount('200px');
+-
+-  return (
+-    <div ref={ref}>
+-      <Skeleton
+-        name="map-widget"
+-        loading={!mounted}
+-        fixture={<MapWidgetFixture />}
+-        color="rgba(0, 0, 0, 0.06)"
+-        fallback={<MapWidgetFixture />}
+-      >
+-        {mounted && <MapWidgetInner />}
+-      </Skeleton>
+-    </div>
+-  );
++	const { ref, mounted } = useLazyMount('200px');
++
++	return (
++		<div ref={ref}>
++			<Skeleton
++				name="map-widget"
++				loading={!mounted}
++				fixture={<MapWidgetFixture />}
++				color="rgba(0, 0, 0, 0.06)"
++				fallback={<MapWidgetFixture />}
++			>
++				{mounted && <MapWidgetInner />}
++			</Skeleton>
++		</div>
++	);

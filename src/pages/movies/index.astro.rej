@@ -1,0 +1,35 @@
+diff a/src/pages/movies/index.astro b/src/pages/movies/index.astro	(rejected hunks)
+@@ -2,2 +1,0 @@
+-import PageLayout from '@/layouts/PageLayout.astro';
+-import MoviesGrid from '@/components/movies/MoviesGrid';
+@@ -7,15 +7,15 @@ const movieEntries = await getCollection('movies');
+-const movies = movieEntries.map(entry => ({
+-  slug: entry.slug,
+-  title: entry.data.title,
+-  year: entry.data.year,
+-  cover: entry.data.cover,
+-  imdbId: entry.data.imdbId,
+-  myRating: entry.data.myRating,
+-  status: entry.data.status,
+-  review: entry.data.review,
+-  thoughts: entry.data.thoughts,
+-  favCharacters: entry.data.favCharacters,
+-  genre: entry.data.genre,
+-  director: entry.data.director,
+-  dateWatched: entry.data.dateWatched?.toISOString(),
+-  featured: entry.data.featured,
++const movies = movieEntries.map((entry) => ({
++	slug: entry.slug,
++	title: entry.data.title,
++	year: entry.data.year,
++	cover: entry.data.cover,
++	imdbId: entry.data.imdbId,
++	myRating: entry.data.myRating,
++	status: entry.data.status,
++	review: entry.data.review,
++	thoughts: entry.data.thoughts,
++	favCharacters: entry.data.favCharacters,
++	genre: entry.data.genre,
++	director: entry.data.director,
++	dateWatched: entry.data.dateWatched?.toISOString(),
++	featured: entry.data.featured,
