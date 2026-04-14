@@ -22,9 +22,7 @@ function isDarkMode() {
 	return document.documentElement.classList.contains('dark');
 }
 
-const TOKEN = (import.meta as Record<string, unknown>).env?.PUBLIC_MAPBOX_TOKEN as
-	| string
-	| undefined;
+const TOKEN = (import.meta.env as Record<string, string | undefined>).PUBLIC_MAPBOX_TOKEN;
 
 function createAvatarMarkerEl() {
 	const el = document.createElement('div');
@@ -50,11 +48,7 @@ function MapWidgetInner() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const ready = useAfterPreloader();
 	const mapRef = useRef<{ setStyle: (s: string) => void; remove: () => void } | null>(null);
-	const markerRef = useRef<{
-		remove: () => void;
-		setLngLat: (c: [number, number]) => { addTo: (m: unknown) => unknown };
-		addTo: (m: unknown) => unknown;
-	} | null>(null);
+	const markerRef = useRef<{ remove: () => void } | null>(null);
 	const observerRef = useRef<MutationObserver | null>(null);
 
 	useEffect(() => {

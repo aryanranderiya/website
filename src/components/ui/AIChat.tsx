@@ -52,13 +52,13 @@ async function getEngine(
 		try {
 			onProgress('Starting...');
 			const { CreateMLCEngine } = await import('@mlc-ai/web-llm');
-			_engine = await CreateMLCEngine(MODEL_ID, {
+			_engine = (await CreateMLCEngine(MODEL_ID, {
 				initProgressCallback: (prog: { text?: string }) => {
 					const text: string = prog?.text ?? '';
 					const pct = text.match(/(\d+\.?\d*)%/)?.[1];
 					onProgress(pct ? `Downloading ${pct}%` : text.slice(0, 50) || 'Loading...');
 				},
-			});
+			})) as unknown as typeof _engine;
 			_engineReady = true;
 			onReady();
 		} catch {
@@ -219,7 +219,7 @@ export default function AIChat({ systemPrompt }: AIChatProps) {
 		if (!_engine) return;
 		setIsGeneratingFollowUps(true);
 		try {
-			const res = await _engine.chat.completions.create({
+			const res = (await _engine.chat.completions.create({
 				messages: [
 					{ role: 'system', content: FOLLOWUP_SYSTEM_PROMPT },
 					{
@@ -229,7 +229,7 @@ export default function AIChat({ systemPrompt }: AIChatProps) {
 				],
 				max_tokens: 100,
 				temperature: 0.85,
-			});
+			})) as { choices: { message: { content?: string } }[] };
 			const raw = res.choices[0]?.message?.content ?? '[]';
 			const parsed = JSON.parse(raw.match(/\[[\s\S]*\]/)?.[0] ?? '[]') as string[];
 			const followUps = parsed
@@ -264,7 +264,7 @@ export default function AIChat({ systemPrompt }: AIChatProps) {
 			let fullResponse = '';
 			try {
 				const history = messages.map((m: Message) => ({ role: m.role, content: m.content }));
-				const chunks = await _engine.chat.completions.create({
+				const chunks = (await _engine!.chat.completions.create({
 					messages: [
 						{ role: 'system', content: activePrompt },
 						...history,
@@ -273,7 +273,7 @@ export default function AIChat({ systemPrompt }: AIChatProps) {
 					stream: true,
 					temperature: 0.7,
 					max_tokens: 350,
-				});
+				})) as AsyncIterable<{ choices: { delta: { content?: string } }[] }>;
 
 				for await (const chunk of chunks) {
 					const delta = chunk.choices[0]?.delta?.content ?? '';

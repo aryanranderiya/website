@@ -20,7 +20,7 @@ const { label, title, description, align = 'left', class: className } = Astro.pr
   )}
   <h2 class="text-heading-2">{title}</h2>
   {description && (
-    <p class="text-body mt-3 max-w-2xl" class:list={align === 'center' && 'mx-auto'}>
+    <p class="text-body mt-3 max-w-2xl" class:list={align === 'center' ? 'mx-auto' : undefined}>
       {description}
     </p>
   )}

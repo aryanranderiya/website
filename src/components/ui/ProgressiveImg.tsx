@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { thumbHashToDataURL } from 'thumbhash';
+import { cn } from '@/lib/utils';
 
 interface ProgressiveImgProps {
 	src: string;

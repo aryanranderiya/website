@@ -58,7 +58,7 @@ export interface ButtonProps
 
 const RaisedButton = React.forwardRef<HTMLButtonElement, ButtonProps>(
 	({ className, variant, size, color, asChild = false, style = {}, children, ...props }, ref) => {
-		const Comp = asChild ? Slot : 'button';
+		const Comp = (asChild ? Slot : 'button') as React.ElementType;
 		const dynamicStyles = React.useMemo<React.CSSProperties>(() => {
 			if (!color) {
 				if (variant === 'accent') {

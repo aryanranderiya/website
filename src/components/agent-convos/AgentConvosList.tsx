@@ -170,7 +170,7 @@ const rowVariants = {
 	initial: { opacity: 0 },
 	animate: (i: number) => ({
 		opacity: 1,
-		transition: { duration: 0.2, ease: 'easeOut', delay: i * 0.025 },
+		transition: { duration: 0.2, ease: 'easeOut' as const, delay: i * 0.025 },
 	}),
 };
 
