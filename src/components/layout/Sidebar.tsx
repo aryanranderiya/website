@@ -326,26 +326,10 @@ export default function Sidebar() {
 									<a
 										key={item.href}
 										href={item.href}
-										className="flex items-center gap-1.5 py-[2px] no-underline whitespace-nowrap tracking-[-0.01em] transition-[color,font-variation-settings] duration-150 text-[12px]"
-										// biome-ignore lint/nursery/noInlineStyles: dynamic color/fontVariationSettings based on active state
+										className={`flex items-center gap-1.5 py-[2px] no-underline whitespace-nowrap tracking-[-0.01em] transition-colors duration-150 text-[12px] outline-none ${isActive(item.href) ? 'text-[var(--text-primary)]' : 'text-[var(--text-ghost)] hover:text-[var(--text-secondary)]'}`}
+										// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
 										style={{
 											fontVariationSettings: isActive(item.href) ? '"wght" 580' : '"wght" 450',
-											color: isActive(item.href) ? 'var(--text-primary)' : 'var(--text-ghost)',
-										}}
-										onMouseEnter={(e) => {
-											if (!isActive(item.href)) {
-												(e.currentTarget as HTMLAnchorElement).style.color =
-													'var(--text-secondary)';
-												(e.currentTarget as HTMLAnchorElement).style.fontVariationSettings =
-													'"wght" 520';
-											}
-										}}
-										onMouseLeave={(e) => {
-											if (!isActive(item.href)) {
-												(e.currentTarget as HTMLAnchorElement).style.color = 'var(--text-ghost)';
-												(e.currentTarget as HTMLAnchorElement).style.fontVariationSettings =
-													'"wght" 450';
-											}
 										}}
 									>
 										<HugeiconsIcon

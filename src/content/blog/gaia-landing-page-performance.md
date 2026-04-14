@@ -1,5 +1,5 @@
 ---
-title: How I Took the GAIA Landing Page from a 34 to a 100 on Lighthouse
+title: GAIA Landing Page: From Lighthouse 34 to 100
 description: A full walkthrough of every fix — wallpaper preloads, forced reflows, deferred Sentry, critical CSS inlining — and the exact numbers at each step.
 date: 2026-04-13
 tags: [performance, next.js, web vitals, react]

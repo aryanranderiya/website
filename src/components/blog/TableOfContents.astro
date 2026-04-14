@@ -28,7 +28,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
             <a
               href={`#${h.slug}`}
               class:list={[
-                'toc-link block leading-[1.5] py-[3px] transition-colors duration-150 no-underline overflow-hidden text-ellipsis hover:text-[var(--text-secondary)]',
+                'toc-link block leading-[1.5] py-[3px] transition-colors duration-150 no-underline hover:text-[var(--text-secondary)]',
                 h.depth === 3
                   ? 'pl-[10px] text-[11px] text-[var(--text-ghost)]'
                   : 'text-[11.5px] text-[var(--text-muted)]',

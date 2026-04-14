@@ -50,7 +50,7 @@
   --text-primary: rgba(0, 0, 0, 0.85);
   --text-secondary: rgba(0, 0, 0, 0.55);
   --text-muted: rgba(0, 0, 0, 0.54);
-  --text-ghost: rgba(0, 0, 0, 0.55);
+  --text-ghost: rgba(0, 0, 0, 0.32);
 
   /* Borders — opacity based */
   --border: rgba(0, 0, 0, 0.08);
@@ -127,7 +127,7 @@
   --leading-relaxed: 1.7;
 
   /* Spacing */
-  --section-padding-top: 45px;
+  --section-padding-top: 72px;
   --content-max-width: 640px;
   --prose-max-width: 620px;
   --sidebar-width: 120px;
@@ -159,7 +159,7 @@
   --text-primary: rgba(255, 255, 255, 0.88);
   --text-secondary: rgba(255, 255, 255, 0.55);
   --text-muted: rgba(255, 255, 255, 0.54);
-  --text-ghost: rgba(255, 255, 255, 0.55);
+  --text-ghost: rgba(255, 255, 255, 0.32);
 
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.14);
