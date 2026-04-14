@@ -19,6 +19,7 @@ interface Props {
 const {
 	fullWidth = false,
 	ogType = "website",
+	ogImage,
 	articleDate,
 	articleModified,
 	section,
@@ -28,6 +29,7 @@ const {
 
 <Layout
 	{...layoutProps}
+	ogImage={ogImage}
 	ogType={ogType}
 	articleDate={articleDate}
 	articleModified={articleModified}
