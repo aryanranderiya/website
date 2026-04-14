@@ -28,7 +28,7 @@ export default function BlogList({ posts }: BlogListProps) {
 			{posts.map((post, i) => (
 				<motion.a
 					key={post.slug}
-					href={`/blog/${post.slug}`}
+					href={`/${post.slug}`}
 					className="group flex items-center gap-4 py-2.5 px-2 -mx-2 border-b border-[var(--border)] no-underline rounded-[var(--radius-sm)] transition-colors duration-150 hover:bg-[var(--muted-bg)] cursor-pointer"
 					initial={{ opacity: 0, y: 6 }}
 					animate={{ opacity: 1, y: 0 }}

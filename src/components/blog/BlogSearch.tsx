@@ -103,7 +103,7 @@ export default function BlogSearch({ posts }: { posts: Post[] }) {
 						{filtered.map((post, i) => (
 							<motion.a
 								key={post.slug}
-								href={`/blog/${post.slug}`}
+								href={`/${post.slug}`}
 								layout
 								initial={{ opacity: 0, y: 6 }}
 								animate={{ opacity: 1, y: 0 }}

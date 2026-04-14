@@ -4,7 +4,6 @@ description: A full walkthrough of every fix  --  wallpaper preloads, forced ref
 date: 2026-04-13
 tags: [performance, next.js, web vitals, react]
 category: engineering
-featured: true
 cover: https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200&h=630&fit=crop
 ---
 

@@ -23,6 +23,7 @@ interface Props {
 	class?: string;
 	articleDate?: Date;
 	articleModified?: Date;
+	section?: string;
 }
 
 const {
@@ -35,6 +36,7 @@ const {
 	class: className,
 	articleDate,
 	articleModified,
+	section,
 } = Astro.props;
 
 const metaTitle = title ? `${title} | ${SITE.name}` : SEO.defaultTitle;
@@ -56,7 +58,7 @@ const aiSystemPrompt = buildAIPrompt({
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth" data-section={section}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

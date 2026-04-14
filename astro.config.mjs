@@ -27,7 +27,15 @@ export default defineConfig({
         } else if (/\/(blog|projects|resume|now|tools|books|movies|freelance|graphic-design|camera-roll|agent-convos)\/?$/.test(url)) {
           priority = 0.9;
           changefreq = 'weekly';
-        } else if (/\/(blog|projects|now|freelance|agent-convos)\//.test(url)) {
+        } else if (/\/(projects|now|freelance|agent-convos)\//.test(url)) {
+          priority = 0.8;
+          changefreq = 'monthly';
+        } else if (/\/blog\//.test(url)) {
+          // Legacy /blog/:slug URLs — still generated, lower priority
+          priority = 0.6;
+          changefreq = 'monthly';
+        } else if (/^https:\/\/aryanranderiya\.com\/[^/]+\/?$/.test(url) && !/\/(blog|projects|resume|now|tools|books|movies|freelance|graphic-design|camera-roll|agent-convos)\/?$/.test(url)) {
+          // Root-level blog post URLs (e.g. /job)
           priority = 0.8;
           changefreq = 'monthly';
         }

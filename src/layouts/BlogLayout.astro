@@ -3,6 +3,7 @@ import Giscus from '@/components/blog/Giscus.astro';
 import TableOfContents from '@/components/blog/TableOfContents.astro';
 import { SITE } from '@/constants/site';
 import { formatDate } from '@/lib/utils';
+import { Calendar01Icon, Clock01Icon, PencilEdit01Icon, Tag01Icon } from '@/components/icons';
 import PageLayout from './PageLayout.astro';
 
 interface Heading {
@@ -88,6 +89,7 @@ const breadcrumbJsonLd = JSON.stringify({
   articleDate={date}
   articleModified={updated}
   fullWidth={true}
+  section="blog"
 >
   <script is:inline type="application/ld+json" set:html={articleJsonLd} />
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
@@ -112,30 +114,37 @@ const breadcrumbJsonLd = JSON.stringify({
 
       <!-- Header -->
       <header class="mb-12">
-        {category && (
-          <div class="text-label mb-3 text-[var(--accent-blue)]">
-            {category}
-          </div>
-        )}
         <h1 class="text-heading-1 mb-4">{title}</h1>
         <p class="text-body mb-5 text-[var(--text-muted)]">{description}</p>
-        <div class="flex items-center gap-3 text-caption">
-          <time datetime={date.toISOString()}>{formatDate(date)}</time>
-          {updated && (
-            <>
-              <span class="text-[var(--text-ghost)]">·</span>
-              <span>Updated {formatDate(updated)}</span>
-            </>
+        <div class="flex flex-wrap items-center gap-1.5">
+          {category && (
+            <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
+              <Tag01Icon width={11} height={11} />
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </span>
           )}
+          <time
+            datetime={date.toISOString()}
+            class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none"
+          >
+            <Calendar01Icon width={11} height={11} />
+            {formatDate(date)}
+          </time>
           {readingTime && (
-            <>
-              <span class="text-[var(--text-ghost)]">·</span>
-              <span>{readingTime} min read</span>
-            </>
+            <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
+              <Clock01Icon width={11} height={11} />
+              {readingTime} min read
+            </span>
+          )}
+          {updated && (
+            <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
+              <PencilEdit01Icon width={11} height={11} />
+              Updated {formatDate(updated)}
+            </span>
           )}
         </div>
         {tags.length > 0 && (
-          <div class="flex flex-wrap gap-1.5 mt-4">
+          <div class="flex flex-wrap gap-1.5 mt-3">
             {tags.map(tag => (
               <span class="text-xs px-2.5 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)]">
                 {tag.split(' ').map((w: string) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}

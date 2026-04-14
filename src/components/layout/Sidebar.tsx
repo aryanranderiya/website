@@ -138,6 +138,7 @@ function applyTypography(font: Typography) {
 
 export default function Sidebar() {
 	const [pathname, setPathname] = useState('/');
+	const [section, setSection] = useState<string | null>(null);
 	const [theme, setTheme] = useState<Theme>('light');
 	const [typography, setTypography] = useState<Typography>('helvetica');
 	const [shuffleOpen, setShuffleOpen] = useState(false);
@@ -154,6 +155,7 @@ export default function Sidebar() {
 
 	useEffect(() => {
 		setPathname(window.location.pathname);
+		setSection(document.documentElement.dataset.section ?? null);
 		const stored = localStorage.getItem('theme') as Theme | null;
 		if (stored === 'dark') setTheme('dark');
 		else if (stored === 'random') setTheme('random');
@@ -172,6 +174,7 @@ export default function Sidebar() {
 
 		const handleNavigation = () => {
 			setPathname(window.location.pathname);
+			setSection(document.documentElement.dataset.section ?? null);
 			setMobileOpen(false);
 		};
 		document.addEventListener('astro:page-load', handleNavigation);
@@ -249,6 +252,7 @@ export default function Sidebar() {
 
 	const isActive = (href: string) => {
 		if (href === '/') return pathname === '/';
+		if (section && href === `/${section}`) return true;
 		return pathname.startsWith(href);
 	};
 
@@ -326,11 +330,7 @@ export default function Sidebar() {
 									<a
 										key={item.href}
 										href={item.href}
-										className={`flex items-center gap-1.5 py-[2px] no-underline whitespace-nowrap tracking-[-0.01em] transition-colors duration-150 text-[12px] outline-none ${isActive(item.href) ? 'text-[var(--text-primary)]' : 'text-[var(--text-ghost)] hover:text-[var(--text-secondary)]'}`}
-										// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
-										style={{
-											fontVariationSettings: isActive(item.href) ? '"wght" 580' : '"wght" 450',
-										}}
+										className={`nav-link flex items-center gap-1.5 py-[2px] no-underline whitespace-nowrap tracking-[-0.01em] text-[12px] outline-none ${isActive(item.href) ? 'nav-link--active' : ''}`}
 									>
 										<HugeiconsIcon
 											icon={item.icon}
@@ -353,9 +353,7 @@ export default function Sidebar() {
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label="Built in Astro"
-							className="flex items-center gap-1.5 py-[2px] no-underline transition-colors duration-150 text-[var(--text-ghost)] hover:text-[var(--text-secondary)] text-[12px]"
-							// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
-							style={{ fontVariationSettings: '"wght" 450' }}
+							className="nav-link flex items-center gap-1.5 py-[2px] no-underline text-[12px]"
 							onMouseEnter={() => setHoveredAction('astro')}
 							onMouseLeave={() => setHoveredAction(null)}
 						>
@@ -393,9 +391,7 @@ export default function Sidebar() {
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label="Old portfolio (aryanranderiya.com)"
-							className="flex items-center gap-1.5 py-[2px] no-underline transition-colors duration-150 text-[var(--text-ghost)] hover:text-[var(--text-secondary)] text-[12px]"
-							// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
-							style={{ fontVariationSettings: '"wght" 450' }}
+							className="nav-link flex items-center gap-1.5 py-[2px] no-underline text-[12px]"
 							onMouseEnter={() => setHoveredAction('old-portfolio')}
 							onMouseLeave={() => setHoveredAction(null)}
 						>
@@ -432,9 +428,7 @@ export default function Sidebar() {
 								type="button"
 								ref={shuffleBtnRef}
 								onClick={handleThemeButtonClick}
-								className="flex items-center gap-1.5 py-[2px] bg-transparent border-0 cursor-pointer transition-colors duration-150 text-[var(--text-ghost)] hover:text-[var(--text-secondary)] text-[12px]"
-								// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
-								style={{ fontVariationSettings: '"wght" 450' }}
+								className="nav-link flex items-center gap-1.5 py-[2px] bg-transparent border-0 cursor-pointer text-[12px]"
 								onMouseEnter={() => setHoveredAction('theme')}
 								onMouseLeave={() => setHoveredAction(null)}
 								aria-label="Cycle theme"
@@ -775,11 +769,7 @@ export default function Sidebar() {
 										<a
 											key={item.href}
 											href={item.href}
-											className={`flex items-center gap-2.5 py-[9px] no-underline whitespace-nowrap tracking-[-0.01em] text-[15px] ${isActive(item.href) ? 'text-[var(--text-primary)]' : 'text-[var(--text-ghost)]'}`}
-											// biome-ignore lint/nursery/noInlineStyles: dynamic fontVariationSettings based on active state
-											style={{
-												fontVariationSettings: isActive(item.href) ? '"wght" 580' : '"wght" 450',
-											}}
+											className={`nav-link flex items-center gap-2.5 py-[9px] no-underline whitespace-nowrap tracking-[-0.01em] text-[15px] ${isActive(item.href) ? 'nav-link--active' : ''}`}
 											onClick={() => setMobileOpen(false)}
 										>
 											<HugeiconsIcon

@@ -9,7 +9,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --breakpoint-sidebar: 60rem; /* 960px — sidebar visibility threshold */
+  --breakpoint-sidebar: 60rem;
+  /* 960px — sidebar visibility threshold */
 
   --radius-sm: 4px;
   --radius-md: 6px;
@@ -51,6 +52,11 @@
   --text-secondary: rgba(0, 0, 0, 0.55);
   --text-muted: rgba(0, 0, 0, 0.54);
   --text-ghost: rgba(0, 0, 0, 0.32);
+
+  /* Sidebar nav text — lighter than body hierarchy */
+  --nav-text: rgba(0, 0, 0, 0.28);
+  --nav-text-hover: rgba(0, 0, 0, 0.48);
+  --nav-text-active: rgba(0, 0, 0, 0.64);
 
   /* Borders — opacity based */
   --border: rgba(0, 0, 0, 0.08);
@@ -160,6 +166,10 @@
   --text-secondary: rgba(255, 255, 255, 0.55);
   --text-muted: rgba(255, 255, 255, 0.54);
   --text-ghost: rgba(255, 255, 255, 0.32);
+
+  --nav-text: rgba(255, 255, 255, 0.28);
+  --nav-text-hover: rgba(255, 255, 255, 0.48);
+  --nav-text-active: rgba(255, 255, 255, 0.64);
 
   --border: rgba(255, 255, 255, 0.08);
   --border-strong: rgba(255, 255, 255, 0.14);
@@ -303,7 +313,7 @@ body {
   width: 100%;
   max-width: var(--content-max-width);
   margin: 0 auto;
-  padding: 0 var(--page-inset);
+  /* padding: 0 var(--page-inset); */
 }
 
 .content-container {
@@ -659,13 +669,40 @@ a {
 }
 
 /* ============================================
+   SIDEBAR NAV LINKS
+   font-variation-settings can't be expressed with Tailwind hover utilities
+   ============================================ */
+.nav-link {
+  color: var(--nav-text);
+  font-variation-settings: "wght" 430;
+  transition: color 0.15s ease, font-variation-settings 0.25s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.nav-link:hover {
+  color: var(--nav-text-hover);
+  font-variation-settings: "wght" 510;
+}
+
+.nav-link--active {
+  color: var(--nav-text-active);
+  font-variation-settings: "wght" 560;
+}
+
+/* ============================================
    UTILITY KEYFRAMES
    ============================================ */
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes shimmer {
-  0%   { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
