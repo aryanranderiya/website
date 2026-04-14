@@ -15,7 +15,7 @@ interface AIChatProps {
 const MODEL_ID = 'Llama-3.2-3B-Instruct-q4f16_1-MLC';
 
 // ─── Module-level singleton ───────────────────────────────────────────────────
-// Lives outside React — survives Astro View Transition page remounts.
+// Lives outside React - survives Astro View Transition page remounts.
 let _engine: {
 	chat: { completions: { create: (opts: Record<string, unknown>) => Promise<unknown> } };
 } | null = null;
@@ -141,7 +141,7 @@ function AssistantBubble({
 				) : null}
 			</div>
 
-			{/* Follow-up chips — appear below the bubble after streaming ends */}
+			{/* Follow-up chips - appear below the bubble after streaming ends */}
 			<AnimatePresence>
 				{!isStreaming && followUps && followUps.length > 0 && (
 					<motion.div
@@ -239,7 +239,7 @@ export default function AIChat({ systemPrompt }: AIChatProps) {
 				prev.map((m: Message) => (m.id === msgId ? { ...m, followUps } : m))
 			);
 		} catch {
-			// silently skip — follow-ups are non-critical
+			// silently skip - follow-ups are non-critical
 		} finally {
 			setIsGeneratingFollowUps(false);
 		}
@@ -264,7 +264,7 @@ export default function AIChat({ systemPrompt }: AIChatProps) {
 			let fullResponse = '';
 			try {
 				const history = messages.map((m: Message) => ({ role: m.role, content: m.content }));
-				const chunks = (await _engine!.chat.completions.create({
+				const chunks = (await _engine?.chat.completions.create({
 					messages: [
 						{ role: 'system', content: activePrompt },
 						...history,

@@ -88,7 +88,7 @@ export default function MovieDetail({
 									</button>
 								</Dialog.Close>
 
-								{/* Hero header — blurred poster bg */}
+								{/* Hero header - blurred poster bg */}
 								<div className="relative overflow-hidden h-[200px]">
 									{/* Background blur */}
 									{movie.cover && (

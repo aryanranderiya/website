@@ -1,4 +1,4 @@
-// Icons barrel — all icons from @theexperiencecompany/gaia-icons solid-rounded.
+// Icons barrel - all icons from @theexperiencecompany/gaia-icons solid-rounded.
 // Import icons and HugeiconsIcon from here everywhere in the portfolio.
 //
 // Usage:
@@ -30,7 +30,7 @@ export function ChevronRight({ size = 24, className }: { size?: number; classNam
 	);
 }
 
-// Compatibility shim — keeps all existing <HugeiconsIcon icon={XIcon} size={16} /> calls working.
+// Compatibility shim - keeps all existing <HugeiconsIcon icon={XIcon} size={16} /> calls working.
 // With gaia-icons, icons are direct React components, so we just render the passed component.
 export function HugeiconsIcon({
 	icon: Icon,

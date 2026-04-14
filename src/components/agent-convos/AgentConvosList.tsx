@@ -27,7 +27,7 @@ const PLATFORM_LABELS: Record<string, string> = {
 	codex: 'Codex CLI',
 };
 
-// Google's favicon service — reliable, works for any domain, returns crisp icons
+// Google's favicon service -- reliable, works for any domain, returns crisp icons
 const PLATFORM_ICONS: Record<string, string> = {
 	'claude-code': 'https://www.google.com/s2/favicons?domain=claude.ai&sz=32',
 	opencode: 'https://www.google.com/s2/favicons?domain=opencode.ai&sz=32',
@@ -64,7 +64,7 @@ function formatTokensExact(tokenCount?: number, tokens?: string): string {
 			.replace(/MB/gi, 'M')
 			.trim();
 	}
-	return '—';
+	return '-';
 }
 
 function SortIcon({ dir }: { dir: SortDir | null }) {
@@ -265,7 +265,7 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 								window.location.href = `/agent-convos/${convo.slug}`;
 							}}
 						>
-							{/* Title with platform icon — no overflow:hidden on td so tooltip can escape */}
+							{/* Title with platform icon -- no overflow:hidden on td so tooltip can escape */}
 							<td className="py-[9px] pr-[16px] border-b border-[var(--border)]">
 								<span className="flex items-center gap-[7px] min-w-0">
 									<PlatformIcon platform={convo.platform} model={convo.model} />

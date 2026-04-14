@@ -13,7 +13,8 @@
 		"format": "biome format --write ./src",
 		"check": "biome check ./src",
 		"check:fix": "biome check --write ./src",
-		"type-check": "astro check"
+		"type-check": "astro check",
+		"lint:emdash": "! grep -r '\\xe2\\x80\\x94' src --include='*.ts' --include='*.tsx' --include='*.astro' --include='*.md' --include='*.mdx' -l"
 	},
 	"dependencies": {
 		"@astrojs/mdx": "^4.0.0",

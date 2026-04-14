@@ -57,7 +57,7 @@ function MapWidgetInner() {
 		let cancelled = false;
 
 		async function initMap() {
-			// Dynamic import — mapbox-gl JS (240kB) only downloads when widget is in view
+			// Dynamic import -- mapbox-gl JS (240kB) only downloads when widget is in view
 			const { default: mapboxgl } = await import('mapbox-gl');
 
 			if (cancelled || !containerRef.current) return;

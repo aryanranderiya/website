@@ -24,7 +24,7 @@ function SectionHeader({ label, count }: { label: string; count: number }) {
 	return (
 		<div className="flex items-center gap-3 mb-7">
 			<span className="text-[11px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 whitespace-nowrap">
-				{label} — {count}
+				{label}: {count}
 			</span>
 			<div className="flex-1 h-px bg-[var(--border)]" />
 		</div>

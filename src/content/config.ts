@@ -89,7 +89,7 @@ const now = defineCollection({
 	}),
 });
 
-// Agent conversations — impressive agentic coding sessions
+// Agent conversations - impressive agentic coding sessions
 const agentConvos = defineCollection({
 	type: 'content',
 	schema: z.object({

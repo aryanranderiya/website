@@ -90,7 +90,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 					/>
 				</div>
 
-				{/* ── BOOKS ROW — perspective set here, overflow VISIBLE so books can pop out ── */}
+				{/* ── BOOKS ROW -- perspective set here, overflow VISIBLE so books can pop out ── */}
 				<div
 					className="flex overflow-x-auto relative z-[3]"
 					// biome-ignore lint/nursery/noInlineStyles: perspective/perspectiveOrigin/scrollbarColor have no Tailwind equivalent
@@ -101,7 +101,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 						// Perspective on the ROW so all books share the same 3D space
 						perspective: '1000px',
 						perspectiveOrigin: '50% 110%',
-						// MUST be visible — this is what lets books tilt out of the shelf
+						// MUST be visible -- this is what lets books tilt out of the shelf
 						overflow: 'visible',
 						scrollbarWidth: 'thin',
 						scrollbarColor: 'rgba(255,255,255,0.08) transparent',
@@ -122,7 +122,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 
 				{/* ── SHELF PLANK (sits above books in z so shadow falls correctly) ── */}
 				<div className="relative z-[4]">
-					{/* Plank top — catches overhead light */}
+					{/* Plank top -- catches overhead light */}
 					<div
 						className="h-[7px] relative overflow-hidden ml-[3px] mr-[3px]"
 						// biome-ignore lint/nursery/noInlineStyles: complex gradient has no Tailwind equivalent

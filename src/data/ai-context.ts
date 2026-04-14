@@ -1,4 +1,4 @@
-// AI chat widget — suggested questions and follow-up prompt.
+// AI chat widget -- suggested questions and follow-up prompt.
 // The system prompt is built dynamically at build time in src/lib/build-ai-prompt.ts
 // and passed to <AIChat> via Layout.astro. There is no static fallback.
 

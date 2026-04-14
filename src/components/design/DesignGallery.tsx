@@ -179,7 +179,7 @@ export default function DesignGallery({
 				</div>
 			</section>
 
-			{/* Lightbox — portalled to document.body so CSS filter on #page-content doesn't affect it */}
+			{/* Lightbox -- portalled to document.body so CSS filter on #page-content doesn't affect it */}
 			{typeof document !== 'undefined' &&
 				createPortal(
 					<AnimatePresence>
@@ -250,7 +250,7 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
 			onClick={onClose}
 			className="fixed inset-0 z-[100] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_60%,transparent)]"
 		>
-			{/* Image — entry animation on src change only; close fades with the parent */}
+			{/* Image -- entry animation on src change only; close fades with the parent */}
 			<motion.img
 				key={src}
 				src={src}

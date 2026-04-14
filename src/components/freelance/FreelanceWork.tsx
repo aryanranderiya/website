@@ -197,7 +197,7 @@ function ProjectDetail({
 				</div>
 			</div>
 
-			{/* Image carousel — no overlaid buttons, just dots */}
+			{/* Image carousel -- no overlaid buttons, just dots */}
 			{total > 0 && (
 				<button
 					type="button"
@@ -396,7 +396,7 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 			el.style.maxWidth = `${panelLeft - currentLeft}px`;
 		} else if (!selected) {
 			el.style.transition = TRANSITION;
-			// Animate back to centered px values — can't transition to 'auto'
+			// Animate back to centered px values - can't transition to 'auto'
 			const centeredMargin = Math.max(0, (window.innerWidth - CONTENT_MAX_WIDTH) / 2);
 			el.style.marginLeft = `${centeredMargin}px`;
 			el.style.marginRight = `${centeredMargin}px`;
@@ -427,7 +427,7 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 
 	return (
 		<>
-			{/* Project list — always full width of its container */}
+			{/* Project list -- always full width of its container */}
 			<div>
 				{pastWork.map((work) => {
 					const isActive = selected?.name === work.name;
@@ -467,7 +467,7 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 				})}
 			</div>
 
-			{/* Detail panel — portalled to body so position:fixed is relative to viewport,
+			{/* Detail panel -- portalled to body so position:fixed is relative to viewport,
           not to the transformed #page-content ancestor */}
 			{typeof document !== 'undefined' &&
 				createPortal(

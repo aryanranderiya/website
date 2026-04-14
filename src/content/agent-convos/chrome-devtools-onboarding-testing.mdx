@@ -24,21 +24,21 @@ I gave the agent credentials, a running dev server at `localhost:3000`, and one 
 
 The agent opened Chrome and navigated to the login page. It typed the credentials, hit the login button, and confirmed it landed on the onboarding page. Then it methodically walked each step. It filled in the name field and verified the continue button became active only after input. It selected a profession from the chip options, then navigated backward and forward to confirm the selection persisted in state. It triggered the Gmail OAuth flow and followed the redirect, confirmed the authorization tokens were stored correctly in the database, and returned to the onboarding flow.
 
-Then it reached the processing screen — the step where the app fetches emails, analyzes writing style, and builds a user profile. The progress indicator started moving. Then it stopped. Then the screen just... sat there. The agent didn't report "it's stuck" and wait for a human. It started investigating.
+Then it reached the processing screen  --  the step where the app fetches emails, analyzes writing style, and builds a user profile. The progress indicator started moving. Then it stopped. Then the screen just... sat there. The agent didn't report "it's stuck" and wait for a human. It started investigating.
 
 ## Finding the race condition
 
 The agent queried Loki for the Docker container logs from the email processing service, filtering to the timestamp window since the processing step started. It found a timeout: the email fetcher had successfully retrieved emails, but the LLM style extraction job had kicked off before the fetcher had written all the emails to the database. The extraction job ran on zero emails, returned a null style object, and wrote `null` to the `writing_style` field on the user document. The processing step was polling for `writing_style !== null` to know when to redirect. It never would.
 
-The agent queried MongoDB directly — `db.users.findOne({ email: "test@..." })` — and confirmed the `writing_style` field was null while `emails_fetched` was 47. The race condition: the extraction job started when the first email was written, not when all emails were written. The fix was a sequence guard in the processing pipeline that waited for `emails_fetched_count` to stabilize before triggering extraction.
+The agent queried MongoDB directly  --  `db.users.findOne({ email: "test@..." })`  --  and confirmed the `writing_style` field was null while `emails_fetched` was 47. The race condition: the extraction job started when the first email was written, not when all emails were written. The fix was a sequence guard in the processing pipeline that waited for `emails_fetched_count` to stabilize before triggering extraction.
 
 ## The other six issues
 
 With the race condition documented and filed, the agent continued through the flow with a fresh test account and found six more problems.
 
-The progress bar on the processing screen was animated with a hardcoded CSS animation — it moved from 0% to 100% on a timer regardless of actual backend progress, meaning it could show 80% complete when the backend hadn't started yet, or 20% complete when everything was done. The agent traced this to a missing WebSocket connection that was supposed to stream real progress events but was never implemented.
+The progress bar on the processing screen was animated with a hardcoded CSS animation  --  it moved from 0% to 100% on a timer regardless of actual backend progress, meaning it could show 80% complete when the backend hadn't started yet, or 20% complete when everything was done. The agent traced this to a missing WebSocket connection that was supposed to stream real progress events but was never implemented.
 
-Testing from a mobile Safari user agent, Gmail OAuth was silently dropping query parameters on the redirect back to the app — specifically the `state` and `code` parameters used for the OAuth handshake. This was a mobile Safari-specific URL handling issue with the redirect URI encoding.
+Testing from a mobile Safari user agent, Gmail OAuth was silently dropping query parameters on the redirect back to the app  --  specifically the `state` and `code` parameters used for the OAuth handshake. This was a mobile Safari-specific URL handling issue with the redirect URI encoding.
 
 The profession selection chips had a deselect bug: clicking the currently-selected chip didn't clear the selection, it just re-selected it. The selection state was managed as a string rather than a nullable string, so there was no path back to null.
 
@@ -46,6 +46,6 @@ The processing screen briefly flashed "Analyzing 0 emails" for about 400ms befor
 
 The redirect to the chat view was triggered on `processing_complete: true` in the database, but that flag was being set before the final profile write had been flushed, so the chat view sometimes loaded before the user's extracted preferences were available.
 
-The skip button on the processing screen was calling the skip handler but not updating the `onboarding_skipped` flag in the database — it was only setting local state. On page reload, the onboarding would restart from the beginning.
+The skip button on the processing screen was calling the skip handler but not updating the `onboarding_skipped` flag in the database  --  it was only setting local state. On page reload, the onboarding would restart from the beginning.
 
-The agent filed all seven issues, then spawned six subagents to fix them in parallel while the orchestrator maintained context across all of them. The 19.6MB session file is dense with Chrome DevTools commands, MongoDB queries, Loki log tails, and code changes — a full QA session compressed into a single conversation, without a human needing to touch a terminal or browser tab.
+The agent filed all seven issues, then spawned six subagents to fix them in parallel while the orchestrator maintained context across all of them. The 19.6MB session file is dense with Chrome DevTools commands, MongoDB queries, Loki log tails, and code changes  --  a full QA session compressed into a single conversation, without a human needing to touch a terminal or browser tab.

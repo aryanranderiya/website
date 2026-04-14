@@ -1,10 +1,13 @@
 pre-commit:
+  parallel: true
   commands:
     biome:
       glob: "*.{ts,tsx,astro,css,json}"
       # Safe fixes only — --unsafe would destructively delete style props (noInlineStyles)
       run: pnpm biome check --write {staged_files}
       stage_fixed: true
+    type-check:
+      run: pnpm astro check
 
 pre-push:
   parallel: true

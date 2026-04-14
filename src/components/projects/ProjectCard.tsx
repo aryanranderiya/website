@@ -31,7 +31,7 @@ interface Project {
 	coverImage?: string;
 }
 
-// "Projects" folder is default/uncategorized — no chip shown for it
+// "Projects" folder is default/uncategorized - no chip shown for it
 const FOLDER_CHIP: Record<string, { bg: string; color: string; label: string }> = {
 	Featured: { bg: 'rgba(251,191,36,0.12)', color: '#f59e0b', label: 'Featured' },
 	Client: { bg: 'rgba(52,211,153,0.12)', color: '#10b981', label: 'Freelance' },

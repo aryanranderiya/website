@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 interface ProgressiveImgProps {
 	src: string;
 	alt: string;
-	hash?: string; // base64-encoded thumbhash — optional, falls back to plain img
+	hash?: string; // base64-encoded thumbhash - optional, falls back to plain img
 	className?: string;
 	imgClassName?: string;
 	onClick?: () => void;
@@ -18,7 +18,7 @@ interface ProgressiveImgProps {
 /**
  * Progressive image component using Figma's thumbhash algorithm.
  *
- * Shows a decoded thumbhash placeholder immediately (no network request —
+ * Shows a decoded thumbhash placeholder immediately (no network request --
  * just math), then crossfades to the real image when it finishes loading.
  *
  * If no hash is provided it renders a plain <img> with lazy loading.
@@ -47,11 +47,11 @@ export default function ProgressiveImg({
 			const bytes = Uint8Array.from(atob(hash), (c) => c.charCodeAt(0));
 			setPlaceholder(thumbHashToDataURL(bytes));
 		} catch {
-			// Bad hash — silently fall back to no placeholder
+			// Bad hash - silently fall back to no placeholder
 		}
 	}, [hash]);
 
-	// Handle images already cached — onLoad won't fire, so skip straight to faded
+	// Handle images already cached - onLoad won't fire, so skip straight to faded
 	useEffect(() => {
 		if (imgRef.current?.complete) {
 			setLoaded(true);
@@ -59,7 +59,7 @@ export default function ProgressiveImg({
 		}
 	}, []);
 
-	// No hash — plain lazy image, no extra DOM
+	// No hash - plain lazy image, no extra DOM
 	if (!hash) {
 		return (
 			<img
@@ -89,7 +89,7 @@ export default function ProgressiveImg({
 			// biome-ignore lint/nursery/noInlineStyles: style prop passed from parent for dynamic overrides
 			style={style}
 		>
-			{/* Thumbhash placeholder — visible until real image loads */}
+			{/* Thumbhash placeholder - visible until real image loads */}
 			{placeholder && !loaded && (
 				<img
 					src={placeholder}
@@ -99,7 +99,7 @@ export default function ProgressiveImg({
 				/>
 			)}
 
-			{/* Real image — fades in over the placeholder */}
+			{/* Real image - fades in over the placeholder */}
 			<img
 				ref={imgRef}
 				src={src}

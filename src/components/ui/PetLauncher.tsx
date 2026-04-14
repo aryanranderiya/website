@@ -43,7 +43,7 @@ function getStored(): { animal: string; color: string } {
 		const raw = localStorage.getItem(STORAGE_KEY);
 		if (raw) return JSON.parse(raw);
 	} catch {}
-	// No stored preference — pick randomly between dog, deno, panda
+	// No stored preference - pick randomly between dog, deno, panda
 	const pick =
 		RANDOM_DEFAULTS[Math.floor(Math.random() * RANDOM_DEFAULTS.length)] ?? RANDOM_DEFAULTS[0];
 	return pick;

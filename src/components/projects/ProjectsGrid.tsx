@@ -368,7 +368,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 				</AnimatePresence>
 			</motion.div>
 
-			{/* Preview image portal — rendered at body to avoid filter/transform containing block */}
+			{/* Preview image portal -- rendered at body to avoid filter/transform containing block */}
 			{typeof document !== 'undefined' &&
 				createPortal(
 					<AnimatePresence>

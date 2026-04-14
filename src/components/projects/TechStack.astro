@@ -5,7 +5,7 @@ interface Props {
 
 const { techList } = Astro.props;
 
-// Icon mappings — devicon CDN or Simple Icons CDN
+// Icon mappings - devicon CDN or Simple Icons CDN
 const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons';
 const SIMPLEICONS_BASE = 'https://cdn.simpleicons.org';
 
@@ -75,7 +75,7 @@ const iconMap: Record<string, { url: string; display: string }> = {
 	google: { url: devicon('google'), display: 'Google APIs' },
 };
 
-// Category buckets — order matters, first match wins
+// Category buckets - order matters, first match wins
 const categories: { label: string; keys: string[] }[] = [
 	{
 		label: 'Languages',

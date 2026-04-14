@@ -65,7 +65,7 @@ export const PAGES: NavPage[] = [
 	{
 		href: '/agent-convos',
 		label: 'Agent Logs',
-		description: 'Curated AI coding sessions — infrastructure, multi-agent, browser automation',
+		description: 'Curated AI coding sessions: infrastructure, multi-agent, browser automation',
 		icon: 'AiChat02Icon',
 	},
 	{

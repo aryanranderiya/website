@@ -1,5 +1,5 @@
 ---
-// Giscus comments — theme syncs with the site's light/dark/random toggle
+// Giscus comments - theme syncs with the site's light/dark/random toggle
 ---
 
 <div class="giscus-wrapper" id="giscus-container">
@@ -45,7 +45,7 @@
   window.addEventListener('message', function onGiscusLoad(event) {
     if (event.origin !== 'https://giscus.app') return;
     if (event.data && event.data.giscus && event.data.giscus.discussion !== undefined) {
-      // Giscus loaded — sync theme once
+      // Giscus loaded - sync theme once
       syncGiscusTheme();
       window.removeEventListener('message', onGiscusLoad);
     }

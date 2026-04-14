@@ -23,8 +23,8 @@ export const SITE = {
 } as const;
 
 export const SEO = {
-	titleTemplate: '%s — Aryan Randeriya',
-	defaultTitle: 'Aryan Randeriya — Developer & Designer',
+	titleTemplate: '%s | Aryan Randeriya',
+	defaultTitle: 'Aryan Randeriya - Developer & Designer',
 	charset: 'UTF-8',
 	viewport: 'width=device-width, initial-scale=1.0',
 	robots: 'index, follow',

@@ -37,7 +37,7 @@ const {
 	articleModified,
 } = Astro.props;
 
-const metaTitle = title ? `${title} — ${SITE.name}` : SEO.defaultTitle;
+const metaTitle = title ? `${title} | ${SITE.name}` : SEO.defaultTitle;
 const canonicalURL = new URL(canonical, Astro.site ?? Astro.url.origin);
 const ogImageURL = ogImage.startsWith('http')
 	? ogImage
@@ -135,7 +135,7 @@ const aiSystemPrompt = buildAIPrompt({
     <!-- View Transitions -->
     <ViewTransitions />
 
-    <!-- Theme init — light by default, dark only if explicitly stored -->
+    <!-- Theme init - light by default, dark only if explicitly stored -->
     <script is:inline>
       function applyTheme() {
         var theme = localStorage.getItem('theme');
@@ -161,7 +161,7 @@ const aiSystemPrompt = buildAIPrompt({
           root.style.setProperty('--glass-bg',            'hsla(' + hue + ', ' + sat + '%, ' + l + '%, 0.85)');
           root.style.setProperty('--accent-blue',         'hsl(' + hue + ', 72%, 52%)');
         }
-        // Restore typography (helvetica is the CSS default — skip it)
+        // Restore typography (helvetica is the CSS default - skip it)
         var typography = localStorage.getItem('typography');
         if (typography && typography !== 'helvetica') {
           var fontMap = {

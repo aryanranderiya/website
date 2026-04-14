@@ -51,7 +51,7 @@ export const pastWork: FreelanceProject[] = [
 		tech: ['React', 'Node.js', 'MongoDB'],
 		url: 'https://encodepdeu.vercel.app',
 		description:
-			'The official website of Encode — the Computer Science Club at PDEU. Led the web dev core committee and built the site with event management, member profiles, and resource sharing.',
+			'The official website of Encode - the Computer Science Club at PDEU. Led the web dev core committee and built the site with event management, member profiles, and resource sharing.',
 		images: [
 			'/ProjectMedia/Encode_Official%20Website/1.webp',
 			'/ProjectMedia/Encode_Official%20Website/2.webp',

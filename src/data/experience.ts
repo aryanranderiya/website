@@ -23,7 +23,7 @@ export const experience: Experience[] = [
 		endDate: 'Present',
 		location: 'Remote',
 		description:
-			'Building GAIA — an AI-powered personal companion platform. Designed and developed end-to-end.',
+			'Building GAIA - an AI-powered personal companion platform. Designed and developed end-to-end.',
 		highlights: [
 			'Built React Native + TypeScript mobile app with voice-first UX',
 			'Python/FastAPI backend with OpenAI integrations and custom models',
@@ -59,7 +59,7 @@ export const experience: Experience[] = [
 		endDate: 'Present',
 		location: 'PDEU, Ahmedabad',
 		description:
-			'Leading web development for Encode — the Computer Science club at Pandit Deendayal Energy University.',
+			'Leading web development for Encode - the Computer Science club at Pandit Deendayal Energy University.',
 		highlights: [
 			'Built and shipped the official Encode club website',
 			'Mentored junior developers in React and modern web practices',
@@ -91,10 +91,10 @@ export const experience: Experience[] = [
 		endDate: 'Dec 2023',
 		location: 'Remote',
 		description:
-			'Founded and ran F4LLOUT Esports — a competitive esports organization. Handled everything from team management and recruitment to brand identity, sponsorships, and content strategy.',
+			'Founded and ran F4LLOUT Esports - a competitive esports organization. Handled everything from team management and recruitment to brand identity, sponsorships, and content strategy.',
 		highlights: [
 			'Built and managed multiple competitive rosters across titles',
-			'Designed the full brand identity — logo, banners, apparel, social assets',
+			'Designed the full brand identity: logo, banners, apparel, social assets',
 			"Grew the organization's social presence and community from the ground up",
 			'Handled sponsorship outreach, partnerships, and org operations',
 		],
@@ -110,7 +110,7 @@ export const experience: Experience[] = [
 		startDate: 'May 2024',
 		endDate: 'Present',
 		location: 'Remote',
-		description: 'Built Rezrek — a content e-commerce platform.',
+		description: 'Built Rezrek - a content e-commerce platform.',
 		highlights: [
 			'End-to-end development of content e-commerce platform',
 			'React, Node.js, Redis stack',
@@ -141,10 +141,10 @@ export const experience: Experience[] = [
 		description:
 			'Independent contractor building web and mobile products for startups and individuals.',
 		highlights: [
-			'BlinkAnalytics — analytics dashboard (React, TypeScript)',
-			'MWI — brand and web presence (Next.js, TypeScript)',
-			'Brushstroke Studio — agency website (Astro) → brushstroke-studio.pages.dev',
-			'LyfeLane — platform MVP (React, Node.js)',
+			'BlinkAnalytics - analytics dashboard (React, TypeScript)',
+			'MWI - brand and web presence (Next.js, TypeScript)',
+			'Brushstroke Studio - agency website (Astro) -> brushstroke-studio.pages.dev',
+			'LyfeLane - platform MVP (React, Node.js)',
 		],
 		logo: '/ClientWork/BrushstrokeStudio/logo.png',
 		skills: ['React', 'Next.js', 'TypeScript', 'Node.js', 'Figma'],

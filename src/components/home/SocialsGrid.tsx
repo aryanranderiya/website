@@ -357,13 +357,13 @@ function MonkeytypePreview() {
 							>
 								<div className="text-[14px] text-[#646669]">{label}</div>
 								<div className="text-[17px] text-[#e2b714] font-bold text-center">
-									{pb ? Math.round(pb.wpm) : '—'}
+									{pb ? Math.round(pb.wpm) : '-'}
 								</div>
 								<div className="text-[14px] text-[#d1d0c5] text-center">
-									{pb ? Math.round(pb.raw) : '—'}
+									{pb ? Math.round(pb.raw) : '-'}
 								</div>
 								<div className="text-[14px] text-[#d1d0c5] text-center">
-									{pb ? `${Math.round(pb.acc)}%` : '—'}
+									{pb ? `${Math.round(pb.acc)}%` : '-'}
 								</div>
 							</div>
 						))}
@@ -372,14 +372,14 @@ function MonkeytypePreview() {
 			{/* Footer stats */}
 			<div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#2c2e31]">
 				{[
-					{ label: 'tests', value: isLoading ? '···' : (data?.tests?.toLocaleString() ?? '—') },
+					{ label: 'tests', value: isLoading ? '···' : (data?.tests?.toLocaleString() ?? '-') },
 					{
 						label: 'time',
-						value: isLoading ? '···' : data?.timeTyping ? fmtTime(data.timeTyping) : '—',
+						value: isLoading ? '···' : data?.timeTyping ? fmtTime(data.timeTyping) : '-',
 					},
 					{
 						label: 'top rank',
-						value: isLoading ? '···' : data?.rank15 ? `#${data.rank15.toLocaleString()}` : '—',
+						value: isLoading ? '···' : data?.rank15 ? `#${data.rank15.toLocaleString()}` : '-',
 					},
 				].map((s) => (
 					<div key={s.label} className="text-center">

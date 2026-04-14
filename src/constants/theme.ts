@@ -1,4 +1,4 @@
-// Design tokens — mirrors global.css, single source of truth for TS components
+// Design tokens -- mirrors global.css, single source of truth for TS components
 
 export const COLORS = {
 	background: '#fdfdfc',
@@ -33,7 +33,7 @@ export const FONT = {
 export const FONT_SIZE = {
 	'2xs': '0.625rem', // 10px
 	xs: '0.75rem', // 12px
-	sm: '0.8125rem', // 13px — body
+	sm: '0.8125rem', // 13px -- body
 	base: '0.875rem', // 14px
 	lg: '1rem', // 16px
 	xl: '1.125rem', // 18px

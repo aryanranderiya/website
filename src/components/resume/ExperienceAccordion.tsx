@@ -19,12 +19,12 @@ const experiences: Experience[] = [
 	{
 		company: 'GAIA',
 		role: 'Founder & Lead Developer',
-		period: 'Jul 2024 — Present',
+		period: 'Jul 2024 - Present',
 		location: 'Ahmedabad, India',
 		logo: 'https://heygaia.io/favicon.ico',
 		color: '#00bbff',
 		description:
-			'Building GAIA — an AI-powered personal companion platform exploring the future of human-AI interaction. Designed and developed the entire product end-to-end.',
+			'Building GAIA - an AI-powered personal companion platform exploring the future of human-AI interaction. Designed and developed the entire product end-to-end.',
 		highlights: [
 			'React Native + TypeScript mobile app with voice-first UX',
 			'Python/FastAPI backend with OpenAI and custom model integrations',
@@ -36,15 +36,15 @@ const experiences: Experience[] = [
 	{
 		company: 'Freelance',
 		role: 'Full-Stack Developer & Designer',
-		period: '2022 — Present',
+		period: '2022 - Present',
 		location: 'Remote',
 		color: '#6366f1',
 		description:
 			'Independent contractor building web and mobile products for startups and established companies. End-to-end: design → development → deployment.',
 		highlights: [
-			'Built BlinkAnalytics — analytics dashboard (React, TypeScript)',
-			'Built MWI (Move With Intention) brand site — Next.js, TypeScript',
-			'Built Rezrek — content e-commerce platform — React, Node.js, Redis',
+			'Built BlinkAnalytics - analytics dashboard (React, TypeScript)',
+			'Built MWI (Move With Intention) brand site - Next.js, TypeScript',
+			'Built Rezrek - content e-commerce platform - React, Node.js, Redis',
 			'Led web development for Encode PDEU, the university CS club',
 			'Delivered Brushstroke Studio agency website in Astro',
 		],
@@ -53,11 +53,11 @@ const experiences: Experience[] = [
 	{
 		company: 'Encode PDEU',
 		role: 'Web Development Lead',
-		period: 'Aug 2023 — May 2024',
+		period: 'Aug 2023 - May 2024',
 		location: 'PDEU, Ahmedabad',
 		color: '#f59e0b',
 		description:
-			'Led the web development core committee of Encode — the Computer Science club at Pandit Deendayal Energy University.',
+			'Led the web development core committee of Encode - the Computer Science club at Pandit Deendayal Energy University.',
 		highlights: [
 			'Built and shipped the official Encode club website',
 			'Mentored junior developers in React and modern web practices',
@@ -67,12 +67,12 @@ const experiences: Experience[] = [
 	},
 	{
 		company: 'NASA Space Apps Hackathon',
-		role: 'Lead Developer — Team SUSTAIN',
+		role: 'Lead Developer - Team SUSTAIN',
 		period: 'Oct 2024',
 		location: 'Global',
 		color: '#0ea5e9',
 		description:
-			'Led development for SUSTAIN — a tool to analyze soil moisture and water data for farmers, built in 48 hours.',
+			'Led development for SUSTAIN - a tool to analyze soil moisture and water data for farmers, built in 48 hours.',
 		highlights: [
 			'Finished Top 15 out of 100+ teams globally',
 			'Built full React + TypeScript frontend in 48 hours',
@@ -82,8 +82,8 @@ const experiences: Experience[] = [
 	},
 	{
 		company: 'Pandit Deendayal Energy University',
-		role: 'B.Tech — Computer Engineering',
-		period: '2022 — 2026',
+		role: 'B.Tech - Computer Engineering',
+		period: '2022 - 2026',
 		location: 'Ahmedabad, India',
 		color: '#10b981',
 		description:
@@ -165,7 +165,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
 		<div
 			className={`rounded-xl overflow-hidden transition-[background] duration-200 ${open ? 'bg-[var(--muted)]' : 'bg-transparent'}`}
 		>
-			{/* Header row — always visible, clickable */}
+			{/* Header row -- always visible, clickable */}
 			<button
 				type="button"
 				onClick={() => setOpen((o) => !o)}
@@ -196,7 +196,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
 				<ChevronIcon open={open} />
 			</button>
 
-			{/* Expandable body — CSS grid row animation */}
+			{/* Expandable body -- CSS grid row animation */}
 			<div
 				className={`grid transition-[grid-template-rows] duration-[280ms] ${open ? '[grid-template-rows:1fr]' : '[grid-template-rows:0fr]'}`}
 			>

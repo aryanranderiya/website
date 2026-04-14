@@ -60,13 +60,13 @@ export default function Book3D({ title, author, cover, pages, onClick, index = 0
 			style={{
 				width: `${spineWidth + coverWidth}px`,
 				height: `${height}px`,
-				// No perspective here — parent row owns the 3D context
+				// No perspective here - parent row owns the 3D context
 				transformStyle: 'preserve-3d',
 			}}
 			aria-label={`${title} by ${author}`}
 		>
-			{/* Book group — rotates as one unit around spine (left edge) */}
-			{/* transformPerspective adds perspective() into the transform chain — this is the
+			{/* Book group -- rotates as one unit around spine (left edge) */}
+			{/* transformPerspective adds perspective() into the transform chain -- this is the
           framer-motion-native way to get real 3D depth without relying on parent CSS perspective */}
 			<motion.div
 				animate={{
@@ -166,7 +166,7 @@ export default function Book3D({ title, author, cover, pages, onClick, index = 0
 						</div>
 					)}
 
-					{/* Page-edge line — right side */}
+					{/* Page-edge line -- right side */}
 					<div
 						className="absolute top-0 right-0 w-[2px] bottom-0 pointer-events-none"
 						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
@@ -176,7 +176,7 @@ export default function Book3D({ title, author, cover, pages, onClick, index = 0
 						}}
 					/>
 
-					{/* Cover gloss — top-left diagonal highlight */}
+					{/* Cover gloss -- top-left diagonal highlight */}
 					<div
 						className="absolute inset-0 pointer-events-none"
 						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
@@ -217,7 +217,7 @@ export default function Book3D({ title, author, cover, pages, onClick, index = 0
 				/>
 			</motion.div>
 
-			{/* ── HOVER GLOW — subtle warm light behind pulled book ── */}
+			{/* ── HOVER GLOW -- subtle warm light behind pulled book ── */}
 			<motion.div
 				animate={{ opacity: hovered ? 0.6 : 0 }}
 				transition={{ duration: 0.25 }}

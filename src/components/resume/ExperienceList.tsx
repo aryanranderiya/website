@@ -81,7 +81,7 @@ function ExperienceItem({
 	isLast: boolean;
 	compact?: boolean;
 }) {
-	const period = `${exp.startDate} — ${exp.endDate}`;
+	const period = `${exp.startDate} - ${exp.endDate}`;
 
 	return (
 		<motion.div

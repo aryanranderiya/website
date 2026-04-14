@@ -41,11 +41,11 @@ export async function fetchContributions(
 
 // Same green (#40c463), varying opacity
 const LEVEL_COLORS = [
-	'rgba(64, 196, 99, 0.08)', // 0 — no contributions
-	'rgba(64, 196, 99, 0.30)', // 1 — low
-	'rgba(64, 196, 99, 0.55)', // 2 — medium
-	'rgba(64, 196, 99, 0.80)', // 3 — high
-	'rgba(64, 196, 99, 1.00)', // 4 — max
+	'rgba(64, 196, 99, 0.08)', // 0 -- no contributions
+	'rgba(64, 196, 99, 0.30)', // 1 -- low
+	'rgba(64, 196, 99, 0.55)', // 2 -- medium
+	'rgba(64, 196, 99, 0.80)', // 3 -- high
+	'rgba(64, 196, 99, 1.00)', // 4 -- max
 ];
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -133,7 +133,7 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 	const graph = (
 		<div className="w-full">
 			{isLoading ? (
-				// Skeleton — full width grid
+				// Skeleton - full width grid
 				<div className="grid [grid-template-columns:repeat(52,1fr)] gap-[3px] w-full">
 					{Array.from({ length: 52 }).map((_, i) => (
 						<div
