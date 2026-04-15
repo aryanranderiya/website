@@ -56,7 +56,7 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
 									{project.title}
 								</span>
 								{statusLabel && (
-									<span className="text-[10px] px-[7px] py-[1px] rounded-full bg-[rgba(0,187,255,0.1)] text-[#00bbff] font-medium">
+									<span className="text-[10px] px-[7px] py-[1px] rounded-full bg-[rgba(0,95,128,0.12)] text-[#005f80] font-medium">
 										{statusLabel}
 									</span>
 								)}

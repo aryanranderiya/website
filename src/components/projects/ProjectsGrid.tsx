@@ -179,7 +179,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 							borderRadius: '9999px',
 							border: 'none',
 							background: activeTypeFilter === null ? 'var(--text-primary)' : 'var(--muted-bg)',
-							color: activeTypeFilter === null ? 'var(--background)' : 'var(--text-muted)',
+							color: activeTypeFilter === null ? 'var(--background)' : 'var(--text-ghost)',
 							cursor: 'pointer',
 							fontSize: '11px',
 							fontWeight: activeTypeFilter === null ? 500 : 400,
@@ -206,7 +206,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								border: 'none',
 								background:
 									activeTypeFilter === chip.value ? 'var(--text-primary)' : 'var(--muted-bg)',
-								color: activeTypeFilter === chip.value ? 'var(--background)' : 'var(--text-muted)',
+								color: activeTypeFilter === chip.value ? 'var(--background)' : 'var(--text-ghost)',
 								cursor: 'pointer',
 								fontSize: '11px',
 								fontWeight: activeTypeFilter === chip.value ? 500 : 400,
@@ -228,7 +228,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 							type="button"
 							ref={filterBtnRef}
 							onClick={() => setTagPopoverOpen((o) => !o)}
-							className={`inline-flex items-center gap-[5px] px-[10px] py-1 rounded-full bg-[var(--muted-bg)] cursor-pointer transition-all duration-150 text-[11px] tracking-[0.01em] leading-[1.45] ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-muted)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
+							className={`inline-flex items-center gap-[5px] px-[10px] py-1 rounded-full bg-[var(--muted-bg)] cursor-pointer transition-all duration-150 text-[11px] tracking-[0.01em] leading-[1.45] ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
 						>
 							<HugeiconsIcon icon={FilterIcon} size={11} color="currentColor" />
 							<span>

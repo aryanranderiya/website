@@ -1,0 +1,168 @@
+---
+import { type Experience, experience } from '@/data/experience';
+
+interface Props {
+	featuredOnly?: boolean;
+	compact?: boolean;
+	includeTypes?: Experience['employmentType'][];
+	excludeTypes?: Experience['employmentType'][];
+}
+
+const { featuredOnly = false, compact = false, includeTypes, excludeTypes } = Astro.props;
+
+const EMPLOYMENT_LABELS: Record<Experience['employmentType'], string> = {
+	'full-time': 'Full-time',
+	internship: 'Internship',
+	freelance: 'Freelance',
+	volunteer: 'Volunteer',
+	contract: 'Contract',
+};
+
+let items = featuredOnly
+	? experience.filter((entry) => entry.featured !== false).slice(0, 6)
+	: experience;
+
+if (includeTypes) items = items.filter((entry) => includeTypes.includes(entry.employmentType));
+if (excludeTypes) items = items.filter((entry) => !excludeTypes.includes(entry.employmentType));
+---
+
+<section class="pb-12">
+	{featuredOnly && <div class="section-header animate-fade-in stagger-1">Experience</div>}
+
+	<div class="flex flex-col">
+		{items.map((entry, index) => {
+			const isLast = index === items.length - 1;
+			const period = `${entry.startDate} - ${entry.endDate}`;
+
+			return (
+				<div
+					class:list={[
+						'flex gap-3 items-start animate-fade-in-up',
+						compact ? 'py-[10px]' : 'py-4',
+						isLast ? '' : 'border-b border-border',
+					]}
+					style={`animation-delay: ${Math.min(index, 5) * 0.04}s;`}
+				>
+					<div class="pt-[1px] shrink-0">
+						{entry.logo ? (
+							<>
+								<img
+									src={entry.logo}
+									alt={entry.company}
+									width="28"
+									height="28"
+									loading="lazy"
+									class:list={[
+										'rounded-[6px] object-contain shrink-0',
+										entry.logoInvert ? 'invert dark:invert-0' : '',
+									]}
+									onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+								/>
+								<div class="hidden w-7 h-7 rounded-[6px] bg-[var(--muted-bg)] items-center justify-center text-[10px] font-semibold text-[var(--text-ghost)]">
+									{entry.company.charAt(0)}
+								</div>
+							</>
+						) : (
+							<div class="w-7 h-7 rounded-[6px] bg-[var(--muted-bg)] flex items-center justify-center text-[10px] font-semibold text-[var(--text-ghost)]">
+								{entry.company.charAt(0)}
+							</div>
+						)}
+					</div>
+
+					<div class="flex-1 min-w-0">
+						<div
+							class:list={[
+								'flex items-baseline flex-wrap gap-x-[10px] gap-y-1',
+								compact ? 'mb-0' : 'mb-[2px]',
+							]}
+						>
+							{entry.website ? (
+								<a
+									href={entry.website}
+									target={entry.website.startsWith('http') ? '_blank' : undefined}
+									rel={entry.website.startsWith('http') ? 'noopener noreferrer' : undefined}
+									class="text-[13px] font-semibold text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 hover:text-[var(--text-primary)] cursor-pointer no-underline"
+								>
+									{entry.company}
+								</a>
+							) : (
+								<span class="text-[13px] font-semibold text-[var(--text-secondary)] tracking-[-0.01em]">
+									{entry.company}
+								</span>
+							)}
+
+							{!compact && (
+								<span class="text-[12px] text-[var(--text-muted)] font-normal">{entry.role}</span>
+							)}
+
+							<span class="text-[11px] text-[var(--text-ghost)] ml-auto whitespace-nowrap">
+								{period}
+							</span>
+						</div>
+
+						{compact && (
+							<div class="text-[12px] text-[var(--text-ghost)] mb-0 mt-[1px]">{entry.role}</div>
+						)}
+
+						{!compact && (
+							<div
+								class:list={[
+									'text-[11px] text-[var(--text-ghost)] flex gap-[6px]',
+									entry.description || entry.highlights.length > 0 || entry.skills.length > 0
+										? 'mb-2'
+										: 'mb-0',
+								]}
+							>
+								<span>{EMPLOYMENT_LABELS[entry.employmentType]}</span>
+								{entry.location && (
+									<>
+										<span>·</span>
+										<span>{entry.location}</span>
+									</>
+								)}
+							</div>
+						)}
+
+						{!compact && entry.description && (
+							<p class="text-[12px] text-[var(--text-muted)] leading-[1.6] m-0 mb-2">
+								{entry.description}
+							</p>
+						)}
+
+						{!compact && entry.highlights.length > 0 && (
+							<ul class="list-none p-0 m-0 mb-2 flex flex-col gap-1">
+								{entry.highlights.map((highlight) => (
+									<li class="flex items-start gap-2 text-[12px] text-[var(--text-muted)] leading-[1.55]">
+										<span class="w-1 h-1 rounded-full bg-[var(--text-ghost)] shrink-0 mt-[6px]" />
+										{highlight}
+									</li>
+								))}
+							</ul>
+						)}
+
+						{!compact && entry.skills.length > 0 && (
+							<div class="flex flex-wrap gap-1">
+								{entry.skills.map((skill) => (
+									<span class="text-[10px] text-[var(--text-ghost)] bg-[var(--muted-bg)] rounded-full px-2 py-[2px] font-medium tracking-[0.01em]">
+										{skill}
+									</span>
+								))}
+							</div>
+						)}
+					</div>
+				</div>
+			);
+		})}
+	</div>
+
+	{featuredOnly && (
+		<div class="mt-3 flex justify-end">
+			<a
+				href="/resume"
+				class="text-[12px] font-medium text-[var(--text-secondary)] no-underline inline-flex items-center gap-1 bg-[var(--muted-bg)] rounded-full px-[14px] py-[6px] transition-[filter] duration-150 hover:brightness-[0.96]"
+			>
+				Full resume <span aria-hidden="true">→</span>
+			</a>
+		</div>
+	)}
+</section>

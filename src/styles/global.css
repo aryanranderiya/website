@@ -1,4 +1,4 @@
-@import '@fontsource-variable/inter';
+@import '@fontsource-variable/inter' layer(utilities);
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -51,7 +51,7 @@
   --text-primary: rgba(0, 0, 0, 0.85);
   --text-secondary: rgba(0, 0, 0, 0.55);
   --text-muted: rgba(0, 0, 0, 0.54);
-  --text-ghost: rgba(0, 0, 0, 0.32);
+  --text-ghost: rgba(0, 0, 0, 0.60);
 
   /* Sidebar nav text — lighter than body hierarchy */
   --nav-text: rgba(0, 0, 0, 0.28);
@@ -166,7 +166,7 @@
   --text-primary: rgba(255, 255, 255, 0.88);
   --text-secondary: rgba(255, 255, 255, 0.55);
   --text-muted: rgba(255, 255, 255, 0.54);
-  --text-ghost: rgba(255, 255, 255, 0.32);
+  --text-ghost: rgba(255, 255, 255, 0.60);
 
   --nav-text: rgba(255, 255, 255, 0.28);
   --nav-text-hover: rgba(255, 255, 255, 0.48);
@@ -353,7 +353,7 @@ body {
   padding: 2px 8px;
   border-radius: var(--radius-full);
   background: var(--muted-bg);
-  color: var(--text-muted);
+  color: var(--text-ghost);
   border: none;
   display: inline-flex;
   align-items: center;
@@ -606,6 +606,22 @@ a {
 
 .animate-scale-in {
   animation: scale-in 0.25s var(--ease-expo) both;
+}
+
+.github-cell {
+  animation: github-cell-in 0.18s var(--ease-expo) both;
+}
+
+@keyframes github-cell-in {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 /* Stagger delays */

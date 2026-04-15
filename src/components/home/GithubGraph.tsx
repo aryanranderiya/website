@@ -1,11 +1,8 @@
 'use client';
 
-import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { Skeleton } from 'boneyard-js/react';
-import { motion } from 'motion/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLazyMount } from '@/hooks/useLazyMount';
-import { queryClient } from '@/utils/queryClient';
 
 interface ContributionDay {
 	date: string;
@@ -84,17 +81,13 @@ function ContributionCell({
 
 	return (
 		<div className="flex-1 aspect-square relative">
-			<motion.div
-				initial={animated ? { opacity: 0, scale: 0.3 } : undefined}
-				animate={animated ? { opacity: 1, scale: 1 } : undefined}
-				transition={{ delay, duration: 0.2, ease: 'easeOut' }}
+			<div
 				onMouseEnter={(e) => {
 					const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
 					setTooltip({ x: rect.left + rect.width / 2, y: rect.top });
 				}}
 				onMouseLeave={() => setTooltip(null)}
-				className="w-full h-full rounded-[2px] cursor-default"
-				style={{ backgroundColor: LEVEL_COLORS[day.level] }}
+				className={`w-full h-full rounded-[2px] cursor-default ${animated ? 'github-cell' : ''}`}
 			/>
 			{tooltip && (
 				<div
@@ -121,10 +114,30 @@ function ContributionCell({
 }
 
 function GithubGraphInner({ compact = false }: { compact?: boolean }) {
-	const { data, isLoading } = useQuery({
-		queryKey: ['github-contributions', 'aryanranderiya'],
-		queryFn: () => fetchContributions('aryanranderiya'),
-	});
+	const [data, setData] = useState<{ weeks: ContributionWeek[]; total: number } | null>(null);
+	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		let cancelled = false;
+
+		fetchContributions('aryanranderiya')
+			.then((result) => {
+				if (cancelled) return;
+				setData(result);
+			})
+			.catch(() => {
+				if (cancelled) return;
+				setData(null);
+			})
+			.finally(() => {
+				if (cancelled) return;
+				setIsLoading(false);
+			});
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	const weeks = data?.weeks.slice(-52) ?? [];
 	const totalContributions = data?.total ?? 0;
@@ -182,7 +195,7 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 										key={day.date}
 										day={day}
 										animated={!compact}
-										delay={(wi * 7 + di) * 0.003}
+										delay={(wi * 7 + di) * 5}
 									/>
 								))}
 							</div>
@@ -268,11 +281,7 @@ export default function GithubGraph(props: { compact?: boolean }) {
 				color="rgba(64, 196, 99, 0.08)"
 				fallback={<GithubGraphFixture />}
 			>
-				{mounted && (
-					<QueryClientProvider client={queryClient}>
-						<GithubGraphInner {...props} />
-					</QueryClientProvider>
-				)}
+				{mounted && <GithubGraphInner {...props} />}
 			</Skeleton>
 		</div>
 	);

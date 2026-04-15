@@ -1,8 +1,8 @@
 ---
 import GithubGraph from '@/components/home/GithubGraph';
-import ExperienceList from '@/components/resume/ExperienceList';
+import ExperienceList from '@/components/resume/ExperienceList.astro';
 import ButtonLink from '@/components/ui/ButtonLink';
-import { certifications, education } from '@/data/experience';
+import { education } from '@/data/experience';
 import PageLayout from '@/layouts/PageLayout.astro';
 
 const skillCategories = [
@@ -123,7 +123,6 @@ const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
           iconSize={13}
           size="sm"
           variant="accent"
-          client:load
         />
       </div>
     </div>
@@ -131,13 +130,13 @@ const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
     <!-- ── Experience ────────────────────────────────────────────── -->
     <section class="mb-5">
       <p class="section-header">Experience</p>
-      <ExperienceList excludeTypes={["volunteer"]} client:load />
+      <ExperienceList excludeTypes={["volunteer"]} />
     </section>
 
     <!-- ── Community Experience ──────────────────────────────────── -->
     <section class="mb-5">
       <p class="section-header">Community</p>
-      <ExperienceList includeTypes={["volunteer"]} client:load />
+      <ExperienceList includeTypes={["volunteer"]} />
     </section>
 
     <!-- ── Education ─────────────────────────────────────────────── -->
@@ -218,7 +217,7 @@ const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
 
     <!-- ── GitHub Graph ───────────────────────────────────────────── -->
     <section class="print:hidden">
-      <GithubGraph client:load />
+      <GithubGraph client:visible />
     </section>
   </div>
 </PageLayout>

@@ -88,9 +88,9 @@ export default function MovieCard({
 
 			{/* Info */}
 			<div className="space-y-0.5">
-				<h3 className="truncate text-[12px] font-semibold text-[var(--foreground)] tracking-[-0.02em] leading-[1.3]">
+				<h2 className="truncate text-[12px] font-semibold text-[var(--foreground)] tracking-[-0.02em] leading-[1.3]">
 					{movie.title}
-				</h3>
+				</h2>
 				<div className="text-[11px] text-[var(--muted-foreground)] opacity-60">{movie.year}</div>
 			</div>
 		</motion.div>

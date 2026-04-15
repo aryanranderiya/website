@@ -46,7 +46,7 @@ export const experience: Experience[] = [
 		description:
 			'Full-stack software engineering at an AI company. Building production systems and integrations.',
 		highlights: [],
-		logo: '/icons/favicons/ignosis-ai.png',
+		logo: '/icons/favicons/ignosis-ai.webp',
 		website: 'https://ignosis.ai',
 		skills: ['TypeScript', 'React', 'Python', 'FastAPI'],
 		featured: true,

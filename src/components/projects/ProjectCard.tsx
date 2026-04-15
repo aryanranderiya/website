@@ -108,7 +108,7 @@ export default function ProjectCard({
 						{project.title}
 					</span>
 					{project.status === 'in-progress' && (
-						<span className="text-[9px] px-[6px] py-[1px] rounded-full bg-[rgba(0,187,255,0.1)] text-[#00bbff] font-medium shrink-0 tracking-[0.02em]">
+						<span className="text-[9px] px-[6px] py-[1px] rounded-full bg-[rgba(0,95,128,0.12)] text-[#005f80] font-medium shrink-0 tracking-[0.02em]">
 							WIP
 						</span>
 					)}

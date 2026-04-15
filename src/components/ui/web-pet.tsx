@@ -42,6 +42,7 @@ export type WebPetProps = {
 	speech?: WebPetSpeechInput;
 	hoverMessage?: string;
 	onClick?: () => void;
+	ariaLabel?: string;
 	paused?: boolean;
 };
 
@@ -225,10 +226,11 @@ type WebPetContainerProps = {
 	style?: CSSProperties;
 	children: ReactNode;
 	onClick?: () => void;
+	ariaLabel?: string;
 };
 
 const WebPetContainer = forwardRef<HTMLDivElement, WebPetContainerProps>(
-	({ position, size, zIndex, style, children, onClick }, ref) => (
+	({ position, size, zIndex, style, children, onClick, ariaLabel }, ref) => (
 		// biome-ignore lint/a11y/noStaticElementInteractions: role and tabIndex are conditionally set when onClick is provided
 		<div
 			ref={ref}
@@ -236,6 +238,7 @@ const WebPetContainer = forwardRef<HTMLDivElement, WebPetContainerProps>(
 			onClick={onClick}
 			onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
 			role={onClick ? 'button' : undefined}
+			aria-label={onClick ? ariaLabel : undefined}
 			tabIndex={onClick ? 0 : undefined}
 			// biome-ignore lint/nursery/noInlineStyles: dynamic position/size/zIndex/pointerEvents from props
 			style={{
@@ -688,6 +691,7 @@ export function WebPet({
 	speech,
 	hoverMessage,
 	onClick,
+	ariaLabel,
 	paused = false,
 }: WebPetProps) {
 	const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -738,6 +742,7 @@ export function WebPet({
 			zIndex={resolvedAppearance.zIndex}
 			style={resolvedAppearance.style}
 			onClick={onClick}
+			ariaLabel={ariaLabel}
 		>
 			<WebPetSpeechBubble
 				visible={showBubble}

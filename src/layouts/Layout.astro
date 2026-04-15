@@ -3,12 +3,8 @@ import { getCollection } from 'astro:content';
 import { ViewTransitions } from 'astro:transitions';
 import { SEO, SITE } from '@/constants/site';
 import '@/styles/global.css';
-import AgentationOverlay from '@/components/layout/AgentationOverlay';
-import CommandK from '@/components/layout/CommandK';
 import Preloader from '@/components/layout/Preloader';
-import AIChat from '@/components/ui/AIChat';
 import BlurStack from '@/components/ui/blur-stack';
-import { PetLauncher } from '@/components/ui/PetLauncher';
 import { certifications, education, experience } from '@/data/experience';
 import { pastWork } from '@/data/freelance';
 import { buildAIPrompt } from '@/lib/build-ai-prompt';
@@ -107,13 +103,9 @@ const aiSystemPrompt = buildAIPrompt({
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
 
     <!-- Preconnects / prefetches for third-party origins -->
-    <link rel="preconnect" href="https://api.mapbox.com" crossorigin />
-    <link rel="preconnect" href="https://events.mapbox.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin />
-    <link rel="dns-prefetch" href="https://api.github.com" />
-    <link rel="dns-prefetch" href="https://github-contributions-api.jogruber.de" />
-    <link rel="dns-prefetch" href="https://open.spotify.com" />
 
     <!-- Structured Data: Person -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify({
@@ -134,6 +126,9 @@ const aiSystemPrompt = buildAIPrompt({
       ],
     })} />
 
+    <script is:inline set:html={`
+      window.__aiSystemPrompt__ = ${JSON.stringify(aiSystemPrompt)};
+    `} />
     <!-- View Transitions -->
     <ViewTransitions />
 
@@ -142,7 +137,6 @@ const aiSystemPrompt = buildAIPrompt({
       function applyTheme() {
         var theme = localStorage.getItem('theme');
         var root = document.documentElement;
-        // Reset dark class first
         root.classList.remove('dark');
         if (theme === 'dark') {
           root.classList.add('dark');
@@ -163,7 +157,6 @@ const aiSystemPrompt = buildAIPrompt({
           root.style.setProperty('--glass-bg',            'hsla(' + hue + ', ' + sat + '%, ' + l + '%, 0.85)');
           root.style.setProperty('--accent-blue',         'hsl(' + hue + ', 72%, 52%)');
         }
-        // Restore typography (helvetica is the CSS default - skip it)
         var typography = localStorage.getItem('typography');
         if (typography && typography !== 'helvetica') {
           var fontMap = {
@@ -189,7 +182,6 @@ const aiSystemPrompt = buildAIPrompt({
         }
       }
       applyTheme();
-      // Re-apply after each View Transition swap so dark class persists across navigation
       document.addEventListener('astro:after-swap', applyTheme);
     </script>
   </head>
@@ -202,11 +194,39 @@ const aiSystemPrompt = buildAIPrompt({
       <slot />
     </div>
     <Preloader client:load />
-    <BlurStack client:only="react" className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none" />
-    <CommandK client:only="react" />
-    <AIChat client:only="react" systemPrompt={aiSystemPrompt} />
+    <BlurStack client:idle className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none" />
+    <div id="lazy-mount"></div>
+    <script>
+      (function() {
+        var loaded = false;
+        function loadLazy() {
+          if (loaded) return;
+          loaded = true;
+          import('@/components/layout/CommandK');
+          import('@/components/ui/PetLauncher');
+          import('@/components/layout/AgentationOverlay');
+        }
+        document.addEventListener('keydown', function(e) {
+          if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+            loadLazy();
+          }
+        });
+        document.addEventListener('mousemove', function() {
+          loadLazy();
+        }, { once: true });
+      })();
+    </script>
+    <div id="ai-chat-mount"></div>
     <script>import '@/bones/registry'</script>
-    <AgentationOverlay client:only="react" />
-    <PetLauncher client:only="react" />
+    <script>
+      (function() {
+        var mount = document.getElementById('ai-chat-mount');
+        if (!mount || mount.dataset.loaded) return;
+        mount.dataset.loaded = 'true';
+        import('@/components/ui/AIChat').then(function(mod) {
+          mod.default({ systemPrompt: (window as unknown as { __aiSystemPrompt__?: string }).__aiSystemPrompt__ });
+        });
+      })();
+    </script>
   </body>
 </html>

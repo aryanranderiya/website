@@ -136,16 +136,20 @@ function applyTypography(font: Typography) {
 	localStorage.setItem('typography', font);
 }
 
-export default function Sidebar() {
-	const [pathname, setPathname] = useState('/');
-	const [section, setSection] = useState<string | null>(null);
+export default function Sidebar({
+	pathname: initialPathname = '/',
+	section: initialSection = null,
+}: {
+	pathname?: string;
+	section?: string | null;
+}) {
+	const [pathname, setPathname] = useState(initialPathname);
+	const [section, setSection] = useState<string | null>(initialSection);
 	const [theme, setTheme] = useState<Theme>('light');
 	const [typography, setTypography] = useState<Typography>('helvetica');
 	const [shuffleOpen, setShuffleOpen] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
-	const [avatarSrc, setAvatarSrc] = useState(() =>
-		Math.random() < 0.5 ? '/avatar-original.webp' : '/avatar.webp'
-	);
+	const [avatarSrc, setAvatarSrc] = useState('/avatar.webp');
 	const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
 	const popoverRef = useRef<HTMLDivElement>(null);
@@ -154,8 +158,6 @@ export default function Sidebar() {
 	const isDark = theme === 'dark';
 
 	useEffect(() => {
-		setPathname(window.location.pathname);
-		setSection(document.documentElement.dataset.section ?? null);
 		const stored = localStorage.getItem('theme') as Theme | null;
 		if (stored === 'dark') setTheme('dark');
 		else if (stored === 'random') setTheme('random');
