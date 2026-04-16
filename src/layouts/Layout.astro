@@ -223,8 +223,13 @@ const aiSystemPrompt = buildAIPrompt({
         var mount = document.getElementById('ai-chat-mount');
         if (!mount || mount.dataset.loaded) return;
         mount.dataset.loaded = 'true';
-        import('@/components/ui/AIChat').then(function(mod) {
-          mod.default({ systemPrompt: (window as unknown as { __aiSystemPrompt__?: string }).__aiSystemPrompt__ });
+        Promise.all([
+          import('@/components/ui/AIChat'),
+          import('react'),
+          import('react-dom/client'),
+        ]).then(function([{ default: AIChat }, React, { createRoot }]) {
+          const prompt = (window as unknown as { __aiSystemPrompt__?: string }).__aiSystemPrompt__;
+          createRoot(mount!).render(React.createElement(AIChat, { systemPrompt: prompt }));
         });
       })();
     </script>

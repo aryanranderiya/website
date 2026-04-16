@@ -129,19 +129,19 @@ const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
 
     <!-- ── Experience ────────────────────────────────────────────── -->
     <section class="mb-5">
-      <p class="section-header">Experience</p>
+      <p class="section-header animate-fade-in" style="animation-delay:0.05s">Experience</p>
       <ExperienceList excludeTypes={["volunteer"]} />
     </section>
 
     <!-- ── Community Experience ──────────────────────────────────── -->
     <section class="mb-5">
-      <p class="section-header">Community</p>
+      <p class="section-header animate-fade-in" style="animation-delay:0.05s">Community</p>
       <ExperienceList includeTypes={["volunteer"]} />
     </section>
 
     <!-- ── Education ─────────────────────────────────────────────── -->
     <section class="mb-10">
-      <p class="section-header">Education</p>
+      <p class="section-header animate-fade-in" style="animation-delay:0.05s">Education</p>
       <div class="flex flex-col">
         {education.map((edu, i) => (
           <div class:list={[
@@ -184,7 +184,7 @@ const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
 
     <!-- ── Skills ─────────────────────────────────────────────────── -->
     <section class="mb-5">
-      <p class="section-header pb-4">Skills</p>
+      <p class="section-header pb-4 animate-fade-in" style="animation-delay:0.05s">Skills</p>
       <div class="flex flex-col gap-4">
         {skillCategories.map((cat) => (
           <div class="grid grid-cols-[96px_1fr] gap-3 items-start">

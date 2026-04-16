@@ -111,8 +111,6 @@ const links = [
 
 <script>
 	(function () {
-		const section = document.currentScript?.previousElementSibling?.previousElementSibling as HTMLElement | null;
-		// Walk up to find the <section class="hero-waiting">
 		const hero = document.querySelector('.hero-waiting') as HTMLElement | null;
 		if (!hero) return;
 
