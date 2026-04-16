@@ -52,9 +52,8 @@ if (excludeTypes) items = items.filter((entry) => !excludeTypes.includes(entry.e
 									alt={entry.company}
 									width="28"
 									height="28"
-									loading="lazy"
 									class:list={[
-										'rounded-[6px] object-contain shrink-0',
+										'w-7 h-7 rounded-[6px] object-contain shrink-0',
 										entry.logoInvert ? 'invert dark:invert-0' : '',
 									]}
 									onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"

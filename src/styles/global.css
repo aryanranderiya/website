@@ -1,5 +1,11 @@
 @import '@fontsource-variable/inter';
 @import "tailwindcss";
+
+/* Prevent Inter Variable font swap from causing CLS */
+@font-face {
+  font-family: 'Inter Variable';
+  font-display: optional;
+}
 @import "tw-animate-css";
 
 /* ============================================

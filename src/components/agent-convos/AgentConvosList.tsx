@@ -1,8 +1,11 @@
 'use client';
 
 import { ArrowDown01Icon, ArrowUp01Icon, ArrowUpDownIcon, HugeiconsIcon } from '@icons';
-import { motion } from 'motion/react';
+import { LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
 import { useMemo, useRef, useState } from 'react';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 interface ConvoEntry {
 	slug: string;
@@ -222,104 +225,108 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 	});
 
 	return (
-		<div className="overflow-x-auto">
-			<table className="w-full border-collapse [table-layout:fixed]">
-				<colgroup>
-					<col className="w-[72%]" />
-					<col className="w-[13%]" />
-					<col className="w-[15%]" />
-				</colgroup>
-				<thead>
-					<tr>
-						{(
-							[
-								['title', 'Title'],
-								['tokens', 'Tokens'],
-								['date', 'Date'],
-							] as [SortKey, string][]
-						).map(([key, label]) => (
-							<th
-								key={key}
-								onClick={() => handleSort(key)}
-								// biome-ignore lint/nursery/noInlineStyles: dynamic styles based on sort state
-								style={colStyle(key)}
+		<LazyMotion features={loadFeatures}>
+			<div className="overflow-x-auto">
+				<table className="w-full border-collapse [table-layout:fixed]">
+					<colgroup>
+						<col className="w-[72%]" />
+						<col className="w-[13%]" />
+						<col className="w-[15%]" />
+					</colgroup>
+					<thead>
+						<tr>
+							{(
+								[
+									['title', 'Title'],
+									['tokens', 'Tokens'],
+									['date', 'Date'],
+								] as [SortKey, string][]
+							).map(([key, label]) => (
+								<th
+									key={key}
+									onClick={() => handleSort(key)}
+									// biome-ignore lint/nursery/noInlineStyles: dynamic styles based on sort state
+									style={colStyle(key)}
+								>
+									<span className="inline-flex items-center">
+										{label}
+										<SortIcon dir={sortKey === key ? sortDir : null} />
+									</span>
+								</th>
+							))}
+						</tr>
+					</thead>
+					<tbody>
+						{sorted.map((convo, i) => (
+							<m.tr
+								key={convo.slug}
+								custom={i}
+								variants={rowVariants}
+								initial="initial"
+								animate="animate"
+								className="cursor-pointer group"
+								onClick={() => {
+									window.location.href = `/agent-convos/${convo.slug}`;
+								}}
 							>
-								<span className="inline-flex items-center">
-									{label}
-									<SortIcon dir={sortKey === key ? sortDir : null} />
-								</span>
-							</th>
-						))}
-					</tr>
-				</thead>
-				<tbody>
-					{sorted.map((convo, i) => (
-						<motion.tr
-							key={convo.slug}
-							custom={i}
-							variants={rowVariants}
-							initial="initial"
-							animate="animate"
-							className="cursor-pointer group"
-							onClick={() => {
-								window.location.href = `/agent-convos/${convo.slug}`;
-							}}
-						>
-							{/* Title with platform icon -- no overflow:hidden on td so tooltip can escape */}
-							<td className="py-[9px] pr-[16px] border-b border-[var(--border)]">
-								<span className="flex items-center gap-[7px] min-w-0">
-									<PlatformIcon platform={convo.platform} model={convo.model} />
-									<a
-										href={`/agent-convos/${convo.slug}`}
-										className="text-[13px] text-[var(--text-primary)] no-underline overflow-hidden text-ellipsis whitespace-nowrap min-w-0 flex-1"
-										// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
+								{/* Title with platform icon -- no overflow:hidden on td so tooltip can escape */}
+								<td className="py-[9px] pr-[16px] border-b border-[var(--border)]">
+									<span className="flex items-center gap-[7px] min-w-0">
+										<PlatformIcon platform={convo.platform} model={convo.model} />
+										<a
+											href={`/agent-convos/${convo.slug}`}
+											className="text-[13px] text-[var(--text-primary)] no-underline overflow-hidden text-ellipsis whitespace-nowrap min-w-0 flex-1"
+											// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
+											style={{
+												fontVariationSettings: '"wght" 480',
+												letterSpacing: '-0.012em',
+											}}
+											onClick={(e) => e.stopPropagation()}
+										>
+											{convo.title}
+										</a>
+									</span>
+								</td>
+
+								{/* Tokens */}
+								<td className="py-[9px] pr-[12px] border-b border-[var(--border)] whitespace-nowrap">
+									<span
+										className="text-[11px] tracking-[-0.02em]"
+										// biome-ignore lint/nursery/noInlineStyles: dynamic color based on token availability; fontFamily is var(--font-mono)
 										style={{
-											fontVariationSettings: '"wght" 480',
-											letterSpacing: '-0.012em',
+											color:
+												convo.tokens || convo.tokenCount
+													? 'var(--text-muted)'
+													: 'var(--text-ghost)',
+											fontFamily: 'var(--font-mono)',
 										}}
-										onClick={(e) => e.stopPropagation()}
 									>
-										{convo.title}
-									</a>
-								</span>
-							</td>
+										{formatTokensExact(convo.tokenCount, convo.tokens)}
+									</span>
+								</td>
 
-							{/* Tokens */}
-							<td className="py-[9px] pr-[12px] border-b border-[var(--border)] whitespace-nowrap">
-								<span
-									className="text-[11px] tracking-[-0.02em]"
-									// biome-ignore lint/nursery/noInlineStyles: dynamic color based on token availability; fontFamily is var(--font-mono)
-									style={{
-										color:
-											convo.tokens || convo.tokenCount ? 'var(--text-muted)' : 'var(--text-ghost)',
-										fontFamily: 'var(--font-mono)',
-									}}
-								>
-									{formatTokensExact(convo.tokenCount, convo.tokens)}
-								</span>
-							</td>
+								{/* Date */}
+								<td className="py-[9px] border-b border-[var(--border)] whitespace-nowrap">
+									<time
+										dateTime={convo.date}
+										className="text-[11px] text-[var(--text-ghost)]"
+										// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
+										style={{ fontVariationSettings: '"wght" 400' }}
+									>
+										{formatDate(convo.date)}
+									</time>
+								</td>
+							</m.tr>
+						))}
+					</tbody>
+				</table>
 
-							{/* Date */}
-							<td className="py-[9px] border-b border-[var(--border)] whitespace-nowrap">
-								<time
-									dateTime={convo.date}
-									className="text-[11px] text-[var(--text-ghost)]"
-									// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
-									style={{ fontVariationSettings: '"wght" 400' }}
-								>
-									{formatDate(convo.date)}
-								</time>
-							</td>
-						</motion.tr>
-					))}
-				</tbody>
-			</table>
-
-			{sorted.length === 0 && (
-				<p className="py-12 text-center text-[13px] text-[var(--text-ghost)]">
-					No conversations found.
-				</p>
-			)}
-		</div>
+				{sorted.length === 0 && (
+					<p className="py-12 text-center text-[13px] text-[var(--text-ghost)]">
+						No conversations found.
+					</p>
+				)}
+			</div>
+		</LazyMotion>
 	);
 }

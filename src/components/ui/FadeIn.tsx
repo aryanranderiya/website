@@ -1,6 +1,9 @@
 'use client';
-import { motion } from 'motion/react';
+import { LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
 import type { ReactNode } from 'react';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 interface FadeInProps {
 	children: ReactNode;
@@ -31,20 +34,24 @@ export default function FadeIn({
 
 	if (inView) {
 		return (
-			<motion.div
-				className={className}
-				initial={initial}
-				whileInView={animate}
-				viewport={{ once }}
-				transition={transition}
-			>
-				{children}
-			</motion.div>
+			<LazyMotion features={loadFeatures}>
+				<m.div
+					className={className}
+					initial={initial}
+					whileInView={animate}
+					viewport={{ once }}
+					transition={transition}
+				>
+					{children}
+				</m.div>
+			</LazyMotion>
 		);
 	}
 	return (
-		<motion.div className={className} initial={initial} animate={animate} transition={transition}>
-			{children}
-		</motion.div>
+		<LazyMotion features={loadFeatures}>
+			<m.div className={className} initial={initial} animate={animate} transition={transition}>
+				{children}
+			</m.div>
+		</LazyMotion>
 	);
 }
