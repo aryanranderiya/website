@@ -12,7 +12,7 @@ const links = [
 ] as { label: string; href: string; icon: ComponentType<IconProps> }[];
 ---
 
-<section class="pt-4 pb-12">
+<section class="pt-4 pb-12 hero-waiting">
 	<h1 class="text-2xl font-semibold text-[var(--text-primary)] m-0 mb-4 animate-fade-in" style="animation-delay:0.05s">
 		Hey! Welcome to my digital world.
 		<img
@@ -100,3 +100,37 @@ const links = [
 		<SocialsGrid client:idle />
 	</div>
 </section>
+
+<style>
+	/* Pause all hero animations until the preloader is done (matches original useAfterPreloader behaviour).
+	   The script below removes this class — either immediately (repeat visits) or on preloader:done (first visit). */
+	.hero-waiting .animate-fade-in {
+		animation-play-state: paused;
+	}
+</style>
+
+<script>
+	(function () {
+		const section = document.currentScript?.previousElementSibling?.previousElementSibling as HTMLElement | null;
+		// Walk up to find the <section class="hero-waiting">
+		const hero = document.querySelector('.hero-waiting') as HTMLElement | null;
+		if (!hero) return;
+
+		function start() {
+			hero!.classList.remove('hero-waiting');
+		}
+
+		// If preloader was already shown in a previous session, start immediately
+		try {
+			if (sessionStorage.getItem('preloader_shown')) {
+				start();
+				return;
+			}
+		} catch {}
+
+		// First visit — wait for the preloader to fire its done event
+		window.addEventListener('preloader:done', start, { once: true });
+		// Safety fallback: if event never fires (e.g. preloader removed), start after 2s
+		setTimeout(start, 2000);
+	})();
+</script>
