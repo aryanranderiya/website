@@ -74,7 +74,7 @@ export default function SocialsRow() {
 								width={24}
 								height={24}
 								alt={social.name}
-								className="block rounded-[6px]"
+								className="block rounded-[6px] w-6 h-6 shrink-0"
 							/>
 							<span className="text-[10px] text-[var(--text-ghost)] tracking-[-0.01em] leading-none whitespace-nowrap">
 								{social.name}

@@ -309,7 +309,7 @@ export default function Sidebar({
 									alt="Aryan Randeriya"
 									width={32}
 									height={32}
-									className="rounded-full block opacity-90"
+									className="rounded-full block opacity-90 w-8 h-8 shrink-0"
 								/>
 							</button>
 						</m.div>
@@ -372,7 +372,7 @@ export default function Sidebar({
 									width={13}
 									height={13}
 									alt="Astro"
-									className="rounded-[3px]"
+									className="rounded-[3px] w-[13px] h-[13px] shrink-0"
 								/>
 								<span
 									className="text-[11px] whitespace-nowrap inline-block"
@@ -406,7 +406,7 @@ export default function Sidebar({
 									width={13}
 									height={13}
 									alt="Old portfolio"
-									className="rounded-[2px]"
+									className="rounded-[2px] w-[13px] h-[13px] shrink-0"
 								/>
 								<span
 									className="text-[11px] whitespace-nowrap inline-block"

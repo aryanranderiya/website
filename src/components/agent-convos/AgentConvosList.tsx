@@ -125,7 +125,7 @@ function PlatformIcon({ platform, model }: { platform: string; model: string }) 
 				alt={label}
 				width={14}
 				height={14}
-				className="rounded-[3px] opacity-70 block"
+				className="rounded-[3px] opacity-70 block w-[14px] h-[14px] shrink-0"
 			/>
 			<style>{`
         @keyframes tooltip-in {

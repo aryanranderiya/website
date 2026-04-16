@@ -188,7 +188,7 @@ export function PetLauncher() {
 											alt={ANIMAL_MAP[animal]?.label}
 											width={28}
 											height={28}
-											className="[image-rendering:pixelated] object-contain"
+											className="[image-rendering:pixelated] object-contain w-7 h-7 shrink-0"
 										/>
 										{/* biome-ignore lint/nursery/noInlineStyles: dynamic label styles based on selection state */}
 										<span style={labelStyle(isSelected)}>{ANIMAL_MAP[animal]?.label}</span>

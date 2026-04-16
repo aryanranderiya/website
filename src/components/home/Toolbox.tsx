@@ -48,7 +48,7 @@ export default function Toolbox() {
 								width={24}
 								height={24}
 								alt={tool.name}
-								className="block rounded-[6px]"
+								className="block rounded-[6px] w-6 h-6 shrink-0"
 							/>
 							<span className="absolute -bottom-[18px] left-1/2 -translate-x-1/2 text-[10px] text-[var(--text-ghost)] tracking-[-0.01em] leading-none whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none">
 								{tool.name}
