@@ -13,7 +13,7 @@ const links = [
 ---
 
 <section class="pt-4 pb-12">
-	<h1 class="text-2xl font-semibold text-[var(--text-primary)] m-0 mb-4 animate-fade-in stagger-1">
+	<h1 class="text-2xl font-semibold text-[var(--text-primary)] m-0 mb-4 animate-fade-in" style="animation-delay:0.05s">
 		Hey! Welcome to my digital world.
 		<img
 			src="/images/waving-hand.webp"
@@ -24,7 +24,7 @@ const links = [
 		/>
 	</h1>
 
-	<p class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-3 max-w-2xl animate-fade-in stagger-2">
+	<p class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-3 max-w-2xl animate-fade-in" style="animation-delay:0.12s">
 		My name is
 		<img
 			src="/avatar.webp"
@@ -49,13 +49,13 @@ const links = [
 		experience, and our deep care about the experience of every product we build.
 	</p>
 
-	<p class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-3 max-w-2xl animate-fade-in stagger-3">
+	<p class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-3 max-w-2xl animate-fade-in" style="animation-delay:0.19s">
 		Currently building <LogoLink href="https://heygaia.io" logo="/gaia-logo.webp" name="GAIA" />,
 		a proactive personal AI assistant that acts before you even need to ask. The goal: every person
 		in the world should have their own truly intelligent assistant.
 	</p>
 
-	<p class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-3 max-w-2xl animate-fade-in stagger-4">
+	<p class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-3 max-w-2xl animate-fade-in" style="animation-delay:0.26s">
 		I'm a tech nerd who's been tinkering with computers since a very young age.
 		<br />
 		Born in{' '}
@@ -79,12 +79,12 @@ const links = [
 		exploring new ideas. Maybe that's just my ADHD lol
 	</p>
 
-	<p class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-7 max-w-2xl animate-fade-in stagger-5">
+	<p class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-7 max-w-2xl animate-fade-in" style="animation-delay:0.33s">
 		Some things I want to explore in the future: Hardware, robotics, personal companions, smart
 		wearables, and some low-level (hardware?) programming with stuff like Rust
 	</p>
 
-	<div class="flex gap-2 mb-6 flex-wrap animate-fade-in stagger-5">
+	<div class="flex gap-2 mb-6 flex-wrap animate-fade-in" style="animation-delay:0.33s">
 		{links.map(({ label, href, icon }) => (
 			<a
 				href={href}
@@ -96,7 +96,7 @@ const links = [
 		))}
 	</div>
 
-	<div class="animate-fade-in stagger-6">
+	<div class="animate-fade-in" style="animation-delay:0.40s">
 		<SocialsGrid client:idle />
 	</div>
 </section>

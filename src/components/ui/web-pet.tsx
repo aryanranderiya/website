@@ -232,6 +232,7 @@ type WebPetContainerProps = {
 const WebPetContainer = forwardRef<HTMLDivElement, WebPetContainerProps>(
 	({ position, size, zIndex, style, children, onClick, ariaLabel }, ref) => (
 		// biome-ignore lint/a11y/noStaticElementInteractions: role and tabIndex are conditionally set when onClick is provided
+		// biome-ignore lint/a11y/useAriaPropsSupportedByRole: aria-label is only set when role="button" (conditional, Biome can't verify)
 		<div
 			ref={ref}
 			data-webpet-container

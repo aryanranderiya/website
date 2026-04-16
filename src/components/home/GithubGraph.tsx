@@ -71,7 +71,6 @@ function getMonthLabels(weeks: ContributionWeek[]): { label: string; index: numb
 function ContributionCell({
 	day,
 	animated,
-	delay,
 }: {
 	day: ContributionDay;
 	animated: boolean;
@@ -81,6 +80,7 @@ function ContributionCell({
 
 	return (
 		<div className="flex-1 aspect-square relative">
+			{/* biome-ignore lint/a11y/noStaticElementInteractions: tooltip-only hover on visual grid cell */}
 			<div
 				onMouseEnter={(e) => {
 					const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();

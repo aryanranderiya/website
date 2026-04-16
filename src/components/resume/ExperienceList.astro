@@ -37,11 +37,12 @@ if (excludeTypes) items = items.filter((entry) => !excludeTypes.includes(entry.e
 			return (
 				<div
 					class:list={[
-						'flex gap-3 items-start animate-fade-in-up',
+						'flex gap-3 items-start',
 						compact ? 'py-[10px]' : 'py-4',
 						isLast ? '' : 'border-b border-border',
 					]}
-					style={`animation-delay: ${Math.min(index, 5) * 0.04}s;`}
+					data-scroll-animate
+					data-index={Math.min(index, 5)}
 				>
 					<div class="pt-[1px] shrink-0">
 						{entry.logo ? (
@@ -143,7 +144,7 @@ if (excludeTypes) items = items.filter((entry) => !excludeTypes.includes(entry.e
 						{!compact && entry.skills.length > 0 && (
 							<div class="flex flex-wrap gap-1">
 								{entry.skills.map((skill) => (
-									<span class="text-[10px] text-[var(--text-ghost)] bg-[var(--muted-bg)] rounded-full px-2 py-[2px] font-medium tracking-[0.01em]">
+									<span class="text-[10px] text-[var(--text-muted)] bg-[var(--muted-bg)] rounded-full px-2 py-[2px] font-medium tracking-[0.01em]">
 										{skill}
 									</span>
 								))}
@@ -166,3 +167,22 @@ if (excludeTypes) items = items.filter((entry) => !excludeTypes.includes(entry.e
 		</div>
 	)}
 </section>
+
+<script>
+	const items = document.querySelectorAll<HTMLElement>('[data-scroll-animate]');
+	const observer = new IntersectionObserver(
+		(entries) => {
+			for (const entry of entries) {
+				if (entry.isIntersecting) {
+					const el = entry.target as HTMLElement;
+					const idx = parseInt(el.dataset.index ?? '0', 10);
+					el.style.animationDelay = `${idx * 0.04}s`;
+					el.classList.add('animate-fade-in-up');
+					observer.unobserve(el);
+				}
+			}
+		},
+		{ rootMargin: '-40px 0px' },
+	);
+	for (const item of items) observer.observe(item);
+</script>
