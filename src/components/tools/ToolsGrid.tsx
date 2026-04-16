@@ -2,9 +2,12 @@
 
 import { Cancel01Icon, HugeiconsIcon, LinkSquare02Icon } from '@icons';
 import * as Dialog from '@radix-ui/react-dialog';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
 import { useState } from 'react';
 import { TOOL_CATEGORIES, TOOLS, type Tool, type ToolCategory } from '@/data/tools';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 const EASE = [0.19, 1, 0.22, 1] as const;
 
@@ -67,95 +70,97 @@ function ToolDrawer({
 	onClose: () => void;
 }) {
 	return (
-		<Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
-			<AnimatePresence>
-				{open && tool && (
-					<Dialog.Portal forceMount>
-						<Dialog.Overlay asChild>
-							<motion.div
-								className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[4px]"
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								exit={{ opacity: 0 }}
-								transition={{ duration: 0.2 }}
-								onClick={onClose}
-							/>
-						</Dialog.Overlay>
+		<LazyMotion features={loadFeatures}>
+			<Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
+				<AnimatePresence>
+					{open && tool && (
+						<Dialog.Portal forceMount>
+							<Dialog.Overlay asChild>
+								<m.div
+									className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[4px]"
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									exit={{ opacity: 0 }}
+									transition={{ duration: 0.2 }}
+									onClick={onClose}
+								/>
+							</Dialog.Overlay>
 
-						<Dialog.Content asChild>
-							<motion.div
-								className="fixed top-0 right-0 bottom-0 z-50 w-[min(360px,100vw)] bg-[var(--background)] rounded-tl-xl rounded-bl-xl overflow-y-auto shadow-[-8px_0_32px_rgba(0,0,0,0.12)]"
-								initial={{ x: '100%' }}
-								animate={{ x: 0 }}
-								exit={{ x: '100%' }}
-								transition={{ duration: 0.32, ease: EASE }}
-							>
-								<Dialog.Title className="sr-only">{tool.name}</Dialog.Title>
+							<Dialog.Content asChild>
+								<m.div
+									className="fixed top-0 right-0 bottom-0 z-50 w-[min(360px,100vw)] bg-[var(--background)] rounded-tl-xl rounded-bl-xl overflow-y-auto shadow-[-8px_0_32px_rgba(0,0,0,0.12)]"
+									initial={{ x: '100%' }}
+									animate={{ x: 0 }}
+									exit={{ x: '100%' }}
+									transition={{ duration: 0.32, ease: EASE }}
+								>
+									<Dialog.Title className="sr-only">{tool.name}</Dialog.Title>
 
-								{/* Close */}
-								<Dialog.Close asChild>
-									<button
-										type="button"
-										className="absolute top-4 left-4 w-7 h-7 rounded-[6px] bg-[var(--muted-bg)] text-[var(--text-muted)] cursor-pointer flex items-center justify-center"
-										aria-label="Close"
-									>
-										<HugeiconsIcon icon={Cancel01Icon} size={12} />
-									</button>
-								</Dialog.Close>
+									{/* Close */}
+									<Dialog.Close asChild>
+										<button
+											type="button"
+											className="absolute top-4 left-4 w-7 h-7 rounded-[6px] bg-[var(--muted-bg)] text-[var(--text-muted)] cursor-pointer flex items-center justify-center"
+											aria-label="Close"
+										>
+											<HugeiconsIcon icon={Cancel01Icon} size={12} />
+										</button>
+									</Dialog.Close>
 
-								{/* Content */}
-								<div className="pt-14 px-6 pb-10">
-									{/* Icon centered at top */}
-									<div className="flex flex-col items-center mb-5">
-										<ToolIcon src={tool.icon} name={tool.name} size={64} />
-										<h2 className="text-[20px] font-semibold tracking-[-0.03em] text-[var(--text-primary)] leading-[1.2] mt-3 mb-1.5 text-center">
-											{tool.name}
-										</h2>
-										<div className="flex items-center gap-1.5 mb-4">
-											<span
-												className="text-[10px] px-2 py-[2px] rounded-full tracking-[0.02em] font-medium"
-												// biome-ignore lint/nursery/noInlineStyles: dynamic category-based colors from lookup table
-												style={{
-													background: CATEGORY_COLORS[tool.category],
-													color: CATEGORY_TEXT[tool.category],
-												}}
+									{/* Content */}
+									<div className="pt-14 px-6 pb-10">
+										{/* Icon centered at top */}
+										<div className="flex flex-col items-center mb-5">
+											<ToolIcon src={tool.icon} name={tool.name} size={64} />
+											<h2 className="text-[20px] font-semibold tracking-[-0.03em] text-[var(--text-primary)] leading-[1.2] mt-3 mb-1.5 text-center">
+												{tool.name}
+											</h2>
+											<div className="flex items-center gap-1.5 mb-4">
+												<span
+													className="text-[10px] px-2 py-[2px] rounded-full tracking-[0.02em] font-medium"
+													// biome-ignore lint/nursery/noInlineStyles: dynamic category-based colors from lookup table
+													style={{
+														background: CATEGORY_COLORS[tool.category],
+														color: CATEGORY_TEXT[tool.category],
+													}}
+												>
+													{tool.category}
+												</span>
+												<span className="text-[11px] text-[var(--text-ghost)] tracking-[-0.01em]">
+													{tool.tagline}
+												</span>
+											</div>
+
+											{/* Flat visit link */}
+											<a
+												href={tool.website}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="inline-flex items-center gap-[5px] text-[12px] text-[var(--text-muted)] no-underline tracking-[-0.01em] transition-colors duration-150 hover:text-[var(--text-primary)]"
 											>
-												{tool.category}
-											</span>
-											<span className="text-[11px] text-[var(--text-ghost)] tracking-[-0.01em]">
-												{tool.tagline}
-											</span>
+												{tool.website.replace(/^https?:\/\//, '')}
+												<HugeiconsIcon icon={LinkSquare02Icon} size={11} />
+											</a>
 										</div>
 
-										{/* Flat visit link */}
-										<a
-											href={tool.website}
-											target="_blank"
-											rel="noopener noreferrer"
-											className="inline-flex items-center gap-[5px] text-[12px] text-[var(--text-muted)] no-underline tracking-[-0.01em] transition-colors duration-150 hover:text-[var(--text-primary)]"
-										>
-											{tool.website.replace(/^https?:\/\//, '')}
-											<HugeiconsIcon icon={LinkSquare02Icon} size={11} />
-										</a>
-									</div>
+										{/* Divider */}
+										<div className="h-px bg-[var(--border)] mb-5" />
 
-									{/* Divider */}
-									<div className="h-px bg-[var(--border)] mb-5" />
-
-									{/* Thoughts */}
-									<div className="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2.5">
-										My thoughts
+										{/* Thoughts */}
+										<div className="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2.5">
+											My thoughts
+										</div>
+										<p className="text-[13px] text-[var(--text-muted)] leading-[1.7] m-0">
+											{tool.thoughts}
+										</p>
 									</div>
-									<p className="text-[13px] text-[var(--text-muted)] leading-[1.7] m-0">
-										{tool.thoughts}
-									</p>
-								</div>
-							</motion.div>
-						</Dialog.Content>
-					</Dialog.Portal>
-				)}
-			</AnimatePresence>
-		</Dialog.Root>
+								</m.div>
+							</Dialog.Content>
+						</Dialog.Portal>
+					)}
+				</AnimatePresence>
+			</Dialog.Root>
+		</LazyMotion>
 	);
 }
 
@@ -173,53 +178,55 @@ export default function ToolsGrid() {
 	};
 
 	return (
-		<div>
-			{/* Category filters */}
-			<div className="flex flex-wrap gap-1.5 mb-7">
-				{(['All', ...TOOL_CATEGORIES] as const).map((cat) => (
-					<button
-						type="button"
-						key={cat}
-						onClick={() => setActiveCategory(cat)}
-						className="text-[11px] px-[10px] py-[3px] rounded-full border cursor-pointer tracking-[0.01em] transition-all duration-150"
-						// biome-ignore lint/nursery/noInlineStyles: dynamic background/color/borderColor based on active category
-						style={{
-							background: activeCategory === cat ? 'var(--foreground)' : 'transparent',
-							color: activeCategory === cat ? 'var(--background)' : 'var(--text-ghost)',
-							borderColor: activeCategory === cat ? 'var(--foreground)' : 'var(--border)',
-						}}
-					>
-						{cat}
-					</button>
-				))}
-			</div>
-
-			{/* Grid */}
-			<div className="grid gap-x-4 gap-y-6 [grid-template-columns:repeat(auto-fill,minmax(80px,1fr))]">
-				<AnimatePresence mode="popLayout">
-					{filtered.map((tool, i) => (
-						<motion.button
-							key={tool.id}
-							layout
-							initial={{ opacity: 0, scale: 0.85, filter: 'blur(4px)' }}
-							animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-							exit={{ opacity: 0, scale: 0.85, filter: 'blur(4px)' }}
-							transition={{ duration: 0.3, ease: EASE, delay: i * 0.03 }}
-							whileHover={{ scale: 1.06 }}
-							whileTap={{ scale: 0.96 }}
-							onClick={() => openTool(tool)}
-							className="flex flex-col items-center gap-2 bg-transparent cursor-pointer px-1 py-2 rounded-[10px]"
+		<LazyMotion features={loadFeatures}>
+			<div>
+				{/* Category filters */}
+				<div className="flex flex-wrap gap-1.5 mb-7">
+					{(['All', ...TOOL_CATEGORIES] as const).map((cat) => (
+						<button
+							type="button"
+							key={cat}
+							onClick={() => setActiveCategory(cat)}
+							className="text-[11px] px-[10px] py-[3px] rounded-full border cursor-pointer tracking-[0.01em] transition-all duration-150"
+							// biome-ignore lint/nursery/noInlineStyles: dynamic background/color/borderColor based on active category
+							style={{
+								background: activeCategory === cat ? 'var(--foreground)' : 'transparent',
+								color: activeCategory === cat ? 'var(--background)' : 'var(--text-ghost)',
+								borderColor: activeCategory === cat ? 'var(--foreground)' : 'var(--border)',
+							}}
 						>
-							<ToolIcon src={tool.icon} name={tool.name} size={44} />
-							<span className="text-[11px] text-[var(--text-muted)] tracking-[-0.01em] leading-[1.2] text-center max-w-[72px]">
-								{tool.name}
-							</span>
-						</motion.button>
+							{cat}
+						</button>
 					))}
-				</AnimatePresence>
-			</div>
+				</div>
 
-			<ToolDrawer tool={selected} open={drawerOpen} onClose={() => setDrawerOpen(false)} />
-		</div>
+				{/* Grid */}
+				<div className="grid gap-x-4 gap-y-6 [grid-template-columns:repeat(auto-fill,minmax(80px,1fr))]">
+					<AnimatePresence mode="popLayout">
+						{filtered.map((tool, i) => (
+							<m.button
+								key={tool.id}
+								layout
+								initial={{ opacity: 0, scale: 0.85, filter: 'blur(4px)' }}
+								animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+								exit={{ opacity: 0, scale: 0.85, filter: 'blur(4px)' }}
+								transition={{ duration: 0.3, ease: EASE, delay: i * 0.03 }}
+								whileHover={{ scale: 1.06 }}
+								whileTap={{ scale: 0.96 }}
+								onClick={() => openTool(tool)}
+								className="flex flex-col items-center gap-2 bg-transparent cursor-pointer px-1 py-2 rounded-[10px]"
+							>
+								<ToolIcon src={tool.icon} name={tool.name} size={44} />
+								<span className="text-[11px] text-[var(--text-muted)] tracking-[-0.01em] leading-[1.2] text-center max-w-[72px]">
+									{tool.name}
+								</span>
+							</m.button>
+						))}
+					</AnimatePresence>
+				</div>
+
+				<ToolDrawer tool={selected} open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+			</div>
+		</LazyMotion>
 	);
 }

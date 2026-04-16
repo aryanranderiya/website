@@ -1,43 +1,46 @@
-# Astro Starter Kit: Minimal
+# aryanranderiya.com
 
-```sh
-pnpm create astro@latest -- --template minimal
+Personal portfolio for Aryan Randeriya — developer, designer, and builder based in Ahmedabad, India. Covers projects, freelance work, graphic design, a blog, a bookshelf, photos, and more.
+
+Live at [aryanranderiya.com](https://aryanranderiya.com).
+
+## Stack
+
+- [Astro](https://astro.build) — site framework, content collections, SSR/SSG
+- React — interactive islands via `client:load` / `client:visible`
+- Tailwind CSS v4 — utility styling
+- Framer Motion + GSAP — animations
+- MDX — blog and project content
+- Biome — linting and formatting
+- TypeScript throughout
+
+## Running locally
+
+```bash
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Build for production:
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm run build
+npm run preview
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Other useful scripts: `npm run type-check`, `npm run lint:fix`, `npm run check:fix`.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Design principles
 
-Any static assets, like images, can be placed in the `public/` directory.
+The UI follows a strict flat design system. No borders, no outlines, no decorative shadows — background fills (`bg-[var(--muted-bg)]`) handle surface differentiation instead. All icons come from `@theexperiencecompany/gaia-icons` (solid-rounded set), never from emojis or Unicode symbols.
 
-## 🧞 Commands
+## Environment variables
 
-All commands are run from the root of the project, from a terminal:
+Spotify and GitHub integrations require secrets at build time:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+```
+SPOTIFY_CLIENT_ID=
+SPOTIFY_CLIENT_SECRET=
+SPOTIFY_REFRESH_TOKEN=
+GITHUB_TOKEN=
+```

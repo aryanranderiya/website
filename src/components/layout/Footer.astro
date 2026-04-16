@@ -1,9 +1,9 @@
 ---
 import { SITE } from '@/constants/site';
-import FooterSocials from './FooterSocials';
+import FooterSocials from './FooterSocials.astro';
 
 const year = new Date().getFullYear();
-const { timezone, location } = SITE;
+const { timezone } = SITE;
 ---
 
 <footer class="mt-auto pt-6 pb-32">
@@ -24,7 +24,7 @@ const { timezone, location } = SITE;
       </span>
       <!-- right: socials -->
       <div class="ml-auto">
-        <FooterSocials client:load />
+        <FooterSocials />
       </div>
     </div>
   </div>

@@ -7,11 +7,15 @@ import {
 	HugeiconsIcon,
 	LinkSquare02Icon,
 } from '@icons';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
+
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { buttonVariants } from '@/components/ui/raised-button';
 import { type FreelanceProject, pastWork } from '@/data/freelance';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 const PANEL_WIDTH = 580;
 
@@ -126,7 +130,7 @@ function ProjectDetail({
 	);
 
 	return (
-		<motion.div
+		<m.div
 			key={project.name}
 			className="flex flex-col bg-[var(--background)] w-full h-full overflow-y-auto"
 			initial={{ opacity: 0 }}
@@ -206,7 +210,7 @@ function ProjectDetail({
 					onClick={() => setLightboxOpen(true)}
 				>
 					<AnimatePresence mode="wait" initial={false}>
-						<motion.img
+						<m.img
 							key={activeImage}
 							src={project.images[activeImage]}
 							alt={project.name}
@@ -225,7 +229,7 @@ function ProjectDetail({
 				createPortal(
 					<AnimatePresence>
 						{lightboxOpen && (
-							<motion.div
+							<m.div
 								key="freelance-lightbox"
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
@@ -234,7 +238,7 @@ function ProjectDetail({
 								onClick={() => setLightboxOpen(false)}
 								className="fixed inset-0 flex items-center justify-center z-[9999] bg-[color-mix(in_srgb,var(--background)_60%,transparent)]"
 							>
-								<motion.img
+								<m.img
 									key={activeImage}
 									src={project.images[activeImage]}
 									alt={project.name}
@@ -288,7 +292,7 @@ function ProjectDetail({
 										</div>
 									</>
 								)}
-							</motion.div>
+							</m.div>
 						)}
 					</AnimatePresence>,
 					document.body
@@ -349,7 +353,7 @@ function ProjectDetail({
 					</div>
 				)}
 			</div>
-		</motion.div>
+		</m.div>
 	);
 }
 
@@ -426,73 +430,75 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 	};
 
 	return (
-		<>
-			{/* Project list -- always full width of its container */}
-			<div>
-				{pastWork.map((work) => {
-					const isActive = selected?.name === work.name;
-					return (
-						<button
-							key={work.name}
-							type="button"
-							onClick={() => handleSelect(work)}
-							className={`flex items-center justify-between py-[10px] px-[6px] -mx-[6px] transition-[background] duration-150 cursor-pointer w-[calc(100%+12px)] border-none [border-block-end:1px_solid_var(--border)] text-left font-[inherit] hover:bg-[var(--muted-bg)] ${isActive ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
-						>
-							<div className="flex items-center gap-3 min-w-0">
-								<span className="text-[13px] font-semibold text-[var(--text-primary)] whitespace-nowrap truncate">
-									{work.name}
-								</span>
-								<span className="text-[12px] text-[var(--text-ghost)] whitespace-nowrap shrink-0">
-									{work.type}
-								</span>
-							</div>
-							<div className="flex items-center gap-[5px] shrink-0 ml-2">
-								{work.tech.slice(0, 2).map((tag) => (
-									<span
-										key={tag}
-										className="text-[10px] px-[7px] py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] whitespace-nowrap"
-									>
-										{tag}
-									</span>
-								))}
-								<HugeiconsIcon
-									icon={ArrowRight02Icon}
-									size={11}
-									color={isActive ? 'var(--text-secondary)' : 'var(--text-ghost)'}
-									className={`shrink-0 ml-[2px] transition-transform duration-200 ${isActive ? 'rotate-90' : ''}`}
-								/>
-							</div>
-						</button>
-					);
-				})}
-			</div>
-
-			{/* Detail panel -- portalled to body so position:fixed is relative to viewport,
-          not to the transformed #page-content ancestor */}
-			{typeof document !== 'undefined' &&
-				createPortal(
-					<AnimatePresence>
-						{selected && (
-							<motion.div
-								className="fixed top-0 right-0 h-screen z-40 overflow-hidden w-[580px]"
-								initial={{ x: PANEL_WIDTH }}
-								animate={{ x: 0 }}
-								exit={{ x: PANEL_WIDTH }}
-								transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+		<LazyMotion features={loadFeatures}>
+			<>
+				{/* Project list -- always full width of its container */}
+				<div>
+					{pastWork.map((work) => {
+						const isActive = selected?.name === work.name;
+						return (
+							<button
+								key={work.name}
+								type="button"
+								onClick={() => handleSelect(work)}
+								className={`flex items-center justify-between py-[10px] px-[6px] -mx-[6px] transition-[background] duration-150 cursor-pointer w-[calc(100%+12px)] border-none [border-block-end:1px_solid_var(--border)] text-left font-[inherit] hover:bg-[var(--muted-bg)] ${isActive ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 							>
-								<ProjectDetail
-									project={selected}
-									onClose={() => setSelected(null)}
-									onPrev={handlePrevProject}
-									onNext={handleNextProject}
-									hasPrev={selectedIdx > 0}
-									hasNext={selectedIdx < pastWork.length - 1}
-								/>
-							</motion.div>
-						)}
-					</AnimatePresence>,
-					document.body
-				)}
-		</>
+								<div className="flex items-center gap-3 min-w-0">
+									<span className="text-[13px] font-semibold text-[var(--text-primary)] whitespace-nowrap truncate">
+										{work.name}
+									</span>
+									<span className="text-[12px] text-[var(--text-ghost)] whitespace-nowrap shrink-0">
+										{work.type}
+									</span>
+								</div>
+								<div className="flex items-center gap-[5px] shrink-0 ml-2">
+									{work.tech.slice(0, 2).map((tag) => (
+										<span
+											key={tag}
+											className="text-[10px] px-[7px] py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] whitespace-nowrap"
+										>
+											{tag}
+										</span>
+									))}
+									<HugeiconsIcon
+										icon={ArrowRight02Icon}
+										size={11}
+										color={isActive ? 'var(--text-secondary)' : 'var(--text-ghost)'}
+										className={`shrink-0 ml-[2px] transition-transform duration-200 ${isActive ? 'rotate-90' : ''}`}
+									/>
+								</div>
+							</button>
+						);
+					})}
+				</div>
+
+				{/* Detail panel -- portalled to body so position:fixed is relative to viewport,
+          not to the transformed #page-content ancestor */}
+				{typeof document !== 'undefined' &&
+					createPortal(
+						<AnimatePresence>
+							{selected && (
+								<m.div
+									className="fixed top-0 right-0 h-screen z-40 overflow-hidden w-[580px]"
+									initial={{ x: PANEL_WIDTH }}
+									animate={{ x: 0 }}
+									exit={{ x: PANEL_WIDTH }}
+									transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+								>
+									<ProjectDetail
+										project={selected}
+										onClose={() => setSelected(null)}
+										onPrev={handlePrevProject}
+										onNext={handleNextProject}
+										hasPrev={selectedIdx > 0}
+										hasNext={selectedIdx < pastWork.length - 1}
+									/>
+								</m.div>
+							)}
+						</AnimatePresence>,
+						document.body
+					)}
+			</>
+		</LazyMotion>
 	);
 }

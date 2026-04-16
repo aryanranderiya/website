@@ -2,7 +2,10 @@
 
 import { Cancel01Icon, HugeiconsIcon, StarIcon } from '@icons';
 import * as Dialog from '@radix-ui/react-dialog';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 interface Movie {
 	slug: string;
@@ -54,164 +57,166 @@ export default function MovieDetail({
 	if (!movie) return null;
 
 	return (
-		<Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
-			<AnimatePresence>
-				{open && (
-					<Dialog.Portal forceMount>
-						<Dialog.Overlay asChild>
-							<motion.div
-								className="fixed inset-0 z-50 bg-black/60 backdrop-blur-[8px]"
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								exit={{ opacity: 0 }}
-								transition={{ duration: 0.2 }}
-							/>
-						</Dialog.Overlay>
-						<Dialog.Content asChild>
-							<motion.div
-								className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-[var(--background)] rounded-2xl max-h-[88vh] overflow-y-auto"
-								initial={{ opacity: 0, scale: 0.96, y: 10 }}
-								animate={{ opacity: 1, scale: 1, y: 0 }}
-								exit={{ opacity: 0, scale: 0.96, y: 10 }}
-								transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1] }}
-							>
-								<Dialog.Title className="sr-only">{movie.title}</Dialog.Title>
+		<LazyMotion features={loadFeatures}>
+			<Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
+				<AnimatePresence>
+					{open && (
+						<Dialog.Portal forceMount>
+							<Dialog.Overlay asChild>
+								<m.div
+									className="fixed inset-0 z-50 bg-black/60 backdrop-blur-[8px]"
+									initial={{ opacity: 0 }}
+									animate={{ opacity: 1 }}
+									exit={{ opacity: 0 }}
+									transition={{ duration: 0.2 }}
+								/>
+							</Dialog.Overlay>
+							<Dialog.Content asChild>
+								<m.div
+									className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-[var(--background)] rounded-2xl max-h-[88vh] overflow-y-auto"
+									initial={{ opacity: 0, scale: 0.96, y: 10 }}
+									animate={{ opacity: 1, scale: 1, y: 0 }}
+									exit={{ opacity: 0, scale: 0.96, y: 10 }}
+									transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1] }}
+								>
+									<Dialog.Title className="sr-only">{movie.title}</Dialog.Title>
 
-								{/* Close button */}
-								<Dialog.Close asChild>
-									<button
-										type="button"
-										className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center bg-black/35 backdrop-blur-[4px] cursor-pointer"
-										aria-label="Close"
-									>
-										<HugeiconsIcon icon={Cancel01Icon} size={12} color="rgba(255,255,255,0.8)" />
-									</button>
-								</Dialog.Close>
+									{/* Close button */}
+									<Dialog.Close asChild>
+										<button
+											type="button"
+											className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center bg-black/35 backdrop-blur-[4px] cursor-pointer"
+											aria-label="Close"
+										>
+											<HugeiconsIcon icon={Cancel01Icon} size={12} color="rgba(255,255,255,0.8)" />
+										</button>
+									</Dialog.Close>
 
-								{/* Hero header - blurred poster bg */}
-								<div className="relative overflow-hidden h-[200px]">
-									{/* Background blur */}
-									{movie.cover && (
-										<img
-											src={movie.cover}
-											alt=""
-											aria-hidden="true"
-											className="absolute inset-0 w-full h-full object-cover scale-[1.2] blur-[24px] saturate-[0.8] brightness-50"
+									{/* Hero header - blurred poster bg */}
+									<div className="relative overflow-hidden h-[200px]">
+										{/* Background blur */}
+										{movie.cover && (
+											<img
+												src={movie.cover}
+												alt=""
+												aria-hidden="true"
+												className="absolute inset-0 w-full h-full object-cover scale-[1.2] blur-[24px] saturate-[0.8] brightness-50"
+											/>
+										)}
+										<div
+											className="absolute inset-0"
+											// biome-ignore lint/nursery/noInlineStyles: dynamic gradient based on movie.cover presence
+											style={{
+												background: movie.cover
+													? 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.75) 100%)'
+													: 'var(--muted)',
+											}}
 										/>
-									)}
-									<div
-										className="absolute inset-0"
-										// biome-ignore lint/nursery/noInlineStyles: dynamic gradient based on movie.cover presence
-										style={{
-											background: movie.cover
-												? 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.75) 100%)'
-												: 'var(--muted)',
-										}}
-									/>
 
-									{/* Poster + info row */}
-									<div className="absolute inset-0 flex items-end p-5 gap-4">
-										{/* Poster */}
-										<div className="shrink-0 overflow-hidden aspect-[2/3] w-[72px] rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.5)] bg-black/30">
-											{movie.cover && (
-												<img
-													src={movie.cover}
-													alt={movie.title}
-													className="w-full h-full object-cover"
-												/>
-											)}
-										</div>
-
-										{/* Title & meta */}
-										<div className="flex-1 min-w-0 pb-1">
-											<h2 className="text-[20px] font-bold text-white/95 tracking-[-0.03em] leading-[1.2] mb-1 m-0">
-												{movie.title}
-											</h2>
-											<div className="text-[12px] text-white/50 mb-2 tracking-[-0.01em]">
-												{movie.year}
-												{movie.director && ` · ${movie.director}`}
+										{/* Poster + info row */}
+										<div className="absolute inset-0 flex items-end p-5 gap-4">
+											{/* Poster */}
+											<div className="shrink-0 overflow-hidden aspect-[2/3] w-[72px] rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.5)] bg-black/30">
+												{movie.cover && (
+													<img
+														src={movie.cover}
+														alt={movie.title}
+														className="w-full h-full object-cover"
+													/>
+												)}
 											</div>
-											{movie.myRating && <RatingDots rating={movie.myRating} />}
+
+											{/* Title & meta */}
+											<div className="flex-1 min-w-0 pb-1">
+												<h2 className="text-[20px] font-bold text-white/95 tracking-[-0.03em] leading-[1.2] mb-1 m-0">
+													{movie.title}
+												</h2>
+												<div className="text-[12px] text-white/50 mb-2 tracking-[-0.01em]">
+													{movie.year}
+													{movie.director && ` · ${movie.director}`}
+												</div>
+												{movie.myRating && <RatingDots rating={movie.myRating} />}
+											</div>
 										</div>
 									</div>
-								</div>
 
-								{/* Body */}
-								<div className="p-5 space-y-5">
-									{/* Genre tags */}
-									{movie.genre.length > 0 && (
-										<div className="flex flex-wrap gap-1.5">
-											{movie.genre.map((g) => (
-												<span
-													key={g}
-													className="capitalize text-[11px] font-medium px-[10px] py-[3px] rounded-full bg-[var(--muted)] text-[var(--muted-foreground)]"
-												>
-													{g}
-												</span>
-											))}
-										</div>
-									)}
-
-									{/* Review */}
-									{movie.review && (
-										<div>
-											<div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 mb-2">
-												My Review
-											</div>
-											<p className="text-[13px] leading-[1.65] text-[var(--foreground)] opacity-75 tracking-[-0.01em] m-0">
-												{movie.review}
-											</p>
-										</div>
-									)}
-
-									{/* Pre-watch thoughts */}
-									{movie.thoughts && (
-										<div>
-											<div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 mb-2">
-												Why I Want to Watch
-											</div>
-											<p className="text-[13px] leading-[1.65] text-[var(--foreground)] opacity-75 tracking-[-0.01em] m-0">
-												{movie.thoughts}
-											</p>
-										</div>
-									)}
-
-									{/* Favourite characters */}
-									{movie.favCharacters.length > 0 && (
-										<div>
-											<div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 mb-2">
-												Favourite Characters
-											</div>
+									{/* Body */}
+									<div className="p-5 space-y-5">
+										{/* Genre tags */}
+										{movie.genre.length > 0 && (
 											<div className="flex flex-wrap gap-1.5">
-												{movie.favCharacters.map((char) => (
+												{movie.genre.map((g) => (
 													<span
-														key={char}
-														className="text-[12px] font-medium px-3 py-1 rounded-full bg-[var(--muted)] text-[var(--foreground)] opacity-80"
+														key={g}
+														className="capitalize text-[11px] font-medium px-[10px] py-[3px] rounded-full bg-[var(--muted)] text-[var(--muted-foreground)]"
 													>
-														{char}
+														{g}
 													</span>
 												))}
 											</div>
-										</div>
-									)}
+										)}
 
-									{/* IMDB link */}
-									{movie.imdbId && (
-										<a
-											href={`https://www.imdb.com/title/${movie.imdbId}`}
-											target="_blank"
-											rel="noopener noreferrer"
-											className="inline-flex items-center gap-1 text-[11px] font-bold px-3 py-[5px] rounded-[6px] bg-[#f5c518] text-black no-underline tracking-[0.02em] opacity-90 transition-opacity duration-150 hover:opacity-100"
-										>
-											IMDB ↗
-										</a>
-									)}
-								</div>
-							</motion.div>
-						</Dialog.Content>
-					</Dialog.Portal>
-				)}
-			</AnimatePresence>
-		</Dialog.Root>
+										{/* Review */}
+										{movie.review && (
+											<div>
+												<div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 mb-2">
+													My Review
+												</div>
+												<p className="text-[13px] leading-[1.65] text-[var(--foreground)] opacity-75 tracking-[-0.01em] m-0">
+													{movie.review}
+												</p>
+											</div>
+										)}
+
+										{/* Pre-watch thoughts */}
+										{movie.thoughts && (
+											<div>
+												<div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 mb-2">
+													Why I Want to Watch
+												</div>
+												<p className="text-[13px] leading-[1.65] text-[var(--foreground)] opacity-75 tracking-[-0.01em] m-0">
+													{movie.thoughts}
+												</p>
+											</div>
+										)}
+
+										{/* Favourite characters */}
+										{movie.favCharacters.length > 0 && (
+											<div>
+												<div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 mb-2">
+													Favourite Characters
+												</div>
+												<div className="flex flex-wrap gap-1.5">
+													{movie.favCharacters.map((char) => (
+														<span
+															key={char}
+															className="text-[12px] font-medium px-3 py-1 rounded-full bg-[var(--muted)] text-[var(--foreground)] opacity-80"
+														>
+															{char}
+														</span>
+													))}
+												</div>
+											</div>
+										)}
+
+										{/* IMDB link */}
+										{movie.imdbId && (
+											<a
+												href={`https://www.imdb.com/title/${movie.imdbId}`}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="inline-flex items-center gap-1 text-[11px] font-bold px-3 py-[5px] rounded-[6px] bg-[#f5c518] text-black no-underline tracking-[0.02em] opacity-90 transition-opacity duration-150 hover:opacity-100"
+											>
+												IMDB ↗
+											</a>
+										)}
+									</div>
+								</m.div>
+							</Dialog.Content>
+						</Dialog.Portal>
+					)}
+				</AnimatePresence>
+			</Dialog.Root>
+		</LazyMotion>
 	);
 }

@@ -1,7 +1,10 @@
 'use client';
 
-import { motion } from 'motion/react';
+import { LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
 import { useState } from 'react';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 interface BookProps {
 	title: string;
@@ -48,187 +51,189 @@ export default function Book3D({ title, author, cover, pages, onClick, index = 0
 	const showCover = cover && !imgError;
 
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 20 }}
-			whileInView={{ opacity: 1, y: 0 }}
-			viewport={{ once: true }}
-			transition={{ delay: index * 0.07, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
-			onHoverStart={() => setHovered(true)}
-			onHoverEnd={() => setHovered(false)}
-			onClick={onClick}
-			className="relative flex-shrink-0 cursor-pointer select-none"
-			style={{
-				width: `${spineWidth + coverWidth}px`,
-				height: `${height}px`,
-				// No perspective here - parent row owns the 3D context
-				transformStyle: 'preserve-3d',
-			}}
-			aria-label={`${title} by ${author}`}
-		>
-			{/* Book group -- rotates as one unit around spine (left edge) */}
-			{/* transformPerspective adds perspective() into the transform chain -- this is the
-          framer-motion-native way to get real 3D depth without relying on parent CSS perspective */}
-			<motion.div
-				animate={{
-					rotateY: hovered ? -32 : 0,
-					y: hovered ? -14 : 0,
-					x: hovered ? 8 : 0,
-					transformPerspective: hovered ? 900 : 1400,
-				}}
-				transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+		<LazyMotion features={loadFeatures}>
+			<m.div
+				initial={{ opacity: 0, y: 20 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				viewport={{ once: true }}
+				transition={{ delay: index * 0.07, duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+				onHoverStart={() => setHovered(true)}
+				onHoverEnd={() => setHovered(false)}
+				onClick={onClick}
+				className="relative flex-shrink-0 cursor-pointer select-none"
 				style={{
-					width: '100%',
-					height: '100%',
-					transformOrigin: 'left center',
-					position: 'relative',
+					width: `${spineWidth + coverWidth}px`,
+					height: `${height}px`,
+					// No perspective here - parent row owns the 3D context
+					transformStyle: 'preserve-3d',
 				}}
+				aria-label={`${title} by ${author}`}
 			>
-				{/* ── SPINE (left face) ── */}
-				<div
-					className="absolute top-0 left-0 flex items-center justify-center overflow-hidden rounded-[2px_0_0_2px]"
-					// biome-ignore lint/nursery/noInlineStyles: dynamic dimensions and gradient from props
+				{/* Book group -- rotates as one unit around spine (left edge) */}
+				{/* transformPerspective adds perspective() into the transform chain -- this is the
+          framer-motion-native way to get real 3D depth without relying on parent CSS perspective */}
+				<m.div
+					animate={{
+						rotateY: hovered ? -32 : 0,
+						y: hovered ? -14 : 0,
+						x: hovered ? 8 : 0,
+						transformPerspective: hovered ? 900 : 1400,
+					}}
+					transition={{ type: 'spring', stiffness: 260, damping: 20 }}
 					style={{
-						width: spineWidth,
-						height,
-						background: showCover
-							? 'linear-gradient(90deg, #111 0%, #2a1a0a 60%, #3a2410 100%)'
-							: `linear-gradient(180deg, ${bg}dd 0%, ${bg} 100%)`,
-						boxShadow: 'inset -4px 0 8px rgba(0,0,0,0.5)',
+						width: '100%',
+						height: '100%',
+						transformOrigin: 'left center',
+						position: 'relative',
 					}}
 				>
-					{/* Spine title text */}
-					<span
-						className="text-[7.5px] font-bold text-[rgba(255,255,255,0.7)] tracking-[0.08em] overflow-hidden whitespace-nowrap uppercase"
-						// biome-ignore lint/nursery/noInlineStyles: dynamic maxHeight from props; writingMode/textOrientation have no Tailwind equivalent
+					{/* ── SPINE (left face) ── */}
+					<div
+						className="absolute top-0 left-0 flex items-center justify-center overflow-hidden rounded-[2px_0_0_2px]"
+						// biome-ignore lint/nursery/noInlineStyles: dynamic dimensions and gradient from props
 						style={{
-							writingMode: 'vertical-rl',
-							textOrientation: 'mixed',
-							transform: 'rotate(180deg)',
-							maxHeight: height - 20,
+							width: spineWidth,
+							height,
+							background: showCover
+								? 'linear-gradient(90deg, #111 0%, #2a1a0a 60%, #3a2410 100%)'
+								: `linear-gradient(180deg, ${bg}dd 0%, ${bg} 100%)`,
+							boxShadow: 'inset -4px 0 8px rgba(0,0,0,0.5)',
 						}}
 					>
-						{title}
-					</span>
-					{/* Spine gloss strip */}
-					<div
-						className="absolute top-0 left-0 w-[45%] bottom-0 pointer-events-none"
-						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
-						style={{
-							background: 'linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 100%)',
-						}}
-					/>
-				</div>
-
-				{/* ── COVER (front face) ── */}
-				<div
-					className="absolute top-0 overflow-hidden rounded-[0_2px_2px_0]"
-					// biome-ignore lint/nursery/noInlineStyles: dynamic dimensions and hover-based boxShadow from props
-					style={{
-						left: spineWidth,
-						width: coverWidth,
-						height,
-						boxShadow: hovered
-							? '4px 16px 40px rgba(0,0,0,0.65), 0 4px 12px rgba(0,0,0,0.4)'
-							: '2px 6px 18px rgba(0,0,0,0.55), 1px 1px 0 rgba(0,0,0,0.3)',
-					}}
-				>
-					{showCover ? (
-						<img
-							src={cover}
-							alt={`${title} cover`}
-							onError={() => setImgError(true)}
-							className="w-full h-full object-cover block"
-						/>
-					) : (
-						<div
-							className="w-full h-full flex flex-col items-center justify-center px-[8px] py-[10px] gap-[5px]"
-							// biome-ignore lint/nursery/noInlineStyles: dynamic gradient from props
+						{/* Spine title text */}
+						<span
+							className="text-[7.5px] font-bold text-[rgba(255,255,255,0.7)] tracking-[0.08em] overflow-hidden whitespace-nowrap uppercase"
+							// biome-ignore lint/nursery/noInlineStyles: dynamic maxHeight from props; writingMode/textOrientation have no Tailwind equivalent
 							style={{
-								background: `linear-gradient(150deg, ${bg}ee 0%, ${bg}99 100%)`,
+								writingMode: 'vertical-rl',
+								textOrientation: 'mixed',
+								transform: 'rotate(180deg)',
+								maxHeight: height - 20,
 							}}
 						>
-							<div
-								className="w-[55%] h-[1px] mb-[3px]"
-								// biome-ignore lint/nursery/noInlineStyles: rgba background has no Tailwind equivalent
-								style={{ background: 'rgba(255,255,255,0.22)' }}
-							/>
-							<span className="text-[9px] font-bold text-[rgba(255,255,255,0.9)] text-center leading-[1.3] tracking-[0.01em]">
-								{title}
-							</span>
-							<div
-								className="w-[38%] h-[1px]"
-								// biome-ignore lint/nursery/noInlineStyles: rgba background has no Tailwind equivalent
-								style={{ background: 'rgba(255,255,255,0.15)' }}
-							/>
-							<span className="text-[7px] text-[rgba(255,255,255,0.5)] text-center tracking-[0.04em]">
-								{author}
-							</span>
-						</div>
-					)}
+							{title}
+						</span>
+						{/* Spine gloss strip */}
+						<div
+							className="absolute top-0 left-0 w-[45%] bottom-0 pointer-events-none"
+							// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
+							style={{
+								background: 'linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 100%)',
+							}}
+						/>
+					</div>
 
-					{/* Page-edge line -- right side */}
+					{/* ── COVER (front face) ── */}
 					<div
-						className="absolute top-0 right-0 w-[2px] bottom-0 pointer-events-none"
-						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
+						className="absolute top-0 overflow-hidden rounded-[0_2px_2px_0]"
+						// biome-ignore lint/nursery/noInlineStyles: dynamic dimensions and hover-based boxShadow from props
 						style={{
+							left: spineWidth,
+							width: coverWidth,
+							height,
+							boxShadow: hovered
+								? '4px 16px 40px rgba(0,0,0,0.65), 0 4px 12px rgba(0,0,0,0.4)'
+								: '2px 6px 18px rgba(0,0,0,0.55), 1px 1px 0 rgba(0,0,0,0.3)',
+						}}
+					>
+						{showCover ? (
+							<img
+								src={cover}
+								alt={`${title} cover`}
+								onError={() => setImgError(true)}
+								className="w-full h-full object-cover block"
+							/>
+						) : (
+							<div
+								className="w-full h-full flex flex-col items-center justify-center px-[8px] py-[10px] gap-[5px]"
+								// biome-ignore lint/nursery/noInlineStyles: dynamic gradient from props
+								style={{
+									background: `linear-gradient(150deg, ${bg}ee 0%, ${bg}99 100%)`,
+								}}
+							>
+								<div
+									className="w-[55%] h-[1px] mb-[3px]"
+									// biome-ignore lint/nursery/noInlineStyles: rgba background has no Tailwind equivalent
+									style={{ background: 'rgba(255,255,255,0.22)' }}
+								/>
+								<span className="text-[9px] font-bold text-[rgba(255,255,255,0.9)] text-center leading-[1.3] tracking-[0.01em]">
+									{title}
+								</span>
+								<div
+									className="w-[38%] h-[1px]"
+									// biome-ignore lint/nursery/noInlineStyles: rgba background has no Tailwind equivalent
+									style={{ background: 'rgba(255,255,255,0.15)' }}
+								/>
+								<span className="text-[7px] text-[rgba(255,255,255,0.5)] text-center tracking-[0.04em]">
+									{author}
+								</span>
+							</div>
+						)}
+
+						{/* Page-edge line -- right side */}
+						<div
+							className="absolute top-0 right-0 w-[2px] bottom-0 pointer-events-none"
+							// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
+							style={{
+								background:
+									'linear-gradient(180deg, rgba(240,230,215,0.5) 0%, rgba(220,210,195,0.3) 100%)',
+							}}
+						/>
+
+						{/* Cover gloss -- top-left diagonal highlight */}
+						<div
+							className="absolute inset-0 pointer-events-none"
+							// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
+							style={{
+								background: 'linear-gradient(150deg, rgba(255,255,255,0.09) 0%, transparent 40%)',
+							}}
+						/>
+					</div>
+
+					{/* ── PAGE EDGES (top strip, fakes the book depth) ── */}
+					<div
+						className="absolute top-0 h-[4px] rounded-[0_2px_0_0]"
+						// biome-ignore lint/nursery/noInlineStyles: dynamic dimensions and gradient from props
+						style={{
+							left: spineWidth + 1,
+							width: coverWidth - 3,
+							background: 'linear-gradient(180deg, #f0e8d8 0%, #d8ccba 100%)',
+							boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
+						}}
+					/>
+
+					{/* ── SHELF SHADOW (cast downward when hovering) ── */}
+					<m.div
+						animate={{ opacity: hovered ? 0.7 : 0.35, scaleX: hovered ? 1.15 : 1 }}
+						transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+						style={{
+							position: 'absolute',
+							bottom: -10,
+							left: spineWidth,
+							width: coverWidth,
+							height: 14,
 							background:
-								'linear-gradient(180deg, rgba(240,230,215,0.5) 0%, rgba(220,210,195,0.3) 100%)',
+								'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,0,0,0.55) 0%, transparent 100%)',
+							filter: 'blur(3px)',
+							transformOrigin: 'center top',
+							pointerEvents: 'none',
 						}}
 					/>
+				</m.div>
 
-					{/* Cover gloss -- top-left diagonal highlight */}
-					<div
-						className="absolute inset-0 pointer-events-none"
-						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
-						style={{
-							background: 'linear-gradient(150deg, rgba(255,255,255,0.09) 0%, transparent 40%)',
-						}}
-					/>
-				</div>
-
-				{/* ── PAGE EDGES (top strip, fakes the book depth) ── */}
-				<div
-					className="absolute top-0 h-[4px] rounded-[0_2px_0_0]"
-					// biome-ignore lint/nursery/noInlineStyles: dynamic dimensions and gradient from props
-					style={{
-						left: spineWidth + 1,
-						width: coverWidth - 3,
-						background: 'linear-gradient(180deg, #f0e8d8 0%, #d8ccba 100%)',
-						boxShadow: '0 1px 2px rgba(0,0,0,0.2)',
-					}}
-				/>
-
-				{/* ── SHELF SHADOW (cast downward when hovering) ── */}
-				<motion.div
-					animate={{ opacity: hovered ? 0.7 : 0.35, scaleX: hovered ? 1.15 : 1 }}
-					transition={{ type: 'spring', stiffness: 280, damping: 22 }}
+				{/* ── HOVER GLOW -- subtle warm light behind pulled book ── */}
+				<m.div
+					animate={{ opacity: hovered ? 0.6 : 0 }}
+					transition={{ duration: 0.25 }}
 					style={{
 						position: 'absolute',
-						bottom: -10,
-						left: spineWidth,
-						width: coverWidth,
-						height: 14,
+						inset: -6,
 						background:
-							'radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,0,0,0.55) 0%, transparent 100%)',
-						filter: 'blur(3px)',
-						transformOrigin: 'center top',
+							'radial-gradient(ellipse at 50% 80%, rgba(255,180,80,0.18) 0%, transparent 70%)',
 						pointerEvents: 'none',
 					}}
 				/>
-			</motion.div>
-
-			{/* ── HOVER GLOW -- subtle warm light behind pulled book ── */}
-			<motion.div
-				animate={{ opacity: hovered ? 0.6 : 0 }}
-				transition={{ duration: 0.25 }}
-				style={{
-					position: 'absolute',
-					inset: -6,
-					background:
-						'radial-gradient(ellipse at 50% 80%, rgba(255,180,80,0.18) 0%, transparent 70%)',
-					pointerEvents: 'none',
-				}}
-			/>
-		</motion.div>
+			</m.div>
+		</LazyMotion>
 	);
 }

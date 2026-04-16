@@ -1,12 +1,16 @@
 'use client';
 
 import { ArrowLeft02Icon, ArrowRight02Icon, Cancel01Icon, HugeiconsIcon } from '@icons';
-import { AnimatePresence, motion } from 'motion/react';
+import { AnimatePresence, LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
+
 import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import ProgressiveImg from '@/components/ui/ProgressiveImg';
 import thumbhashes from '@/data/design-thumbhashes.json';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 // Convert public URL → thumbhash lookup key: "/design/apparel/foo.webp" → "design/apparel/foo.webp"
 function getHash(src: string): string | undefined {
@@ -114,90 +118,92 @@ export default function DesignGallery({
 	const adMockupSrcs = adMockups.map(adMockupSrc);
 
 	return (
-		<motion.div
-			initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-			animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
-			transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.1 }}
-		>
-			{/* Apparel & Streetwear */}
-			<section className="mb-14">
-				<div className="section-header">Apparel &amp; Streetwear</div>
-				<div className="grid grid-cols-3 max-[480px]:grid-cols-2 gap-1.5">
-					{apparel.map((file, i) => (
-						<ApparelItem
-							key={file}
-							src={apparelSrcs[i]}
-							alt={altText(file)}
-							onClick={() => openLightbox(apparelSrcs, i)}
-						/>
-					))}
-				</div>
-			</section>
-
-			{/* Banners & Headers */}
-			<section className="mb-14">
-				<div className="section-header">Banners &amp; Headers</div>
-				<div className="columns-2 max-[480px]:columns-1 [column-gap:6px]">
-					{headers.map((file, i) => (
-						<MasonryItem
-							key={file}
-							src={headerSrcs[i]}
-							alt={altText(file)}
-							onClick={() => openLightbox(headerSrcs, i)}
-						/>
-					))}
-				</div>
-			</section>
-
-			{/* Thumbnails */}
-			<section className="mb-14">
-				<div className="section-header">Thumbnails</div>
-				<div className="columns-2 max-[480px]:columns-1 [column-gap:6px]">
-					{thumbnails.map((file, i) => (
-						<MasonryItem
-							key={file}
-							src={thumbnailSrcs[i]}
-							alt={altText(file)}
-							onClick={() => openLightbox(thumbnailSrcs, i)}
-						/>
-					))}
-				</div>
-			</section>
-
-			{/* Ad Mockups */}
-			<section className="mb-14">
-				<div className="section-header">Ad Mockups</div>
-				<div className="columns-2 max-[480px]:columns-1 [column-gap:6px]">
-					{adMockups.map((file, i) => (
-						<MasonryItem
-							key={file}
-							src={adMockupSrcs[i]}
-							alt={altText(file)}
-							onClick={() => openLightbox(adMockupSrcs, i)}
-						/>
-					))}
-				</div>
-			</section>
-
-			{/* Lightbox -- portalled to document.body so CSS filter on #page-content doesn't affect it */}
-			{typeof document !== 'undefined' &&
-				createPortal(
-					<AnimatePresence>
-						{lightboxOpen && (
-							<Lightbox
-								src={lightboxImages[lightboxIndex]}
-								alt={altText(lightboxImages[lightboxIndex]?.split('/').pop() ?? '')}
-								index={lightboxIndex}
-								total={lightboxImages.length}
-								onClose={closeLightbox}
-								onPrev={goPrev}
-								onNext={goNext}
+		<LazyMotion features={loadFeatures}>
+			<m.div
+				initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+				animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+				transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.1 }}
+			>
+				{/* Apparel & Streetwear */}
+				<section className="mb-14">
+					<div className="section-header">Apparel &amp; Streetwear</div>
+					<div className="grid grid-cols-3 max-[480px]:grid-cols-2 gap-1.5">
+						{apparel.map((file, i) => (
+							<ApparelItem
+								key={file}
+								src={apparelSrcs[i]}
+								alt={altText(file)}
+								onClick={() => openLightbox(apparelSrcs, i)}
 							/>
-						)}
-					</AnimatePresence>,
-					document.body
-				)}
-		</motion.div>
+						))}
+					</div>
+				</section>
+
+				{/* Banners & Headers */}
+				<section className="mb-14">
+					<div className="section-header">Banners &amp; Headers</div>
+					<div className="columns-2 max-[480px]:columns-1 [column-gap:6px]">
+						{headers.map((file, i) => (
+							<MasonryItem
+								key={file}
+								src={headerSrcs[i]}
+								alt={altText(file)}
+								onClick={() => openLightbox(headerSrcs, i)}
+							/>
+						))}
+					</div>
+				</section>
+
+				{/* Thumbnails */}
+				<section className="mb-14">
+					<div className="section-header">Thumbnails</div>
+					<div className="columns-2 max-[480px]:columns-1 [column-gap:6px]">
+						{thumbnails.map((file, i) => (
+							<MasonryItem
+								key={file}
+								src={thumbnailSrcs[i]}
+								alt={altText(file)}
+								onClick={() => openLightbox(thumbnailSrcs, i)}
+							/>
+						))}
+					</div>
+				</section>
+
+				{/* Ad Mockups */}
+				<section className="mb-14">
+					<div className="section-header">Ad Mockups</div>
+					<div className="columns-2 max-[480px]:columns-1 [column-gap:6px]">
+						{adMockups.map((file, i) => (
+							<MasonryItem
+								key={file}
+								src={adMockupSrcs[i]}
+								alt={altText(file)}
+								onClick={() => openLightbox(adMockupSrcs, i)}
+							/>
+						))}
+					</div>
+				</section>
+
+				{/* Lightbox -- portalled to document.body so CSS filter on #page-content doesn't affect it */}
+				{typeof document !== 'undefined' &&
+					createPortal(
+						<AnimatePresence>
+							{lightboxOpen && (
+								<Lightbox
+									src={lightboxImages[lightboxIndex]}
+									alt={altText(lightboxImages[lightboxIndex]?.split('/').pop() ?? '')}
+									index={lightboxIndex}
+									total={lightboxImages.length}
+									onClose={closeLightbox}
+									onPrev={goPrev}
+									onNext={goNext}
+								/>
+							)}
+						</AnimatePresence>,
+						document.body
+					)}
+			</m.div>
+		</LazyMotion>
 	);
 }
 
@@ -241,7 +247,7 @@ interface LightboxProps {
 
 function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxProps) {
 	return (
-		<motion.div
+		<m.div
 			key="lightbox-overlay"
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
@@ -251,7 +257,7 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
 			className="fixed inset-0 z-[100] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_60%,transparent)]"
 		>
 			{/* Image -- entry animation on src change only; close fades with the parent */}
-			<motion.img
+			<m.img
 				key={src}
 				src={src}
 				alt={alt}
@@ -311,6 +317,6 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
 			<div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[12px] tabular-nums tracking-[0.04em] pointer-events-none select-none text-[color-mix(in_srgb,var(--foreground)_50%,transparent)]">
 				{index + 1} / {total}
 			</div>
-		</motion.div>
+		</m.div>
 	);
 }

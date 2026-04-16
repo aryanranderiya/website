@@ -1,9 +1,9 @@
 ---
-import { CopyLinkIcon } from "../icons";
+import { CopyLinkIcon } from '../icons';
 
 interface Props {
-  title: string;
-  url: string;
+	title: string;
+	url: string;
 }
 const { title, url } = Astro.props;
 const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
