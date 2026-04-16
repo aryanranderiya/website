@@ -1,13 +1,10 @@
 ---
-import { getCollection } from 'astro:content';
 import { ViewTransitions } from 'astro:transitions';
 import { SEO, SITE } from '@/constants/site';
 import '@/styles/global.css';
+import interLatinFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import Preloader from '@/components/layout/Preloader';
 import BlurStack from '@/components/ui/blur-stack';
-import { certifications, education, experience } from '@/data/experience';
-import { pastWork } from '@/data/freelance';
-import { buildAIPrompt } from '@/lib/build-ai-prompt';
 
 interface Props {
 	title?: string;
@@ -40,17 +37,6 @@ const canonicalURL = new URL(canonical, Astro.site ?? Astro.url.origin);
 const ogImageURL = ogImage.startsWith('http')
 	? ogImage
 	: new URL(ogImage, Astro.site ?? Astro.url.origin).toString();
-
-const [projects, blogPosts] = await Promise.all([getCollection('projects'), getCollection('blog')]);
-const aiSystemPrompt = buildAIPrompt({
-	projects,
-	blogPosts,
-	experience,
-	education,
-	certifications,
-	pastWork,
-	site: SITE,
-});
 ---
 
 <!doctype html>
@@ -75,6 +61,9 @@ const aiSystemPrompt = buildAIPrompt({
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
     <link rel="manifest" href="/favicon/site.webmanifest" />
+
+    <!-- Font preload — starts downloading in parallel with CSS parse -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href={interLatinFont} />
 
     <!-- Open Graph -->
     <meta property="og:type" content={ogType} />
@@ -126,9 +115,6 @@ const aiSystemPrompt = buildAIPrompt({
       ],
     })} />
 
-    <script is:inline set:html={`
-      window.__aiSystemPrompt__ = ${JSON.stringify(aiSystemPrompt)};
-    `} />
     <!-- View Transitions -->
     <ViewTransitions />
 
@@ -228,8 +214,7 @@ const aiSystemPrompt = buildAIPrompt({
           import('react'),
           import('react-dom/client'),
         ]).then(function([{ default: AIChat }, React, { createRoot }]) {
-          const prompt = (window as unknown as { __aiSystemPrompt__?: string }).__aiSystemPrompt__;
-          createRoot(mount!).render(React.createElement(AIChat, { systemPrompt: prompt }));
+          createRoot(mount!).render(React.createElement(AIChat, {}));
         });
       })();
     </script>

@@ -10,10 +10,9 @@ import { FOLLOWUP_SYSTEM_PROMPT, SUGGESTED_QUESTIONS } from '@/data/ai-context';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
-interface AIChatProps {
-	/** Dynamically built at build time from live content collections + data files. Falls back to static prompt. */
-	systemPrompt?: string;
-}
+// Prompt is fetched lazily from /api/ai-prompt.json when the chat first opens,
+// keeping it out of the HTML payload entirely.
+let _cachedPrompt = '';
 
 const MODEL_ID = 'Llama-3.2-3B-Instruct-q4f16_1-MLC';
 
@@ -171,8 +170,8 @@ function AssistantBubble({
 	);
 }
 
-export default function AIChat({ systemPrompt }: AIChatProps) {
-	const activePrompt = systemPrompt ?? '';
+export default function AIChat() {
+	const [activePrompt, setActivePrompt] = useState(_cachedPrompt);
 	const [isOpen, setIsOpen] = useState(false);
 	const [messages, setMessages] = useState<Message[]>([WELCOME]);
 	const [input, setInput] = useState('');
@@ -202,6 +201,17 @@ export default function AIChat({ systemPrompt }: AIChatProps) {
 		if (_engineReady) setIsModelReady(true);
 		if (_engineError) setLoadError(_engineError);
 	}, []);
+
+	useEffect(() => {
+		if (!isOpen || _cachedPrompt) return;
+		fetch('/api/ai-prompt.json')
+			.then((r) => r.json())
+			.then((data: { prompt?: string }) => {
+				_cachedPrompt = data.prompt ?? '';
+				setActivePrompt(_cachedPrompt);
+			})
+			.catch(() => {}); // non-critical — chat still works without the detailed context
+	}, [isOpen]);
 
 	useEffect(() => {
 		if (!isOpen) return;
