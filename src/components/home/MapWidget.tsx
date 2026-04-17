@@ -1,14 +1,7 @@
 'use client';
 
-import { motion } from 'motion/react';
 import { useEffect, useRef, useState } from 'react';
 import { SITE } from '@/constants/site';
-import { useAfterPreloader } from '@/hooks/useAfterPreloader';
-import 'mapbox-gl/dist/mapbox-gl.css';
-
-// mapbox-gl JS (240kB) is dynamically imported inside useEffect so the bundle
-// is only downloaded when the map widget scrolls into the viewport.
-// The CSS above (~12kB) is kept static since it's small and avoids a FOUC.
 
 const LNG = SITE.coords.lng;
 const LAT = SITE.coords.lat;
@@ -44,16 +37,14 @@ function MapWidgetFixture() {
 
 function MapWidgetInner() {
 	const containerRef = useRef<HTMLDivElement>(null);
-	const ready = useAfterPreloader();
 	const mapRef = useRef<{ setStyle: (s: string) => void; remove: () => void } | null>(null);
 	const markerRef = useRef<{ remove: () => void } | null>(null);
 	const observerRef = useRef<MutationObserver | null>(null);
 	const [containerReady, setContainerReady] = useState(false);
 
-	// Track container availability — important because we render the inner div
-	// inside an animated wrapper that may mount the ref on a later frame than
-	// the parent. Using a state-tracked ref ensures the effect re-runs once the
-	// element exists.
+	// State-tracked ref so the init effect reruns once the container element
+	// exists. Without this, hydration order between Spotify and Map could
+	// leave the map permanently un-initialized.
 	const setContainerRef = (el: HTMLDivElement | null) => {
 		containerRef.current = el;
 		if (el && !containerReady) setContainerReady(true);
@@ -65,8 +56,10 @@ function MapWidgetInner() {
 		let cancelled = false;
 
 		async function initMap() {
-			// Dynamic import -- mapbox-gl JS (240kB) only downloads when widget is in view
-			const { default: mapboxgl } = await import('mapbox-gl');
+			const [{ default: mapboxgl }] = await Promise.all([
+				import('mapbox-gl'),
+				import('mapbox-gl/dist/mapbox-gl.css'),
+			]);
 
 			if (cancelled || !containerRef.current) return;
 
@@ -126,24 +119,13 @@ function MapWidgetInner() {
 	}, [containerReady]);
 
 	if (!TOKEN) {
-		return (
-			<div className="rounded-2xl bg-[var(--muted-bg)] flex items-center justify-center h-40">
-				<span className="text-xs text-[var(--text-ghost)]">
-					Set <code className="font-mono">PUBLIC_MAPBOX_TOKEN</code> to enable map
-				</span>
-			</div>
-		);
+		return null;
 	}
 
 	return (
-		<motion.div
-			className="rounded-2xl overflow-hidden h-40 relative bg-black/[0.06]"
-			initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-			animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
-			transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.39 }}
-		>
+		<div className="rounded-2xl overflow-hidden h-40 animate-fade-in bg-black/[0.06]">
 			<div ref={setContainerRef} className="w-full h-full" />
-		</motion.div>
+		</div>
 	);
 }
 

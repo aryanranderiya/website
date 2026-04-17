@@ -1,7 +1,10 @@
 'use client';
 
-import { motion } from 'motion/react';
+import { LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
 import { useEffect, useState } from 'react';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 function formatTime(date: Date): string {
 	return date.toLocaleTimeString('en-US', {
@@ -114,19 +117,23 @@ export default function ClockWidget() {
 	if (!now) return null;
 
 	return (
-		<div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 flex items-center gap-4">
-			<AnalogClock date={now} />
-			<div>
-				<motion.div
-					key={formatTime(now).slice(0, 5)}
-					initial={{ opacity: 0.7 }}
-					animate={{ opacity: 1 }}
-					className="text-2xl font-semibold tabular-nums tracking-[-0.03em] [font-variant-numeric:tabular-nums]"
-				>
-					{formatTime(now)}
-				</motion.div>
-				<div className="text-xs mt-0.5 text-[var(--muted-foreground)]">{formatDate(now)} · IST</div>
+		<LazyMotion features={loadFeatures}>
+			<div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 flex items-center gap-4">
+				<AnalogClock date={now} />
+				<div>
+					<m.div
+						key={formatTime(now).slice(0, 5)}
+						initial={{ opacity: 0.7 }}
+						animate={{ opacity: 1 }}
+						className="text-2xl font-semibold tabular-nums tracking-[-0.03em] [font-variant-numeric:tabular-nums]"
+					>
+						{formatTime(now)}
+					</m.div>
+					<div className="text-xs mt-0.5 text-[var(--muted-foreground)]">
+						{formatDate(now)} · IST
+					</div>
+				</div>
 			</div>
-		</div>
+		</LazyMotion>
 	);
 }

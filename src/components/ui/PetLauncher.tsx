@@ -143,6 +143,7 @@ export function PetLauncher() {
 					followMouse={true}
 					paused={open}
 					speed={12}
+					ariaLabel="Choose pet companion"
 					onClick={() => setOpen((o) => !o)}
 				/>
 			)}
@@ -187,7 +188,7 @@ export function PetLauncher() {
 											alt={ANIMAL_MAP[animal]?.label}
 											width={28}
 											height={28}
-											className="[image-rendering:pixelated] object-contain"
+											className="[image-rendering:pixelated] object-contain w-7 h-7 shrink-0"
 										/>
 										{/* biome-ignore lint/nursery/noInlineStyles: dynamic label styles based on selection state */}
 										<span style={labelStyle(isSelected)}>{ANIMAL_MAP[animal]?.label}</span>
@@ -221,6 +222,7 @@ export function PetLauncher() {
 				<button
 					type="button"
 					onClick={() => setOpen((o) => !o)}
+					aria-label="Choose pet companion"
 					className="fixed bottom-[16px] right-[16px] w-[32px] h-[32px] rounded-full border border-[var(--border,rgba(0,0,0,0.08))] bg-[var(--card,#fafafa)] cursor-pointer text-[14px] flex items-center justify-center z-[9999] shadow-[0_2px_8px_rgba(0,0,0,0.08)] text-[var(--text-ghost,rgba(0,0,0,0.4))]"
 					title="Choose pet"
 				>

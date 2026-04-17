@@ -88,11 +88,14 @@ const photos = [
   <div class="pb-16 pl-[max(var(--page-inset),calc(50vw-320px+var(--page-inset)))] pr-[var(--page-inset)]">
     <div class="columns-2 sm:columns-3 [column-gap:6px]">
       {photos.map(photo => (
-        <div class="group relative overflow-hidden rounded-md cursor-default break-inside-avoid mb-1.5">
+        <div class="group relative overflow-hidden rounded-md cursor-default break-inside-avoid mb-1.5" style="aspect-ratio: 4/3;">
           <img
             src={photo.url}
             alt={photo.alt}
+            width="800"
+            height="600"
             loading="lazy"
+            decoding="async"
             class="w-full h-auto block transition-[scale] duration-200 ease-out group-hover:scale-[1.02]"
           />
           <div class="absolute bottom-0 left-0 right-0 pt-6 px-2.5 pb-2.5 bg-[linear-gradient(to_top,rgba(0,0,0,0.6),transparent)] opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">

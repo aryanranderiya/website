@@ -90,7 +90,7 @@ function GitHubPreview() {
 					alt="avatar"
 					width={40}
 					height={40}
-					className="rounded-full border-2 border-[#30363d] shrink-0"
+					className="rounded-full border-2 border-[#30363d] shrink-0 w-10 h-10"
 				/>
 				<div className="min-w-0">
 					<div className="font-semibold text-sm text-[#e6edf3] leading-tight">Aryan</div>
@@ -159,7 +159,7 @@ function TwitterPreview() {
 					alt="avatar"
 					width={44}
 					height={44}
-					className="rounded-full border-[3px] border-black absolute -top-[22px] left-4 shrink-0"
+					className="rounded-full border-[3px] border-black absolute -top-[22px] left-4 shrink-0 w-11 h-11"
 				/>
 				<div className="pt-7">
 					<div className="font-bold text-[15px] text-[#e7e9ea] leading-tight">aryan</div>
@@ -198,7 +198,7 @@ function LinkedInPreview() {
 					alt="avatar"
 					width={48}
 					height={48}
-					className="rounded-full border-[3px] border-[#1b1f23] absolute -top-6 left-4"
+					className="rounded-full border-[3px] border-[#1b1f23] absolute -top-6 left-4 w-12 h-12"
 				/>
 				<div className="pt-8">
 					<div className="font-bold text-sm text-[#e7e9ea] mb-0.5">Aryan Randeriya</div>
@@ -230,7 +230,7 @@ function InstagramPreview() {
 							alt="avatar"
 							width={36}
 							height={36}
-							className="rounded-full block"
+							className="rounded-full block w-9 h-9 shrink-0"
 						/>
 					</div>
 				</div>

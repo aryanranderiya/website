@@ -2,12 +2,11 @@
 import { getCollection } from 'astro:content';
 import BlogPreview from '@/components/home/BlogPreview';
 import FeaturedProjects from '@/components/home/FeaturedProjects';
-import Hero from '@/components/home/Hero';
+import Hero from '@/components/home/Hero.astro';
 import MapWidget from '@/components/home/MapWidget';
 import Signature from '@/components/home/Signature';
 import SpotifyWidget from '@/components/home/SpotifyWidget';
-import Toolbox from '@/components/home/Toolbox';
-import ExperienceList from '@/components/resume/ExperienceList';
+import ExperienceList from '@/components/resume/ExperienceList.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 
 // Fetch and sort blog posts by date descending
@@ -54,7 +53,7 @@ const allProjects = allProjectEntries
   description="Founder, designer, and developer. Currently building GAIA, an AI companion."
 >
   <!-- Hero -->
-  <Hero client:load />
+  <Hero />
 
   <!-- Spotify + Map -->
   <section class="pb-4">
@@ -66,7 +65,7 @@ const allProjects = allProjectEntries
 
   <!-- Experience (shared component, featured only) -->
   <div class="mt-8">
-    <ExperienceList featuredOnly compact client:visible />
+    <ExperienceList featuredOnly compact />
   </div>
 
   <!-- Featured projects -->

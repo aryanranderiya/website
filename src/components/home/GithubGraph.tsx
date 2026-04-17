@@ -1,9 +1,6 @@
 'use client';
 
-import { QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { motion } from 'motion/react';
 import { useEffect, useState } from 'react';
-import { queryClient } from '@/utils/queryClient';
 
 interface ContributionDay {
 	date: string;
@@ -72,7 +69,6 @@ function getMonthLabels(weeks: ContributionWeek[]): { label: string; index: numb
 function ContributionCell({
 	day,
 	animated,
-	delay,
 }: {
 	day: ContributionDay;
 	animated: boolean;
@@ -82,17 +78,14 @@ function ContributionCell({
 
 	return (
 		<div className="flex-1 aspect-square relative">
-			<motion.div
-				initial={animated ? { opacity: 0, scale: 0.3 } : undefined}
-				animate={animated ? { opacity: 1, scale: 1 } : undefined}
-				transition={{ delay, duration: 0.2, ease: 'easeOut' }}
+			{/* biome-ignore lint/a11y/noStaticElementInteractions: tooltip-only hover on visual grid cell */}
+			<div
 				onMouseEnter={(e) => {
 					const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
 					setTooltip({ x: rect.left + rect.width / 2, y: rect.top });
 				}}
 				onMouseLeave={() => setTooltip(null)}
-				className="w-full h-full rounded-[2px] cursor-default"
-				style={{ backgroundColor: LEVEL_COLORS[day.level] }}
+				className={`w-full h-full rounded-[2px] cursor-default ${animated ? 'github-cell' : ''}`}
 			/>
 			{tooltip && (
 				<div
@@ -119,10 +112,30 @@ function ContributionCell({
 }
 
 function GithubGraphInner({ compact = false }: { compact?: boolean }) {
-	const { data, isLoading } = useQuery({
-		queryKey: ['github-contributions', 'aryanranderiya'],
-		queryFn: () => fetchContributions('aryanranderiya'),
-	});
+	const [data, setData] = useState<{ weeks: ContributionWeek[]; total: number } | null>(null);
+	const [isLoading, setIsLoading] = useState(true);
+
+	useEffect(() => {
+		let cancelled = false;
+
+		fetchContributions('aryanranderiya')
+			.then((result) => {
+				if (cancelled) return;
+				setData(result);
+			})
+			.catch(() => {
+				if (cancelled) return;
+				setData(null);
+			})
+			.finally(() => {
+				if (cancelled) return;
+				setIsLoading(false);
+			});
+
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 
 	const weeks = data?.weeks.slice(-52) ?? [];
 	const totalContributions = data?.total ?? 0;
@@ -180,7 +193,7 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 										key={day.date}
 										day={day}
 										animated={!compact}
-										delay={(wi * 7 + di) * 0.003}
+										delay={(wi * 7 + di) * 5}
 									/>
 								))}
 							</div>
@@ -226,7 +239,6 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 }
 
 function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
-	// Mimics the visual shape of the full graph section
 	const grid = (
 		<div className="grid [grid-template-columns:repeat(52,1fr)] gap-[3px] w-full">
 			{Array.from({ length: 52 }).map((_, i) => (
@@ -260,18 +272,13 @@ function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
 
 export default function GithubGraph(props: { compact?: boolean }) {
 	// Mount on next frame so the SSR'd fixture paints first, then the live
-	// graph hydrates. No IntersectionObserver — the popover and the resume page
-	// both want the graph available immediately.
+	// graph hydrates. No IntersectionObserver — the popover and the resume
+	// page both need the graph available immediately.
 	const [mounted, setMounted] = useState(false);
 	useEffect(() => {
 		setMounted(true);
 	}, []);
 
 	if (!mounted) return <GithubGraphFixture compact={props.compact} />;
-
-	return (
-		<QueryClientProvider client={queryClient}>
-			<GithubGraphInner {...props} />
-		</QueryClientProvider>
-	);
+	return <GithubGraphInner {...props} />;
 }

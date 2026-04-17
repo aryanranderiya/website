@@ -10,10 +10,12 @@ import {
 	WebDesignIcon,
 } from '@icons';
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
-import { motion } from 'motion/react';
+import { LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
 import type { ComponentType } from 'react';
 import { useRef, useState } from 'react';
-import { getTechIconUrl } from '../../utils/techIcons';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 interface Project {
 	slug: string;
@@ -76,74 +78,76 @@ export default function ProjectCard({
 	const _TypeIcon = TYPE_ICONS[project.type] ?? null;
 
 	return (
-		<motion.div
-			ref={ref}
-			variants={{
-				hidden: { opacity: 0, y: 4 },
-				show: {
-					opacity: 1,
-					y: 0,
-					transition: { duration: 0.3, ease: [0.19, 1, 0.22, 1] as const },
-				},
-			}}
-			onHoverStart={() => {
-				setHovered(true);
-				if (ref.current) onHoverChange?.({ project, index, el: ref.current });
-			}}
-			onHoverEnd={() => {
-				setHovered(false);
-				onHoverChange?.(null);
-			}}
-			onClick={() => {
-				window.location.href = `/projects/${project.slug}`;
-			}}
-			className={`flex items-center gap-4 px-3 py-[10px] rounded-[10px] cursor-pointer min-w-0 transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
-		>
-			{/* Title + description stacked */}
-			<div className="flex-1 min-w-0">
-				<div className="flex items-center gap-[7px] mb-[2px]">
-					<span
-						className={`text-[13px] font-semibold tracking-[-0.02em] truncate transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
-					>
-						{project.title}
-					</span>
-				</div>
-				<span className="text-[11px] text-[var(--text-ghost)] block truncate tracking-[-0.01em] leading-[1.4]">
-					{project.description}
-				</span>
-			</div>
-
-			{/* Right side: type + tags + folder chip + arrow */}
-			<div className="flex items-center gap-1.5 shrink-0">
-				{/* Type badge */}
-				<span className="text-[10px] px-[7px] py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)] tracking-[0.01em]">
-					{typeLabel}
-				</span>
-
-				{chip && (
-					<span
-						className="text-[10px] px-2 py-[2px] rounded-full font-medium tracking-[0.01em] shrink-0"
-						// biome-ignore lint/nursery/noInlineStyles: dynamic chip background and color from data
-						style={{ background: chip.bg, color: chip.color }}
-					>
-						{chip.label}
-					</span>
-				)}
-
-				<div className="w-4 flex items-center justify-center">
-					{project.url && (
-						<a
-							href={project.url}
-							target="_blank"
-							rel="noopener noreferrer"
-							onClick={(e) => e.stopPropagation()}
-							className={`flex items-center transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-muted)]' : 'text-transparent'}`}
+		<LazyMotion features={loadFeatures}>
+			<m.div
+				ref={ref}
+				variants={{
+					hidden: { opacity: 0, y: 4 },
+					show: {
+						opacity: 1,
+						y: 0,
+						transition: { duration: 0.3, ease: [0.19, 1, 0.22, 1] as const },
+					},
+				}}
+				onHoverStart={() => {
+					setHovered(true);
+					if (ref.current) onHoverChange?.({ project, index, el: ref.current });
+				}}
+				onHoverEnd={() => {
+					setHovered(false);
+					onHoverChange?.(null);
+				}}
+				onClick={() => {
+					window.location.href = `/projects/${project.slug}`;
+				}}
+				className={`flex items-center gap-4 px-3 py-[10px] rounded-[10px] cursor-pointer min-w-0 transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+			>
+				{/* Title + description stacked */}
+				<div className="flex-1 min-w-0">
+					<div className="flex items-center gap-[7px] mb-[2px]">
+						<span
+							className={`text-[13px] font-semibold tracking-[-0.02em] truncate transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
 						>
-							<HugeiconsIcon icon={ArrowUpRight01Icon} size={13} color="currentColor" />
-						</a>
-					)}
+							{project.title}
+						</span>
+					</div>
+					<span className="text-[11px] text-[var(--text-ghost)] block truncate tracking-[-0.01em] leading-[1.4]">
+						{project.description}
+					</span>
 				</div>
-			</div>
-		</motion.div>
+
+				{/* Right side: type + tags + folder chip + arrow */}
+				<div className="flex items-center gap-1.5 shrink-0">
+					{/* Type badge */}
+					<span className="text-[10px] px-[7px] py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)] tracking-[0.01em]">
+						{typeLabel}
+					</span>
+
+					{chip && (
+						<span
+							className="text-[10px] px-2 py-[2px] rounded-full font-medium tracking-[0.01em] shrink-0"
+							// biome-ignore lint/nursery/noInlineStyles: dynamic chip background and color from data
+							style={{ background: chip.bg, color: chip.color }}
+						>
+							{chip.label}
+						</span>
+					)}
+
+					<div className="w-4 flex items-center justify-center">
+						{project.url && (
+							<a
+								href={project.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								onClick={(e) => e.stopPropagation()}
+								className={`flex items-center transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-muted)]' : 'text-transparent'}`}
+							>
+								<HugeiconsIcon icon={ArrowUpRight01Icon} size={13} color="currentColor" />
+							</a>
+						)}
+					</div>
+				</div>
+			</m.div>
+		</LazyMotion>
 	);
 }
