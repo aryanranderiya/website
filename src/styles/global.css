@@ -562,6 +562,206 @@ a {
   font-weight: var(--font-semibold);
 }
 
+.prose em {
+  font-style: italic;
+  color: var(--text-secondary);
+}
+
+.prose del,
+.prose s {
+  color: var(--text-ghost);
+  text-decoration: line-through;
+  text-decoration-color: var(--border-strong);
+}
+
+.prose mark {
+  background: color-mix(in srgb, var(--accent-blue) 22%, transparent);
+  color: var(--text-primary);
+  padding: 0.05em 0.25em;
+  border-radius: 3px;
+}
+
+.prose kbd {
+  font-family: "SF Mono", "Fira Code", ui-monospace, monospace;
+  font-size: 0.82em;
+  background: var(--muted-bg);
+  border: 1px solid var(--border-strong);
+  border-bottom-width: 2px;
+  border-radius: var(--radius-sm);
+  padding: 0.1em 0.4em;
+  color: var(--text-primary);
+  line-height: 1;
+  vertical-align: baseline;
+}
+
+.prose sub,
+.prose sup {
+  font-size: 0.72em;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
+.prose sup { top: -0.5em; position: relative; }
+.prose sub { bottom: -0.25em; position: relative; }
+
+.prose abbr[title] {
+  text-decoration: underline dotted var(--border-strong);
+  text-underline-offset: 2px;
+  cursor: help;
+}
+
+/* H4–H6 rarely appear in posts but must not fall back to the browser default */
+.prose h4 {
+  font-size: 0.95rem;
+  font-weight: var(--font-semibold);
+  color: var(--text-primary);
+  margin-top: 1.75em;
+  margin-bottom: 0.5em;
+  letter-spacing: -0.01em;
+}
+.prose h5,
+.prose h6 {
+  font-size: 0.85rem;
+  font-weight: var(--font-semibold);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-top: 1.5em;
+  margin-bottom: 0.4em;
+}
+
+/* Nested lists */
+.prose ul ul,
+.prose ol ol,
+.prose ul ol,
+.prose ol ul {
+  margin-top: 0.375em;
+  margin-bottom: 0.375em;
+}
+
+.prose ul { list-style: disc; }
+.prose ul ul { list-style: circle; }
+.prose ul ul ul { list-style: square; }
+.prose ol { list-style: decimal; }
+
+/* GitHub-flavored task lists */
+.prose ul.contains-task-list,
+.prose li.task-list-item {
+  list-style: none;
+  padding-left: 0;
+}
+.prose ul.contains-task-list { padding-left: 0.25em; }
+.prose li.task-list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5em;
+}
+.prose li.task-list-item > input[type="checkbox"] {
+  margin-top: 0.35em;
+  accent-color: var(--text-primary);
+  width: 14px;
+  height: 14px;
+}
+
+/* Tables */
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  margin: 1.5em 0;
+  overflow-x: auto;
+  display: block;
+}
+.prose thead {
+  border-bottom: 1px solid var(--border-strong);
+}
+.prose th,
+.prose td {
+  padding: 0.55em 0.8em;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--border);
+}
+.prose th {
+  color: var(--text-ghost);
+  font-size: 0.78em;
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.prose td {
+  color: var(--text-secondary);
+}
+.prose tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Figures */
+.prose figure {
+  margin: 1.5em 0;
+}
+.prose figcaption {
+  font-size: 0.85em;
+  color: var(--text-ghost);
+  text-align: center;
+  margin-top: 0.5em;
+}
+
+/* Definition lists */
+.prose dl {
+  display: grid;
+  grid-template-columns: minmax(120px, 30%) 1fr;
+  gap: 0.35em 1.25em;
+  margin: 1.25em 0;
+}
+.prose dt {
+  color: var(--text-primary);
+  font-weight: var(--font-semibold);
+}
+.prose dd {
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Collapsible details */
+.prose details {
+  margin: 1.25em 0;
+  padding: 0.75em 1em;
+  background: var(--muted-bg);
+  border-radius: var(--radius-lg);
+}
+.prose details[open] summary {
+  margin-bottom: 0.75em;
+}
+.prose summary {
+  cursor: pointer;
+  color: var(--text-primary);
+  font-weight: var(--font-semibold);
+  list-style: none;
+  position: relative;
+  padding-left: 1.25em;
+}
+.prose summary::-webkit-details-marker { display: none; }
+.prose summary::before {
+  content: "▸";
+  position: absolute;
+  left: 0;
+  top: 0;
+  transition: transform 0.15s ease;
+  color: var(--text-muted);
+}
+.prose details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+/* Shiki-highlighted code blocks — let the theme own the background so tokens
+   stay readable. Keep our border + radius wrapper. */
+.prose pre.astro-code,
+.prose pre[class*="shiki"] {
+  background: var(--code-bg, #0d1117) !important;
+  border-color: var(--code-border, transparent);
+}
+
 /* ============================================
    ANIMATION UTILITIES
    ============================================ */
