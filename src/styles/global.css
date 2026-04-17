@@ -527,11 +527,25 @@ a {
 }
 
 .prose blockquote {
+  position: relative;
+  background: var(--muted-bg);
   border-left: 2px solid var(--border-strong);
-  padding-left: 1rem;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  padding: 0.9em 1.15em;
   color: var(--text-muted);
   font-style: normal;
-  margin-left: 0;
+  margin: 1.5em 0;
+}
+
+.prose blockquote > :first-child { margin-top: 0; }
+.prose blockquote > :last-child { margin-bottom: 0; }
+
+/* Nested quotes step up slightly with a translucent fill so they still
+   read as "inside" the outer quote. */
+.prose blockquote blockquote {
+  background: color-mix(in srgb, var(--text-primary) 4%, transparent);
+  margin-top: 0.75em;
+  margin-bottom: 0;
 }
 
 .prose ul,
