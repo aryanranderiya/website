@@ -23,7 +23,7 @@ function AccordionItem({ page, index }: { page: NavPage; index: number }) {
 					<button
 						type="button"
 						onClick={() => hasChildren && setOpen((o) => !o)}
-						className={`flex items-center justify-between w-full py-4 text-left transition-all duration-150 bg-transparent border-0 p-[1rem_0] ${hasChildren ? 'cursor-pointer' : 'cursor-default'}`}
+						className={`flex items-center justify-between w-full py-4 text-left transition-all duration-150 bg-transparent border-0 p-[1rem_0] select-none ${hasChildren ? 'cursor-pointer' : 'cursor-default'}`}
 					>
 						<div className="flex items-center gap-4">
 							<a

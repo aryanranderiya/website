@@ -12,9 +12,12 @@ interface ContributionWeek {
 	days: ContributionDay[];
 }
 
-export async function fetchContributions(
-	username: string
-): Promise<{ weeks: ContributionWeek[]; total: number }> {
+export interface ContributionData {
+	weeks: ContributionWeek[];
+	total: number;
+}
+
+export async function fetchContributions(username: string): Promise<ContributionData> {
 	const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`);
 	if (!res.ok) throw new Error('Failed to fetch contributions');
 	const data = await res.json();
@@ -32,6 +35,22 @@ export async function fetchContributions(
 
 	const total = days.reduce((sum, d) => sum + d.count, 0);
 	return { weeks, total };
+}
+
+// Module-level promise cache — any component in any tree that calls
+// getContributions() shares a single in-flight request and the resolved
+// result. This is what lets the homepage GitHub hover popover and the
+// resume-page full graph render from one fetch, without forcing a
+// React context/provider on consumers.
+let _contributionsPromise: Promise<ContributionData> | null = null;
+export function getContributions(): Promise<ContributionData> {
+	if (!_contributionsPromise) {
+		_contributionsPromise = fetchContributions('aryanranderiya').catch((err) => {
+			_contributionsPromise = null; // allow retry on subsequent mount
+			throw err;
+		});
+	}
+	return _contributionsPromise;
 }
 
 // Same green (#40c463), varying opacity
@@ -114,26 +133,21 @@ function ContributionCell({
 }
 
 function GithubGraphInner({ compact = false }: { compact?: boolean }) {
-	const [data, setData] = useState<{ weeks: ContributionWeek[]; total: number } | null>(null);
+	const [data, setData] = useState<ContributionData | null>(null);
 	const [isLoading, setIsLoading] = useState(true);
 
 	useEffect(() => {
 		let cancelled = false;
-
-		fetchContributions('aryanranderiya')
+		getContributions()
 			.then((result) => {
-				if (cancelled) return;
-				setData(result);
+				if (!cancelled) setData(result);
 			})
 			.catch(() => {
-				if (cancelled) return;
-				setData(null);
+				if (!cancelled) setData(null);
 			})
 			.finally(() => {
-				if (cancelled) return;
-				setIsLoading(false);
+				if (!cancelled) setIsLoading(false);
 			});
-
 		return () => {
 			cancelled = true;
 		};

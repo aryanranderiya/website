@@ -1,0 +1,31 @@
+---
+interface Props {
+	/** Path or URL to the video file (mp4/webm). Local public/ paths work. */
+	src: string;
+	/** Optional poster image shown before the video plays. */
+	poster?: string;
+	/** Optional caption shown beneath the video. */
+	caption?: string;
+	/** Autoplay (muted + loop are forced when true, browser rules). */
+	autoplay?: boolean;
+	/** Show native browser controls. Defaults to true. */
+	controls?: boolean;
+}
+
+const { src, poster, caption, autoplay = false, controls = true } = Astro.props;
+---
+
+<figure class="my-6">
+	<video
+		src={src}
+		poster={poster}
+		autoplay={autoplay}
+		muted={autoplay}
+		loop={autoplay}
+		playsinline
+		controls={controls}
+		preload="metadata"
+		class="w-full rounded-[10px] bg-[var(--muted-bg)] block"
+	></video>
+	{caption && <figcaption>{caption}</figcaption>}
+</figure>

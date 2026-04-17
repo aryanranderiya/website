@@ -1,0 +1,36 @@
+---
+interface Props {
+	/** YouTube video id — the `v` query param, or the full URL (we'll parse). */
+	id: string;
+	/** Optional caption shown beneath the video. */
+	caption?: string;
+	/** Start time in seconds, optional. */
+	start?: number;
+}
+
+const { id, caption, start } = Astro.props;
+
+// Accept either a bare id or a full URL.
+function extractId(input: string): string {
+	const match = input.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/);
+	return match ? match[1] : input;
+}
+
+const videoId = extractId(id);
+const src = `https://www.youtube-nocookie.com/embed/${videoId}${start ? `?start=${start}` : ''}`;
+---
+
+<figure class="my-6">
+	<div class="relative w-full aspect-video rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
+		<iframe
+			src={src}
+			title={caption ?? 'YouTube video'}
+			loading="lazy"
+			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+			referrerpolicy="strict-origin-when-cross-origin"
+			allowfullscreen
+			class="absolute inset-0 w-full h-full border-0"
+		></iframe>
+	</div>
+	{caption && <figcaption>{caption}</figcaption>}
+</figure>

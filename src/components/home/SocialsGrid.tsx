@@ -5,7 +5,7 @@ import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { queryClient } from '@/utils/queryClient';
-import GithubGraph, { fetchContributions } from './GithubGraph';
+import GithubGraph, { type ContributionData, getContributions } from './GithubGraph';
 
 const AVATAR_URL = '/avatar-original.webp';
 const _INSTAGRAM_GRADIENT =
@@ -76,10 +76,18 @@ function InstagramLogo({ size = 18 }: { size?: number }) {
 // ── Preview cards ─────────────────────────────────────────────────────────────
 
 function GitHubPreview() {
-	const { data } = useQuery({
-		queryKey: ['github-contributions', 'aryanranderiya'],
-		queryFn: () => fetchContributions('aryanranderiya'),
-	});
+	const [data, setData] = useState<ContributionData | null>(null);
+	useEffect(() => {
+		let cancelled = false;
+		getContributions()
+			.then((r) => {
+				if (!cancelled) setData(r);
+			})
+			.catch(() => {});
+		return () => {
+			cancelled = true;
+		};
+	}, []);
 	const total = data?.total;
 
 	return (
