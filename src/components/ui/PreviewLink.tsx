@@ -79,14 +79,14 @@ function PreviewCard({
 				target={isExternal ? '_blank' : undefined}
 				rel={isExternal ? 'noopener noreferrer' : undefined}
 				aria-label={preview.title ?? preview.name ?? displayHost}
-				className="group block w-[280px] rounded-xl bg-[var(--background)] shadow-[var(--shadow-md)] overflow-hidden p-2.5 no-underline text-inherit cursor-pointer transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.19,1,0.22,1)] hover:-translate-y-[1px] hover:shadow-[var(--shadow-lg)] active:translate-y-0"
+				className="group block w-[280px] rounded-xl bg-[var(--background)] shadow-[var(--shadow-md)] overflow-hidden p-2.5 no-underline text-inherit cursor-pointer"
 			>
 				{preview.image && (
 					<div className="rounded-lg overflow-hidden mb-2 aspect-[16/9] bg-[var(--muted-bg)]">
 						<img
 							src={preview.image}
 							alt={preview.title ?? preview.name ?? ''}
-							className="w-full h-full object-cover block transition-transform duration-[350ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.03]"
+							className="w-full h-full object-cover block"
 							loading="lazy"
 						/>
 					</div>
@@ -110,7 +110,7 @@ function PreviewCard({
 				)}
 
 				{preview.title && (
-					<div className="text-[12px] font-semibold text-[var(--text-primary)] tracking-[-0.01em] leading-[1.35] mb-0.5">
+					<div className="text-[12px] font-semibold text-[var(--text-primary)] tracking-[-0.01em] leading-[1.35] mb-0.5 transition-colors duration-150 group-hover:text-[var(--accent-blue)]">
 						{preview.title}
 					</div>
 				)}
