@@ -26,13 +26,18 @@ const { target, dimTarget = '#page-content' } = Astro.props;
 			<button id="lb-close" type="button" aria-label="Close"></button>
 			<button id="lb-prev" type="button" aria-label="Previous"></button>
 			<button id="lb-next" type="button" aria-label="Next"></button>
-			<div id="lb-img-wrap"><img id="lb-img" src="" alt="" /></div>
+			<div id="lb-img-wrap">
+				<div id="lb-shimmer" aria-hidden="true"></div>
+				<img id="lb-img" src="" alt="" />
+			</div>
 			<div id="lb-counter"></div>
 		`;
 		document.body.appendChild(overlay);
 
 		const DURATION = 180;
 		const lbImg = document.getElementById('lb-img');
+		const lbShimmer = document.getElementById('lb-shimmer');
+		const lbWrap = document.getElementById('lb-img-wrap');
 		const lbCounter = document.getElementById('lb-counter');
 		const lbPrev = document.getElementById('lb-prev');
 		const lbNext = document.getElementById('lb-next');
@@ -45,10 +50,40 @@ const { target, dimTarget = '#page-content' } = Astro.props;
 
 		function showImage(i) {
 			index = (i + srcs.length) % srcs.length;
+			const nextSrc = srcs[index];
+
+			// Reset image + shimmer state. The source image (before lightbox
+			// opens) gives us a rough aspect ratio to size the shimmer so it
+			// doesn't flash as a weird square before the full asset arrives.
+			const sourceImg = document.querySelectorAll(TARGET)[index];
+			const ratio =
+				sourceImg && sourceImg.naturalWidth && sourceImg.naturalHeight
+					? sourceImg.naturalWidth / sourceImg.naturalHeight
+					: 16 / 9;
+			lbWrap.style.aspectRatio = String(ratio);
+
 			lbImg.style.opacity = '0';
-			lbImg.src = srcs[index];
-			lbImg.alt = alts[index] ?? '';
-			lbImg.onload = () => { lbImg.style.opacity = '1'; };
+			lbShimmer.style.display = 'block';
+
+			// Skip shimmer entirely if the new source is already cached.
+			const probe = new Image();
+			probe.src = nextSrc;
+			if (probe.complete && probe.naturalWidth > 0) {
+				lbImg.src = nextSrc;
+				lbImg.alt = alts[index] ?? '';
+				lbShimmer.style.display = 'none';
+				lbWrap.style.aspectRatio = '';
+				lbImg.style.opacity = '1';
+			} else {
+				lbImg.src = nextSrc;
+				lbImg.alt = alts[index] ?? '';
+				lbImg.onload = () => {
+					lbShimmer.style.display = 'none';
+					lbWrap.style.aspectRatio = '';
+					lbImg.style.opacity = '1';
+				};
+			}
+
 			lbCounter.textContent = srcs.length > 1 ? `${index + 1} / ${srcs.length}` : '';
 			lbPrev.hidden = srcs.length < 2;
 			lbNext.hidden = srcs.length < 2;
@@ -162,8 +197,35 @@ const { target, dimTarget = '#page-content' } = Astro.props;
 		height: auto;
 		border-radius: 10px;
 		display: block;
-		transition: opacity 140ms ease;
+		transition: opacity 200ms ease;
 		object-fit: contain;
+	}
+
+	/* Shimmer placeholder shown until the full image loads. Sized to the
+	   wrapper (the wrapper gets an aspect-ratio hint in JS based on the
+	   thumbnail) so it matches the final image footprint. */
+	#lb-shimmer {
+		position: absolute;
+		inset: 0;
+		border-radius: 10px;
+		width: 100%;
+		height: 100%;
+		background:
+			linear-gradient(
+				110deg,
+				rgba(255, 255, 255, 0.04) 8%,
+				rgba(255, 255, 255, 0.12) 18%,
+				rgba(255, 255, 255, 0.04) 33%
+			)
+			rgba(255, 255, 255, 0.05);
+		background-size: 220% 100%;
+		animation: lb-shimmer 1.4s linear infinite;
+		pointer-events: none;
+	}
+
+	@keyframes lb-shimmer {
+		from { background-position: 220% 0; }
+		to   { background-position: -120% 0; }
 	}
 
 	#lb-close,
