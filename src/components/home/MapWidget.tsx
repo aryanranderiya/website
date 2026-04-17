@@ -1,11 +1,9 @@
 'use client';
 
-import { Skeleton } from 'boneyard-js/react';
 import { motion } from 'motion/react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SITE } from '@/constants/site';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
-import { useLazyMount } from '@/hooks/useLazyMount';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 // mapbox-gl JS (240kB) is dynamically imported inside useEffect so the bundle
@@ -50,6 +48,16 @@ function MapWidgetInner() {
 	const mapRef = useRef<{ setStyle: (s: string) => void; remove: () => void } | null>(null);
 	const markerRef = useRef<{ remove: () => void } | null>(null);
 	const observerRef = useRef<MutationObserver | null>(null);
+	const [containerReady, setContainerReady] = useState(false);
+
+	// Track container availability — important because we render the inner div
+	// inside an animated wrapper that may mount the ref on a later frame than
+	// the parent. Using a state-tracked ref ensures the effect re-runs once the
+	// element exists.
+	const setContainerRef = (el: HTMLDivElement | null) => {
+		containerRef.current = el;
+		if (el && !containerReady) setContainerReady(true);
+	};
 
 	useEffect(() => {
 		if (!containerRef.current || mapRef.current || !TOKEN) return;
@@ -115,7 +123,7 @@ function MapWidgetInner() {
 				markerRef.current = null;
 			}
 		};
-	}, []);
+	}, [containerReady]);
 
 	if (!TOKEN) {
 		return (
@@ -129,30 +137,22 @@ function MapWidgetInner() {
 
 	return (
 		<motion.div
-			className="rounded-2xl overflow-hidden h-40"
+			className="rounded-2xl overflow-hidden h-40 relative bg-black/[0.06]"
 			initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
 			animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
 			transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.39 }}
 		>
-			<div ref={containerRef} className="w-full h-full" />
+			<div ref={setContainerRef} className="w-full h-full" />
 		</motion.div>
 	);
 }
 
 export default function MapWidget() {
-	const { ref, mounted } = useLazyMount('200px');
+	const [mounted, setMounted] = useState(false);
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
-	return (
-		<div ref={ref}>
-			<Skeleton
-				name="map-widget"
-				loading={!mounted}
-				fixture={<MapWidgetFixture />}
-				color="rgba(0, 0, 0, 0.06)"
-				fallback={<MapWidgetFixture />}
-			>
-				{mounted && <MapWidgetInner />}
-			</Skeleton>
-		</div>
-	);
+	if (!mounted) return <MapWidgetFixture />;
+	return <MapWidgetInner />;
 }

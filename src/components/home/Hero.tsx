@@ -2,7 +2,7 @@ import { Clock01Icon, Folder03Icon, HugeiconsIcon, QuillWrite01Icon } from '@ico
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
 import { motion } from 'motion/react';
 import type { ComponentType } from 'react';
-import { LogoLink } from '@/components/ui/LogoLink';
+import PreviewLink from '@/components/ui/PreviewLink';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 import SocialsGrid from './SocialsGrid';
 
@@ -58,21 +58,57 @@ export default function Hero() {
 				Aryan Randeriya and I'm a Designer, Developer,
 				<br />
 				and the Founder & CEO of
-				<LogoLink
+				<PreviewLink
 					href="https://experience.heygaia.io"
 					logo="/images/experience-company-logo.svg"
 					name="The Experience Company"
 					logoClassName="logo-invert"
 					rounded={false}
+					preview={{
+						image: '/images/theexperiencecompany.webp',
+						favicon: '/images/experience-company-logo.svg',
+						name: 'experience.heygaia.io',
+						title: 'The Experience Company',
+						description:
+							'A studio improving the human experience — building products people actually love to use.',
+					}}
 				/>
 				. The name comes from two things: our belief that our mission is to improve the human
 				experience, and our deep care about the experience of every product we build.
 			</motion.p>
 
 			<motion.p variants={item} className={`mb-3 ${paraWide}`}>
-				Currently building <LogoLink href="https://heygaia.io" logo="/gaia-logo.png" name="GAIA" />,
-				a proactive personal AI assistant that acts before you even need to ask. The goal: every
+				Currently building{' '}
+				<PreviewLink
+					href="https://heygaia.io"
+					logo="/gaia-logo.png"
+					name="GAIA"
+					preview={{
+						favicon: '/gaia-logo.png',
+						name: 'heygaia.io',
+						title: 'GAIA — your proactive personal AI',
+						description:
+							'A proactive personal AI assistant that acts before you even need to ask. Voice-first, calendar-aware, and built to feel like a teammate.',
+					}}
+				/>
+				, a proactive personal AI assistant that acts before you even need to ask. The goal: every
 				person in the world should have their own truly intelligent assistant.
+			</motion.p>
+
+			<motion.p variants={item} className={`mb-3 ${paraWide}`}>
+				The fastest way to reach me is{' '}
+				<PreviewLink
+					href="mailto:aryan@heygaia.io"
+					name="aryan@heygaia.io"
+					preview={{
+						favicon: '/gaia-logo.png',
+						name: 'Email',
+						title: 'aryan@heygaia.io',
+						description:
+							'I respond to all my emails within reason — say hi, pitch an idea, or just ramble about a side project.',
+					}}
+				/>
+				. I respond to all my emails within reason.
 			</motion.p>
 
 			<motion.p variants={item} className={`mb-3 ${paraWide}`}>
@@ -92,10 +128,17 @@ export default function Hero() {
 				/>{' '}
 				India. I love building products; I'm a product guy but a developer and designer by heart. I
 				love music (I have a{' '}
-				<LogoLink
+				<PreviewLink
 					href="https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"
 					logo="https://cdn.simpleicons.org/spotify/1DB954"
 					name="Spotify playlist"
+					preview={{
+						favicon: 'https://cdn.simpleicons.org/spotify/1DB954',
+						name: 'open.spotify.com',
+						title: 'My all-time playlist',
+						description:
+							"2,000+ songs across moods and decades — what I actually listen to while shipping.",
+					}}
 				/>{' '}
 				with 2000+ songs), movies, and food. I love tinkering around with code, shipping things, and
 				exploring new ideas. Maybe that's just my ADHD lol

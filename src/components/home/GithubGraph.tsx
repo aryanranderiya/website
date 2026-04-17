@@ -1,10 +1,8 @@
 'use client';
 
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { Skeleton } from 'boneyard-js/react';
 import { motion } from 'motion/react';
-import { useState } from 'react';
-import { useLazyMount } from '@/hooks/useLazyMount';
+import { useEffect, useState } from 'react';
 import { queryClient } from '@/utils/queryClient';
 
 interface ContributionDay {
@@ -227,53 +225,53 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 	);
 }
 
-function GithubGraphFixture() {
+function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
 	// Mimics the visual shape of the full graph section
+	const grid = (
+		<div className="grid [grid-template-columns:repeat(52,1fr)] gap-[3px] w-full">
+			{Array.from({ length: 52 }).map((_, i) => (
+				<div
+					// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
+					key={i}
+					className="flex flex-col gap-[3px]"
+				>
+					{Array.from({ length: 7 }).map((_, j) => (
+						<div
+							// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
+							key={j}
+							className="aspect-square rounded-[2px] bg-[rgba(64,196,99,0.10)] w-full"
+						/>
+					))}
+				</div>
+			))}
+		</div>
+	);
+	if (compact) return grid;
 	return (
 		<section className="pb-12">
 			<div className="flex items-center justify-between mb-4">
 				<div className="h-[14px] w-[160px] rounded-[4px] bg-black/[0.08]" />
 				<div className="h-9 w-16 rounded-[4px] bg-black/[0.08]" />
 			</div>
-			<div className="grid [grid-template-columns:repeat(52,1fr)] gap-[3px] w-full">
-				{Array.from({ length: 52 }).map((_, i) => (
-					<div
-						// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
-						key={i}
-						className="flex flex-col gap-[3px]"
-					>
-						{Array.from({ length: 7 }).map((_, j) => (
-							<div
-								// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
-								key={j}
-								className="aspect-square rounded-[2px] bg-[rgba(64,196,99,0.10)] w-full"
-							/>
-						))}
-					</div>
-				))}
-			</div>
+			{grid}
 		</section>
 	);
 }
 
 export default function GithubGraph(props: { compact?: boolean }) {
-	const { ref, mounted } = useLazyMount('300px');
+	// Mount on next frame so the SSR'd fixture paints first, then the live
+	// graph hydrates. No IntersectionObserver — the popover and the resume page
+	// both want the graph available immediately.
+	const [mounted, setMounted] = useState(false);
+	useEffect(() => {
+		setMounted(true);
+	}, []);
+
+	if (!mounted) return <GithubGraphFixture compact={props.compact} />;
 
 	return (
-		<div ref={ref}>
-			<Skeleton
-				name="github-graph"
-				loading={!mounted}
-				fixture={<GithubGraphFixture />}
-				color="rgba(64, 196, 99, 0.08)"
-				fallback={<GithubGraphFixture />}
-			>
-				{mounted && (
-					<QueryClientProvider client={queryClient}>
-						<GithubGraphInner {...props} />
-					</QueryClientProvider>
-				)}
-			</Skeleton>
-		</div>
+		<QueryClientProvider client={queryClient}>
+			<GithubGraphInner {...props} />
+		</QueryClientProvider>
 	);
 }

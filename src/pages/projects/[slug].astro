@@ -86,11 +86,6 @@ const [heroImage, ...galleryImages] = allImages;
   <header class="mb-9">
     <!-- Badges row -->
     <div class="flex items-center gap-1.5 mb-3.5 flex-wrap">
-      {p.status === 'in-progress' && (
-        <span class="text-[10px] px-2 py-[2px] rounded-full bg-[rgba(0,187,255,0.1)] text-[#00bbff] font-medium tracking-[0.02em]">
-          In Progress
-        </span>
-      )}
       {p.status === 'archived' && (
         <span class="text-[10px] px-2 py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)] tracking-[0.02em]">
           Archived

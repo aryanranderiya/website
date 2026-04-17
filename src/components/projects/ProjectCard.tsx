@@ -107,11 +107,6 @@ export default function ProjectCard({
 					>
 						{project.title}
 					</span>
-					{project.status === 'in-progress' && (
-						<span className="text-[9px] px-[6px] py-[1px] rounded-full bg-[rgba(0,187,255,0.1)] text-[#00bbff] font-medium shrink-0 tracking-[0.02em]">
-							WIP
-						</span>
-					)}
 				</div>
 				<span className="text-[11px] text-[var(--text-ghost)] block truncate tracking-[-0.01em] leading-[1.4]">
 					{project.description}
@@ -124,29 +119,6 @@ export default function ProjectCard({
 				<span className="text-[10px] px-[7px] py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)] tracking-[0.01em]">
 					{typeLabel}
 				</span>
-
-				{/* Tag chips */}
-				{project.tags.slice(0, 2).map((t) => {
-					const iconUrl = getTechIconUrl(t);
-					return (
-						<span
-							key={t}
-							className="text-[10px] px-[7px] py-[2px] rounded-full bg-[var(--border)] text-[var(--text-muted)] inline-flex items-center gap-[3px] transition-[background] duration-[120ms]"
-						>
-							{iconUrl && (
-								<img
-									src={iconUrl}
-									alt={t}
-									width={10}
-									height={10}
-									className="object-contain shrink-0"
-									loading="lazy"
-								/>
-							)}
-							{t}
-						</span>
-					);
-				})}
 
 				{chip && (
 					<span

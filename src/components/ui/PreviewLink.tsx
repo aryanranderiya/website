@@ -1,0 +1,200 @@
+'use client';
+
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+
+export interface LinkPreview {
+	/** Hero image shown at the top of the popover. */
+	image?: string;
+	/** Site/brand name shown next to the favicon row. */
+	name?: string;
+	/** Favicon shown next to the name. Falls back to `logo` if omitted. */
+	favicon?: string;
+	/** Page title (line under the name). */
+	title?: string;
+	/** Short description shown under the title. */
+	description?: string;
+}
+
+interface PreviewLinkProps {
+	href: string;
+	name: string;
+	/** Inline logo shown next to the text in the source line (favicon-style). */
+	logo?: string;
+	/** Hover popover content. Omit to render a plain underlined link. */
+	preview?: LinkPreview;
+	/** Underline-style text. Defaults to dotted underline. */
+	hoverTextClass?: string;
+	/** Extra classes on the inline logo image (e.g., `logo-invert`). */
+	logoClassName?: string;
+	/** Whether the inline logo should be rounded. */
+	rounded?: boolean;
+	/** Open in a new tab (default true for http(s), false for mailto/etc). */
+	external?: boolean;
+}
+
+function PreviewCard({
+	rect,
+	visible,
+	preview,
+	href,
+	onMouseEnter,
+	onMouseLeave,
+}: {
+	rect: DOMRect;
+	visible: boolean;
+	preview: LinkPreview;
+	href: string;
+	onMouseEnter: () => void;
+	onMouseLeave: () => void;
+}) {
+	const above = rect.top > window.innerHeight * 0.5;
+	const anchorY = above ? rect.top : rect.bottom;
+	const anchorX = rect.left + rect.width / 2;
+	const displayHost = href
+		.replace(/^https?:\/\//, '')
+		.replace(/^mailto:/, '')
+		.split('/')[0];
+
+	return (
+		// biome-ignore lint/a11y/noStaticElementInteractions: hover-only tooltip container
+		<div
+			className="fixed z-[300]"
+			onMouseEnter={onMouseEnter}
+			onMouseLeave={onMouseLeave}
+			// biome-ignore lint/nursery/noInlineStyles: dynamic position from anchor rect
+			style={{
+				top: anchorY,
+				left: anchorX,
+				transform: `translateX(-50%) translateY(${above ? 'calc(-100% - 8px)' : '8px'})`,
+				opacity: visible ? 1 : 0,
+				pointerEvents: visible ? 'auto' : 'none',
+				transition: 'opacity 0.15s ease, transform 0.18s cubic-bezier(0.19,1,0.22,1)',
+			}}
+		>
+			<div className="w-[280px] rounded-xl bg-[var(--background)] shadow-[var(--shadow-lg)] overflow-hidden p-2.5">
+				{preview.image && (
+					<div className="rounded-lg overflow-hidden mb-2 aspect-[16/9] bg-[var(--muted-bg)]">
+						<img
+							src={preview.image}
+							alt={preview.title ?? preview.name ?? ''}
+							className="w-full h-full object-cover block"
+							loading="lazy"
+						/>
+					</div>
+				)}
+
+				{(preview.name || preview.favicon) && (
+					<div className="flex items-center gap-1.5 mb-1">
+						{preview.favicon && (
+							<img
+								src={preview.favicon}
+								alt=""
+								className="w-3.5 h-3.5 rounded-[3px] object-contain shrink-0"
+							/>
+						)}
+						{preview.name && (
+							<span className="text-[11px] font-medium text-[var(--text-secondary)] tracking-[-0.01em] truncate">
+								{preview.name}
+							</span>
+						)}
+					</div>
+				)}
+
+				{preview.title && (
+					<div className="text-[12px] font-semibold text-[var(--text-primary)] tracking-[-0.01em] leading-[1.35] mb-0.5">
+						{preview.title}
+					</div>
+				)}
+
+				{preview.description && (
+					<p className="text-[11px] text-[var(--text-muted)] leading-[1.5] m-0 line-clamp-3">
+						{preview.description}
+					</p>
+				)}
+
+				<div className="text-[10px] text-[var(--text-ghost)] mt-2 truncate tracking-[0.01em]">
+					{displayHost}
+				</div>
+			</div>
+		</div>
+	);
+}
+
+export default function PreviewLink({
+	href,
+	name,
+	logo,
+	preview,
+	hoverTextClass,
+	logoClassName,
+	rounded = true,
+	external,
+}: PreviewLinkProps) {
+	const isExternal = external ?? !href.startsWith('mailto:');
+	const anchorRef = useRef<HTMLAnchorElement>(null);
+	const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+	const [hovered, setHovered] = useState(false);
+	const [rect, setRect] = useState<DOMRect | null>(null);
+
+	useEffect(() => () => clearTimeout(leaveTimer.current), []);
+
+	const show = useCallback(() => {
+		clearTimeout(leaveTimer.current);
+		if (anchorRef.current) setRect(anchorRef.current.getBoundingClientRect());
+		setHovered(true);
+	}, []);
+
+	const hideFromAnchor = useCallback(() => {
+		leaveTimer.current = setTimeout(() => setHovered(false), 120);
+	}, []);
+
+	const hideFromCard = useCallback(() => {
+		clearTimeout(leaveTimer.current);
+		setHovered(false);
+	}, []);
+
+	return (
+		<>
+			<a
+				ref={anchorRef}
+				href={href}
+				target={isExternal ? '_blank' : undefined}
+				rel={isExternal ? 'noopener noreferrer' : undefined}
+				onMouseEnter={show}
+				onMouseLeave={hideFromAnchor}
+				onFocus={show}
+				onBlur={hideFromAnchor}
+				className="group inline"
+			>
+				{logo && (
+					<img
+						src={logo}
+						alt={name}
+						className={`inline align-middle w-auto h-[1.1em] mb-px ml-1${rounded ? ' rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
+					/>
+				)}
+				{logo && ' '}
+				<span
+					className={`font-medium underline underline-offset-4 decoration-dotted transition group-hover:text-foreground ${hoverTextClass ?? ''}`}
+				>
+					{name}
+				</span>
+			</a>
+			{preview &&
+				rect &&
+				typeof document !== 'undefined' &&
+				createPortal(
+					<PreviewCard
+						rect={rect}
+						visible={hovered}
+						preview={preview}
+						href={href}
+						onMouseEnter={show}
+						onMouseLeave={hideFromCard}
+					/>,
+					document.body
+				)}
+		</>
+	);
+}
