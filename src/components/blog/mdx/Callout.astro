@@ -1,0 +1,51 @@
+---
+import {
+	Alert02Icon,
+	CheckmarkCircle02Icon,
+	HugeiconsIcon,
+	InformationCircleIcon,
+	StarIcon,
+} from '@/components/icons';
+
+type CalloutType = 'note' | 'info' | 'tip' | 'warn' | 'success';
+
+interface Props {
+	type?: CalloutType;
+	title?: string;
+}
+
+const { type = 'note', title } = Astro.props;
+
+const META: Record<
+	CalloutType,
+	{ icon: typeof Alert02Icon; accent: string; defaultTitle: string }
+> = {
+	note: { icon: InformationCircleIcon, accent: 'var(--text-muted)', defaultTitle: 'Note' },
+	info: { icon: InformationCircleIcon, accent: 'var(--accent-blue)', defaultTitle: 'Info' },
+	tip: { icon: StarIcon, accent: '#10b981', defaultTitle: 'Tip' },
+	warn: { icon: Alert02Icon, accent: '#f59e0b', defaultTitle: 'Heads up' },
+	success: { icon: CheckmarkCircle02Icon, accent: '#10b981', defaultTitle: 'Success' },
+};
+
+const { icon, accent, defaultTitle } = META[type];
+const heading = title ?? defaultTitle;
+---
+
+<aside
+	class="my-6 rounded-[10px] bg-[var(--muted-bg)] p-4 flex gap-3 items-start"
+	style={`border-left: 4px solid ${accent};`}
+	role={type === 'warn' ? 'alert' : 'note'}
+>
+	<span class="shrink-0 mt-[1px]" style={`color: ${accent};`}>
+		<HugeiconsIcon icon={icon} size={16} />
+	</span>
+	<div class="flex-1 min-w-0 text-[13px] leading-[1.65] text-[var(--text-secondary)] [&_p]:m-0 [&_p+p]:mt-2 [&_a]:underline [&_a]:decoration-dotted [&_a]:underline-offset-[3px]">
+		<div
+			class="text-[11px] font-semibold tracking-[0.04em] uppercase mb-1"
+			style={`color: ${accent};`}
+		>
+			{heading}
+		</div>
+		<slot />
+	</div>
+</aside>

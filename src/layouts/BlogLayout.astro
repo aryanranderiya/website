@@ -1,6 +1,7 @@
 ---
 import Giscus from '@/components/blog/Giscus.astro';
 import TableOfContents from '@/components/blog/TableOfContents.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
 import { Calendar01Icon, Clock01Icon, PencilEdit01Icon, Tag01Icon } from '@/components/icons';
 import { SITE } from '@/constants/site';
 import { formatDate } from '@/lib/utils';
@@ -94,6 +95,53 @@ const breadcrumbJsonLd = JSON.stringify({
   <script is:inline type="application/ld+json" set:html={articleJsonLd} />
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
 
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      const refs = document.querySelectorAll('.prose a[data-footnote-ref]');
+      refs.forEach((ref) => {
+        const id = (ref.getAttribute('href') || '').slice(1);
+        const fnEl = id ? document.getElementById(id) : null;
+        if (!fnEl) return;
+
+        let tooltip = null;
+        let hideTimer = null;
+
+        ref.addEventListener('mouseenter', () => {
+          clearTimeout(hideTimer);
+          if (tooltip) return;
+
+          // Clone footnote content, strip the backref arrow
+          const clone = fnEl.cloneNode(true);
+          clone.querySelectorAll('a[data-footnote-backref]').forEach((el) => el.remove());
+
+          tooltip = document.createElement('div');
+          tooltip.className = 'fn-tooltip';
+          tooltip.innerHTML = clone.innerHTML;
+          document.body.appendChild(tooltip);
+
+          // Position above the ref (clamped to viewport)
+          const r = ref.getBoundingClientRect();
+          const tw = tooltip.offsetWidth;
+          const th = tooltip.offsetHeight;
+          let top = r.top + window.scrollY - th - 8;
+          let left = r.left + window.scrollX + r.width / 2 - tw / 2;
+          left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
+          if (top < window.scrollY + 8) top = r.bottom + window.scrollY + 8;
+          tooltip.style.top = top + 'px';
+          tooltip.style.left = left + 'px';
+
+          requestAnimationFrame(() => tooltip && tooltip.classList.add('fn-tooltip--visible'));
+        });
+
+        ref.addEventListener('mouseleave', () => {
+          hideTimer = setTimeout(() => {
+            if (tooltip) { tooltip.remove(); tooltip = null; }
+          }, 80);
+        });
+      });
+    });
+  </script>
+
   <div
     class="flex ml-[max(0px,calc((100%-var(--prose-max-width))/2))] px-[var(--page-inset)] gap-14 items-start"
   >
@@ -182,6 +230,9 @@ const breadcrumbJsonLd = JSON.stringify({
 
       <Giscus />
     </article>
+
+    <Lightbox target=".prose img, .prose figure img" />
+
 
     {
       tocHeadings.length > 1 && (

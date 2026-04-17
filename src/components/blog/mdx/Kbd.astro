@@ -1,0 +1,18 @@
+---
+// Inline keyboard key. Accepts a string like "⌘" / "K" or a combo via children:
+//   <Kbd>⌘</Kbd> + <Kbd>K</Kbd>
+//   <Kbd combo>Ctrl + Shift + P</Kbd>
+interface Props {
+	combo?: boolean;
+}
+const { combo = false } = Astro.props;
+---
+
+<kbd
+	class:list={[
+		'inline-flex items-center justify-center gap-1 px-[5px] min-w-[16px] h-[17px] rounded-[4px] bg-[var(--muted-bg)] text-[var(--text-primary)] border-b-[1.5px] border-[var(--border-strong)] text-[0.78em] leading-none font-mono tracking-[0.02em] align-baseline',
+		combo && 'px-2',
+	]}
+>
+	<slot />
+</kbd>

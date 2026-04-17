@@ -188,13 +188,8 @@ export default function ProjectDrawer({
 
 										{/* Content */}
 										<div className="p-6 flex-1">
-											{/* Status + type row */}
+											{/* Type row */}
 											<div className="flex items-center gap-1.5 mb-2.5">
-												{project.status === 'in-progress' && (
-													<span className="text-[10px] px-2 py-[2px] rounded-full bg-[rgba(0,187,255,0.1)] text-[#00bbff] font-medium tracking-[0.02em]">
-														In Progress
-													</span>
-												)}
 												<span className="text-[10px] px-2 py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] tracking-[0.02em]">
 													{TYPE_LABELS[project.type] ?? project.type}
 												</span>

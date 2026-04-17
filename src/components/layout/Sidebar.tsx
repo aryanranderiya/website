@@ -353,6 +353,35 @@ export default function Sidebar({
 
 						{/* Bottom actions */}
 						<m.div variants={sidebarItem} className="mt-auto pt-6 flex flex-col gap-1">
+							{/* Command palette trigger — the kbd itself is the "icon" */}
+							<button
+								type="button"
+								onClick={() => window.dispatchEvent(new CustomEvent('open-cmdk'))}
+								aria-label="Open command palette (⌘K / Ctrl+K)"
+								onMouseEnter={() => setHoveredAction('cmdk')}
+								onMouseLeave={() => setHoveredAction(null)}
+								className="nav-link flex items-center gap-1.5 py-[2px] bg-transparent border-0 text-left cursor-pointer text-[12px] w-full"
+							>
+								<kbd className="shrink-0 h-[15px] min-w-[15px] inline-flex items-center justify-center text-[10px] leading-none px-[4px] rounded-[4px] bg-[var(--muted-bg)] text-[var(--text-muted)] tracking-[0] font-[inherit]">
+									⌘K
+								</kbd>
+								<span
+									className="text-[11px] whitespace-nowrap inline-block"
+									// biome-ignore lint/nursery/noInlineStyles: dynamic opacity/transform based on hover state
+									style={{
+										opacity: hoveredAction === 'cmdk' ? 1 : 0,
+										transform:
+											hoveredAction === 'cmdk'
+												? 'translateY(0) perspective(300px) rotateX(0deg)'
+												: 'translateY(5px) perspective(300px) rotateX(-40deg)',
+										transformOrigin: '50% 100%',
+										transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+									}}
+								>
+									Command palette
+								</span>
+							</button>
+
 							{/* Built in Astro */}
 							<a
 								href="https://astro.build"

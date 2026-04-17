@@ -1,8 +1,8 @@
 'use client';
 
-import { Skeleton } from 'boneyard-js/react';
+import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
-import { useLazyMount } from '@/hooks/useLazyMount';
+import { queryClient } from '@/utils/queryClient';
 
 interface ContributionDay {
 	date: string;
@@ -14,9 +14,12 @@ interface ContributionWeek {
 	days: ContributionDay[];
 }
 
-export async function fetchContributions(
-	username: string
-): Promise<{ weeks: ContributionWeek[]; total: number }> {
+export interface ContributionData {
+	weeks: ContributionWeek[];
+	total: number;
+}
+
+export async function fetchContributions(username: string): Promise<ContributionData> {
 	const res = await fetch(`https://github-contributions-api.jogruber.de/v4/${username}?y=last`);
 	if (!res.ok) throw new Error('Failed to fetch contributions');
 	const data = await res.json();
@@ -35,6 +38,8 @@ export async function fetchContributions(
 	const total = days.reduce((sum, d) => sum + d.count, 0);
 	return { weeks, total };
 }
+
+export const GITHUB_QUERY_KEY = ['github-contributions', 'aryanranderiya'] as const;
 
 // Same green (#40c463), varying opacity
 const LEVEL_COLORS = [
@@ -88,6 +93,8 @@ function ContributionCell({
 				}}
 				onMouseLeave={() => setTooltip(null)}
 				className={`w-full h-full rounded-[2px] cursor-default ${animated ? 'github-cell' : ''}`}
+				// biome-ignore lint/nursery/noInlineStyles: per-cell color from data
+				style={{ backgroundColor: LEVEL_COLORS[day.level] }}
 			/>
 			{tooltip && (
 				<div
@@ -114,30 +121,11 @@ function ContributionCell({
 }
 
 function GithubGraphInner({ compact = false }: { compact?: boolean }) {
-	const [data, setData] = useState<{ weeks: ContributionWeek[]; total: number } | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
-
-	useEffect(() => {
-		let cancelled = false;
-
-		fetchContributions('aryanranderiya')
-			.then((result) => {
-				if (cancelled) return;
-				setData(result);
-			})
-			.catch(() => {
-				if (cancelled) return;
-				setData(null);
-			})
-			.finally(() => {
-				if (cancelled) return;
-				setIsLoading(false);
-			});
-
-		return () => {
-			cancelled = true;
-		};
-	}, []);
+	const { data, isLoading } = useQuery({
+		queryKey: GITHUB_QUERY_KEY,
+		queryFn: () => fetchContributions('aryanranderiya'),
+		staleTime: Infinity,
+	});
 
 	const weeks = data?.weeks.slice(-52) ?? [];
 	const totalContributions = data?.total ?? 0;
@@ -210,16 +198,14 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 
 	return (
 		<section className="pb-12">
-			<div className="flex items-center justify-between mb-4">
+			<div className="flex items-center justify-between mb-4 min-h-[42px]">
 				<div className="section-header mb-0">GitHub Contributions</div>
-				{!isLoading && (
-					<div className="text-right">
-						<div className="text-2xl font-bold tracking-[-0.03em]">
-							{totalContributions.toLocaleString()}
-						</div>
-						<div className="text-xs text-[var(--text-muted)]">contributions this year</div>
+				<div className="text-right">
+					<div className="text-2xl font-bold tracking-[-0.03em] [font-variant-numeric:tabular-nums]">
+						{isLoading ? '\u00A0' : totalContributions.toLocaleString()}
 					</div>
-				)}
+					<div className="text-xs text-[var(--text-muted)]">contributions this year</div>
+				</div>
 			</div>
 
 			{graph}
@@ -240,14 +226,12 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 	);
 }
 
-function GithubGraphFixture() {
-	// Mimics the visual shape of the full graph section
-	return (
-		<section className="pb-12">
-			<div className="flex items-center justify-between mb-4">
-				<div className="h-[14px] w-[160px] rounded-[4px] bg-black/[0.08]" />
-				<div className="h-9 w-16 rounded-[4px] bg-black/[0.08]" />
-			</div>
+function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
+	// The cells themselves stay a flat low-alpha green; a gradient sweep
+	// rides above the grid to read as "loading" without looking like
+	// random contribution levels.
+	const grid = (
+		<div className="relative github-graph-shimmer w-full">
 			<div className="grid [grid-template-columns:repeat(52,1fr)] gap-[3px] w-full">
 				{Array.from({ length: 52 }).map((_, i) => (
 					<div
@@ -265,24 +249,34 @@ function GithubGraphFixture() {
 					</div>
 				))}
 			</div>
+		</div>
+	);
+	if (compact) return grid;
+	return (
+		<section className="pb-12">
+			<div className="flex items-center justify-between mb-4">
+				<div className="h-[14px] w-[160px] rounded-[4px] bg-black/[0.08]" />
+				<div className="h-9 w-16 rounded-[4px] bg-black/[0.08]" />
+			</div>
+			{grid}
 		</section>
 	);
 }
 
-export default function GithubGraph(props: { compact?: boolean }) {
-	const { ref, mounted } = useLazyMount('300px');
+function GithubGraphRoot(props: { compact?: boolean }) {
+	const [mounted, setMounted] = useState(false);
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
+	if (!mounted) return <GithubGraphFixture compact={props.compact} />;
+	return <GithubGraphInner {...props} />;
+}
+
+export default function GithubGraph(props: { compact?: boolean }) {
 	return (
-		<div ref={ref}>
-			<Skeleton
-				name="github-graph"
-				loading={!mounted}
-				fixture={<GithubGraphFixture />}
-				color="rgba(64, 196, 99, 0.08)"
-				fallback={<GithubGraphFixture />}
-			>
-				{mounted && <GithubGraphInner {...props} />}
-			</Skeleton>
-		</div>
+		<QueryClientProvider client={queryClient}>
+			<GithubGraphRoot {...props} />
+		</QueryClientProvider>
 	);
 }

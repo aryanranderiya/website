@@ -108,11 +108,6 @@ export default function ProjectModal({
 										<div className="flex items-start justify-between gap-4 mb-4">
 											<div>
 												<div className="flex items-center gap-2 mb-1">
-													{project.status === 'in-progress' && (
-														<span className="text-xs px-2 py-0.5 rounded-full bg-[rgba(0,187,255,0.1)] text-[#00bbff]">
-															In Progress
-														</span>
-													)}
 													<span className="text-xs px-2 py-0.5 rounded-full capitalize text-[var(--muted-foreground)] bg-[var(--muted-bg)]">
 														{project.type}
 													</span>

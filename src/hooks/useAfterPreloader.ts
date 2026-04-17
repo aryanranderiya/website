@@ -9,10 +9,21 @@ function isPreloaderDone() {
 }
 
 export function useAfterPreloader() {
-	const [ready, setReady] = useState(isPreloaderDone);
+	// Always start as `false` even if the preloader has already been shown.
+	// This guarantees that any framer-motion `animate={ready ? ... : ...}`
+	// observes a state change after mount, so entrance animations actually
+	// run on subsequent navigations within the same session.
+	const [ready, setReady] = useState(false);
 
 	useEffect(() => {
 		if (ready) return;
+		// If preloader already finished in this session, flip to ready on the
+		// next frame so the initial render paints with `ready=false`, then
+		// animation kicks in.
+		if (isPreloaderDone()) {
+			const id = requestAnimationFrame(() => setReady(true));
+			return () => cancelAnimationFrame(id);
+		}
 
 		// Primary: listen for the event dispatched by Preloader
 		const handler = () => setReady(true);

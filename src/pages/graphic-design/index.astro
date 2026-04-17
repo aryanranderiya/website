@@ -1,6 +1,9 @@
 ---
 import DesignGallery from '@/components/design/DesignGallery';
 import PageLayout from '@/layouts/PageLayout.astro';
+import PreviewLink from '@/components/ui/PreviewLink';
+import { fetchOgMetadata } from '@/lib/fetchOgMetadata';
+import { BEHANCE_URL } from '@/data/socials';
 
 const headers = [
 	'headers__anya.webp',
@@ -58,6 +61,8 @@ const thumbnails = [
 ];
 
 const adMockups = ['Ad_mockup_1.webp', 'Ad_mockup_2.webp', 'Ad_mockup_3.webp'];
+
+const behanceOg = await fetchOgMetadata(BEHANCE_URL);
 ---
 
 <PageLayout
@@ -74,21 +79,24 @@ const adMockups = ['Ad_mockup_1.webp', 'Ad_mockup_2.webp', 'Ad_mockup_3.webp'];
       <br /> I don't actively design as of now, but I might work on a streetwear brand
       in the future.
     </p>
-    <a
-      href="https://www.behance.net/aryanranderiya"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--text-muted)] no-underline bg-[var(--muted-bg)] rounded-full px-3 py-[5px] transition-[color,opacity] duration-150 hover:text-[var(--text-secondary)] hover:opacity-85"
-    >
-      <img
-        src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/behance/behance-original.svg"
-        alt=""
-        width="14"
-        height="14"
-        aria-hidden="true"
-      />
-      Behance
-    </a>
+    <div class="animate-fade-in stagger-4">
+      <PreviewLink
+        client:visible
+        href={BEHANCE_URL}
+        name="Behance"
+        preview={behanceOg ?? undefined}
+        anchorClassName="inline-flex items-center gap-1.5 text-xs font-medium text-[var(--text-muted)] no-underline bg-[var(--muted-bg)] rounded-full px-3 py-[5px] transition-[color,opacity] duration-150 hover:text-[var(--text-secondary)] hover:opacity-85"
+      >
+        <img
+          src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/behance/behance-original.svg"
+          alt=""
+          width="14"
+          height="14"
+          aria-hidden="true"
+        />
+        Behance
+      </PreviewLink>
+    </div>
   </div>
 
   <DesignGallery

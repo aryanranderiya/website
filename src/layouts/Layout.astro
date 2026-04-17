@@ -3,8 +3,11 @@ import { ViewTransitions } from 'astro:transitions';
 import { SEO, SITE } from '@/constants/site';
 import '@/styles/global.css';
 import interLatinFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import AgentationOverlay from '@/components/layout/AgentationOverlay';
+import CommandK from '@/components/layout/CommandK';
 import Preloader from '@/components/layout/Preloader';
 import BlurStack from '@/components/ui/blur-stack';
+import { PetLauncher } from '@/components/ui/PetLauncher';
 
 interface Props {
 	title?: string;
@@ -181,27 +184,14 @@ const ogImageURL = ogImage.startsWith('http')
     </div>
     <Preloader client:load />
     <BlurStack client:idle className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none" />
-    <div id="lazy-mount"></div>
-    <script>
-      (function() {
-        var loaded = false;
-        function loadLazy() {
-          if (loaded) return;
-          loaded = true;
-          import('@/components/layout/CommandK');
-          import('@/components/ui/PetLauncher');
-          import('@/components/layout/AgentationOverlay');
-        }
-        document.addEventListener('keydown', function(e) {
-          if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-            loadLazy();
-          }
-        });
-        document.addEventListener('mousemove', function() {
-          loadLazy();
-        }, { once: true });
-      })();
-    </script>
+    {/* The three components below were previously "lazy-loaded" via bare
+        dynamic imports — but the imports never rendered the components,
+        which is why the pet cursor and the command palette stopped
+        appearing. They genuinely need to hydrate; `client:idle` is the
+        right lever (runs on requestIdleCallback, not the critical path). */}
+    <CommandK client:idle />
+    <PetLauncher client:idle />
+    <AgentationOverlay client:idle />
     <div id="ai-chat-mount"></div>
     <script>import '@/bones/registry'</script>
     <script>

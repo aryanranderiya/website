@@ -1,5 +1,6 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import cloudflare from '@astrojs/cloudflare';
 import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
@@ -8,6 +9,16 @@ import { fileURLToPath } from 'node:url';
 
 export default defineConfig({
   site: 'https://aryanranderiya.com',
+  // Hybrid: every page is prerendered unless it opts out with
+  // `export const prerender = false`. Only /api/spotify.json runs as a
+  // Cloudflare Pages Function on every request.
+  output: 'static',
+  adapter: cloudflare({
+    imageService: 'compile',
+    // Surface CF runtime bindings (env, secrets, KV) inside `astro dev`
+    // via miniflare, so the Spotify route can read process secrets locally.
+    platformProxy: { enabled: true },
+  }),
   integrations: [
     react(),
     mdx(),
@@ -70,6 +81,7 @@ export default defineConfig({
     },
     optimizeDeps: {
       exclude: ['@mlc-ai/web-llm'],
+      include: ['thumbhash'],
     },
   },
   markdown: {

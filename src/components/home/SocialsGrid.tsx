@@ -5,7 +5,7 @@ import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { queryClient } from '@/utils/queryClient';
-import GithubGraph, { fetchContributions } from './GithubGraph';
+import GithubGraph, { GITHUB_QUERY_KEY } from './GithubGraph';
 
 const AVATAR_URL = '/avatar-original.webp';
 const _INSTAGRAM_GRADIENT =
@@ -77,8 +77,9 @@ function InstagramLogo({ size = 18 }: { size?: number }) {
 
 function GitHubPreview() {
 	const { data } = useQuery({
-		queryKey: ['github-contributions', 'aryanranderiya'],
-		queryFn: () => fetchContributions('aryanranderiya'),
+		queryKey: GITHUB_QUERY_KEY,
+		queryFn: () => import('./GithubGraph').then((m) => m.fetchContributions('aryanranderiya')),
+		staleTime: Infinity,
 	});
 	const total = data?.total;
 
@@ -130,13 +131,11 @@ function GitHubPreview() {
 				</div>
 			</div>
 
-			<div className="flex items-center justify-between mb-2">
+			<div className="flex items-center justify-between mb-2 min-h-[18px]">
 				<div className="text-[11px] text-[#8b949e]">Contributions this year</div>
-				{total !== undefined && (
-					<div className="text-sm font-semibold text-[#e6edf3] tracking-[-0.02em]">
-						{total.toLocaleString()}
-					</div>
-				)}
+				<div className="text-sm font-semibold text-[#e6edf3] tracking-[-0.02em] [font-variant-numeric:tabular-nums]">
+					{total !== undefined ? total.toLocaleString() : '\u00A0'}
+				</div>
 			</div>
 			<GithubGraph compact />
 		</div>
@@ -301,6 +300,7 @@ function MonkeytypePreview() {
 	const { data, isLoading } = useQuery({
 		queryKey: ['monkeytype', 'aryanranderiya'],
 		queryFn: fetchMonkeytype,
+		staleTime: Infinity,
 	});
 
 	return (

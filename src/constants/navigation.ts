@@ -1,3 +1,27 @@
+import {
+	AiChat02Icon,
+	ArrowRight01Icon,
+	ArrowUpRight01Icon,
+	Book01Icon,
+	BookmarkIcon,
+	BriefcaseIcon,
+	Camera01Icon,
+	CodeIcon,
+	Film01Icon,
+	GithubIcon,
+	Home01Icon,
+	Image01Icon,
+	LinkedinIcon,
+	NewTwitterIcon,
+	NoteIcon,
+	PenTool01Icon,
+	PenTool02Icon,
+	QuillWrite02Icon,
+	SparklesIcon,
+} from '@icons';
+import type { IconProps } from '@theexperiencecompany/gaia-icons';
+import type { ComponentType } from 'react';
+
 export interface NavPage {
 	href: string;
 	label: string;
@@ -102,3 +126,28 @@ export const SOCIAL_LINKS = [
 
 // Flat list of all pages for CommandK and other lookups
 export const ALL_PAGES_FLAT = PAGES.flatMap((page) => [page, ...(page.children ?? [])]);
+
+// Single source of truth for icon string → component mapping.
+// Add an entry here whenever a new icon name is used in PAGES or SOCIAL_LINKS.
+export const NAV_ICON_MAP: Record<string, ComponentType<IconProps>> = {
+	Home01Icon,
+	CodeIcon,
+	BriefcaseIcon,
+	PenTool02Icon,
+	PenTool01Icon,
+	SparklesIcon,
+	Book01Icon,
+	BookmarkIcon,
+	Film01Icon,
+	Image01Icon,
+	Camera01Icon,
+	QuillWrite02Icon,
+	AiChat02Icon,
+	NoteIcon,
+	GithubIcon,
+	NewTwitterIcon,
+	LinkedinIcon,
+	// fallbacks
+	ArrowRight01Icon,
+	ArrowUpRight01Icon,
+};

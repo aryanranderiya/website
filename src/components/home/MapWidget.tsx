@@ -1,9 +1,12 @@
 'use client';
 
-import { Skeleton } from 'boneyard-js/react';
-import { useEffect, useRef } from 'react';
+import { LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
+import { useEffect, useRef, useState } from 'react';
 import { SITE } from '@/constants/site';
-import { useLazyMount } from '@/hooks/useLazyMount';
+import { useAfterPreloader } from '@/hooks/useAfterPreloader';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 const LNG = SITE.coords.lng;
 const LAT = SITE.coords.lat;
@@ -42,6 +45,16 @@ function MapWidgetInner() {
 	const mapRef = useRef<{ setStyle: (s: string) => void; remove: () => void } | null>(null);
 	const markerRef = useRef<{ remove: () => void } | null>(null);
 	const observerRef = useRef<MutationObserver | null>(null);
+	const [containerReady, setContainerReady] = useState(false);
+	const ready = useAfterPreloader();
+
+	// State-tracked ref so the init effect reruns once the container element
+	// exists. Without this, hydration order between Spotify and Map could
+	// leave the map permanently un-initialized.
+	const setContainerRef = (el: HTMLDivElement | null) => {
+		containerRef.current = el;
+		if (el && !containerReady) setContainerReady(true);
+	};
 
 	useEffect(() => {
 		if (!containerRef.current || mapRef.current || !TOKEN) return;
@@ -109,33 +122,32 @@ function MapWidgetInner() {
 				markerRef.current = null;
 			}
 		};
-	}, []);
+	}, [containerReady]);
 
 	if (!TOKEN) {
 		return null;
 	}
 
 	return (
-		<div className="rounded-2xl overflow-hidden h-40 animate-fade-in">
-			<div ref={containerRef} className="w-full h-full" />
-		</div>
+		<LazyMotion features={loadFeatures}>
+			<m.div
+				initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+				animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+				transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.32 }}
+				className="rounded-2xl overflow-hidden h-40 bg-black/[0.06]"
+			>
+				<div ref={setContainerRef} className="w-full h-full" />
+			</m.div>
+		</LazyMotion>
 	);
 }
 
 export default function MapWidget() {
-	const { ref, mounted } = useLazyMount('200px');
+	const [mounted, setMounted] = useState(false);
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 
-	return (
-		<div ref={ref}>
-			<Skeleton
-				name="map-widget"
-				loading={!mounted}
-				fixture={<MapWidgetFixture />}
-				color="rgba(0, 0, 0, 0.06)"
-				fallback={<MapWidgetFixture />}
-			>
-				{mounted && <MapWidgetInner />}
-			</Skeleton>
-		</div>
-	);
+	if (!mounted) return <MapWidgetFixture />;
+	return <MapWidgetInner />;
 }

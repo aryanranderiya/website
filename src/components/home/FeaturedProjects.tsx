@@ -26,11 +26,6 @@ interface Project {
 
 const EASE = [0.19, 1, 0.22, 1] as const;
 
-function formatStatus(status: string): string | undefined {
-	if (status === 'in-progress') return 'In Progress';
-	return undefined;
-}
-
 export default function FeaturedProjects({ projects }: { projects: Project[] }) {
 	const featured = projects.filter((p) => p.featured);
 	return (
@@ -42,7 +37,6 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
 				{/* Cards */}
 				<div className="flex flex-col gap-2">
 					{featured.map((project, i) => {
-						const statusLabel = formatStatus(project.status);
 						const year = project.date ? new Date(project.date).getFullYear().toString() : undefined;
 						return (
 							<m.a
@@ -59,11 +53,6 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
 									<span className="text-[14px] font-semibold tracking-[-0.02em] text-[var(--text-primary)]">
 										{project.title}
 									</span>
-									{statusLabel && (
-										<span className="text-[10px] px-[7px] py-[1px] rounded-full bg-[rgba(0,95,128,0.12)] text-[#005f80] font-medium">
-											{statusLabel}
-										</span>
-									)}
 									{year && (
 										<span className="text-[11px] text-[var(--text-ghost)] ml-auto tabular-nums">
 											{year}

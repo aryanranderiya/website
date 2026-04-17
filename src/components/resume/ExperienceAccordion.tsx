@@ -169,7 +169,7 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
 			<button
 				type="button"
 				onClick={() => setOpen((o) => !o)}
-				className="w-full flex items-center gap-3 px-4 py-[14px] bg-transparent cursor-pointer text-left"
+				className="w-full flex items-center gap-3 px-4 py-[14px] bg-transparent cursor-pointer text-left select-none"
 			>
 				<LogoAvatar company={exp.company} logo={exp.logo} color={exp.color} />
 

@@ -1,0 +1,8 @@
+# Cloudflare Pages local-dev secrets. Copy to `.dev.vars` (gitignored) so the
+# /api/spotify.json Pages Function can read them via Astro.locals.runtime.env
+# when you run `astro dev`. In production, set these as encrypted secrets in
+# the Cloudflare Pages dashboard (Settings → Environment Variables → Encrypt).
+
+SPOTIFY_CLIENT_ID="your_spotify_client_id"
+SPOTIFY_CLIENT_SECRET="your_spotify_client_secret"
+SPOTIFY_REFRESH_TOKEN="your_spotify_refresh_token"

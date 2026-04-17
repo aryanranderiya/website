@@ -17,6 +17,7 @@
 		"lint:emdash": "! grep -r '\\xe2\\x80\\x94' src --include='*.ts' --include='*.tsx' --include='*.astro' --include='*.md' --include='*.mdx' -l"
 	},
 	"dependencies": {
+		"@astrojs/cloudflare": "^12.6.13",
 		"@astrojs/mdx": "^4.0.0",
 		"@astrojs/react": "^4.4.2",
 		"@astrojs/sitemap": "^3.0.0",
