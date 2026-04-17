@@ -130,13 +130,11 @@ function GitHubPreview() {
 				</div>
 			</div>
 
-			<div className="flex items-center justify-between mb-2">
+			<div className="flex items-center justify-between mb-2 min-h-[18px]">
 				<div className="text-[11px] text-[#8b949e]">Contributions this year</div>
-				{total !== undefined && (
-					<div className="text-sm font-semibold text-[#e6edf3] tracking-[-0.02em]">
-						{total.toLocaleString()}
-					</div>
-				)}
+				<div className="text-sm font-semibold text-[#e6edf3] tracking-[-0.02em] [font-variant-numeric:tabular-nums]">
+					{total !== undefined ? total.toLocaleString() : '\u00A0'}
+				</div>
 			</div>
 			<GithubGraph compact />
 		</div>

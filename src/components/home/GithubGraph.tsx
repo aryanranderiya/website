@@ -86,6 +86,8 @@ function ContributionCell({
 				}}
 				onMouseLeave={() => setTooltip(null)}
 				className={`w-full h-full rounded-[2px] cursor-default ${animated ? 'github-cell' : ''}`}
+				// biome-ignore lint/nursery/noInlineStyles: per-cell color from data
+				style={{ backgroundColor: LEVEL_COLORS[day.level] }}
 			/>
 			{tooltip && (
 				<div
@@ -208,16 +210,14 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 
 	return (
 		<section className="pb-12">
-			<div className="flex items-center justify-between mb-4">
+			<div className="flex items-center justify-between mb-4 min-h-[42px]">
 				<div className="section-header mb-0">GitHub Contributions</div>
-				{!isLoading && (
-					<div className="text-right">
-						<div className="text-2xl font-bold tracking-[-0.03em]">
-							{totalContributions.toLocaleString()}
-						</div>
-						<div className="text-xs text-[var(--text-muted)]">contributions this year</div>
+				<div className="text-right">
+					<div className="text-2xl font-bold tracking-[-0.03em] [font-variant-numeric:tabular-nums]">
+						{isLoading ? '\u00A0' : totalContributions.toLocaleString()}
 					</div>
-				)}
+					<div className="text-xs text-[var(--text-muted)]">contributions this year</div>
+				</div>
 			</div>
 
 			{graph}
