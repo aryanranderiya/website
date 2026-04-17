@@ -1,0 +1,244 @@
+---
+// Reusable image lightbox. Wire any set of <img> elements up to a modal by
+// passing a CSS selector via `target`. Used by the projects slug page
+// (gallery images) and the blog layout (every image in `.prose`).
+
+interface Props {
+	/** CSS selector for images that should open the modal on click. */
+	target: string;
+	/** Selector for the element that blurs/dims behind the modal. */
+	dimTarget?: string;
+}
+
+const { target, dimTarget = '#page-content' } = Astro.props;
+---
+
+<script is:inline define:vars={{ TARGET: target, DIM_TARGET: dimTarget }}>
+	// One lightbox instance per page, shared across all `target` images.
+	(function () {
+		if (window.__lbMounted) return;
+		window.__lbMounted = true;
+
+		const overlay = document.createElement('div');
+		overlay.id = 'lb-overlay';
+		overlay.innerHTML = `
+			<div id="lb-backdrop"></div>
+			<button id="lb-close" type="button" aria-label="Close"></button>
+			<button id="lb-prev" type="button" aria-label="Previous"></button>
+			<button id="lb-next" type="button" aria-label="Next"></button>
+			<div id="lb-img-wrap"><img id="lb-img" src="" alt="" /></div>
+			<div id="lb-counter"></div>
+		`;
+		document.body.appendChild(overlay);
+
+		const DURATION = 180;
+		const lbImg = document.getElementById('lb-img');
+		const lbCounter = document.getElementById('lb-counter');
+		const lbPrev = document.getElementById('lb-prev');
+		const lbNext = document.getElementById('lb-next');
+		const lbClose = document.getElementById('lb-close');
+		const lbBackdrop = document.getElementById('lb-backdrop');
+
+		let srcs = [];
+		let alts = [];
+		let index = 0;
+
+		function showImage(i) {
+			index = (i + srcs.length) % srcs.length;
+			lbImg.style.opacity = '0';
+			lbImg.src = srcs[index];
+			lbImg.alt = alts[index] ?? '';
+			lbImg.onload = () => { lbImg.style.opacity = '1'; };
+			lbCounter.textContent = srcs.length > 1 ? `${index + 1} / ${srcs.length}` : '';
+			lbPrev.hidden = srcs.length < 2;
+			lbNext.hidden = srcs.length < 2;
+		}
+
+		function open(i) {
+			const dim = document.querySelector(DIM_TARGET);
+			showImage(i);
+			overlay.style.display = 'flex';
+			requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+			document.body.style.overflow = 'hidden';
+			if (dim) {
+				dim.style.transition = `filter ${DURATION}ms ease`;
+				requestAnimationFrame(() => {
+					dim.style.filter = 'blur(12px) brightness(0.6)';
+				});
+			}
+		}
+
+		function close() {
+			const dim = document.querySelector(DIM_TARGET);
+			overlay.style.opacity = '0';
+			setTimeout(() => { overlay.style.display = 'none'; }, DURATION);
+			document.body.style.overflow = '';
+			if (dim) {
+				dim.style.transition = `filter ${DURATION}ms ease`;
+				dim.style.filter = 'blur(0px) brightness(1)';
+				setTimeout(() => {
+					dim.style.filter = '';
+					dim.style.transition = '';
+				}, DURATION + 20);
+			}
+		}
+
+		function collect() {
+			const imgs = Array.from(document.querySelectorAll(TARGET));
+			srcs = imgs.map((el) => el.currentSrc || el.src);
+			alts = imgs.map((el) => el.alt || '');
+			imgs.forEach((img, i) => {
+				if (img.dataset.lbBound) return;
+				img.dataset.lbBound = '1';
+				img.style.cursor = 'zoom-in';
+				img.addEventListener('click', (e) => {
+					e.preventDefault();
+					// Refresh srcs in case the DOM changed between renders
+					const fresh = Array.from(document.querySelectorAll(TARGET));
+					srcs = fresh.map((el) => el.currentSrc || el.src);
+					alts = fresh.map((el) => el.alt || '');
+					open(i);
+				});
+			});
+		}
+
+		collect();
+
+		lbClose.addEventListener('click', close);
+		lbBackdrop.addEventListener('click', close);
+		lbPrev.addEventListener('click', () => showImage(index - 1));
+		lbNext.addEventListener('click', () => showImage(index + 1));
+
+		window.addEventListener('keydown', (e) => {
+			if (overlay.style.display !== 'flex') return;
+			if (e.key === 'Escape') close();
+			if (e.key === 'ArrowLeft') showImage(index - 1);
+			if (e.key === 'ArrowRight') showImage(index + 1);
+		});
+
+		// Re-bind after Astro view transitions
+		document.addEventListener('astro:after-swap', () => {
+			srcs = [];
+			document.querySelectorAll(`${TARGET}[data-lb-bound]`).forEach((el) => {
+				delete el.dataset.lbBound;
+			});
+			collect();
+		});
+	})();
+</script>
+
+<style is:global>
+	#lb-overlay {
+		display: none;
+		opacity: 0;
+		position: fixed;
+		inset: 0;
+		z-index: 9999;
+		align-items: center;
+		justify-content: center;
+		transition: opacity 180ms ease;
+	}
+
+	#lb-backdrop {
+		position: absolute;
+		inset: 0;
+		background: rgba(0, 0, 0, 0.85);
+	}
+
+	#lb-img-wrap {
+		position: relative;
+		z-index: 1;
+		max-width: min(92vw, 1200px);
+		max-height: 88vh;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	#lb-img {
+		max-width: 100%;
+		max-height: 88vh;
+		width: auto;
+		height: auto;
+		border-radius: 10px;
+		display: block;
+		transition: opacity 140ms ease;
+		object-fit: contain;
+	}
+
+	#lb-close,
+	#lb-prev,
+	#lb-next {
+		position: absolute;
+		z-index: 2;
+		background: rgba(255, 255, 255, 0.1);
+		border: none;
+		cursor: pointer;
+		color: #fff;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background 150ms ease;
+	}
+
+	#lb-close {
+		top: 20px;
+		right: 20px;
+		width: 36px;
+		height: 36px;
+		border-radius: 50%;
+	}
+	#lb-close::before,
+	#lb-close::after {
+		content: '';
+		position: absolute;
+		width: 14px;
+		height: 1.5px;
+		background: currentColor;
+		border-radius: 2px;
+	}
+	#lb-close::before { transform: rotate(45deg); }
+	#lb-close::after { transform: rotate(-45deg); }
+
+	#lb-prev,
+	#lb-next {
+		top: 50%;
+		transform: translateY(-50%);
+		width: 40px;
+		height: 40px;
+		border-radius: 50%;
+	}
+	#lb-prev { left: 20px; }
+	#lb-next { right: 20px; }
+
+	#lb-prev::after,
+	#lb-next::after {
+		content: '';
+		width: 8px;
+		height: 8px;
+		border-top: 1.5px solid currentColor;
+		border-right: 1.5px solid currentColor;
+		display: block;
+	}
+	#lb-prev::after { transform: rotate(-135deg) translateX(-1px); }
+	#lb-next::after { transform: rotate(45deg) translateX(-1px); }
+
+	#lb-close:hover,
+	#lb-prev:hover,
+	#lb-next:hover { background: rgba(255, 255, 255, 0.2); }
+
+	#lb-prev[hidden],
+	#lb-next[hidden] { display: none; }
+
+	#lb-counter {
+		position: absolute;
+		bottom: 20px;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 2;
+		font-size: 12px;
+		color: rgba(255, 255, 255, 0.55);
+		letter-spacing: 0.04em;
+		pointer-events: none;
+	}
+</style>

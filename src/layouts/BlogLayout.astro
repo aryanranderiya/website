@@ -1,6 +1,7 @@
 ---
 import Giscus from '@/components/blog/Giscus.astro';
 import TableOfContents from '@/components/blog/TableOfContents.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
 import { Calendar01Icon, Clock01Icon, PencilEdit01Icon, Tag01Icon } from '@/components/icons';
 import { SITE } from '@/constants/site';
 import { formatDate } from '@/lib/utils';
@@ -182,6 +183,9 @@ const breadcrumbJsonLd = JSON.stringify({
 
       <Giscus />
     </article>
+
+    <Lightbox target=".prose img, .prose figure img" />
+
 
     {
       tocHeadings.length > 1 && (

@@ -22,7 +22,11 @@ Highlighted text using <mark>mark element</mark> reads like a highlighter.
 Keyboard shortcuts live in <kbd>kbd</kbd> elements: press
 <kbd>⌘</kbd> + <kbd>K</kbd> to open the command palette.
 
-Footnote-like references use superscript<sup>[1]</sup> or subscript<sub>note</sub>.
+Proper GFM footnotes work too — here's one[^first] and here's another[^longer]
+inline in a paragraph. The markers link to the footnote block at the bottom of
+the post, and each footnote has a back-arrow to return to where you were.
+
+Raw HTML also gets through: superscript<sup>note</sup> and subscript<sub>2</sub>.
 The acronym <abbr title="Content Delivery Network">CDN</abbr> expands on hover.
 
 Links come in two flavours: an [internal one to the home page](/) and an
@@ -226,6 +230,8 @@ matched margins between paragraphs and lists, consistent spacing above
 headings, and a deliberate choice about where to use `<strong>` versus a new
 sentence.
 
-Footnote targets typically land here:
+Click any image above to open it in the lightbox — arrow keys navigate,
+<kbd>Esc</kbd> closes.
 
-[1]: Not a real footnote — this blog doesn't yet wire up Markdown footnotes. Consider this a TODO for a future post.
+[^first]: Footnotes render as a numbered block at the bottom of the post, with a back-arrow that returns you to the caller.
+[^longer]: They can contain `inline code`, **emphasis**, links to [other sites](https://example.com), and multiple sentences. The footnote column is deliberately muted so body text stays the loudest voice on the page.

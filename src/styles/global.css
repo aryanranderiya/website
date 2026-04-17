@@ -762,6 +762,61 @@ a {
   border-color: var(--code-border, transparent);
 }
 
+/* ── Footnotes (GFM) ────────────────────────────────────────────────
+   The footnote markers in body text (<sup><a href="#fn-1">1</a></sup>)
+   should feel lightweight, and the footnote block at the end of a post
+   gets a smaller column with muted text. */
+.prose sup a[data-footnote-ref],
+.prose a[data-footnote-ref] {
+  text-decoration: none;
+  color: var(--accent-blue);
+  font-weight: var(--font-semibold);
+  padding: 0 0.15em;
+  border-radius: 3px;
+  transition: background 120ms ease;
+}
+.prose sup a[data-footnote-ref]:hover,
+.prose a[data-footnote-ref]:hover {
+  background: color-mix(in srgb, var(--accent-blue) 18%, transparent);
+}
+
+.prose section.footnotes,
+.prose section[data-footnotes] {
+  margin-top: 3em;
+  padding-top: 1.25em;
+  border-top: 1px solid var(--border);
+  font-size: 0.85em;
+  color: var(--text-muted);
+}
+.prose section.footnotes > h2,
+.prose section[data-footnotes] > h2 {
+  /* "Footnotes" heading that GFM injects — use the same label style as h5/h6 */
+  font-size: 0.72rem;
+  font-weight: var(--font-semibold);
+  color: var(--text-ghost);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 0;
+  margin-bottom: 0.8em;
+}
+.prose section.footnotes ol,
+.prose section[data-footnotes] ol {
+  padding-left: 1.5em;
+}
+.prose section.footnotes li,
+.prose section[data-footnotes] li {
+  margin-bottom: 0.5em;
+}
+.prose a[data-footnote-backref] {
+  text-decoration: none;
+  color: var(--text-ghost);
+  margin-left: 0.25em;
+  transition: color 120ms ease;
+}
+.prose a[data-footnote-backref]:hover {
+  color: var(--accent-blue);
+}
+
 /* ============================================
    ANIMATION UTILITIES
    ============================================ */
