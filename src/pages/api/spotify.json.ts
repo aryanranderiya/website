@@ -3,6 +3,18 @@
 
 import type { APIRoute } from 'astro';
 
+// NOTE: this endpoint can only be live when the site runs on an SSR host
+// (Vercel / Netlify / Cloudflare Pages Functions). On the current GitHub
+// Pages deploy it gets prerendered to a static JSON at build time, so
+// /api/spotify.json reflects whatever was playing when CI last ran.
+// To opt this single route into SSR, add an Astro adapter and uncomment:
+//   export const prerender = false;
+
+const NO_CACHE_HEADERS = {
+	'Content-Type': 'application/json',
+	'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+} as const;
+
 const CLIENT_ID = import.meta.env.SPOTIFY_CLIENT_ID;
 const CLIENT_SECRET = import.meta.env.SPOTIFY_CLIENT_SECRET;
 const REFRESH_TOKEN = import.meta.env.SPOTIFY_REFRESH_TOKEN;
@@ -34,7 +46,7 @@ export const GET: APIRoute = async () => {
 		if (!token) {
 			return new Response(JSON.stringify({ isPlaying: false }), {
 				status: 200,
-				headers: { 'Content-Type': 'application/json' },
+				headers: NO_CACHE_HEADERS,
 			});
 		}
 
@@ -45,7 +57,7 @@ export const GET: APIRoute = async () => {
 		if (res.status === 204 || res.status !== 200) {
 			return new Response(JSON.stringify({ isPlaying: false }), {
 				status: 200,
-				headers: { 'Content-Type': 'application/json' },
+				headers: NO_CACHE_HEADERS,
 			});
 		}
 
@@ -56,7 +68,7 @@ export const GET: APIRoute = async () => {
 		if (!item) {
 			return new Response(JSON.stringify({ isPlaying: false }), {
 				status: 200,
-				headers: { 'Content-Type': 'application/json' },
+				headers: NO_CACHE_HEADERS,
 			});
 		}
 
@@ -73,15 +85,12 @@ export const GET: APIRoute = async () => {
 
 		return new Response(JSON.stringify(track), {
 			status: 200,
-			headers: {
-				'Content-Type': 'application/json',
-				'Cache-Control': 'no-store, no-cache',
-			},
+			headers: NO_CACHE_HEADERS,
 		});
 	} catch {
 		return new Response(JSON.stringify({ isPlaying: false }), {
 			status: 200,
-			headers: { 'Content-Type': 'application/json' },
+			headers: NO_CACHE_HEADERS,
 		});
 	}
 };

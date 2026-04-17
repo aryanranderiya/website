@@ -3,6 +3,7 @@ import { Clock01Icon, Folder03Icon, HugeiconsIcon, QuillWrite01Icon } from '@ico
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
 import type { ComponentType } from 'react';
 import PreviewLink from '@/components/ui/PreviewLink';
+import { fetchOgMetadata } from '@/lib/fetchOgMetadata';
 import SocialsGrid from './SocialsGrid';
 
 const links = [
@@ -10,6 +11,16 @@ const links = [
 	{ label: 'Blog', href: '/blog', icon: QuillWrite01Icon },
 	{ label: 'Now', href: '/now', icon: Clock01Icon },
 ] as { label: string; href: string; icon: ComponentType<IconProps> }[];
+
+// Build-time OG scrape — the resulting `preview` payload is baked into the
+// page HTML and shipped to <PreviewLink> as static props. No client fetch,
+// no caching headaches, and the data is always whatever the target site
+// publishes at build time.
+const [experienceCompanyOg, gaiaOg, spotifyOg] = await Promise.all([
+	fetchOgMetadata('https://experience.heygaia.io'),
+	fetchOgMetadata('https://heygaia.io'),
+	fetchOgMetadata('https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH'),
+]);
 ---
 
 <section class="pt-4 pb-12 hero-waiting">
@@ -45,14 +56,7 @@ const links = [
 			name="The Experience Company"
 			logoClassName="logo-invert"
 			rounded={false}
-			preview={{
-				image: '/images/theexperiencecompany.webp',
-				favicon: '/images/experience-company-logo.svg',
-				name: 'experience.heygaia.io',
-				title: 'The Experience Company',
-				description:
-					'A studio improving the human experience — building products people actually love to use.',
-			}}
+			preview={experienceCompanyOg ?? undefined}
 		/>
 		. The name comes from two things: our belief that our mission is to improve the human
 		experience, and our deep care about the experience of every product we build.
@@ -65,13 +69,7 @@ const links = [
 			href="https://heygaia.io"
 			logo="/gaia-logo.webp"
 			name="GAIA"
-			preview={{
-				favicon: '/gaia-logo.webp',
-				name: 'heygaia.io',
-				title: 'GAIA — your proactive personal AI',
-				description:
-					'A proactive personal AI assistant that acts before you even need to ask. Voice-first, calendar-aware, and built to feel like a teammate.',
-			}}
+			preview={gaiaOg ?? undefined}
 		/>
 		, a proactive personal AI assistant that acts before you even need to ask. The goal: every person
 		in the world should have their own truly intelligent assistant.
@@ -114,13 +112,7 @@ const links = [
 			href="https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"
 			logo="https://cdn.simpleicons.org/spotify/1DB954"
 			name="Spotify playlist"
-			preview={{
-				favicon: 'https://cdn.simpleicons.org/spotify/1DB954',
-				name: 'open.spotify.com',
-				title: 'My all-time playlist',
-				description:
-					"2,000+ songs across moods and decades — what I actually listen to while shipping.",
-			}}
+			preview={spotifyOg ?? undefined}
 		/>
 		{' '}with 2000+ songs), movies, and food. I love tinkering around with code, shipping things, and
 		exploring new ideas. Maybe that's just my ADHD lol
