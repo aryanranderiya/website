@@ -1,7 +1,12 @@
 'use client';
 
+import { LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
 import { useEffect, useRef, useState } from 'react';
 import { SITE } from '@/constants/site';
+import { useAfterPreloader } from '@/hooks/useAfterPreloader';
+
+const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 const LNG = SITE.coords.lng;
 const LAT = SITE.coords.lat;
@@ -41,6 +46,7 @@ function MapWidgetInner() {
 	const markerRef = useRef<{ remove: () => void } | null>(null);
 	const observerRef = useRef<MutationObserver | null>(null);
 	const [containerReady, setContainerReady] = useState(false);
+	const ready = useAfterPreloader();
 
 	// State-tracked ref so the init effect reruns once the container element
 	// exists. Without this, hydration order between Spotify and Map could
@@ -123,9 +129,16 @@ function MapWidgetInner() {
 	}
 
 	return (
-		<div className="rounded-2xl overflow-hidden h-40 animate-fade-in bg-black/[0.06]">
-			<div ref={setContainerRef} className="w-full h-full" />
-		</div>
+		<LazyMotion features={loadFeatures}>
+			<m.div
+				initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+				animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+				transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.32 }}
+				className="rounded-2xl overflow-hidden h-40 bg-black/[0.06]"
+			>
+				<div ref={setContainerRef} className="w-full h-full" />
+			</m.div>
+		</LazyMotion>
 	);
 }
 
