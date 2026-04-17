@@ -40,7 +40,7 @@ export default function BlogPreview({ posts }: BlogPreviewProps) {
 					{latest.map((post, i) => (
 						<m.a
 							key={post.slug}
-							href={`/blog/${post.slug}`}
+							href={`/${post.slug}`}
 							initial={{ opacity: 0, y: 6, filter: 'blur(4px)' }}
 							whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
 							viewport={{ once: true, margin: '-40px' }}
