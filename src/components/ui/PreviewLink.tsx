@@ -38,6 +38,7 @@ function PreviewCard({
 	visible,
 	preview,
 	href,
+	isExternal,
 	onMouseEnter,
 	onMouseLeave,
 }: {
@@ -45,6 +46,7 @@ function PreviewCard({
 	visible: boolean;
 	preview: LinkPreview;
 	href: string;
+	isExternal: boolean;
 	onMouseEnter: () => void;
 	onMouseLeave: () => void;
 }) {
@@ -57,7 +59,7 @@ function PreviewCard({
 		.split('/')[0];
 
 	return (
-		// biome-ignore lint/a11y/noStaticElementInteractions: hover-only tooltip container
+		// biome-ignore lint/a11y/noStaticElementInteractions: hover-only tooltip wrapper; the inner <a> handles activation
 		<div
 			className="fixed z-[300]"
 			onMouseEnter={onMouseEnter}
@@ -72,13 +74,19 @@ function PreviewCard({
 				transition: 'opacity 0.15s ease, transform 0.18s cubic-bezier(0.19,1,0.22,1)',
 			}}
 		>
-			<div className="w-[280px] rounded-xl bg-[var(--background)] shadow-[var(--shadow-lg)] overflow-hidden p-2.5">
+			<a
+				href={href}
+				target={isExternal ? '_blank' : undefined}
+				rel={isExternal ? 'noopener noreferrer' : undefined}
+				aria-label={preview.title ?? preview.name ?? displayHost}
+				className="group block w-[280px] rounded-xl bg-[var(--background)] shadow-[var(--shadow-md)] overflow-hidden p-2.5 no-underline text-inherit cursor-pointer transition-[transform,box-shadow] duration-200 ease-[cubic-bezier(0.19,1,0.22,1)] hover:-translate-y-[1px] hover:shadow-[var(--shadow-lg)] active:translate-y-0"
+			>
 				{preview.image && (
 					<div className="rounded-lg overflow-hidden mb-2 aspect-[16/9] bg-[var(--muted-bg)]">
 						<img
 							src={preview.image}
 							alt={preview.title ?? preview.name ?? ''}
-							className="w-full h-full object-cover block"
+							className="w-full h-full object-cover block transition-transform duration-[350ms] ease-[cubic-bezier(0.19,1,0.22,1)] group-hover:scale-[1.03]"
 							loading="lazy"
 						/>
 					</div>
@@ -94,7 +102,7 @@ function PreviewCard({
 							/>
 						)}
 						{preview.name && (
-							<span className="text-[11px] font-medium text-[var(--text-secondary)] tracking-[-0.01em] truncate">
+							<span className="text-[11px] font-medium text-[var(--text-secondary)] tracking-[-0.01em] truncate transition-colors duration-150 group-hover:text-[var(--text-primary)]">
 								{preview.name}
 							</span>
 						)}
@@ -113,10 +121,10 @@ function PreviewCard({
 					</p>
 				)}
 
-				<div className="text-[10px] text-[var(--text-ghost)] mt-2 truncate tracking-[0.01em]">
+				<div className="text-[10px] text-[var(--text-ghost)] mt-2 truncate tracking-[0.01em] transition-colors duration-150 group-hover:text-[var(--text-muted)]">
 					{displayHost}
 				</div>
-			</div>
+			</a>
 		</div>
 	);
 }
@@ -190,6 +198,7 @@ export default function PreviewLink({
 						visible={hovered}
 						preview={preview}
 						href={href}
+						isExternal={isExternal}
 						onMouseEnter={show}
 						onMouseLeave={hideFromCard}
 					/>,
