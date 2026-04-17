@@ -239,23 +239,28 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 }
 
 function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
+	// The cells themselves stay a flat low-alpha green; a gradient sweep
+	// rides above the grid to read as "loading" without looking like
+	// random contribution levels.
 	const grid = (
-		<div className="grid [grid-template-columns:repeat(52,1fr)] gap-[3px] w-full">
-			{Array.from({ length: 52 }).map((_, i) => (
-				<div
-					// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
-					key={i}
-					className="flex flex-col gap-[3px]"
-				>
-					{Array.from({ length: 7 }).map((_, j) => (
-						<div
-							// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
-							key={j}
-							className="aspect-square rounded-[2px] bg-[rgba(64,196,99,0.10)] w-full"
-						/>
-					))}
-				</div>
-			))}
+		<div className="relative github-graph-shimmer w-full">
+			<div className="grid [grid-template-columns:repeat(52,1fr)] gap-[3px] w-full">
+				{Array.from({ length: 52 }).map((_, i) => (
+					<div
+						// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
+						key={i}
+						className="flex flex-col gap-[3px]"
+					>
+						{Array.from({ length: 7 }).map((_, j) => (
+							<div
+								// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
+								key={j}
+								className="aspect-square rounded-[2px] bg-[rgba(64,196,99,0.10)] w-full"
+							/>
+						))}
+					</div>
+				))}
+			</div>
 		</div>
 	);
 	if (compact) return grid;

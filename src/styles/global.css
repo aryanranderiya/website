@@ -463,6 +463,16 @@ a {
   margin-top: 0;
   margin-bottom: 0.75em;
   line-height: var(--leading-tight);
+  scroll-margin-top: 96px;
+}
+
+/* Keep TOC jumps from slamming the heading against the viewport edge. */
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  scroll-margin-top: 96px;
 }
 
 .prose h2 {
@@ -529,9 +539,9 @@ a {
 .prose blockquote {
   position: relative;
   background: var(--muted-bg);
-  border-left: 2px solid var(--border-strong);
+  border-left: 4px solid var(--text-ghost);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  padding: 0.9em 1.15em;
+  padding: 0.95em 1.15em;
   color: var(--text-muted);
   font-style: normal;
   margin: 1.5em 0;
@@ -774,6 +784,34 @@ a {
 .prose pre[class*="shiki"] {
   background: var(--code-bg, #0d1117) !important;
   border-color: var(--code-border, transparent);
+}
+
+/* ── GitHub graph loading shimmer ───────────────────────────────────
+   The fixture renders a grid of low-alpha green cells; this overlay
+   rides on top as a diagonal light sweep until the real data mounts
+   and the wrapper class is removed. */
+.github-graph-shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 3px;
+  background: linear-gradient(
+    110deg,
+    transparent 15%,
+    rgba(64, 196, 99, 0.28) 45%,
+    rgba(64, 196, 99, 0.42) 50%,
+    rgba(64, 196, 99, 0.28) 55%,
+    transparent 85%
+  );
+  background-size: 220% 100%;
+  animation: github-graph-shimmer 1.6s ease-in-out infinite;
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+@keyframes github-graph-shimmer {
+  from { background-position: 220% 0; }
+  to   { background-position: -120% 0; }
 }
 
 /* ── Footnotes (GFM) ────────────────────────────────────────────────
