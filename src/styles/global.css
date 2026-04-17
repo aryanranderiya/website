@@ -90,7 +90,7 @@
   /* Surfaces */
   --card: #ffffff;
   --card-foreground: #111111;
-  --popover: #ffffff;
+  --popover: #f5f5f4;
   --popover-foreground: #111111;
 
   /* Primary/Secondary */
@@ -201,7 +201,7 @@
 
   --card: #1a1a1a;
   --card-foreground: #fdfdfc;
-  --popover: #1a1a1a;
+  --popover: #1e1e1e;
   --popover-foreground: #fdfdfc;
 
   --primary: #fdfdfc;
@@ -484,6 +484,14 @@ a {
   margin-bottom: 0.75em;
 }
 
+.prose-compact h2 {
+  margin-top: 1.75em;
+}
+
+.prose-compact h3 {
+  margin-top: 1.25em;
+}
+
 .prose h3 {
   font-size: var(--text-base);
   font-weight: var(--font-semibold);
@@ -539,12 +547,22 @@ a {
 .prose blockquote {
   position: relative;
   background: var(--muted-bg);
-  border-left: 4px solid var(--text-ghost);
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
-  padding: 0.95em 1.15em;
+  border-radius: var(--radius-lg);
+  padding: 0.95em 1.15em 0.95em 1.4em;
   color: var(--text-muted);
   font-style: normal;
   margin: 1.5em 0;
+}
+
+.prose blockquote::before {
+  content: '';
+  position: absolute;
+  left: 0.55em;
+  top: 0.6em;
+  bottom: 0.6em;
+  width: 3px;
+  background: var(--text-ghost);
+  border-radius: 999px;
 }
 
 .prose blockquote > :first-child { margin-top: 0; }
@@ -869,6 +887,36 @@ a {
   color: var(--accent-blue);
 }
 
+/* ── Footnote hover tooltip ──────────────────────────────────────────── */
+.fn-tooltip {
+  position: absolute;
+  z-index: 9999;
+  max-width: 300px;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: var(--muted-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.06);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-muted);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(4px);
+  filter: blur(2px);
+  transition: opacity 150ms ease, transform 150ms ease, filter 150ms ease;
+}
+.fn-tooltip p {
+  margin: 0;
+}
+.fn-tooltip p + p {
+  margin-top: 0.4em;
+}
+.fn-tooltip--visible {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+
 /* ============================================
    ANIMATION UTILITIES
    ============================================ */
@@ -1056,3 +1104,16 @@ a {
     background-position: -200% 0;
   }
 }
+
+/* cmdk — kill all focus outlines inside the command palette */
+[cmdk-input] {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+[cmdk-root] *:focus,
+[cmdk-root] *:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+

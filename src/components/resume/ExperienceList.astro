@@ -1,5 +1,5 @@
 ---
-import { Briefcase01Icon, HugeiconsIcon } from '@icons';
+import { Briefcase01Icon, ChevronRight, HugeiconsIcon } from '@icons';
 import { type Experience, experience } from '@/data/experience';
 
 interface Props {
@@ -162,7 +162,7 @@ if (excludeTypes) items = items.filter((entry) => !excludeTypes.includes(entry.e
 				href="/resume"
 				class="text-[12px] font-medium text-[var(--text-secondary)] no-underline inline-flex items-center gap-1 bg-[var(--muted-bg)] rounded-full px-[14px] py-[6px] transition-[filter] duration-150 hover:brightness-[0.96]"
 			>
-				Full resume <span aria-hidden="true">→</span>
+				Full resume <ChevronRight size={12} />
 			</a>
 		</div>
 	)}

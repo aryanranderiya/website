@@ -1,5 +1,7 @@
 ---
 import { formatDate } from '@/lib/utils';
+import { fetchOgMetadata } from '@/lib/fetchOgMetadata';
+import PreviewLink from '@/components/ui/PreviewLink';
 import PageLayout from './PageLayout.astro';
 
 interface NowEntry {
@@ -16,6 +18,8 @@ interface Props {
 }
 
 const { date, location, entries, currentSlug } = Astro.props;
+
+const sivrsOg = await fetchOgMetadata('https://sive.rs/now3');
 ---
 
 <PageLayout title="Now" description="What I'm focused on right now." fullWidth={true}>
@@ -23,33 +27,24 @@ const { date, location, entries, currentSlug } = Astro.props;
     <article class="flex-1 min-w-0 max-w-[var(--prose-max-width)] pb-16">
       <header class="mb-10">
         <!-- Breadcrumb -->
-        <nav class="flex items-center gap-1.5 text-xs mb-8 text-[var(--text-ghost)]" aria-label="Breadcrumb">
+        <nav class="flex items-center gap-1.5 text-xs mb-4 text-[var(--text-ghost)]" aria-label="Breadcrumb">
           <a href="/now" class="text-[var(--text-ghost)] transition-colors hover:text-[var(--text-muted)]">Now</a>
           <span>/</span>
           <span class="text-[var(--text-muted)]">{formatDate(date)}</span>
         </nav>
-        <div class="text-[11px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2.5">
-          Now
-        </div>
-        <h1 class="text-heading-1">{formatDate(date)}</h1>
-        {location && (
-          <p class="text-[13px] text-[var(--text-ghost)] mt-1.5 mb-0">
-            {location}
-          </p>
-        )}
-        <p class="text-[12.5px] text-[var(--text-ghost)] mt-3.5 leading-relaxed">
+        <p class="text-sm">
           This is a{' '}
-          <a
-            href="https://nownownow.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="text-[var(--text-muted)] underline decoration-dotted underline-offset-2 transition-colors duration-150 hover:text-[var(--text-secondary)]"
-          >/now page</a>{' '}
+          <PreviewLink
+            client:visible
+            href="https://sive.rs/now3"
+            name="/now page"
+            preview={sivrsOg ?? undefined}
+          />{' '}
           - what I'm focused on at this point in my life.
         </p>
       </header>
 
-      <div class="prose">
+      <div class="prose prose-compact">
         <slot />
       </div>
     </article>

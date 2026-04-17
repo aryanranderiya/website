@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 export interface LinkPreview {
@@ -31,6 +31,10 @@ interface PreviewLinkProps {
 	rounded?: boolean;
 	/** Open in a new tab (default true for http(s), false for mailto/etc). */
 	external?: boolean;
+	/** When provided, renders children directly inside the anchor instead of the default logo+name. */
+	children?: ReactNode;
+	/** Override the anchor className (replaces the default `group inline`). */
+	anchorClassName?: string;
 }
 
 function PreviewCard({
@@ -79,7 +83,7 @@ function PreviewCard({
 				target={isExternal ? '_blank' : undefined}
 				rel={isExternal ? 'noopener noreferrer' : undefined}
 				aria-label={preview.title ?? preview.name ?? displayHost}
-				className="group block w-[280px] rounded-xl bg-[var(--background)] shadow-[var(--shadow-md)] overflow-hidden p-2.5 no-underline text-inherit cursor-pointer"
+				className="group block w-[280px] rounded-xl bg-[var(--popover)] shadow-[var(--shadow-lg)] overflow-hidden p-2.5 no-underline text-inherit cursor-pointer"
 			>
 				{preview.image && (
 					<div className="rounded-lg overflow-hidden mb-2 aspect-[16/9] bg-[var(--muted-bg)]">
@@ -138,6 +142,8 @@ export default function PreviewLink({
 	logoClassName,
 	rounded = true,
 	external,
+	children,
+	anchorClassName,
 }: PreviewLinkProps) {
 	const isExternal = external ?? !href.startsWith('mailto:');
 	const anchorRef = useRef<HTMLAnchorElement>(null);
@@ -173,21 +179,25 @@ export default function PreviewLink({
 				onMouseLeave={hideFromAnchor}
 				onFocus={show}
 				onBlur={hideFromAnchor}
-				className="group inline"
+				className={anchorClassName ?? 'group inline'}
 			>
-				{logo && (
-					<img
-						src={logo}
-						alt={name}
-						className={`inline align-middle w-auto h-[1.1em] mb-px ml-1${rounded ? ' rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
-					/>
+				{children ?? (
+					<>
+						{logo && (
+							<img
+								src={logo}
+								alt={name}
+								className={`inline align-middle w-auto h-[1.1em] mb-px ml-1${rounded ? ' rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
+							/>
+						)}
+						{logo && ' '}
+						<span
+							className={`font-medium underline underline-offset-4 decoration-dotted transition group-hover:text-foreground ${hoverTextClass ?? ''}`}
+						>
+							{name}
+						</span>
+					</>
 				)}
-				{logo && ' '}
-				<span
-					className={`font-medium underline underline-offset-4 decoration-dotted transition group-hover:text-foreground ${hoverTextClass ?? ''}`}
-				>
-					{name}
-				</span>
 			</a>
 			{preview &&
 				rect &&

@@ -1,6 +1,8 @@
 'use client';
 
+import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import { queryClient } from '@/utils/queryClient';
 
 interface ContributionDay {
 	date: string;
@@ -37,21 +39,7 @@ export async function fetchContributions(username: string): Promise<Contribution
 	return { weeks, total };
 }
 
-// Module-level promise cache — any component in any tree that calls
-// getContributions() shares a single in-flight request and the resolved
-// result. This is what lets the homepage GitHub hover popover and the
-// resume-page full graph render from one fetch, without forcing a
-// React context/provider on consumers.
-let _contributionsPromise: Promise<ContributionData> | null = null;
-export function getContributions(): Promise<ContributionData> {
-	if (!_contributionsPromise) {
-		_contributionsPromise = fetchContributions('aryanranderiya').catch((err) => {
-			_contributionsPromise = null; // allow retry on subsequent mount
-			throw err;
-		});
-	}
-	return _contributionsPromise;
-}
+export const GITHUB_QUERY_KEY = ['github-contributions', 'aryanranderiya'] as const;
 
 // Same green (#40c463), varying opacity
 const LEVEL_COLORS = [
@@ -133,25 +121,11 @@ function ContributionCell({
 }
 
 function GithubGraphInner({ compact = false }: { compact?: boolean }) {
-	const [data, setData] = useState<ContributionData | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
-
-	useEffect(() => {
-		let cancelled = false;
-		getContributions()
-			.then((result) => {
-				if (!cancelled) setData(result);
-			})
-			.catch(() => {
-				if (!cancelled) setData(null);
-			})
-			.finally(() => {
-				if (!cancelled) setIsLoading(false);
-			});
-		return () => {
-			cancelled = true;
-		};
-	}, []);
+	const { data, isLoading } = useQuery({
+		queryKey: GITHUB_QUERY_KEY,
+		queryFn: () => fetchContributions('aryanranderiya'),
+		staleTime: Infinity,
+	});
 
 	const weeks = data?.weeks.slice(-52) ?? [];
 	const totalContributions = data?.total ?? 0;
@@ -289,10 +263,7 @@ function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
 	);
 }
 
-export default function GithubGraph(props: { compact?: boolean }) {
-	// Mount on next frame so the SSR'd fixture paints first, then the live
-	// graph hydrates. No IntersectionObserver — the popover and the resume
-	// page both need the graph available immediately.
+function GithubGraphRoot(props: { compact?: boolean }) {
 	const [mounted, setMounted] = useState(false);
 	useEffect(() => {
 		setMounted(true);
@@ -300,4 +271,12 @@ export default function GithubGraph(props: { compact?: boolean }) {
 
 	if (!mounted) return <GithubGraphFixture compact={props.compact} />;
 	return <GithubGraphInner {...props} />;
+}
+
+export default function GithubGraph(props: { compact?: boolean }) {
+	return (
+		<QueryClientProvider client={queryClient}>
+			<GithubGraphRoot {...props} />
+		</QueryClientProvider>
+	);
 }

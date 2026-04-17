@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import GithubGraph from '@/components/home/GithubGraph';
 import ProjectsGrid from '@/components/projects/ProjectsGrid';
 import PageLayout from '@/layouts/PageLayout.astro';
 
@@ -32,12 +33,120 @@ const projects = projectEntries
 		github: entry.data.github,
 		coverImage: entry.data.coverImage,
 	}));
+
+const skillCategories = [
+	{
+		label: 'Languages',
+		items: [
+			{ name: 'TypeScript', slug: 'typescript', icon: 'typescript-original' },
+			{ name: 'JavaScript', slug: 'javascript', icon: 'javascript-original' },
+			{ name: 'Python', slug: 'python', icon: 'python-original' },
+			{ name: 'Go', slug: 'go', icon: 'go-original' },
+			{ name: 'Java', slug: 'java', icon: 'java-original' },
+			{ name: 'Bash', slug: 'bash', icon: 'bash-original' },
+			{ name: 'C', slug: 'c', icon: 'c-original' },
+			{ name: 'C++', slug: 'cplusplus', icon: 'cplusplus-original' },
+			{ name: 'PHP', slug: 'php', icon: 'php-original' },
+		],
+	},
+	{
+		label: 'Frontend',
+		items: [
+			{ name: 'React', slug: 'react', icon: 'react-original' },
+			{ name: 'Next.js', slug: 'nextjs', icon: 'nextjs-original' },
+			{ name: 'Astro', slug: 'astro', icon: 'astro-original' },
+			{ name: 'TailwindCSS', slug: 'tailwindcss', icon: 'tailwindcss-original' },
+			{ name: 'Zustand', favicon: '/icons/favicons/zustand.png' },
+			{ name: 'TanStack Query', favicon: '/icons/favicons/tanstack-query.png' },
+			{ name: 'Zod', favicon: '/icons/favicons/zod.png' },
+			{ name: 'Vite', slug: 'vitejs', icon: 'vitejs-original' },
+		],
+	},
+	{
+		label: 'Mobile & Desktop',
+		items: [
+			{ name: 'React Native', slug: 'react', icon: 'react-original' },
+			{ name: 'Expo', slug: 'expo', icon: 'expo-original' },
+			{ name: 'Electron', slug: 'electron', icon: 'electron-original' },
+			{ name: 'Android Studio', slug: 'androidstudio', icon: 'androidstudio-original' },
+		],
+	},
+	{
+		label: 'Backend',
+		items: [
+			{ name: 'FastAPI', slug: 'fastapi', icon: 'fastapi-original' },
+			{ name: 'Node.js', slug: 'nodejs', icon: 'nodejs-original' },
+			{ name: 'Hono', favicon: '/icons/favicons/hono.png' },
+			{ name: 'Express', slug: 'express', icon: 'express-original' },
+			{ name: 'Flask', slug: 'flask', icon: 'flask-original' },
+			{ name: 'Pydantic', favicon: '/icons/favicons/pydantic.png' },
+		],
+	},
+	{
+		label: 'Databases',
+		items: [
+			{ name: 'PostgreSQL', slug: 'postgresql', icon: 'postgresql-original' },
+			{ name: 'MongoDB', slug: 'mongodb', icon: 'mongodb-original' },
+			{ name: 'Redis', slug: 'redis', icon: 'redis-original' },
+			{ name: 'ChromaDB', favicon: '/icons/favicons/chromadb.png' },
+			{ name: 'MySQL', slug: 'mysql', icon: 'mysql-original' },
+			{ name: 'SQLite', slug: 'sqlite', icon: 'sqlite-original' },
+			{ name: 'Firebase', slug: 'firebase', icon: 'firebase-original' },
+			{ name: 'Supabase', slug: 'supabase', icon: 'supabase-original' },
+		],
+	},
+	{
+		label: 'Infra & DevOps',
+		items: [
+			{ name: 'Docker', slug: 'docker', icon: 'docker-original' },
+			{ name: 'Git', slug: 'git', icon: 'git-original' },
+			{ name: 'GitHub Actions', slug: 'githubactions', icon: 'githubactions-original' },
+			{ name: 'Nx', favicon: '/icons/favicons/nx.png' },
+			{ name: 'Turborepo', favicon: '/icons/favicons/turborepo.png' },
+			{ name: 'Prometheus', slug: 'prometheus', icon: 'prometheus-original' },
+			{ name: 'Grafana', slug: 'grafana', icon: 'grafana-original' },
+			{ name: 'Sentry', favicon: '/icons/favicons/sentry.png' },
+			{ name: 'PostHog', favicon: '/icons/favicons/posthog.png' },
+			{ name: 'RabbitMQ', slug: 'rabbitmq', icon: 'rabbitmq-original' },
+			{ name: 'Nginx', slug: 'nginx', icon: 'nginx-original' },
+			{ name: 'Linux', slug: 'linux', icon: 'linux-original' },
+			{ name: 'Cloudflare', slug: 'cloudflare', icon: 'cloudflare-original' },
+			{ name: 'Vitest', favicon: '/icons/favicons/vitest.png' },
+		],
+	},
+	{
+		label: 'Bots & Integrations',
+		items: [
+			{ name: 'Discord.js', favicon: '/icons/favicons/discordjs.png' },
+			{ name: 'Grammy (Telegram)', favicon: '/icons/favicons/grammy.png' },
+			{ name: 'Slack Bolt', favicon: '/icons/favicons/slack-bolt.png' },
+			{ name: 'Kapso', slug: null, icon: null },
+		],
+	},
+	{
+		label: 'AI & Agents',
+		items: [
+			{ name: 'LangChain', favicon: '/icons/favicons/langchain.png' },
+			{ name: 'LangGraph', favicon: '/icons/favicons/langgraph.png' },
+			{ name: 'MCP', favicon: '/icons/favicons/mcp.png' },
+			{ name: 'Composio', favicon: '/icons/favicons/composio.png' },
+			{ name: 'E2B', favicon: '/icons/favicons/e2b.png' },
+			{ name: 'LiveKit', favicon: '/icons/favicons/livekit.png' },
+			{ name: 'Firecrawl', favicon: '/icons/favicons/firecrawl.png' },
+			{ name: 'Mem0', favicon: '/icons/favicons/mem0.png' },
+		],
+	},
+];
+
+const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons';
 ---
 
 <PageLayout
   title="Projects"
   description="Things I have built: web apps, mobile apps, open source, and more."
 >
+  <div class="pb-16">
+
   <!-- Header -->
   <div class="mb-10">
     <h1 class="text-heading-1 mb-3 animate-fade-in stagger-2">Projects</h1>
@@ -47,4 +156,50 @@ const projects = projectEntries
   </div>
 
   <ProjectsGrid projects={projects} client:visible />
+
+  <!-- ── Skills ─────────────────────────────────────────────────── -->
+  <section class="mt-16 mb-5">
+    <p class="section-header pb-4 animate-fade-in" style="animation-delay:0.05s">Skills</p>
+    <div class="flex flex-col gap-6">
+      {skillCategories.map((cat) => (
+        <div class="grid grid-cols-[96px_1fr] gap-3 items-start">
+          <div class="text-[11px] font-medium text-[var(--text-ghost)] pt-1">
+            {cat.label}
+          </div>
+          <div class="flex flex-wrap gap-2">
+            {cat.items.map((item) => (
+              <div class="flex items-center gap-1.5 bg-[var(--muted-bg)] rounded-full px-2.5 py-[3px]">
+                {'favicon' in item ? (
+                  <img
+                    src={item.favicon}
+                    alt={item.name}
+                    width="14"
+                    height="14"
+                    class="w-[14px] h-[14px] shrink-0 rounded-[2px]"
+                  />
+                ) : item.slug && item.icon ? (
+                  <img
+                    src={`${DEVICON_BASE}/${item.slug}/${item.icon}.svg`}
+                    alt={item.name}
+                    width="14"
+                    height="14"
+                    class="w-[14px] h-[14px] shrink-0"
+                    onerror="this.style.display='none';"
+                  />
+                ) : null}
+                <span class="text-[12px] text-[var(--text-secondary)] leading-none">{item.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ── GitHub Graph ───────────────────────────────────────────── -->
+  <section class="mt-10">
+    <GithubGraph client:visible />
+  </section>
+
+  </div>
 </PageLayout>

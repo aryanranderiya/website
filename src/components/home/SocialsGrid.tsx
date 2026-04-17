@@ -5,7 +5,7 @@ import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { queryClient } from '@/utils/queryClient';
-import GithubGraph, { type ContributionData, getContributions } from './GithubGraph';
+import GithubGraph, { GITHUB_QUERY_KEY } from './GithubGraph';
 
 const AVATAR_URL = '/avatar-original.webp';
 const _INSTAGRAM_GRADIENT =
@@ -76,18 +76,11 @@ function InstagramLogo({ size = 18 }: { size?: number }) {
 // ── Preview cards ─────────────────────────────────────────────────────────────
 
 function GitHubPreview() {
-	const [data, setData] = useState<ContributionData | null>(null);
-	useEffect(() => {
-		let cancelled = false;
-		getContributions()
-			.then((r) => {
-				if (!cancelled) setData(r);
-			})
-			.catch(() => {});
-		return () => {
-			cancelled = true;
-		};
-	}, []);
+	const { data } = useQuery({
+		queryKey: GITHUB_QUERY_KEY,
+		queryFn: () => import('./GithubGraph').then((m) => m.fetchContributions('aryanranderiya')),
+		staleTime: Infinity,
+	});
 	const total = data?.total;
 
 	return (
@@ -307,6 +300,7 @@ function MonkeytypePreview() {
 	const { data, isLoading } = useQuery({
 		queryKey: ['monkeytype', 'aryanranderiya'],
 		queryFn: fetchMonkeytype,
+		staleTime: Infinity,
 	});
 
 	return (

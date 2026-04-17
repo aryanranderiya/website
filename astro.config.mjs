@@ -81,6 +81,7 @@ export default defineConfig({
     },
     optimizeDeps: {
       exclude: ['@mlc-ai/web-llm'],
+      include: ['thumbhash'],
     },
   },
   markdown: {
