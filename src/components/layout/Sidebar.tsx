@@ -6,6 +6,7 @@ import {
 	Cancel01Icon,
 	Clock01Icon,
 	ColorsIcon,
+	CommandLineIcon,
 	Folder03Icon,
 	Home12Icon,
 	HugeiconsIcon,
@@ -353,6 +354,41 @@ export default function Sidebar({
 
 						{/* Bottom actions */}
 						<m.div variants={sidebarItem} className="mt-auto pt-6 flex flex-col gap-1">
+							{/* Command palette trigger */}
+							<button
+								type="button"
+								onClick={() => window.dispatchEvent(new CustomEvent('open-cmdk'))}
+								aria-label="Open command palette (⌘K)"
+								onMouseEnter={() => setHoveredAction('cmdk')}
+								onMouseLeave={() => setHoveredAction(null)}
+								className="nav-link flex items-center gap-1.5 py-[2px] bg-transparent border-0 text-left cursor-pointer text-[12px] w-full"
+							>
+								<HugeiconsIcon
+									icon={CommandLineIcon}
+									size={13}
+									color="currentColor"
+									className="shrink-0"
+								/>
+								<span
+									className="text-[11px] whitespace-nowrap inline-flex items-center gap-1.5"
+									// biome-ignore lint/nursery/noInlineStyles: dynamic opacity/transform based on hover state
+									style={{
+										opacity: hoveredAction === 'cmdk' ? 1 : 0,
+										transform:
+											hoveredAction === 'cmdk'
+												? 'translateY(0) perspective(300px) rotateX(0deg)'
+												: 'translateY(5px) perspective(300px) rotateX(-40deg)',
+										transformOrigin: '50% 100%',
+										transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+									}}
+								>
+									Command palette
+									<kbd className="text-[10px] px-[5px] py-px rounded-[4px] bg-[var(--muted-bg)] text-[var(--text-ghost)] leading-none tracking-[0] font-[inherit]">
+										⌘K
+									</kbd>
+								</span>
+							</button>
+
 							{/* Built in Astro */}
 							<a
 								href="https://astro.build"

@@ -2,12 +2,15 @@
 
 import {
 	ArrowRight01Icon,
+	ArrowUp01Icon,
 	ArrowUpRight01Icon,
 	Book01Icon,
 	BookmarkIcon,
 	BriefcaseIcon,
 	Camera01Icon,
 	CodeIcon,
+	Copy01Icon,
+	CopyLinkIcon,
 	Download01Icon,
 	Film01Icon,
 	// Social brand icons
@@ -16,6 +19,7 @@ import {
 	Home01Icon,
 	HugeiconsIcon,
 	LinkedinIcon,
+	Mail01Icon,
 	Moon02Icon,
 	NewTwitterIcon,
 	NoteIcon,
@@ -53,13 +57,57 @@ const ICON_MAP: Record<string, ComponentType<IconProps>> = {
 	LinkedinIcon,
 };
 
-// Extra commands
-const ACTIONS = [
+type Action = {
+	id: string;
+	label: string;
+	description: string;
+	href?: string;
+	iconComp: ComponentType<IconProps>;
+	keywords?: string;
+};
+
+const ACTIONS: Action[] = [
 	{
 		id: 'theme',
 		label: 'Toggle Theme',
 		description: 'Switch between light and dark',
 		iconComp: Moon02Icon,
+		keywords: 'dark mode light mode switch',
+	},
+	{
+		id: 'copy-email',
+		label: 'Copy Email',
+		description: 'aryan@heygaia.io',
+		iconComp: Copy01Icon,
+		keywords: 'mail contact address',
+	},
+	{
+		id: 'email-me',
+		label: 'Email me',
+		description: 'Open a new message to aryan@heygaia.io',
+		iconComp: Mail01Icon,
+		keywords: 'mail contact message',
+	},
+	{
+		id: 'copy-url',
+		label: 'Copy current URL',
+		description: 'Share this page',
+		iconComp: CopyLinkIcon,
+		keywords: 'link share permalink',
+	},
+	{
+		id: 'share-page',
+		label: 'Share this page',
+		description: 'System share sheet (or copy link as a fallback)',
+		iconComp: CopyLinkIcon,
+		keywords: 'share native',
+	},
+	{
+		id: 'scroll-top',
+		label: 'Scroll to top',
+		description: 'Jump back to the top of the page',
+		iconComp: ArrowUp01Icon,
+		keywords: 'top home scroll up',
 	},
 	{
 		id: 'resume-download',
@@ -67,6 +115,15 @@ const ACTIONS = [
 		description: 'Get my CV as PDF',
 		href: '/resume.pdf',
 		iconComp: Download01Icon,
+		keywords: 'cv pdf hire',
+	},
+	{
+		id: 'view-source',
+		label: 'View site source',
+		description: 'github.com/aryanranderiya/website',
+		href: 'https://github.com/aryanranderiya/website',
+		iconComp: CodeIcon,
+		keywords: 'repo github source code',
 	},
 ];
 
@@ -99,10 +156,37 @@ export default function CommandK() {
 	}, []);
 
 	const runAction = useCallback((id: string) => {
-		if (id === 'theme') {
-			const html = document.documentElement;
-			const isDark = html.classList.toggle('dark');
-			localStorage.setItem('theme', isDark ? 'dark' : 'light');
+		switch (id) {
+			case 'theme': {
+				const html = document.documentElement;
+				const isDark = html.classList.toggle('dark');
+				localStorage.setItem('theme', isDark ? 'dark' : 'light');
+				break;
+			}
+			case 'copy-email':
+				void navigator.clipboard?.writeText('aryan@heygaia.io');
+				break;
+			case 'email-me':
+				window.location.href =
+					'mailto:aryan@heygaia.io?subject=Hey%20Aryan';
+				break;
+			case 'copy-url':
+				void navigator.clipboard?.writeText(window.location.href);
+				break;
+			case 'share-page': {
+				const data = { title: document.title, url: window.location.href };
+				if (navigator.share) {
+					void navigator.share(data).catch(() => {});
+				} else {
+					void navigator.clipboard?.writeText(window.location.href);
+				}
+				break;
+			}
+			case 'scroll-top':
+				window.scrollTo({ top: 0, behavior: 'smooth' });
+				break;
+			default:
+				break;
 		}
 		setOpen(false);
 		setQuery('');
@@ -241,9 +325,9 @@ export default function CommandK() {
 												{ACTIONS.map((action) => (
 													<Command.Item
 														key={action.id}
-														value={`${action.label} ${action.description}`}
+														value={`${action.label} ${action.description} ${action.keywords ?? ''}`}
 														onSelect={() => {
-															if (action.href) navigate(action.href);
+															if (action.href) navigate(action.href, action.href.startsWith('http'));
 															else runAction(action.id);
 														}}
 													>
