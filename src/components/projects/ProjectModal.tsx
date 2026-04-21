@@ -1,6 +1,6 @@
 'use client';
 
-import { Cancel01Icon, GithubIcon, HugeiconsIcon, LinkSquare02Icon } from '@icons';
+import { Cancel01Icon, GithubIcon, HugeiconsIcon, CircleArrowUpRight02Icon } from '@icons';
 import * as Dialog from '@radix-ui/react-dialog';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
@@ -136,7 +136,7 @@ export default function ProjectModal({
 														className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97] bg-[#00bbff] text-black shadow-[0_2px_8px_rgba(0,187,255,0.2)]"
 													>
 														Visit
-														<HugeiconsIcon icon={LinkSquare02Icon} size={12} color="currentColor" />
+														<HugeiconsIcon icon={CircleArrowUpRight02Icon} size={12} color="currentColor" />
 													</a>
 												)}
 											</div>

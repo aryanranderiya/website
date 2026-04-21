@@ -1,10 +1,11 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
-import { GithubIcon, HugeiconsIcon, LinkSquare02Icon } from '@icons';
+import { GithubIcon, HugeiconsIcon, CircleArrowUpRight02Icon } from '@icons';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import { SITE } from '@/constants/site';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { getTechIconUrl } from '@/utils/techIcons';
+import { buttonVariants } from '@/components/ui/raised-button';
 
 export async function getStaticPaths() {
 	const projects = await getCollection('projects');
@@ -132,10 +133,10 @@ const [heroImage, ...galleryImages] = allImages;
             href={p.url}
             target="_blank"
             rel="noopener noreferrer"
-            class="h-8 px-3 rounded-lg inline-flex items-center gap-[5px] bg-[var(--foreground)] text-[var(--background)] no-underline transition-colors duration-150 hover:bg-[var(--text-secondary)] shrink-0 text-xs font-medium tracking-[-0.01em]"
+            class:list={[buttonVariants({ variant: 'default', size: 'sm' }), 'gap-[5px] no-underline']}
           >
             Visit
-            <HugeiconsIcon icon={LinkSquare02Icon} size={11} color="currentColor" />
+            <HugeiconsIcon icon={CircleArrowUpRight02Icon} size={11} color="currentColor" />
           </a>
         )}
       </div>

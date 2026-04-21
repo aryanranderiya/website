@@ -8,22 +8,24 @@ import { getContrastColor, getLuminance, parseColor } from '@/lib/utils/colors';
 
 const buttonVariants = cva(
 	[
-		'inline-flex items-center justify-center whitespace-nowrap rounded-xl text-sm font-medium overflow-hidden',
+		'inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium overflow-hidden',
 		'transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
 		'disabled:pointer-events-none disabled:opacity-50 relative cursor-pointer',
-		'border shadow-md subpixel-antialiased',
-		'before:absolute before:inset-0 before:rounded-xl before:border-t before:border-white/30',
-		'before:bg-gradient-to-b before:from-white/15 before:to-transparent before:pointer-events-none',
+		'border subpixel-antialiased',
 		'active:scale-[0.96] hover:scale-[0.98] transition-transform duration-150',
 	],
 	{
 		variants: {
 			variant: {
 				default: [
-					'bg-zinc-900 text-white border-zinc-700',
-					'dark:bg-zinc-100 dark:text-zinc-900 dark:border-zinc-300',
+					'bg-gradient-to-b from-[#444] to-black !text-white border-[#111113]',
 				],
-				accent: ['text-white border-[rgba(0,187,255,0.5)]'],
+				accent: [
+					'text-white border-[rgba(0,187,255,0.5)]',
+					'before:absolute before:inset-0 before:rounded-full before:border-t before:border-white/30',
+					'before:bg-gradient-to-b before:from-white/15 before:to-transparent before:pointer-events-none',
+					'shadow-md',
+				],
 				ghost: [
 					'bg-transparent shadow-none border-transparent',
 					'hover:bg-zinc-100 dark:hover:bg-zinc-800',
@@ -33,11 +35,16 @@ const buttonVariants = cva(
 					'border-zinc-200 dark:border-zinc-700',
 					'hover:bg-zinc-50 dark:hover:bg-zinc-800/50',
 				],
+				secondary: [
+					'bg-white border-[rgba(0,0,0,0.09)] text-[color:var(--text-secondary)]',
+					'shadow-[0_1px_2px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)]',
+					'hover:bg-[#f7f7f7]',
+				],
 			},
 			size: {
 				default: 'h-10 px-4 py-2',
-				sm: 'h-8 rounded-lg px-3 text-xs',
-				lg: 'h-11 rounded-xl px-6',
+				sm: 'h-8 px-3 text-xs',
+				lg: 'h-11 px-6',
 				icon: 'h-10 w-10',
 				'icon-sm': 'h-8 w-8',
 			},

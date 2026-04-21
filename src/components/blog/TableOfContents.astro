@@ -22,45 +22,90 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
         <HugeiconsIcon icon={TextAlignLeftIcon} size={11} color="var(--text-ghost)" />
         On this page
       </p>
-      <ul class="list-none p-0 m-0 flex flex-col gap-px">
-        {toc.map((h) => (
-          <li>
-            <a
-              href={`#${h.slug}`}
-              class:list={[
-                'toc-link block leading-[1.5] py-[3px] transition-colors duration-150 no-underline hover:text-[var(--text-secondary)]',
-                h.depth === 3
-                  ? 'pl-[10px] text-[11px] text-[var(--text-ghost)]'
-                  : 'text-[11.5px] text-[var(--text-muted)]',
-              ]}
-              data-heading={h.slug}
-            >
-              {h.text}
-            </a>
-          </li>
-        ))}
-      </ul>
+      <div class="toc-list-wrapper">
+        <div id="toc-indicator" aria-hidden="true" />
+        <ul class="list-none p-0 m-0 flex flex-col gap-px">
+          {toc.map((h) => (
+            <li>
+              <a
+                href={`#${h.slug}`}
+                class:list={[
+                  'toc-link block leading-[1.5] py-[3px] no-underline',
+                  h.depth === 3 ? 'pl-[10px] text-[11px]' : 'text-[11.5px]',
+                ]}
+                data-heading={h.slug}
+              >
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
     </nav>
   )
 }
 
 <style>
+  .toc-list-wrapper {
+    position: relative;
+    padding-left: 12px;
+  }
+
+  #toc-indicator {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2px;
+    height: 20px;
+    border-radius: 1px;
+    background: var(--text-primary);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      transform 0.45s cubic-bezier(0.19, 1, 0.22, 1),
+      height 0.45s cubic-bezier(0.19, 1, 0.22, 1),
+      opacity 0.2s ease;
+  }
+
+  .toc-link {
+    color: var(--text-ghost);
+    transition: color 0.15s ease;
+  }
+
   .toc-link.active {
     color: var(--text-primary);
   }
 </style>
 
 <script>
-  const links = document.querySelectorAll<HTMLAnchorElement>('#toc .toc-link');
+  const indicator = document.getElementById('toc-indicator') as HTMLElement | null;
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('#toc .toc-link'));
+
+  function moveIndicator(link: HTMLAnchorElement) {
+    if (!indicator) return;
+    indicator.style.opacity = '1';
+    indicator.style.transform = `translateY(${link.offsetTop}px)`;
+    indicator.style.height = `${link.offsetHeight}px`;
+  }
+
+  function setActive(id: string) {
+    let found: HTMLAnchorElement | null = null;
+    for (const link of links) {
+      if (link.dataset.heading === id) {
+        link.classList.add('active');
+        found = link;
+      } else {
+        link.classList.remove('active');
+      }
+    }
+    if (found) moveIndicator(found);
+  }
 
   const observer = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
         if (entry.isIntersecting) {
-          const id = entry.target.id;
-          links.forEach((l) => l.classList.remove('active'));
-          const active = document.querySelector(`#toc .toc-link[data-heading="${id}"]`);
-          if (active) active.classList.add('active');
+          setActive(entry.target.id);
         }
       }
     },
@@ -68,7 +113,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
   );
 
   links.forEach((link) => {
-    const id = link.getAttribute('data-heading');
+    const id = link.dataset.heading;
     if (id) {
       const el = document.getElementById(id);
       if (el) observer.observe(el);

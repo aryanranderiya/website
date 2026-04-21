@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronRight } from '@icons';
+import SectionLink from '@/components/ui/SectionLink';
 import { LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 import { getTechIconUrl } from '../../utils/techIcons';
@@ -93,12 +93,7 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
 
 				{/* View all */}
 				<div className="mt-4 flex justify-end">
-					<a
-						href="/projects"
-						className="text-[12px] font-medium text-[var(--text-secondary)] no-underline inline-flex items-center gap-1 bg-[var(--muted-bg)] rounded-full px-[14px] py-[6px] transition-[filter] duration-150 hover:brightness-[0.96]"
-					>
-						View all projects <ChevronRight size={12} />
-					</a>
+					<SectionLink href="/projects" label="View all projects" />
 				</div>
 			</section>
 		</LazyMotion>

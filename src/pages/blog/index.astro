@@ -21,5 +21,7 @@ const posts = allPosts
   title="Blog"
   description="Writing about engineering, design, and building things."
 >
-  <BlogSearch posts={posts} client:visible />
+  <div class="pb-16">
+    <BlogSearch posts={posts} client:visible />
+  </div>
 </PageLayout>

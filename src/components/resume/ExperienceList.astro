@@ -1,5 +1,6 @@
 ---
-import { Briefcase01Icon, ChevronRight, HugeiconsIcon } from '@icons';
+import { Briefcase01Icon, HugeiconsIcon } from '@icons';
+import SectionLink from '@/components/ui/SectionLink';
 import { type Experience, experience } from '@/data/experience';
 
 interface Props {
@@ -158,12 +159,7 @@ if (excludeTypes) items = items.filter((entry) => !excludeTypes.includes(entry.e
 
 	{featuredOnly && (
 		<div class="mt-3 flex justify-end">
-			<a
-				href="/resume"
-				class="text-[12px] font-medium text-[var(--text-secondary)] no-underline inline-flex items-center gap-1 bg-[var(--muted-bg)] rounded-full px-[14px] py-[6px] transition-[filter] duration-150 hover:brightness-[0.96]"
-			>
-				Full resume <ChevronRight size={12} />
-			</a>
+			<SectionLink href="/resume" label="Full resume" />
 		</div>
 	)}
 </section>

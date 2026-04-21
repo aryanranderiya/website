@@ -5,7 +5,7 @@ import {
 	ArrowRight02Icon,
 	Cancel01Icon,
 	HugeiconsIcon,
-	LinkSquare02Icon,
+	CircleArrowUpRight02Icon,
 } from '@icons';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
@@ -184,10 +184,10 @@ function ProjectDetail({
 							href={project.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							className={`${buttonVariants({ variant: 'accent', size: 'sm' })} bg-[#00bbff] text-black shadow-[0_2px_8px_rgba(0,187,255,0.3)] no-underline shrink-0 gap-[5px] ml-1`}
+							className={`${buttonVariants({ variant: 'default', size: 'sm' })} no-underline shrink-0 gap-[5px] ml-1`}
 						>
 							Visit
-							<HugeiconsIcon icon={LinkSquare02Icon} size={10} color="currentColor" />
+							<HugeiconsIcon icon={CircleArrowUpRight02Icon} size={10} color="currentColor" />
 						</a>
 					)}
 					<button

@@ -83,7 +83,7 @@ function PreviewCard({
 				target={isExternal ? '_blank' : undefined}
 				rel={isExternal ? 'noopener noreferrer' : undefined}
 				aria-label={preview.title ?? preview.name ?? displayHost}
-				className="group block w-[280px] rounded-xl bg-[var(--popover)] shadow-[var(--shadow-lg)] overflow-hidden p-2.5 no-underline text-inherit cursor-pointer"
+				className="group block w-[280px] rounded-xl bg-popover shadow-(--shadow-xl) overflow-hidden p-2.5 no-underline text-inherit cursor-pointer border-2 border-muted"
 			>
 				{preview.image && (
 					<div className="rounded-lg overflow-hidden mb-2 aspect-[16/9] bg-[var(--muted-bg)]">
@@ -192,7 +192,7 @@ export default function PreviewLink({
 						)}
 						{logo && ' '}
 						<span
-							className={`font-medium underline underline-offset-4 decoration-dotted transition group-hover:text-foreground ${hoverTextClass ?? ''}`}
+							className={`font-medium underline underline-offset-4 decoration-dotted transition group-hover:text-foreground ${hoverTextClass ?? ''} hover:decoration-foreground decoration-muted-foreground/50`}
 						>
 							{name}
 						</span>

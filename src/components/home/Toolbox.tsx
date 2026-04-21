@@ -1,6 +1,6 @@
 'use client';
 
-import { ChevronRight } from '@icons';
+import SectionLink from '@/components/ui/SectionLink';
 import { LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 
@@ -25,12 +25,7 @@ export default function Toolbox() {
 			<div>
 				<div className="section-header flex items-center justify-between">
 					<span>Toolbox</span>
-					<a
-						href="/tools"
-						className="text-[11px] text-[var(--text-ghost)] no-underline tracking-[-0.01em] transition-colors duration-150 hover:text-[var(--text-muted)]"
-					>
-						See all <ChevronRight size={11} />
-					</a>
+					<SectionLink href="/tools" label="See all" variant="ghost" />
 				</div>
 				<div className="flex flex-wrap gap-5">
 					{TOOLS.map((tool, i) => (

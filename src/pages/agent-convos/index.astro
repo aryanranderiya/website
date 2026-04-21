@@ -33,24 +33,23 @@ const convos = allConvos
   title="Agent Conversations"
   description="A curated collection of technically impressive AI-assisted coding sessions: infrastructure automation, multi-agent orchestration, browser-driven debugging, and more."
 >
-  <header class="mb-12">
-    <h1 class="text-heading-1 mb-4">Agent Conversations</h1>
-    <p
-      class="text-body mb-6"
-      style="color: var(--text-secondary); max-width: 560px;"
-    >
-      A curated selection of real conversations with AI coding agents like
-      Claude Code, OpenCode, and Codex CLI. Not every session makes this list.
-      These are the ones where i've felt like it's genuinely done something
-      impressive or extremely long running tasks. LLM's are truly powerful with
-      the proper harness, environment and tools around it.
-    </p>
-    <p class="text-body" style="color: var(--text-muted); max-width: 560px;">
-      Each entry is a condensed, human-readable retelling of the session.
-      Sensitive details (credentials, internal URLs, proprietary logic) are
-      redacted. The focus is on the technical approach and what made it work.
-    </p>
-  </header>
+  <div class="pb-16">
+    <header class="mb-10">
+      <h1 class="text-heading-1 mb-4">Agent Conversations</h1>
+      <p class="text-body mb-3 max-w-[560px]">
+        A curated selection of real conversations with AI coding agents like
+        Claude Code, OpenCode, and Codex CLI. Not every session makes this list.
+        These are the ones where i've felt like it's genuinely done something
+        impressive or extremely long running tasks. LLM's are truly powerful with
+        the proper harness, environment and tools around it.
+      </p>
+      <p class="text-caption max-w-[560px]">
+        Each entry is a condensed, human-readable retelling of the session.
+        Sensitive details (credentials, internal URLs, proprietary logic) are
+        redacted. The focus is on the technical approach and what made it work.
+      </p>
+    </header>
 
-  <AgentConvosList convos={convos} client:visible />
+    <AgentConvosList convos={convos} client:visible />
+  </div>
 </PageLayout>

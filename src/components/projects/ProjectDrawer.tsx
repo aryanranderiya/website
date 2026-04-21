@@ -7,7 +7,7 @@ import {
 	GithubIcon,
 	HugeiconsIcon,
 	ImageNotFound01Icon,
-	LinkSquare02Icon,
+	CircleArrowUpRight02Icon,
 } from '@icons';
 import * as Dialog from '@radix-ui/react-dialog';
 import { AnimatePresence, LazyMotion } from 'motion/react';
@@ -243,10 +243,10 @@ export default function ProjectDrawer({
 														</a>
 													)}
 													{project.url && (
-														<RaisedButton asChild variant="accent" size="sm" className="gap-1.5">
+														<RaisedButton asChild variant="default" size="sm" className="gap-1.5">
 															<a href={project.url} target="_blank" rel="noopener noreferrer">
 																Visit
-																<HugeiconsIcon icon={LinkSquare02Icon} size={11} />
+																<HugeiconsIcon icon={CircleArrowUpRight02Icon} size={11} />
 															</a>
 														</RaisedButton>
 													)}
