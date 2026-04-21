@@ -1,8 +1,8 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
-import { CircleArrowUpRight02Icon, GithubIcon, HugeiconsIcon } from '@icons';
+import { ArrowLeft01Icon, CircleArrowUpRight02Icon, GithubIcon, HugeiconsIcon } from '@icons';
 import Lightbox from '@/components/ui/Lightbox.astro';
-import { buttonVariants } from '@/components/ui/raised-button';
+import { RaisedButton } from '@/components/ui/raised-button';
 import { SITE } from '@/constants/site';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { getTechIconUrl } from '@/utils/techIcons';
@@ -65,6 +65,7 @@ const projectJsonLd = JSON.stringify({
 			}
 		: {}),
 });
+
 const [heroImage, ...galleryImages] = allImages;
 ---
 
@@ -72,91 +73,86 @@ const [heroImage, ...galleryImages] = allImages;
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
   <script is:inline type="application/ld+json" set:html={projectJsonLd} />
 
-  <!-- Breadcrumb -->
-  <nav class="flex items-center gap-1.5 mb-8">
+  <!-- Back nav -->
+  <nav class="mb-8">
     <a
       href="/projects"
-      class="text-xs text-[var(--text-ghost)] no-underline transition-colors duration-150 hover:text-[var(--text-muted)]"
+      class="inline-flex items-center gap-1 text-[11px] text-[var(--text-ghost)] no-underline transition-colors duration-150 hover:text-[var(--text-muted)]"
     >
+      <HugeiconsIcon icon={ArrowLeft01Icon} size={11} color="currentColor" />
       Projects
     </a>
-    <span class="text-xs text-[var(--text-ghost)]">/</span>
-    <span class="text-xs text-[var(--text-secondary)] tracking-[-0.01em]">{p.title}</span>
   </nav>
 
+  <!-- Hero image: visual-first, full width -->
+  {heroImage && (
+    <div class="gallery-target mb-8 overflow-hidden rounded-2xl bg-[var(--muted-bg)] cursor-pointer">
+      <img
+        src={heroImage}
+        alt={p.title}
+        class="block h-auto w-full"
+        loading="eager"
+      />
+    </div>
+  )}
+
   <!-- Header -->
-  <header class="mb-9">
-    <!-- Badges row -->
-    <div class="flex items-center gap-1.5 mb-3.5 flex-wrap">
-      {p.status === 'archived' && (
-        <span class="text-[10px] px-2 py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)] tracking-[0.02em]">
-          Archived
-        </span>
-      )}
-      <span class="text-[10px] px-2 py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] tracking-[0.02em] capitalize">
-        {p.type}
-      </span>
+  <header class="mb-8">
+    <!-- Meta row: type · year · folder · status -->
+    <div class="mb-3 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+      <span class="text-[11px] uppercase tracking-[0.06em] text-[var(--text-ghost)]">{p.type}</span>
+      <span class="text-[var(--text-ghost)] text-[11px] opacity-40">·</span>
+      <span class="text-[11px] text-[var(--text-ghost)]">{year}</span>
       {chip && (
-        <span
-          class="text-[10px] px-2 py-[2px] rounded-full bg-[var(--muted-bg)] font-medium tracking-[0.02em]"
-          style={`color: ${chip.color};`}
-        >
-          {chip.label}
-        </span>
+        <>
+          <span class="text-[var(--text-ghost)] text-[11px] opacity-40">·</span>
+          <span class="text-[11px]" style={`color: ${chip.color};`}>{chip.label}</span>
+        </>
       )}
-      <span class="text-[10px] px-2 py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)] tracking-[0.02em]">
-        {year}
-      </span>
+      {p.status === 'archived' && (
+        <>
+          <span class="text-[var(--text-ghost)] text-[11px] opacity-40">·</span>
+          <span class="text-[11px] text-[var(--text-ghost)]">Archived</span>
+        </>
+      )}
     </div>
 
-    <!-- Title + CTA row -->
-    <div class="flex items-start justify-between gap-4 mb-4 flex-wrap">
-      <h1 class="text-[28px] font-semibold tracking-[-0.04em] text-[var(--text-primary)] leading-[1.15] m-0">
-        {p.title}
-      </h1>
-      <div class="flex items-center gap-2 shrink-0 pt-[3px]">
-        {p.github && (
-          <a
-            href={p.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="h-8 px-3 rounded-lg inline-flex items-center gap-1.5 bg-[var(--muted-bg)] text-[var(--text-secondary)] no-underline transition-opacity duration-150 hover:opacity-65 shrink-0 text-xs font-medium tracking-[-0.01em]"
-          >
-            <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-            </svg>
-            View GitHub
-          </a>
-        )}
-        {p.url && (
-          <a
-            href={p.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class:list={[buttonVariants({ variant: 'default', size: 'sm' }), 'gap-[5px] no-underline']}
-          >
-            Visit
-            <HugeiconsIcon icon={CircleArrowUpRight02Icon} size={11} color="currentColor" />
-          </a>
-        )}
-      </div>
-    </div>
+    <h1 class="m-0 mb-3 text-[32px] font-semibold leading-[1.1] tracking-[-0.04em] text-[var(--text-primary)]">
+      {p.title}
+    </h1>
 
-    <!-- Description -->
-    <p class="text-sm text-[var(--text-muted)] leading-[1.7] m-0 max-w-[560px]">
+    <p class="m-0 mb-6 max-w-[520px] text-sm leading-[1.75] tracking-[-0.01em] text-[var(--text-muted)]">
       {p.description}
     </p>
+
+    {(p.url || p.github) && (
+      <div class="flex flex-wrap items-center gap-2">
+        {p.url && (
+          <RaisedButton asChild={true} size="sm" variant="default">
+            <a href={p.url} target="_blank" rel="noopener noreferrer" class="gap-1.5 no-underline">
+              Visit
+              <HugeiconsIcon icon={CircleArrowUpRight02Icon} size={13} color="currentColor" />
+            </a>
+          </RaisedButton>
+        )}
+        {p.github && (
+          <RaisedButton asChild={true} size="sm" variant="secondary">
+            <a href={p.github} target="_blank" rel="noopener noreferrer" class="gap-1.5 no-underline">
+              <HugeiconsIcon icon={GithubIcon} size={13} color="currentColor" />
+              GitHub
+            </a>
+          </RaisedButton>
+        )}
+      </div>
+    )}
   </header>
 
   <!-- Tech stack + Tags -->
-  <section class="mb-10 flex flex-col gap-5">
-    {p.tech && p.tech.length > 0 && (
-      <div>
-        <div class="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2.5">
-          Tech Stack
-        </div>
-        <div class="flex flex-wrap gap-1.5">
-          {p.tech.map(t => {
+  {((p.tech && p.tech.length > 0) || (p.tags && p.tags.filter((tag: string) => !p.tech?.includes(tag)).length > 0)) && (
+    <div class="mb-10 border-t border-[var(--border)] pt-6 flex flex-col gap-3">
+      {p.tech && p.tech.length > 0 && (
+        <div class="flex flex-wrap items-center gap-1.5">
+          {p.tech.map((t: string) => {
             const iconUrl = getTechIconUrl(t);
             return (
               <span class="inline-flex items-center gap-[5px] text-[11px] px-2.5 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-secondary)]">
@@ -168,64 +164,51 @@ const [heroImage, ...galleryImages] = allImages;
             );
           })}
         </div>
-      </div>
-    )}
-
-    {p.tags && p.tags.filter(tag => !p.tech?.includes(tag)).length > 0 && (
-      <div>
-        <div class="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2.5">
-          Tags
-        </div>
+      )}
+      {p.tags && p.tags.filter((tag: string) => !p.tech?.includes(tag)).length > 0 && (
         <div class="flex flex-wrap gap-1.5">
-          {p.tags.filter(tag => !p.tech?.includes(tag)).map(tag => (
+          {p.tags.filter((tag: string) => !p.tech?.includes(tag)).map((tag: string) => (
             <span class="text-[11px] px-[9px] py-[3px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)]">
               {tag}
             </span>
           ))}
         </div>
-      </div>
-    )}
-  </section>
+      )}
+    </div>
+  )}
 
   <!-- Body content (rendered markdown) -->
-  <div class="mb-11 text-sm text-[var(--text-muted)] leading-[1.7] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0">
-    <Content />
-  </div>
+  {allImages.length === 0 ? (
+    <div class="mb-11 text-sm text-[var(--text-muted)] leading-[1.75] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[var(--text-primary)] [&_h2]:tracking-[-0.025em] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[var(--text-secondary)] [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-2">
+      <Content />
+    </div>
+  ) : (
+    <div class="mb-11 text-sm text-[var(--text-muted)] leading-[1.75] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[var(--text-primary)] [&_h2]:tracking-[-0.025em] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[var(--text-secondary)] [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-2">
+      <Content />
+    </div>
+  )}
 
-  <!-- Images -->
-  {allImages.length > 0 && (
-    <section id="project-images" class="mb-11">
-      <!-- Hero image -->
-      {heroImage && (
-        <div class="group relative cursor-pointer rounded-[14px] overflow-hidden bg-[var(--muted-bg)] mb-2">
-          <img
-            src={heroImage}
-            alt={p.title}
-            class="w-full h-auto block cursor-pointer transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.04] group-hover:brightness-[1.04]"
-            loading="lazy"
-          />
-        </div>
-      )}
-
-      <!-- Gallery grid (remaining images) -->
+  <!-- Gallery (remaining images after hero) -->
+  {galleryImages.length > 0 && (
+    <section id="gallery-grid-section" class="mb-11">
       {galleryImages.length === 1 && (
-        <div class="group relative cursor-pointer rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
+        <div class="gallery-target group relative cursor-pointer rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
           <img
             src={galleryImages[0]}
             alt={`${p.title} screenshot 2`}
-            class="w-full h-auto block cursor-pointer transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.04] group-hover:brightness-[1.04]"
+            class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
             loading="lazy"
           />
         </div>
       )}
       {galleryImages.length >= 2 && (
         <div class="grid grid-cols-2 max-[600px]:grid-cols-1 gap-2" id="gallery-grid">
-          {galleryImages.map((img, i) => (
-            <div class="gallery-item group relative cursor-pointer [&.landscape]:col-span-2 rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
+          {galleryImages.map((img: string, i: number) => (
+            <div class="gallery-item gallery-target group relative cursor-pointer [&.landscape]:col-span-2 rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
               <img
                 src={img}
                 alt={`${p.title} screenshot ${i + 2}`}
-                class="w-full h-auto block cursor-pointer transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.04] group-hover:brightness-[1.04]"
+                class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
                 loading="lazy"
               />
             </div>
@@ -235,7 +218,7 @@ const [heroImage, ...galleryImages] = allImages;
     </section>
   )}
 
-  <Lightbox target="#project-images img" />
+  <Lightbox target=".gallery-target img" />
 
   <!-- Video (if present) -->
   {p.video && (
@@ -253,7 +236,7 @@ const [heroImage, ...galleryImages] = allImages;
 </PageLayout>
 
 <script>
-  // ── Smart grid: landscape images span both columns ──────────────────────
+  // Smart grid: landscape images span both columns
   const grid = document.getElementById('gallery-grid');
   if (grid) {
     Array.from(grid.querySelectorAll<HTMLElement>('.gallery-item')).forEach(item => {
@@ -266,5 +249,4 @@ const [heroImage, ...galleryImages] = allImages;
       img.complete ? applySpan() : img.addEventListener('load', applySpan, { once: true });
     });
   }
-
 </script>

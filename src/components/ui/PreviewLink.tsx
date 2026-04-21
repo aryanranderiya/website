@@ -72,10 +72,11 @@ function PreviewCard({
 			style={{
 				top: anchorY,
 				left: anchorX,
-				transform: `translateX(-50%) translateY(${above ? 'calc(-100% - 8px)' : '8px'})`,
+				transform: `translateX(-50%) translateY(${above ? 'calc(-100% - 8px)' : '8px'}) scale(${visible ? 1 : 0.97})`,
 				opacity: visible ? 1 : 0,
 				pointerEvents: visible ? 'auto' : 'none',
-				transition: 'opacity 0.15s ease, transform 0.18s cubic-bezier(0.19,1,0.22,1)',
+				transition: 'opacity 0.15s ease-out, transform 0.2s cubic-bezier(0.19,1,0.22,1)',
+				transformOrigin: above ? 'bottom center' : 'top center',
 			}}
 		>
 			<a
@@ -83,7 +84,7 @@ function PreviewCard({
 				target={isExternal ? '_blank' : undefined}
 				rel={isExternal ? 'noopener noreferrer' : undefined}
 				aria-label={preview.title ?? preview.name ?? displayHost}
-				className="group block w-[280px] cursor-pointer overflow-hidden rounded-xl border-2 border-muted bg-popover p-2.5 text-inherit no-underline shadow-(--shadow-xl)"
+				className="group block w-[280px] cursor-pointer overflow-hidden rounded-xl bg-popover p-2.5 text-inherit no-underline shadow-[0_8px_32px_rgba(0,0,0,0.1),0_2px_8px_rgba(0,0,0,0.06)]"
 			>
 				{preview.image && (
 					<div className="mb-2 aspect-[16/9] overflow-hidden rounded-lg bg-[var(--muted-bg)]">
@@ -114,7 +115,7 @@ function PreviewCard({
 				)}
 
 				{preview.title && (
-					<div className="mb-0.5 font-semibold text-[12px] text-[var(--text-primary)] leading-[1.35] tracking-[-0.01em] transition-colors duration-150 group-hover:text-[var(--accent-blue)]">
+					<div className="mb-0.5 font-semibold text-[12px] text-[var(--text-primary)] leading-[1.35] tracking-[-0.01em]">
 						{preview.title}
 					</div>
 				)}
@@ -192,7 +193,7 @@ export default function PreviewLink({
 						)}
 						{logo && ' '}
 						<span
-							className={`font-medium underline decoration-dotted underline-offset-4 transition group-hover:text-foreground ${hoverTextClass ?? ''} decoration-muted-foreground/30`}
+							className={`font-medium! underline decoration-dotted underline-offset-4 transition group-hover:text-foreground ${hoverTextClass ?? ''} decoration-muted-foreground/30`}
 						>
 							{name}
 						</span>

@@ -234,7 +234,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								type="button"
 								ref={filterBtnRef}
 								onClick={() => setTagPopoverOpen((o) => !o)}
-								className={`inline-flex cursor-pointer items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[10px] py-1 text-[11px] leading-[1.45] tracking-[0.01em] transition-all duration-150 ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
+								className={`inline-flex cursor-pointer items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[10px] py-1 text-[11px] leading-[1.45] tracking-[0.01em] transition-[color,opacity] duration-150 ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
 							>
 								<HugeiconsIcon icon={FilterIcon} size={11} color="currentColor" />
 								<span>
@@ -244,9 +244,16 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								</span>
 							</button>
 
+							<AnimatePresence>
 							{tagPopoverOpen && (
-								<div
+								<m.div
 									ref={popoverRef}
+									initial={{ opacity: 0, scale: 0.95, y: -4 }}
+									animate={{ opacity: 1, scale: 1, y: 0 }}
+									exit={{ opacity: 0, scale: 0.95, y: -4 }}
+									transition={{ duration: 0.15, ease: [0.19, 1, 0.22, 1] }}
+									// biome-ignore lint/nursery/noInlineStyles: transform-origin must be inline for origin-aware scale
+									style={{ transformOrigin: 'top left' }}
 									className="absolute top-[calc(100%+6px)] left-0 z-[100] max-h-[300px] min-w-[210px] overflow-y-auto rounded-[20px] bg-[var(--background)] p-1.5 shadow-[var(--shadow-lg)]"
 								>
 									<div className="flex items-center justify-between px-2 pt-1 pb-1.5">
@@ -309,8 +316,9 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 											</button>
 										);
 									})}
-								</div>
+								</m.div>
 							)}
+							</AnimatePresence>
 						</div>
 
 						<div className="flex-1" />
