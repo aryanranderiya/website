@@ -19,21 +19,21 @@ function AccordionItem({ page, index }: { page: NavPage; index: number }) {
 				viewport={{ once: true, margin: '-10px' }}
 				transition={{ delay: index * 0.06, duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
 			>
-				<div className="border-b border-[var(--border)]">
+				<div className="border-[var(--border)] border-b">
 					<button
 						type="button"
 						onClick={() => hasChildren && setOpen((o) => !o)}
-						className={`flex items-center justify-between w-full py-4 text-left transition-all duration-150 bg-transparent border-0 p-[1rem_0] select-none ${hasChildren ? 'cursor-pointer' : 'cursor-default'}`}
+						className={`flex w-full select-none items-center justify-between border-0 bg-transparent p-[1rem_0] py-4 text-left transition-all duration-150 ${hasChildren ? 'cursor-pointer' : 'cursor-default'}`}
 					>
 						<div className="flex items-center gap-4">
 							<a
 								href={page.href}
-								className="text-sm font-medium tracking-[-0.01em] text-[var(--foreground)] transition-opacity hover:opacity-60"
+								className="font-medium text-[var(--foreground)] text-sm tracking-[-0.01em] transition-opacity hover:opacity-60"
 								onClick={(e) => e.stopPropagation()}
 							>
 								{page.label}
 							</a>
-							<span className="text-xs hidden sm:block text-[var(--muted-foreground)]">
+							<span className="hidden text-[var(--muted-foreground)] text-xs sm:block">
 								{page.description}
 							</span>
 						</div>
@@ -41,7 +41,7 @@ function AccordionItem({ page, index }: { page: NavPage; index: number }) {
 							<m.span
 								animate={{ rotate: open ? 45 : 0 }}
 								transition={{ duration: 0.2 }}
-								className="text-[var(--muted-foreground)] text-[18px] leading-none flex"
+								className="flex text-[18px] text-[var(--muted-foreground)] leading-none"
 							>
 								+
 							</m.span>
@@ -58,17 +58,17 @@ function AccordionItem({ page, index }: { page: NavPage; index: number }) {
 								transition={{ duration: 0.28, ease: [0.25, 0.46, 0.45, 0.94] }}
 								className="overflow-hidden"
 							>
-								<div className="pb-3 pl-4 flex flex-col gap-1">
+								<div className="flex flex-col gap-1 pb-3 pl-4">
 									{page.children?.map((child) => (
 										<a
 											key={child.href}
 											href={child.href}
-											className="flex items-center gap-3 py-2 rounded-lg px-3 text-sm transition-all duration-150 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+											className="flex items-center gap-3 rounded-lg px-3 py-2 text-[var(--muted-foreground)] text-sm transition-all duration-150 hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
 										>
-											<span className="w-1 h-1 rounded-full flex-shrink-0 bg-[var(--muted-foreground)]" />
+											<span className="h-1 w-1 flex-shrink-0 rounded-full bg-[var(--muted-foreground)]" />
 											<span>{child.label}</span>
 											{child.description && (
-												<span className="ml-auto text-xs hidden sm:block text-[var(--muted-foreground)] opacity-70">
+												<span className="ml-auto hidden text-[var(--muted-foreground)] text-xs opacity-70 sm:block">
 													{child.description}
 												</span>
 											)}
@@ -89,7 +89,7 @@ export default function PagesAccordion() {
 
 	return (
 		<section className="py-16">
-			<div className="text-label mb-6 text-[var(--muted-foreground)]">Explore</div>
+			<div className="mb-6 text-[var(--muted-foreground)] text-label">Explore</div>
 			<div>
 				{pages.map((page, i) => (
 					<AccordionItem key={page.href} page={page} index={i} />

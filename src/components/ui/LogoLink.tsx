@@ -23,10 +23,10 @@ export function LogoLink({
 				alt={name}
 				width={isGaia ? 24 : 20}
 				height={isGaia ? 24 : 20}
-				className={`inline align-middle w-auto h-[1.1em] mb-px ml-1${rounded ? ' rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
+				className={`mb-px inline h-[1.1em] w-auto align-middle ml-1${rounded ? 'rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
 			/>{' '}
 			<span
-				className={`font-medium underline underline-offset-4 decoration-dotted transition group-hover:text-foreground ${hoverTextClass ?? ''}`}
+				className={`font-medium underline decoration-dotted underline-offset-4 transition group-hover:text-foreground ${hoverTextClass ?? ''}`}
 			>
 				{name}
 			</span>

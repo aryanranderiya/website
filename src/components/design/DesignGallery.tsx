@@ -127,7 +127,7 @@ export default function DesignGallery({
 				{/* Apparel & Streetwear */}
 				<section className="mb-14">
 					<div className="section-header">Apparel &amp; Streetwear</div>
-					<div className="grid grid-cols-3 max-[480px]:grid-cols-2 gap-1.5">
+					<div className="grid grid-cols-3 gap-1.5 max-[480px]:grid-cols-2">
 						{apparel.map((file, i) => (
 							<ApparelItem
 								key={file}
@@ -142,7 +142,7 @@ export default function DesignGallery({
 				{/* Banners & Headers */}
 				<section className="mb-14">
 					<div className="section-header">Banners &amp; Headers</div>
-					<div className="columns-2 max-[480px]:columns-1 [column-gap:6px]">
+					<div className="columns-2 [column-gap:6px] max-[480px]:columns-1">
 						{headers.map((file, i) => (
 							<MasonryItem
 								key={file}
@@ -157,7 +157,7 @@ export default function DesignGallery({
 				{/* Thumbnails */}
 				<section className="mb-14">
 					<div className="section-header">Thumbnails</div>
-					<div className="columns-2 max-[480px]:columns-1 [column-gap:6px]">
+					<div className="columns-2 [column-gap:6px] max-[480px]:columns-1">
 						{thumbnails.map((file, i) => (
 							<MasonryItem
 								key={file}
@@ -172,7 +172,7 @@ export default function DesignGallery({
 				{/* Ad Mockups */}
 				<section className="mb-14">
 					<div className="section-header">Ad Mockups</div>
-					<div className="columns-2 max-[480px]:columns-1 [column-gap:6px]">
+					<div className="columns-2 [column-gap:6px] max-[480px]:columns-1">
 						{adMockups.map((file, i) => (
 							<MasonryItem
 								key={file}
@@ -215,7 +215,7 @@ function ApparelItem({ src, alt, onClick }: { src: string; alt: string; onClick:
 			src={src}
 			alt={alt}
 			hash={getHash(src)}
-			className="aspect-square rounded-md overflow-hidden cursor-zoom-in group relative"
+			className="group relative aspect-square cursor-zoom-in overflow-hidden rounded-md"
 			imgClassName="w-full h-full object-cover block transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.6] group-hover:brightness-[1.04]"
 			onClick={onClick}
 		/>
@@ -228,7 +228,7 @@ function MasonryItem({ src, alt, onClick }: { src: string; alt: string; onClick:
 			src={src}
 			alt={alt}
 			hash={getHash(src)}
-			className="break-inside-avoid rounded-md overflow-hidden mb-1.5 cursor-zoom-in group"
+			className="group mb-1.5 cursor-zoom-in break-inside-avoid overflow-hidden rounded-md"
 			imgClassName="w-full object-cover block transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.12] group-hover:brightness-[1.04]"
 			onClick={onClick}
 		/>
@@ -266,7 +266,7 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
 				exit={{ scale: 0.94, opacity: 0 }}
 				transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
 				onClick={(e) => e.stopPropagation()}
-				className="relative max-h-[90vh] max-w-[90vw] object-contain block rounded-[6px] pointer-events-auto"
+				className="pointer-events-auto relative block max-h-[90vh] max-w-[90vw] rounded-[6px] object-contain"
 				draggable={false}
 			/>
 
@@ -278,7 +278,7 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
 					onClose();
 				}}
 				aria-label="Close"
-				className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center border-none rounded-full cursor-pointer shrink-0 bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
+				className="absolute top-4 right-4 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border-none bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
 			>
 				<HugeiconsIcon icon={Cancel01Icon} size={16} color="currentColor" />
 			</button>
@@ -292,7 +292,7 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
 						onPrev();
 					}}
 					aria-label="Previous image"
-					className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center border-none rounded-full cursor-pointer shrink-0 bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
+					className="absolute top-1/2 left-4 flex h-10 w-10 shrink-0 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-none bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
 				>
 					<HugeiconsIcon icon={ArrowLeft02Icon} size={16} color="currentColor" />
 				</button>
@@ -307,14 +307,14 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
 						onNext();
 					}}
 					aria-label="Next image"
-					className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center border-none rounded-full cursor-pointer shrink-0 bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
+					className="absolute top-1/2 right-4 flex h-10 w-10 shrink-0 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-none bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
 				>
 					<HugeiconsIcon icon={ArrowRight02Icon} size={16} color="currentColor" />
 				</button>
 			)}
 
 			{/* Counter */}
-			<div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[12px] tabular-nums tracking-[0.04em] pointer-events-none select-none text-[color-mix(in_srgb,var(--foreground)_50%,transparent)]">
+			<div className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 select-none text-[12px] text-[color-mix(in_srgb,var(--foreground)_50%,transparent)] tabular-nums tracking-[0.04em]">
 				{index + 1} / {total}
 			</div>
 		</m.div>

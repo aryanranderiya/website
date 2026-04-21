@@ -1,8 +1,8 @@
 'use client';
 
-import SectionLink from '@/components/ui/SectionLink';
 import { LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
+import SectionLink from '@/components/ui/SectionLink';
 import { getTechIconUrl } from '../../utils/techIcons';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
@@ -46,27 +46,27 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
 								whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
 								viewport={{ once: true, margin: '-40px' }}
 								transition={{ duration: 0.4, ease: EASE, delay: i * 0.05 }}
-								className="block no-underline rounded-[14px] px-4 py-[14px] transition-[filter] duration-150 hover:brightness-[0.97] bg-[color-mix(in_srgb,var(--muted-bg)_70%,transparent)]"
+								className="block rounded-[14px] bg-[color-mix(in_srgb,var(--muted-bg)_70%,transparent)] px-4 py-[14px] no-underline transition-[filter] duration-150 hover:brightness-[0.97]"
 							>
 								{/* Header row */}
-								<div className="flex items-center gap-2 mb-[6px]">
-									<span className="text-[14px] font-semibold tracking-[-0.02em] text-[var(--text-primary)]">
+								<div className="mb-[6px] flex items-center gap-2">
+									<span className="font-semibold text-[14px] text-[var(--text-primary)] tracking-[-0.02em]">
 										{project.title}
 									</span>
 									{year && (
-										<span className="text-[11px] text-[var(--text-ghost)] ml-auto tabular-nums">
+										<span className="ml-auto text-[11px] text-[var(--text-ghost)] tabular-nums">
 											{year}
 										</span>
 									)}
 								</div>
 
 								{/* Description */}
-								<p className="text-[12px] text-[var(--text-muted)] m-0 mb-[10px] leading-[1.55] line-clamp-2">
+								<p className="m-0 mb-[10px] line-clamp-2 text-[12px] text-[var(--text-muted)] leading-[1.55]">
 									{project.description}
 								</p>
 
 								{/* Tech tags */}
-								<div className="flex gap-[5px] flex-wrap">
+								<div className="flex flex-wrap gap-[5px]">
 									{project.tech.map((tag) => {
 										const iconUrl = getTechIconUrl(tag);
 										return (
@@ -77,7 +77,7 @@ export default function FeaturedProjects({ projects }: { projects: Project[] }) 
 														alt={tag}
 														width={11}
 														height={11}
-														className="object-contain shrink-0"
+														className="shrink-0 object-contain"
 														loading="lazy"
 													/>
 												)}

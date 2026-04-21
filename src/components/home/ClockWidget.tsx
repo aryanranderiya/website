@@ -118,18 +118,18 @@ export default function ClockWidget() {
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			<div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 flex items-center gap-4">
+			<div className="flex items-center gap-4 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5">
 				<AnalogClock date={now} />
 				<div>
 					<m.div
 						key={formatTime(now).slice(0, 5)}
 						initial={{ opacity: 0.7 }}
 						animate={{ opacity: 1 }}
-						className="text-2xl font-semibold tabular-nums tracking-[-0.03em] [font-variant-numeric:tabular-nums]"
+						className="font-semibold text-2xl tabular-nums tracking-[-0.03em] [font-variant-numeric:tabular-nums]"
 					>
 						{formatTime(now)}
 					</m.div>
-					<div className="text-xs mt-0.5 text-[var(--muted-foreground)]">
+					<div className="mt-0.5 text-[var(--muted-foreground)] text-xs">
 						{formatDate(now)} · IST
 					</div>
 				</div>

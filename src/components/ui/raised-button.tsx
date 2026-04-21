@@ -8,26 +8,24 @@ import { getContrastColor, getLuminance, parseColor } from '@/lib/utils/colors';
 
 const buttonVariants = cva(
 	[
-		'inline-flex items-center justify-center whitespace-nowrap rounded-full text-sm font-medium overflow-hidden',
+		'inline-flex items-center justify-center overflow-hidden whitespace-nowrap rounded-full font-medium text-sm',
 		'transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-		'disabled:pointer-events-none disabled:opacity-50 relative cursor-pointer',
+		'relative cursor-pointer disabled:pointer-events-none disabled:opacity-50',
 		'border subpixel-antialiased',
-		'active:scale-[0.96] hover:scale-[0.98] transition-transform duration-150',
+		'transition-transform duration-150 hover:scale-[0.98] active:scale-[0.96]',
 	],
 	{
 		variants: {
 			variant: {
-				default: [
-					'bg-gradient-to-b from-[#444] to-black !text-white border-[#111113]',
-				],
+				default: ['!text-white border-[#111113] bg-gradient-to-b from-[#444] to-black'],
 				accent: [
-					'text-white border-[rgba(0,187,255,0.5)]',
-					'before:absolute before:inset-0 before:rounded-full before:border-t before:border-white/30',
-					'before:bg-gradient-to-b before:from-white/15 before:to-transparent before:pointer-events-none',
+					'border-[rgba(0,187,255,0.5)] text-white',
+					'before:absolute before:inset-0 before:rounded-full before:border-white/30 before:border-t',
+					'before:pointer-events-none before:bg-gradient-to-b before:from-white/15 before:to-transparent',
 					'shadow-md',
 				],
 				ghost: [
-					'bg-transparent shadow-none border-transparent',
+					'border-transparent bg-transparent shadow-none',
 					'hover:bg-zinc-100 dark:hover:bg-zinc-800',
 				],
 				outline: [
@@ -36,7 +34,7 @@ const buttonVariants = cva(
 					'hover:bg-zinc-50 dark:hover:bg-zinc-800/50',
 				],
 				secondary: [
-					'bg-white border-[rgba(0,0,0,0.09)] text-[color:var(--text-secondary)]',
+					'border-[rgba(0,0,0,0.09)] bg-white text-[color:var(--text-secondary)]',
 					'shadow-[0_1px_2px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)]',
 					'hover:bg-[#f7f7f7]',
 				],

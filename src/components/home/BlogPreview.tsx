@@ -19,7 +19,7 @@ export default function BlogPreview({ posts }: { posts: Post[] }) {
 	}));
 
 	return (
-		<section className="pb-6 mb-8">
+		<section className="mb-8 pb-6">
 			<div className="section-header !mb-2.5">Blog</div>
 
 			<BlogList posts={latest} />

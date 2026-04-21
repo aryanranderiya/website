@@ -25,7 +25,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 
 	return (
 		<div className="mb-10">
-			<div className="text-label mb-4 text-[var(--muted-foreground)]">{label}</div>
+			<div className="mb-4 text-[var(--muted-foreground)] text-label">{label}</div>
 
 			{/*
         Key insight: the shelf casing border & outer styling must NOT use overflow:hidden
@@ -34,7 +34,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 			<div className="relative">
 				{/* ── SHELF CASING OUTLINE (drawn with box-shadow, not overflow:hidden) ── */}
 				<div
-					className="absolute inset-0 rounded-[10px] z-0"
+					className="absolute inset-0 z-0 rounded-[10px]"
 					// biome-ignore lint/nursery/noInlineStyles: complex gradient background has no Tailwind equivalent
 					style={{
 						background: 'linear-gradient(180deg, #5c3a1e 0%, #3e2510 100%)',
@@ -42,7 +42,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 				/>
 				{/* Casing top highlight strip */}
 				<div
-					className="absolute top-0 left-0 right-0 h-[3px] rounded-t-[10px] z-[1]"
+					className="absolute top-0 right-0 left-0 z-[1] h-[3px] rounded-t-[10px]"
 					// biome-ignore lint/nursery/noInlineStyles: complex gradient background has no Tailwind equivalent
 					style={{
 						background:
@@ -52,7 +52,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 
 				{/* ── BACK WALL (absolute, fills behind books) ── */}
 				<div
-					className="absolute rounded-[8px] z-[1] overflow-hidden"
+					className="absolute z-[1] overflow-hidden rounded-[8px]"
 					// biome-ignore lint/nursery/noInlineStyles: complex multi-layer gradient background has no Tailwind equivalent
 					style={{
 						inset: 3,
@@ -65,7 +65,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 				>
 					{/* Overhead warm light cone */}
 					<div
-						className="absolute inset-0 pointer-events-none"
+						className="pointer-events-none absolute inset-0"
 						// biome-ignore lint/nursery/noInlineStyles: complex radial-gradient has no Tailwind equivalent
 						style={{
 							background:
@@ -74,7 +74,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 					/>
 					{/* Left vignette */}
 					<div
-						className="absolute top-0 left-0 w-[48px] bottom-0 pointer-events-none"
+						className="pointer-events-none absolute top-0 bottom-0 left-0 w-[48px]"
 						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
 						style={{
 							background: 'linear-gradient(90deg, rgba(0,0,0,0.28) 0%, transparent 100%)',
@@ -82,7 +82,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 					/>
 					{/* Right vignette */}
 					<div
-						className="absolute top-0 right-0 w-[48px] bottom-0 pointer-events-none"
+						className="pointer-events-none absolute top-0 right-0 bottom-0 w-[48px]"
 						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
 						style={{
 							background: 'linear-gradient(270deg, rgba(0,0,0,0.28) 0%, transparent 100%)',
@@ -92,7 +92,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 
 				{/* ── BOOKS ROW -- perspective set here, overflow VISIBLE so books can pop out ── */}
 				<div
-					className="flex overflow-x-auto relative z-[3]"
+					className="relative z-[3] flex overflow-x-auto"
 					// biome-ignore lint/nursery/noInlineStyles: perspective/perspectiveOrigin/scrollbarColor have no Tailwind equivalent
 					style={{
 						padding: '20px 20px 0 20px',
@@ -124,7 +124,7 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 				<div className="relative z-[4]">
 					{/* Plank top -- catches overhead light */}
 					<div
-						className="h-[7px] relative overflow-hidden ml-[3px] mr-[3px]"
+						className="relative mr-[3px] ml-[3px] h-[7px] overflow-hidden"
 						// biome-ignore lint/nursery/noInlineStyles: complex gradient has no Tailwind equivalent
 						style={{
 							background: 'linear-gradient(180deg, #a07540 0%, #7a5428 55%, #5c3c18 100%)',
@@ -140,14 +140,14 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 						/>
 						{/* Light glint */}
 						<div
-							className="absolute top-[1px] left-[15%] right-[15%] h-[1px]"
+							className="absolute top-[1px] right-[15%] left-[15%] h-[1px]"
 							// biome-ignore lint/nursery/noInlineStyles: rgba background has no Tailwind equivalent
 							style={{ background: 'rgba(255,230,170,0.4)' }}
 						/>
 					</div>
 					{/* Plank front face */}
 					<div
-						className="h-[20px] relative overflow-hidden ml-[3px] mr-[3px] rounded-b-[7px]"
+						className="relative mr-[3px] ml-[3px] h-[20px] overflow-hidden rounded-b-[7px]"
 						// biome-ignore lint/nursery/noInlineStyles: complex gradient has no Tailwind equivalent
 						style={{
 							background: 'linear-gradient(180deg, #6b4820 0%, #4e3210 55%, #3a2408 100%)',
@@ -162,14 +162,14 @@ function Shelf({ books, label }: { books: Book[]; label: string }) {
 							}}
 						/>
 						<div
-							className="absolute top-0 left-0 right-0 h-[1px]"
+							className="absolute top-0 right-0 left-0 h-[1px]"
 							// biome-ignore lint/nursery/noInlineStyles: rgba background has no Tailwind equivalent
 							style={{ background: 'rgba(255,200,120,0.18)' }}
 						/>
 					</div>
 					{/* Underside shadow drip */}
 					<div
-						className="h-[10px] ml-[3px] mr-[3px]"
+						className="mr-[3px] ml-[3px] h-[10px]"
 						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
 						style={{
 							background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)',

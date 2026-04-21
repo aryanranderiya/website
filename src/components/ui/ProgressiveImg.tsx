@@ -95,7 +95,7 @@ export default function ProgressiveImg({
 					src={placeholder}
 					alt=""
 					aria-hidden
-					className="absolute inset-0 w-full h-full object-cover scale-[1.05] blur-[6px] z-0"
+					className="absolute inset-0 z-0 h-full w-full scale-[1.05] object-cover blur-[6px]"
 				/>
 			)}
 
@@ -106,7 +106,7 @@ export default function ProgressiveImg({
 				alt={alt}
 				loading="lazy"
 				decoding="async"
-				className={cn('relative z-[1] w-full h-full object-cover', imgClassName)}
+				className={cn('relative z-[1] h-full w-full object-cover', imgClassName)}
 				onLoad={() => setLoaded(true)}
 				onTransitionEnd={() => setFaded(true)}
 				// biome-ignore lint/nursery/noInlineStyles: dynamic opacity/transition based on load state plus imgStyle spread

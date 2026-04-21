@@ -183,12 +183,12 @@ export default function Signature() {
 	let letterIndex = 0;
 
 	return (
-		<section className="pb-8 mt-8 h-[88px]">
+		<section className="mt-8 h-[88px] pb-8">
 			<div
 				ref={containerRef}
 				role="img"
 				aria-label="Aryan Randeriya signature"
-				className="flex flex-wrap justify-start items-center scale-[1.7] origin-[0_50%] h-[51px]"
+				className="flex h-[51px] origin-[0_50%] scale-[1.7] flex-wrap items-center justify-start"
 			>
 				{ALL_ITEMS.map((item, i) => {
 					if (item === 'space') {
@@ -196,7 +196,7 @@ export default function Signature() {
 							<div
 								// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
 								key={`space-${i}`}
-								className="w-3 h-[51px]"
+								className="h-[51px] w-3"
 							/>
 						);
 					}

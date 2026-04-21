@@ -22,11 +22,11 @@ interface Movie {
 
 function SectionHeader({ label, count }: { label: string; count: number }) {
 	return (
-		<div className="flex items-center gap-3 mb-7">
-			<span className="text-[11px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 whitespace-nowrap">
+		<div className="mb-7 flex items-center gap-3">
+			<span className="whitespace-nowrap font-medium text-[11px] text-[var(--muted-foreground)] uppercase tracking-[0.08em] opacity-60">
 				{label}: {count}
 			</span>
-			<div className="flex-1 h-px bg-[var(--border)]" />
+			<div className="h-px flex-1 bg-[var(--border)]" />
 		</div>
 	);
 }
@@ -44,7 +44,7 @@ export default function MoviesGrid({ movies }: { movies: Movie[] }) {
 			{/* Watched */}
 			<section className="mb-14">
 				<SectionHeader label="Watched" count={watched.length} />
-				<div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
+				<div className="grid grid-cols-3 gap-4 sm:grid-cols-4">
 					{watched.map((movie, i) => (
 						<MovieCard key={movie.slug} movie={movie} index={i} onClick={setSelected} />
 					))}
@@ -55,7 +55,7 @@ export default function MoviesGrid({ movies }: { movies: Movie[] }) {
 			{watchlist.length > 0 && (
 				<section>
 					<SectionHeader label="Watchlist" count={watchlist.length} />
-					<div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
+					<div className="grid grid-cols-3 gap-4 sm:grid-cols-4">
 						{watchlist.map((movie, i) => (
 							<MovieCard key={movie.slug} movie={movie} index={i} onClick={setSelected} />
 						))}

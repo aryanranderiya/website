@@ -86,9 +86,9 @@ export default function ThemeToggle() {
 			<button
 				type="button"
 				aria-label="Cycle theme"
-				className="w-9 h-9 rounded-lg flex items-center justify-center text-[var(--muted-foreground)]"
+				className="flex h-9 w-9 items-center justify-center rounded-lg text-[var(--muted-foreground)]"
 			>
-				<span className="w-4 h-4" />
+				<span className="h-4 w-4" />
 			</button>
 		);
 	}
@@ -99,7 +99,7 @@ export default function ThemeToggle() {
 			onClick={cycle}
 			aria-label="Cycle theme"
 			title={theme === 'light' ? 'Dark mode' : theme === 'dark' ? 'Shuffle mode' : 'Light mode'}
-			className="w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-200 hover:opacity-70 text-[var(--muted-foreground)] bg-transparent cursor-pointer"
+			className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg bg-transparent text-[var(--muted-foreground)] transition-all duration-200 hover:opacity-70"
 		>
 			<HugeiconsIcon
 				icon={theme === 'light' ? Moon02Icon : theme === 'dark' ? ColorsIcon : Sun01Icon}

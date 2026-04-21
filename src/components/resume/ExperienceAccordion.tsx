@@ -115,7 +115,7 @@ function LogoAvatar({
 	if (logo && !imgError) {
 		return (
 			<div
-				className="rounded-lg overflow-hidden bg-[var(--muted)] shrink-0 flex items-center justify-center"
+				className="flex shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[var(--muted)]"
 				// biome-ignore lint/nursery/noInlineStyles: dynamic dimensions from size prop
 				style={{ width: size, height: size }}
 			>
@@ -125,7 +125,7 @@ function LogoAvatar({
 					width={size}
 					height={size}
 					onError={() => setImgError(true)}
-					className="w-full h-full object-cover"
+					className="h-full w-full object-cover"
 				/>
 			</div>
 		);
@@ -133,7 +133,7 @@ function LogoAvatar({
 
 	return (
 		<div
-			className="rounded-lg shrink-0 flex items-center justify-center font-bold tracking-[-0.02em]"
+			className="flex shrink-0 items-center justify-center rounded-lg font-bold tracking-[-0.02em]"
 			// biome-ignore lint/nursery/noInlineStyles: dynamic dimensions, background, color, and fontSize from props
 			style={{
 				width: size,
@@ -151,7 +151,7 @@ function LogoAvatar({
 function ChevronIcon({ open }: { open: boolean }) {
 	return (
 		<span
-			className={`shrink-0 flex text-[var(--muted-foreground)] transition-transform duration-[250ms] ${open ? 'rotate-180' : 'rotate-0'}`}
+			className={`flex shrink-0 text-[var(--muted-foreground)] transition-transform duration-[250ms] ${open ? 'rotate-180' : 'rotate-0'}`}
 		>
 			<HugeiconsIcon icon={ArrowDown01Icon} size={16} />
 		</span>
@@ -163,31 +163,31 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
 
 	return (
 		<div
-			className={`rounded-xl overflow-hidden transition-[background] duration-200 ${open ? 'bg-[var(--muted)]' : 'bg-transparent'}`}
+			className={`overflow-hidden rounded-xl transition-[background] duration-200 ${open ? 'bg-[var(--muted)]' : 'bg-transparent'}`}
 		>
 			{/* Header row -- always visible, clickable */}
 			<button
 				type="button"
 				onClick={() => setOpen((o) => !o)}
-				className="w-full flex items-center gap-3 px-4 py-[14px] bg-transparent cursor-pointer text-left select-none"
+				className="flex w-full cursor-pointer select-none items-center gap-3 bg-transparent px-4 py-[14px] text-left"
 			>
 				<LogoAvatar company={exp.company} logo={exp.logo} color={exp.color} />
 
-				<div className="flex-1 min-w-0">
-					<div className="text-[0.875rem] font-semibold text-[var(--foreground)] tracking-[-0.01em] truncate">
+				<div className="min-w-0 flex-1">
+					<div className="truncate font-semibold text-[0.875rem] text-[var(--foreground)] tracking-[-0.01em]">
 						{exp.company}
 					</div>
-					<div className="text-[0.75rem] text-[var(--muted-foreground)] mt-[2px] truncate">
+					<div className="mt-[2px] truncate text-[0.75rem] text-[var(--muted-foreground)]">
 						{exp.role}
 					</div>
 				</div>
 
-				<div className="flex flex-col items-end gap-[2px] shrink-0">
-					<span className="text-[0.7rem] text-[var(--muted-foreground)] whitespace-nowrap">
+				<div className="flex shrink-0 flex-col items-end gap-[2px]">
+					<span className="whitespace-nowrap text-[0.7rem] text-[var(--muted-foreground)]">
 						{exp.period}
 					</span>
 					{exp.location && (
-						<span className="text-[0.65rem] text-[var(--muted-foreground)] opacity-70 whitespace-nowrap">
+						<span className="whitespace-nowrap text-[0.65rem] text-[var(--muted-foreground)] opacity-70">
 							{exp.location}
 						</span>
 					)}
@@ -202,17 +202,17 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
 			>
 				<div className="overflow-hidden">
 					<div className="px-4 pb-4 pl-16">
-						<p className="text-[0.8125rem] text-[var(--muted-foreground)] leading-[1.65] mb-3 m-0">
+						<p className="m-0 mb-3 text-[0.8125rem] text-[var(--muted-foreground)] leading-[1.65]">
 							{exp.description}
 						</p>
-						<ul className="list-none p-0 m-0 flex flex-col gap-1.5">
+						<ul className="m-0 flex list-none flex-col gap-1.5 p-0">
 							{exp.highlights.map((h, i) => (
 								<li
 									// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
 									key={i}
 									className="flex items-start gap-2 text-[0.75rem] text-[var(--muted-foreground)]"
 								>
-									<span className="text-[var(--accent-blue)] shrink-0 mt-[1px] font-semibold">
+									<span className="mt-[1px] shrink-0 font-semibold text-[var(--accent-blue)]">
 										→
 									</span>
 									{h}

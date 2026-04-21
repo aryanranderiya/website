@@ -84,42 +84,42 @@ function GitHubPreview() {
 	const total = data?.total;
 
 	return (
-		<div className="bg-[#0d1117] border border-[#30363d] rounded-xl p-4 w-[420px] shadow-2xl overflow-hidden font-sans text-[#e6edf3]">
-			<div className="flex items-center gap-3 mb-3">
+		<div className="w-[420px] overflow-hidden rounded-xl border border-[#30363d] bg-[#0d1117] p-4 font-sans text-[#e6edf3] shadow-2xl">
+			<div className="mb-3 flex items-center gap-3">
 				<img
 					src={AVATAR_URL}
 					alt="avatar"
 					width={40}
 					height={40}
-					className="rounded-full border-2 border-[#30363d] shrink-0 w-10 h-10"
+					className="h-10 w-10 shrink-0 rounded-full border-2 border-[#30363d]"
 				/>
 				<div className="min-w-0">
-					<div className="font-semibold text-sm text-[#e6edf3] leading-tight">Aryan</div>
-					<div className="text-xs text-[#8b949e] leading-tight">@aryanranderiya</div>
+					<div className="font-semibold text-[#e6edf3] text-sm leading-tight">Aryan</div>
+					<div className="text-[#8b949e] text-xs leading-tight">@aryanranderiya</div>
 				</div>
 			</div>
 
-			<p className="text-xs text-[#8b949e] leading-relaxed mb-2">
+			<p className="mb-2 text-[#8b949e] text-xs leading-relaxed">
 				founder &amp; ceo <span className="text-[#58a6ff]">@theexperiencecompany</span>
 			</p>
 
-			<div className="flex items-center gap-1 mb-3">
-				<span className="text-[#8b949e] flex items-center">
+			<div className="mb-3 flex items-center gap-1">
+				<span className="flex items-center text-[#8b949e]">
 					<HugeiconsIcon icon={Location01Icon} size={12} />
 				</span>
-				<span className="text-xs text-[#8b949e]">Ahmedabad, India</span>
+				<span className="text-[#8b949e] text-xs">Ahmedabad, India</span>
 			</div>
 
-			<div className="flex gap-4 mb-3 pb-3 border-b border-[#21262d] text-xs">
+			<div className="mb-3 flex gap-4 border-[#21262d] border-b pb-3 text-xs">
 				<div className="flex items-center gap-1">
-					<span className="text-[#8b949e] flex items-center">
+					<span className="flex items-center text-[#8b949e]">
 						<HugeiconsIcon icon={RepositoryIcon} size={13} />
 					</span>
 					<span className="font-semibold text-[#e6edf3]">38</span>
 					<span className="text-[#8b949e]">repos</span>
 				</div>
 				<div className="flex items-center gap-1">
-					<span className="text-[#8b949e] flex items-center">
+					<span className="flex items-center text-[#8b949e]">
 						<HugeiconsIcon icon={StarIcon} size={12} />
 					</span>
 					<span className="font-semibold text-[#e6edf3]">67</span>
@@ -131,9 +131,9 @@ function GitHubPreview() {
 				</div>
 			</div>
 
-			<div className="flex items-center justify-between mb-2 min-h-[18px]">
-				<div className="text-[11px] text-[#8b949e]">Contributions this year</div>
-				<div className="text-sm font-semibold text-[#e6edf3] tracking-[-0.02em] [font-variant-numeric:tabular-nums]">
+			<div className="mb-2 flex min-h-[18px] items-center justify-between">
+				<div className="text-[#8b949e] text-[11px]">Contributions this year</div>
+				<div className="font-semibold text-[#e6edf3] text-sm tracking-[-0.02em] [font-variant-numeric:tabular-nums]">
 					{total !== undefined ? total.toLocaleString() : '\u00A0'}
 				</div>
 			</div>
@@ -144,36 +144,36 @@ function GitHubPreview() {
 
 function TwitterPreview() {
 	return (
-		<div className="bg-black border border-[#2f3336] rounded-xl overflow-hidden w-[280px] shadow-2xl font-sans text-[#e7e9ea]">
+		<div className="w-[280px] overflow-hidden rounded-xl border border-[#2f3336] bg-black font-sans text-[#e7e9ea] shadow-2xl">
 			{/* Banner */}
 			<img
 				src="/twitter-banner.webp"
 				alt=""
-				className="w-full h-[72px] object-cover object-center"
+				className="h-[72px] w-full object-cover object-center"
 			/>
 
-			<div className="px-4 pb-4 relative">
+			<div className="relative px-4 pb-4">
 				<img
 					src={AVATAR_URL}
 					alt="avatar"
 					width={44}
 					height={44}
-					className="rounded-full border-[3px] border-black absolute -top-[22px] left-4 shrink-0 w-11 h-11"
+					className="absolute -top-[22px] left-4 h-11 w-11 shrink-0 rounded-full border-[3px] border-black"
 				/>
 				<div className="pt-7">
-					<div className="font-bold text-[15px] text-[#e7e9ea] leading-tight">aryan</div>
-					<div className="text-xs text-[#71767b] mb-2">@aryanranderiya · 13.8K posts</div>
-					<p className="text-[13px] text-[#e7e9ea] leading-relaxed mb-3">
+					<div className="font-bold text-[#e7e9ea] text-[15px] leading-tight">aryan</div>
+					<div className="mb-2 text-[#71767b] text-xs">@aryanranderiya · 13.8K posts</div>
+					<p className="mb-3 text-[#e7e9ea] text-[13px] leading-relaxed">
 						founder &amp; ceo <span className="text-[#1d9bf0]">@madebyexp</span>. building{' '}
 						<span className="text-[#1d9bf0]">@trygaia</span>
 					</p>
-					<div className="flex gap-4 pt-2.5 border-t border-[#2f3336] text-xs">
+					<div className="flex gap-4 border-[#2f3336] border-t pt-2.5 text-xs">
 						<div>
-							<span className="font-bold text-[13px] text-[#e7e9ea]">767 </span>
+							<span className="font-bold text-[#e7e9ea] text-[13px]">767 </span>
 							<span className="text-[#71767b]">Following</span>
 						</div>
 						<div>
-							<span className="font-bold text-[13px] text-[#e7e9ea]">952 </span>
+							<span className="font-bold text-[#e7e9ea] text-[13px]">952 </span>
 							<span className="text-[#71767b]">Followers</span>
 						</div>
 					</div>
@@ -185,34 +185,34 @@ function TwitterPreview() {
 
 function LinkedInPreview() {
 	return (
-		<div className="bg-[#1b1f23] border border-[#283339] rounded-xl overflow-hidden w-[260px] shadow-xl font-sans text-[#e7e9ea]">
+		<div className="w-[260px] overflow-hidden rounded-xl border border-[#283339] bg-[#1b1f23] font-sans text-[#e7e9ea] shadow-xl">
 			<img
 				src="/linkedin-banner.webp"
 				alt=""
-				className="w-full h-[52px] object-cover object-center"
+				className="h-[52px] w-full object-cover object-center"
 			/>
-			<div className="px-4 pb-4 relative">
+			<div className="relative px-4 pb-4">
 				<img
 					src={AVATAR_URL}
 					alt="avatar"
 					width={48}
 					height={48}
-					className="rounded-full border-[3px] border-[#1b1f23] absolute -top-6 left-4 w-12 h-12"
+					className="absolute -top-6 left-4 h-12 w-12 rounded-full border-[#1b1f23] border-[3px]"
 				/>
 				<div className="pt-8">
-					<div className="font-bold text-sm text-[#e7e9ea] mb-0.5">Aryan Randeriya</div>
-					<div className="text-xs text-[#a8a8a8] leading-snug">
+					<div className="mb-0.5 font-bold text-[#e7e9ea] text-sm">Aryan Randeriya</div>
+					<div className="text-[#a8a8a8] text-xs leading-snug">
 						Founder &amp; CEO · The Experience Company
 					</div>
-					<div className="border-t border-[#283339] mt-2.5 pt-2.5">
-						<div className="text-xs text-[#a8a8a8] leading-relaxed">
+					<div className="mt-2.5 border-[#283339] border-t pt-2.5">
+						<div className="text-[#a8a8a8] text-xs leading-relaxed">
 							I design and build cool stuff · heygaia.io · aryanranderiya.com
 						</div>
 					</div>
 				</div>
 			</div>
-			<div className="border-t border-[#283339] px-4 py-2.5 bg-[rgba(0,119,181,0.08)]">
-				<span className="text-xs text-[#0077b5] font-semibold">View full profile</span>
+			<div className="border-[#283339] border-t bg-[rgba(0,119,181,0.08)] px-4 py-2.5">
+				<span className="font-semibold text-[#0077b5] text-xs">View full profile</span>
 			</div>
 		</div>
 	);
@@ -220,26 +220,26 @@ function LinkedInPreview() {
 
 function InstagramPreview() {
 	return (
-		<div className="bg-black border border-[#262626] rounded-xl p-4 w-[260px] shadow-2xl font-sans text-[#f5f5f5]">
-			<div className="flex items-center gap-3 mb-3">
-				<div className="p-[2px] rounded-full shrink-0 bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)]">
-					<div className="bg-black rounded-full p-[2px]">
+		<div className="w-[260px] rounded-xl border border-[#262626] bg-black p-4 font-sans text-[#f5f5f5] shadow-2xl">
+			<div className="mb-3 flex items-center gap-3">
+				<div className="shrink-0 rounded-full bg-[linear-gradient(45deg,#f09433_0%,#e6683c_25%,#dc2743_50%,#cc2366_75%,#bc1888_100%)] p-[2px]">
+					<div className="rounded-full bg-black p-[2px]">
 						<img
 							src={AVATAR_URL}
 							alt="avatar"
 							width={36}
 							height={36}
-							className="rounded-full block w-9 h-9 shrink-0"
+							className="block h-9 w-9 shrink-0 rounded-full"
 						/>
 					</div>
 				</div>
 				<div className="min-w-0">
-					<div className="font-semibold text-sm text-[#f5f5f5] leading-tight">aryanranderiya</div>
-					<div className="text-xs text-[#a8a8a8] leading-tight">A'</div>
+					<div className="font-semibold text-[#f5f5f5] text-sm leading-tight">aryanranderiya</div>
+					<div className="text-[#a8a8a8] text-xs leading-tight">A'</div>
 				</div>
 			</div>
-			<p className="text-xs text-[#f5f5f5] leading-relaxed mb-3">the world is yours</p>
-			<div className="flex pt-3 border-t border-[#262626]">
+			<p className="mb-3 text-[#f5f5f5] text-xs leading-relaxed">the world is yours</p>
+			<div className="flex border-[#262626] border-t pt-3">
 				{[
 					{ value: '1', label: 'post' },
 					{ value: '543', label: 'followers' },
@@ -248,10 +248,10 @@ function InstagramPreview() {
 					<div
 						// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
 						key={i}
-						className={`flex-1 text-center ${i < 2 ? 'border-r border-[#262626]' : ''}`}
+						className={`flex-1 text-center ${i < 2 ? 'border-[#262626] border-r' : ''}`}
 					>
-						<div className="font-bold text-sm text-[#f5f5f5]">{stat.value}</div>
-						<div className="text-[11px] text-[#a8a8a8]">{stat.label}</div>
+						<div className="font-bold text-[#f5f5f5] text-sm">{stat.value}</div>
+						<div className="text-[#a8a8a8] text-[11px]">{stat.label}</div>
 					</div>
 				))}
 			</div>
@@ -305,36 +305,36 @@ function MonkeytypePreview() {
 
 	return (
 		<div
-			className="bg-[#323437] border border-[#2c2e31] rounded-xl p-4 w-[360px] shadow-2xl text-[#d1d0c5]"
+			className="w-[360px] rounded-xl border border-[#2c2e31] bg-[#323437] p-4 text-[#d1d0c5] shadow-2xl"
 			// biome-ignore lint/nursery/noInlineStyles: fontFamily with fallbacks has no Tailwind equivalent
 			style={{ fontFamily: '"Roboto Mono", "Courier New", monospace' }}
 		>
 			{/* Header */}
-			<div className="flex items-center justify-between mb-3">
+			<div className="mb-3 flex items-center justify-between">
 				<div className="flex items-center gap-2.5">
 					<HugeiconsIcon icon={KeyboardIcon} size={20} />
 					<div>
-						<div className="text-[17px] font-bold text-[#e2b714] tracking-tight leading-none">
+						<div className="font-bold text-[#e2b714] text-[17px] leading-none tracking-tight">
 							monkeytype
 						</div>
-						<div className="text-[13px] text-[#646669] mt-1">aryanranderiya</div>
+						<div className="mt-1 text-[#646669] text-[13px]">aryanranderiya</div>
 					</div>
 				</div>
 				{!isLoading && data?.streak != null && (
 					<div className="text-right">
-						<div className="text-2xl font-bold text-[#e2b714]">{data.streak}d</div>
-						<div className="text-[12px] text-[#646669]">streak</div>
+						<div className="font-bold text-2xl text-[#e2b714]">{data.streak}d</div>
+						<div className="text-[#646669] text-[12px]">streak</div>
 					</div>
 				)}
 			</div>
 
 			{/* PB table */}
-			<div className="border-t border-[#2c2e31] pt-2 mb-3">
-				<div className="grid grid-cols-4 gap-2 mb-1">
+			<div className="mb-3 border-[#2c2e31] border-t pt-2">
+				<div className="mb-1 grid grid-cols-4 gap-2">
 					{['mode', 'wpm', 'raw', 'acc'].map((h) => (
 						<div
 							key={h}
-							className="text-[12px] text-[#646669] uppercase tracking-wider text-center first:text-left"
+							className="text-center text-[#646669] text-[12px] uppercase tracking-wider first:text-left"
 						>
 							{h}
 						</div>
@@ -344,7 +344,7 @@ function MonkeytypePreview() {
 					? [0, 1, 2].map((i) => (
 							<div key={i} className="grid grid-cols-4 gap-2 py-2">
 								{[0, 1, 2, 3].map((j) => (
-									<div key={j} className="text-[14px] text-[#646669] text-center first:text-left">
+									<div key={j} className="text-center text-[#646669] text-[14px] first:text-left">
 										···
 									</div>
 								))}
@@ -353,16 +353,16 @@ function MonkeytypePreview() {
 					: data?.modes.map(({ label, pb }) => (
 							<div
 								key={label}
-								className="grid grid-cols-4 gap-2 py-1.5 border-b border-[#2c2e31] last:border-0"
+								className="grid grid-cols-4 gap-2 border-[#2c2e31] border-b py-1.5 last:border-0"
 							>
-								<div className="text-[14px] text-[#646669]">{label}</div>
-								<div className="text-[17px] text-[#e2b714] font-bold text-center">
+								<div className="text-[#646669] text-[14px]">{label}</div>
+								<div className="text-center font-bold text-[#e2b714] text-[17px]">
 									{pb ? Math.round(pb.wpm) : '-'}
 								</div>
-								<div className="text-[14px] text-[#d1d0c5] text-center">
+								<div className="text-center text-[#d1d0c5] text-[14px]">
 									{pb ? Math.round(pb.raw) : '-'}
 								</div>
-								<div className="text-[14px] text-[#d1d0c5] text-center">
+								<div className="text-center text-[#d1d0c5] text-[14px]">
 									{pb ? `${Math.round(pb.acc)}%` : '-'}
 								</div>
 							</div>
@@ -370,7 +370,7 @@ function MonkeytypePreview() {
 			</div>
 
 			{/* Footer stats */}
-			<div className="grid grid-cols-3 gap-2 pt-2 border-t border-[#2c2e31]">
+			<div className="grid grid-cols-3 gap-2 border-[#2c2e31] border-t pt-2">
 				{[
 					{ label: 'tests', value: isLoading ? '···' : (data?.tests?.toLocaleString() ?? '-') },
 					{
@@ -383,8 +383,8 @@ function MonkeytypePreview() {
 					},
 				].map((s) => (
 					<div key={s.label} className="text-center">
-						<div className="text-[17px] font-bold text-[#d1d0c5] leading-tight">{s.value}</div>
-						<div className="text-[12px] text-[#646669] mt-1">{s.label}</div>
+						<div className="font-bold text-[#d1d0c5] text-[17px] leading-tight">{s.value}</div>
+						<div className="mt-1 text-[#646669] text-[12px]">{s.label}</div>
 					</div>
 				))}
 			</div>
@@ -521,12 +521,12 @@ function SocialChip({ social, activeId, setActiveId, leaveTimer }: SocialChipPro
 					target="_blank"
 					rel="noopener noreferrer"
 					className={[
-						'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-[var(--border)] outline-none',
-						'text-xs font-medium tracking-[-0.01em] whitespace-nowrap select-none no-underline',
+						'inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] px-3 py-1.5 outline-none',
+						'select-none whitespace-nowrap font-medium text-xs tracking-[-0.01em] no-underline',
 						'transition-all duration-150',
 						hovered
-							? 'bg-[var(--muted-bg)] text-[var(--text-primary)] -translate-y-px'
-							: 'bg-transparent text-[var(--text-muted)] translate-y-0',
+							? '-translate-y-px bg-[var(--muted-bg)] text-[var(--text-primary)]'
+							: 'translate-y-0 bg-transparent text-[var(--text-muted)]',
 					].join(' ')}
 				>
 					<span
@@ -563,7 +563,7 @@ function SocialsGridInner() {
 	useEffect(() => () => clearTimeout(leaveTimer.current), []);
 
 	return (
-		<div className="flex flex-wrap gap-2 items-center">
+		<div className="flex flex-wrap items-center gap-2">
 			{SOCIALS.map((social) => (
 				<SocialChip
 					key={social.id}

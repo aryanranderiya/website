@@ -51,8 +51,8 @@ export function Modal({
 							<Dialog.Content asChild>
 								<m.div
 									className={cn(
-										'fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2',
-										'rounded-2xl overflow-hidden bg-[var(--card)]',
+										'fixed top-1/2 left-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2',
+										'overflow-hidden rounded-2xl bg-[var(--card)]',
 										sizes[size]
 									)}
 									initial={{ opacity: 0, scale: 0.95, y: 8 }}
@@ -65,7 +65,7 @@ export function Modal({
 										<Dialog.Description className="sr-only">{description}</Dialog.Description>
 									)}
 									<Dialog.Close
-										className="absolute top-4 right-4 z-10 w-8 h-8 rounded-lg flex items-center justify-center transition-opacity hover:opacity-70 text-[var(--muted-foreground)]"
+										className="absolute top-4 right-4 z-10 flex h-8 w-8 items-center justify-center rounded-lg text-[var(--muted-foreground)] transition-opacity hover:opacity-70"
 										aria-label="Close"
 									>
 										<HugeiconsIcon icon={Cancel01Icon} size={16} />

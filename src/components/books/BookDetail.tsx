@@ -77,7 +77,7 @@ export default function BookDetail({
 							</Dialog.Overlay>
 							<Dialog.Content asChild>
 								<m.div
-									className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl overflow-hidden bg-[var(--card)]"
+									className="fixed top-1/2 left-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-[var(--card)]"
 									initial={{ opacity: 0, scale: 0.95, y: 12 }}
 									animate={{ opacity: 1, scale: 1, y: 0 }}
 									exit={{ opacity: 0, scale: 0.95, y: 12 }}
@@ -87,7 +87,7 @@ export default function BookDetail({
 									<Dialog.Close asChild>
 										<button
 											type="button"
-											className="absolute top-4 right-4 z-10 w-8 h-8 rounded-lg flex items-center justify-center bg-[var(--muted)] text-[var(--muted-foreground)] cursor-pointer"
+											className="absolute top-4 right-4 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--muted-foreground)]"
 											aria-label="Close"
 										>
 											<HugeiconsIcon icon={Cancel01Icon} size={14} color="currentColor" />
@@ -95,26 +95,26 @@ export default function BookDetail({
 									</Dialog.Close>
 
 									<div className="p-6">
-										<div className="flex gap-4 mb-5">
+										<div className="mb-5 flex gap-4">
 											{/* Book mini cover */}
-											<div className="w-16 h-24 rounded-lg overflow-hidden shrink-0 bg-[var(--muted)]">
+											<div className="h-24 w-16 shrink-0 overflow-hidden rounded-lg bg-[var(--muted)]">
 												{book.cover && (
 													<img
 														src={book.cover}
 														alt={book.title}
-														className="w-full h-full object-cover"
+														className="h-full w-full object-cover"
 													/>
 												)}
 											</div>
-											<div className="flex-1 min-w-0">
-												<h2 className="text-lg font-bold mb-1 tracking-[-0.02em] text-[var(--foreground)] m-0">
+											<div className="min-w-0 flex-1">
+												<h2 className="m-0 mb-1 font-bold text-[var(--foreground)] text-lg tracking-[-0.02em]">
 													{book.title}
 												</h2>
-												<div className="text-sm mb-2 text-[var(--muted-foreground)]">
+												<div className="mb-2 text-[var(--muted-foreground)] text-sm">
 													{book.author}
 												</div>
 												<span
-													className="text-xs px-2 py-0.5 rounded-full"
+													className="rounded-full px-2 py-0.5 text-xs"
 													// biome-ignore lint/nursery/noInlineStyles: dynamic status-based background and color
 													style={{ background: statusStyle.bg, color: statusStyle.text }}
 												>
@@ -129,18 +129,18 @@ export default function BookDetail({
 											</div>
 										)}
 
-										<div className="flex gap-4 mb-4 text-xs text-[var(--muted-foreground)]">
+										<div className="mb-4 flex gap-4 text-[var(--muted-foreground)] text-xs">
 											{book.year && <span>{book.year}</span>}
 											{book.pages && <span>{book.pages} pages</span>}
 											{book.dateRead && <span>Read {new Date(book.dateRead).getFullYear()}</span>}
 										</div>
 
 										{book.genre.length > 0 && (
-											<div className="flex flex-wrap gap-1.5 mb-4">
+											<div className="mb-4 flex flex-wrap gap-1.5">
 												{book.genre.map((g) => (
 													<span
 														key={g}
-														className="text-xs px-2 py-0.5 rounded-full capitalize text-[var(--muted-foreground)] bg-[var(--muted-bg)]"
+														className="rounded-full bg-[var(--muted-bg)] px-2 py-0.5 text-[var(--muted-foreground)] text-xs capitalize"
 													>
 														{g}
 													</span>
@@ -149,11 +149,11 @@ export default function BookDetail({
 										)}
 
 										{book.review && (
-											<div className="p-3 rounded-xl bg-[var(--muted)]">
-												<div className="text-xs font-semibold uppercase tracking-widest mb-2 text-[var(--muted-foreground)]">
+											<div className="rounded-xl bg-[var(--muted)] p-3">
+												<div className="mb-2 font-semibold text-[var(--muted-foreground)] text-xs uppercase tracking-widest">
 													My thoughts
 												</div>
-												<p className="text-sm leading-relaxed text-[var(--foreground)] m-0">
+												<p className="m-0 text-[var(--foreground)] text-sm leading-relaxed">
 													{book.review}
 												</p>
 											</div>

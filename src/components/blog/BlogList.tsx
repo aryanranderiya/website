@@ -30,7 +30,7 @@ export default function BlogList({
 	animateDelay?: boolean;
 }) {
 	if (posts.length === 0) {
-		return <p className="text-sm text-[var(--text-muted)] mt-8">No posts yet. Check back soon.</p>;
+		return <p className="mt-8 text-[var(--text-muted)] text-sm">No posts yet. Check back soon.</p>;
 	}
 
 	return (
@@ -50,27 +50,27 @@ export default function BlogList({
 						}}
 						className={[
 							'group flex items-center gap-[14px] py-[10px] no-underline',
-							'rounded-[var(--radius-sm)] px-2 -mx-2',
+							'-mx-2 rounded-[var(--radius-sm)] px-2',
 							'transition-[background] duration-150 hover:bg-[var(--muted-bg)]',
-							i < posts.length - 1 ? 'border-b border-[var(--border)]' : '',
+							i < posts.length - 1 ? 'border-[var(--border)] border-b' : '',
 						].join(' ')}
 					>
-						<time className="w-[72px] shrink-0 text-[11px] text-[var(--text-ghost)] leading-[1.5] tabular-nums">
+						<time className="w-[72px] shrink-0 text-[11px] text-[var(--text-ghost)] tabular-nums leading-[1.5]">
 							{formatDate(post.date)}
 						</time>
 
-						<div className="flex-1 min-w-0 flex items-center gap-2">
-							<span className="text-[13px] font-medium text-[var(--text-secondary)] tracking-[-0.01em] truncate transition-colors duration-150 group-hover:text-[var(--text-primary)]">
+						<div className="flex min-w-0 flex-1 items-center gap-2">
+							<span className="truncate font-medium text-[13px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover:text-[var(--text-primary)]">
 								{post.title}
 							</span>
 							{post.featured && (
-								<span className="text-[10px] font-medium px-1.5 py-[2px] rounded-full bg-[var(--border)] text-[var(--text-muted)] shrink-0 tracking-[0.02em]">
+								<span className="shrink-0 rounded-full bg-[var(--border)] px-1.5 py-[2px] font-medium text-[10px] text-[var(--text-muted)] tracking-[0.02em]">
 									Featured
 								</span>
 							)}
 						</div>
 
-						<span className="w-[22px] h-[22px] rounded-full border border-[var(--border)] flex items-center justify-center text-[var(--text-ghost)] shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+						<span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text-ghost)] opacity-0 transition-opacity duration-150 group-hover:opacity-100">
 							<ChevronRight size={13} />
 						</span>
 					</m.a>

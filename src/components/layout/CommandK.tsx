@@ -130,8 +130,7 @@ export default function CommandK() {
 				void navigator.clipboard?.writeText('aryan@heygaia.io');
 				break;
 			case 'email-me':
-				window.location.href =
-					'mailto:aryan@heygaia.io?subject=Hey%20Aryan';
+				window.location.href = 'mailto:aryan@heygaia.io?subject=Hey%20Aryan';
 				break;
 			case 'copy-url':
 				void navigator.clipboard?.writeText(window.location.href);
@@ -174,7 +173,7 @@ export default function CommandK() {
 
 							<Dialog.Content asChild>
 								<m.div
-									className="fixed left-1/2 top-[20%] z-[101] w-full max-w-lg -translate-x-1/2 rounded-2xl overflow-hidden shadow-2xl bg-card outline-none"
+									className="fixed top-[20%] left-1/2 z-[101] w-full max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl bg-card shadow-2xl outline-none"
 									initial={{ opacity: 0, scale: 0.96, y: -8 }}
 									animate={{ opacity: 1, scale: 1, y: 0 }}
 									exit={{ opacity: 0, scale: 0.96, y: -8 }}
@@ -199,12 +198,12 @@ export default function CommandK() {
 												onValueChange={setQuery}
 												placeholder="Search pages, actions, people..."
 												aria-label="Search pages and actions"
-												className="flex-1 py-4 text-sm outline-none focus:outline-none focus-visible:outline-none ring-0 focus:ring-0 focus-visible:ring-0 border-none shadow-none bg-transparent text-foreground caret-foreground placeholder:text-[var(--muted-foreground)]"
+												className="flex-1 border-none bg-transparent py-4 text-foreground text-sm caret-foreground shadow-none outline-none ring-0 placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
 											/>
 											<button
 												type="button"
 												onClick={() => setOpen(false)}
-												className="w-6 h-6 rounded-full flex items-center justify-center bg-[var(--muted)] text-[var(--muted-foreground)] hover:bg-[var(--muted-foreground)]/20 transition-colors flex-shrink-0"
+												className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--muted)] text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted-foreground)]/20"
 												aria-label="Close"
 											>
 												<HugeiconsIcon icon={Cancel01Icon} size={12} />
@@ -212,8 +211,8 @@ export default function CommandK() {
 										</div>
 
 										{/* Results list */}
-										<Command.List className="max-h-80 overflow-y-auto py-2 [&_[cmdk-group-heading]]:text-[0.7rem] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:tracking-[0.08em] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:text-[var(--muted-foreground)] [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-item]]:flex [&_[cmdk-item]]:items-center [&_[cmdk-item]]:gap-3 [&_[cmdk-item]]:px-3 [&_[cmdk-item]]:py-2 [&_[cmdk-item]]:rounded-lg [&_[cmdk-item]]:cursor-pointer [&_[cmdk-item]]:text-sm [&_[cmdk-item]]:transition-colors [&_[cmdk-item]]:text-[var(--foreground)] [&_[cmdk-item]]:outline-none [&_[cmdk-item][aria-selected='true']]:bg-[var(--muted)] [&_[cmdk-item]:hover]:bg-[var(--muted)]">
-											<Command.Empty className="py-8 text-center text-sm text-muted-foreground">
+										<Command.List className="max-h-80 overflow-y-auto py-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-[0.7rem] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.08em] [&_[cmdk-item]:hover]:bg-[var(--muted)] [&_[cmdk-item][aria-selected='true']]:bg-[var(--muted)] [&_[cmdk-item]]:flex [&_[cmdk-item]]:cursor-pointer [&_[cmdk-item]]:items-center [&_[cmdk-item]]:gap-3 [&_[cmdk-item]]:rounded-lg [&_[cmdk-item]]:px-3 [&_[cmdk-item]]:py-2 [&_[cmdk-item]]:text-[var(--foreground)] [&_[cmdk-item]]:text-sm [&_[cmdk-item]]:outline-none [&_[cmdk-item]]:transition-colors">
+											<Command.Empty className="py-8 text-center text-muted-foreground text-sm">
 												No results found.
 											</Command.Empty>
 
@@ -229,20 +228,20 @@ export default function CommandK() {
 															value={`${page.label} ${page.description}`}
 															onSelect={() => navigate(page.href)}
 														>
-															<span className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 bg-[var(--muted)] text-[var(--muted-foreground)]">
+															<span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
 																<HugeiconsIcon icon={IconComp} size={ITEM_ICON_SIZE} />
 															</span>
-															<div className="flex-1 min-w-0">
+															<div className="min-w-0 flex-1">
 																<div className="font-medium tracking-[-0.01em]">{page.label}</div>
 																{page.description && (
-																	<div className="text-xs truncate mt-0.5 text-muted-foreground">
+																	<div className="mt-0.5 truncate text-muted-foreground text-xs">
 																		{page.description}
 																	</div>
 																)}
 															</div>
 															<ChevronRight
 																size={12}
-																className="flex-shrink-0 hidden sm:block opacity-30 text-[var(--muted-foreground)]"
+																className="hidden flex-shrink-0 text-[var(--muted-foreground)] opacity-30 sm:block"
 															/>
 														</Command.Item>
 													);
@@ -261,20 +260,20 @@ export default function CommandK() {
 															value={`${link.label} social`}
 															onSelect={() => navigate(link.href, true)}
 														>
-															<span className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 bg-[var(--muted)] text-[var(--muted-foreground)]">
+															<span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
 																<HugeiconsIcon icon={IconComp} size={ITEM_ICON_SIZE} />
 															</span>
-															<div className="flex-1 min-w-0">
+															<div className="min-w-0 flex-1">
 																<div className="font-medium tracking-[-0.01em]">{link.label}</div>
 																{link.description && (
-																	<div className="text-xs truncate mt-0.5 text-muted-foreground">
+																	<div className="mt-0.5 truncate text-muted-foreground text-xs">
 																		{link.description}
 																	</div>
 																)}
 															</div>
 															<ChevronRight
 																size={12}
-																className="flex-shrink-0 hidden sm:block opacity-30 text-[var(--muted-foreground)]"
+																className="hidden flex-shrink-0 text-[var(--muted-foreground)] opacity-30 sm:block"
 															/>
 														</Command.Item>
 													);
@@ -288,17 +287,18 @@ export default function CommandK() {
 														key={action.id}
 														value={`${action.label} ${action.description} ${action.keywords ?? ''}`}
 														onSelect={() => {
-															if (action.href) navigate(action.href, action.href.startsWith('http'));
+															if (action.href)
+																navigate(action.href, action.href.startsWith('http'));
 															else runAction(action.id);
 														}}
 													>
-														<span className="w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 bg-[var(--muted)] text-[var(--muted-foreground)]">
+														<span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
 															<HugeiconsIcon icon={action.iconComp} size={ITEM_ICON_SIZE} />
 														</span>
-														<div className="flex-1 min-w-0">
+														<div className="min-w-0 flex-1">
 															<div className="font-medium tracking-[-0.01em]">{action.label}</div>
 															{action.description && (
-																<div className="text-xs truncate mt-0.5 text-muted-foreground">
+																<div className="mt-0.5 truncate text-muted-foreground text-xs">
 																	{action.description}
 																</div>
 															)}

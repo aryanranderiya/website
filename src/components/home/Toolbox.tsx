@@ -1,8 +1,8 @@
 'use client';
 
-import SectionLink from '@/components/ui/SectionLink';
 import { LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
+import SectionLink from '@/components/ui/SectionLink';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
@@ -36,16 +36,16 @@ export default function Toolbox() {
 							viewport={{ once: true }}
 							transition={{ duration: 0.35, ease: EASE, delay: i * 0.04 }}
 							whileHover={{ scale: 1.08 }}
-							className="group inline-flex flex-col items-center gap-1.5 cursor-default relative"
+							className="group relative inline-flex cursor-default flex-col items-center gap-1.5"
 						>
 							<img
 								src={tool.icon}
 								width={24}
 								height={24}
 								alt={tool.name}
-								className="block rounded-[6px] w-6 h-6 shrink-0"
+								className="block h-6 w-6 shrink-0 rounded-[6px]"
 							/>
-							<span className="absolute -bottom-[18px] left-1/2 -translate-x-1/2 text-[10px] text-[var(--text-ghost)] tracking-[-0.01em] leading-none whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none">
+							<span className="pointer-events-none absolute -bottom-[18px] left-1/2 -translate-x-1/2 whitespace-nowrap text-[10px] text-[var(--text-ghost)] leading-none tracking-[-0.01em] opacity-0 transition-opacity duration-150 group-hover:opacity-100">
 								{tool.name}
 							</span>
 						</m.div>

@@ -10,10 +10,10 @@ export function Card({ className, hover = false, glass = false, children, ...pro
 	return (
 		<div
 			className={cn(
-				'rounded-xl overflow-hidden',
+				'overflow-hidden rounded-xl',
 				!glass && 'bg-[var(--card)]',
 				'text-[var(--card-foreground)]',
-				hover && 'transition-all duration-200 hover:shadow-lg cursor-pointer',
+				hover && 'cursor-pointer transition-all duration-200 hover:shadow-lg',
 				glass && 'glass',
 				className
 			)}
@@ -54,7 +54,7 @@ export function CardFooter({
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {
 	return (
-		<div className={cn('p-5 pt-0 flex items-center gap-3', className)} {...props}>
+		<div className={cn('flex items-center gap-3 p-5 pt-0', className)} {...props}>
 			{children}
 		</div>
 	);
@@ -67,7 +67,7 @@ export function CardTitle({
 }: React.HTMLAttributes<HTMLHeadingElement>) {
 	return (
 		<h3
-			className={cn('text-base font-semibold leading-tight tracking-[-0.01em]', className)}
+			className={cn('font-semibold text-base leading-tight tracking-[-0.01em]', className)}
 			{...props}
 		>
 			{children}
@@ -81,7 +81,7 @@ export function CardDescription({
 	...props
 }: React.HTMLAttributes<HTMLParagraphElement>) {
 	return (
-		<p className={cn('text-sm mt-1 text-[var(--muted-foreground)]', className)} {...props}>
+		<p className={cn('mt-1 text-[var(--muted-foreground)] text-sm', className)} {...props}>
 			{children}
 		</p>
 	);

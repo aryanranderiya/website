@@ -1,73 +1,73 @@
 /* iMessage-style bubbles — ported from ui.heygaia.io */
 :root {
-  --imessage-received-bg: #e9e9eb;
-  --imessage-received-color: #111;
+	--imessage-received-bg: #e9e9eb;
+	--imessage-received-color: #111;
 }
 
 .dark {
-  --imessage-received-bg: #27272a;
-  --imessage-received-color: #fff;
+	--imessage-received-bg: #27272a;
+	--imessage-received-color: #fff;
 }
 
 .imessage-bubble {
-  word-wrap: break-word;
-  line-height: 1.5;
-  position: relative;
-  padding: 8px 16px;
-  max-width: 78%;
-  border-radius: 18px;
-  font-size: 13px;
-  letter-spacing: -0.01em;
+	word-wrap: break-word;
+	line-height: 1.5;
+	position: relative;
+	padding: 8px 16px;
+	max-width: 78%;
+	border-radius: 18px;
+	font-size: 13px;
+	letter-spacing: -0.01em;
 }
 
 .imessage-bubble::before,
 .imessage-bubble::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  height: 18px;
+	content: "";
+	position: absolute;
+	bottom: 0;
+	height: 18px;
 }
 
 /* Sent (user) — right-aligned, accent blue */
 .imessage-from-me {
-  background: var(--accent-blue, #00bbff);
-  color: #000;
-  align-self: flex-end;
+	background: var(--accent-blue, #00bbff);
+	color: #000;
+	align-self: flex-end;
 }
 
 .imessage-from-me::before {
-  right: -7px;
-  width: 20px;
-  background-color: var(--accent-blue, #00bbff);
-  border-bottom-left-radius: 16px 14px;
+	right: -7px;
+	width: 20px;
+	background-color: var(--accent-blue, #00bbff);
+	border-bottom-left-radius: 16px 14px;
 }
 
 .imessage-from-me::after {
-  right: -26px;
-  width: 26px;
-  background-color: var(--background, #fdfdfc);
-  border-bottom-left-radius: 10px;
+	right: -26px;
+	width: 26px;
+	background-color: var(--background, #fdfdfc);
+	border-bottom-left-radius: 10px;
 }
 
 /* Received (AI) — left-aligned, neutral gray */
 .imessage-from-them {
-  background: var(--imessage-received-bg);
-  color: var(--imessage-received-color);
-  align-self: flex-start;
+	background: var(--imessage-received-bg);
+	color: var(--imessage-received-color);
+	align-self: flex-start;
 }
 
 .imessage-from-them::before {
-  left: -7px;
-  width: 20px;
-  background-color: var(--imessage-received-bg);
-  border-bottom-right-radius: 16px;
+	left: -7px;
+	width: 20px;
+	background-color: var(--imessage-received-bg);
+	border-bottom-right-radius: 16px;
 }
 
 .imessage-from-them::after {
-  left: -26px;
-  width: 26px;
-  background-color: var(--background, #fdfdfc);
-  border-bottom-right-radius: 10px;
+	left: -26px;
+	width: 26px;
+	background-color: var(--background, #fdfdfc);
+	border-bottom-right-radius: 10px;
 }
 
 /* Grouped — hide tails on non-final bubbles */
@@ -75,19 +75,19 @@
 .imessage-grouped-first::after,
 .imessage-grouped-middle::before,
 .imessage-grouped-middle::after {
-  display: none;
+	display: none;
 }
 
 .imessage-grouped-first {
-  border-radius: 18px !important;
-  margin-bottom: 3px;
+	border-radius: 18px !important;
+	margin-bottom: 3px;
 }
 
 .imessage-grouped-middle {
-  border-radius: 18px !important;
-  margin-bottom: 3px;
+	border-radius: 18px !important;
+	margin-bottom: 3px;
 }
 
 .imessage-grouped-last {
-  border-radius: 18px !important;
+	border-radius: 18px !important;
 }

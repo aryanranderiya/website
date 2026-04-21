@@ -12,7 +12,7 @@ export default function SectionLink({ href, label, variant = 'pill' }: SectionLi
 		return (
 			<a
 				href={href}
-				className="text-[11px] text-[var(--text-ghost)] no-underline inline-flex items-center gap-[3px] tracking-[-0.01em] transition-colors duration-150 hover:text-[var(--text-muted)]"
+				className="inline-flex items-center gap-[3px] text-[11px] text-[var(--text-ghost)] tracking-[-0.01em] no-underline transition-colors duration-150 hover:text-[var(--text-muted)]"
 			>
 				{label} <CircleArrowRight02Icon size={11} />
 			</a>
@@ -22,7 +22,7 @@ export default function SectionLink({ href, label, variant = 'pill' }: SectionLi
 	return (
 		<a
 			href={href}
-			className="text-[12px] font-medium text-[var(--text-secondary)] no-underline inline-flex items-center gap-1 bg-[var(--muted-bg)] rounded-full px-[14px] py-[6px] pr-[10px] transition-[filter] duration-150 hover:brightness-[0.96]"
+			className="inline-flex items-center gap-1 rounded-full bg-[var(--muted-bg)] px-[14px] py-[6px] pr-[10px] font-medium text-[12px] text-[var(--text-secondary)] no-underline transition-[filter] duration-150 hover:brightness-[0.96]"
 		>
 			{label} <HugeiconsIcon icon={CircleArrowRight02Icon} size={13} />
 		</a>

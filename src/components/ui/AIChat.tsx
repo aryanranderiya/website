@@ -94,7 +94,7 @@ function TypingDots() {
 			{[0, 1, 2].map((i) => (
 				<m.span
 					key={i}
-					className="w-1.5 h-1.5 rounded-full bg-current"
+					className="h-1.5 w-1.5 rounded-full bg-current"
 					animate={{ opacity: [0.3, 0.8, 0.3] }}
 					transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2 }}
 				/>
@@ -105,7 +105,7 @@ function TypingDots() {
 
 function UserBubble({ content }: { content: string }) {
 	return (
-		<div className="flex justify-end mb-2">
+		<div className="mb-2 flex justify-end">
 			<div className="imessage-bubble imessage-from-me break-words">
 				<p className="whitespace-pre-wrap">{content}</p>
 			</div>
@@ -125,14 +125,14 @@ function AssistantBubble({
 	onFollowUp?: (q: string) => void;
 }) {
 	return (
-		<div className="flex flex-col items-start mb-2">
+		<div className="mb-2 flex flex-col items-start">
 			<div className="imessage-bubble imessage-from-them break-words">
 				{content ? (
 					<>
 						<p className="whitespace-pre-wrap">{content}</p>
 						{isStreaming && (
 							<m.span
-								className="inline-block w-0.5 h-[13px] ml-0.5 align-middle bg-current opacity-60"
+								className="ml-0.5 inline-block h-[13px] w-0.5 bg-current align-middle opacity-60"
 								animate={{ opacity: [0.6, 0] }}
 								transition={{ duration: 0.5, repeat: Infinity }}
 							/>
@@ -151,14 +151,14 @@ function AssistantBubble({
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0 }}
 						transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1], delay: 0.1 }}
-						className="flex flex-wrap gap-1.5 mt-2 pl-1"
+						className="mt-2 flex flex-wrap gap-1.5 pl-1"
 					>
 						{followUps.map((q) => (
 							<button
 								type="button"
 								key={q}
 								onClick={() => onFollowUp?.(q)}
-								className="text-[11px] px-2.5 py-1 rounded-full cursor-pointer transition-colors hover:bg-black/5 border-[1.5px] border-dashed border-[rgba(0,0,0,0.22)] text-[rgba(0,0,0,0.5)] tracking-[-0.01em] leading-[1.4]"
+								className="cursor-pointer rounded-full border-[1.5px] border-[rgba(0,0,0,0.22)] border-dashed px-2.5 py-1 text-[11px] text-[rgba(0,0,0,0.5)] leading-[1.4] tracking-[-0.01em] transition-colors hover:bg-black/5"
 							>
 								{q}
 							</button>
@@ -325,7 +325,7 @@ export default function AIChat() {
 	return (
 		<LazyMotion features={loadFeatures}>
 			<m.div
-				className="fixed bottom-6 right-6 overflow-hidden"
+				className="fixed right-6 bottom-6 overflow-hidden"
 				style={{ zIndex: 9998, transformOrigin: 'bottom right' }}
 				animate={{
 					width: isOpen ? 360 : 48,
@@ -349,7 +349,7 @@ export default function AIChat() {
 					{!isOpen && (
 						<m.button
 							key="fab"
-							className="absolute inset-0 flex items-center justify-center cursor-pointer"
+							className="absolute inset-0 flex cursor-pointer items-center justify-center"
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
 							exit={{ opacity: 0 }}
@@ -376,16 +376,16 @@ export default function AIChat() {
 							transition={{ delay: 0.12, duration: 0.2 }}
 						>
 							{/* Header */}
-							<div className="flex items-center justify-between px-4 py-3 shrink-0 border-b border-[rgba(0,0,0,0.06)]">
+							<div className="flex shrink-0 items-center justify-between border-[rgba(0,0,0,0.06)] border-b px-4 py-3">
 								<div className="flex items-center gap-2">
-									<div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 bg-[#00bbff]">
+									<div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bbff]">
 										<HugeiconsIcon icon={ChatBotIcon} size={14} color="white" />
 									</div>
 									<div>
-										<p className="text-[13px] font-[550] leading-none text-[var(--foreground)] tracking-[-0.02em]">
+										<p className="font-[550] text-[13px] text-[var(--foreground)] leading-none tracking-[-0.02em]">
 											Ask about Aryan
 										</p>
-										<p className="text-[11px] mt-0.5 text-[rgba(0,0,0,0.35)]">
+										<p className="mt-0.5 text-[11px] text-[rgba(0,0,0,0.35)]">
 											{isModelReady
 												? isGeneratingFollowUps
 													? 'Thinking...'
@@ -399,7 +399,7 @@ export default function AIChat() {
 								<button
 									type="button"
 									onClick={() => setIsOpen(false)}
-									className="w-7 h-7 flex items-center justify-center rounded-full cursor-pointer transition-colors hover:bg-black/6"
+									className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-black/6"
 									aria-label="Close chat"
 								>
 									<HugeiconsIcon icon={Cancel01Icon} size={14} color="rgba(0,0,0,0.45)" />
@@ -407,7 +407,7 @@ export default function AIChat() {
 							</div>
 
 							{/* Messages */}
-							<div className="flex-1 overflow-y-auto overflow-x-hidden px-5 py-3 flex flex-col min-h-0">
+							<div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-5 py-3">
 								{messages.map((msg: Message) => (
 									<m.div
 										key={msg.id}
@@ -433,12 +433,12 @@ export default function AIChat() {
 									<m.div
 										initial={{ opacity: 0, y: 4 }}
 										animate={{ opacity: 1, y: 0 }}
-										className="flex justify-start mb-2"
+										className="mb-2 flex justify-start"
 									>
 										<div className="imessage-bubble imessage-from-them max-w-[85%]">
-											<div className="flex items-center gap-2 mb-1.5">
+											<div className="mb-1.5 flex items-center gap-2">
 												<m.div
-													className="w-3 h-3 rounded-full border-[1.5px] border-[#00bbff] border-t-transparent shrink-0"
+													className="h-3 w-3 shrink-0 rounded-full border-[#00bbff] border-[1.5px] border-t-transparent"
 													animate={{ rotate: 360 }}
 													transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
 												/>
@@ -446,7 +446,7 @@ export default function AIChat() {
 													{loadProgress || 'Loading model...'}
 												</span>
 											</div>
-											<div className="h-px rounded-full overflow-hidden mb-1.5 bg-[rgba(0,0,0,0.08)]">
+											<div className="mb-1.5 h-px overflow-hidden rounded-full bg-[rgba(0,0,0,0.08)]">
 												<m.div
 													className="h-full rounded-full"
 													style={{ background: '#00bbff' }}
@@ -465,7 +465,7 @@ export default function AIChat() {
 									<m.div
 										initial={{ opacity: 0 }}
 										animate={{ opacity: 1 }}
-										className="flex justify-start mb-2"
+										className="mb-2 flex justify-start"
 									>
 										<div className="imessage-bubble imessage-from-them text-[12px] text-[rgba(200,50,50,0.85)]">
 											{loadError}
@@ -484,14 +484,14 @@ export default function AIChat() {
 										animate={{ opacity: 1, y: 0 }}
 										exit={{ opacity: 0, y: 4 }}
 										transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1] }}
-										className="px-4 pb-2 flex flex-wrap gap-1.5 shrink-0"
+										className="flex shrink-0 flex-wrap gap-1.5 px-4 pb-2"
 									>
 										{SUGGESTED_QUESTIONS.map((q) => (
 											<button
 												type="button"
 												key={q}
 												onClick={() => sendMessage(q)}
-												className="text-[11.5px] px-2.5 py-1 rounded-full cursor-pointer transition-colors hover:bg-black/5 border-[1.5px] border-dashed border-[rgba(0,0,0,0.22)] text-[rgba(0,0,0,0.55)] tracking-[-0.01em] leading-[1.4]"
+												className="cursor-pointer rounded-full border-[1.5px] border-[rgba(0,0,0,0.22)] border-dashed px-2.5 py-1 text-[11.5px] text-[rgba(0,0,0,0.55)] leading-[1.4] tracking-[-0.01em] transition-colors hover:bg-black/5"
 											>
 												{q}
 											</button>
@@ -501,7 +501,7 @@ export default function AIChat() {
 							</AnimatePresence>
 
 							{/* Input */}
-							<div className="px-3 pb-3 pt-2 shrink-0 border-t border-[rgba(0,0,0,0.06)]">
+							<div className="shrink-0 border-[rgba(0,0,0,0.06)] border-t px-3 pt-2 pb-3">
 								<form
 									onSubmit={handleSubmit}
 									className="relative flex items-center rounded-full bg-[rgba(0,0,0,0.05)]"
@@ -513,12 +513,12 @@ export default function AIChat() {
 										onChange={(e) => setInput(e.target.value)}
 										placeholder={isModelReady ? 'Ask anything...' : 'Loading model...'}
 										disabled={!isModelReady || isStreaming}
-										className="w-full text-[13px] pl-4 pr-11 py-2.5 rounded-full outline-none focus:outline-none focus:ring-0 disabled:opacity-40 transition-opacity bg-transparent text-[var(--foreground)] border-none shadow-none tracking-[-0.01em]"
+										className="w-full rounded-full border-none bg-transparent py-2.5 pr-11 pl-4 text-[13px] text-[var(--foreground)] tracking-[-0.01em] shadow-none outline-none transition-opacity focus:outline-none focus:ring-0 disabled:opacity-40"
 									/>
 									<m.button
 										type="submit"
 										disabled={!canSend}
-										className="absolute right-1 w-8 h-8 rounded-full flex items-center justify-center shrink-0 disabled:opacity-30 cursor-pointer disabled:cursor-default"
+										className="absolute right-1 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full disabled:cursor-default disabled:opacity-30"
 										style={{ background: '#00bbff' }}
 										whileHover={canSend ? { scale: 1.08 } : {}}
 										whileTap={canSend ? { scale: 0.92 } : {}}

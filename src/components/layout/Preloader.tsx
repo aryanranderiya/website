@@ -72,7 +72,7 @@ export default function Preloader() {
 			<TextMorph
 				duration={120}
 				ease="cubic-bezier(0.19, 1, 0.22, 1)"
-				className="text-[15px] leading-none tracking-[-0.02em] select-none text-[var(--text-muted)]"
+				className="select-none text-[15px] text-[var(--text-muted)] leading-none tracking-[-0.02em]"
 				style={{ fontVariationSettings: '"wght" 580' }}
 			>
 				{greetings[index]}

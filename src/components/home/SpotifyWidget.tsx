@@ -41,11 +41,11 @@ function ShimmerBlock({ w, h, r = 6 }: { w: string | number; h: number; r?: numb
 function MusicBars() {
 	return (
 		<LazyMotion features={loadFeatures}>
-			<div className="flex items-end gap-[2px] h-[10px]">
+			<div className="flex h-[10px] items-end gap-[2px]">
 				{[1, 2, 3].map((i) => (
 					<m.span
 						key={i}
-						className="w-[2px] rounded-full bg-[#1DB954] block"
+						className="block w-[2px] rounded-full bg-[#1DB954]"
 						animate={{ height: ['40%', '100%', '60%', '80%', '40%'] }}
 						transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15, ease: 'easeInOut' }}
 					/>
@@ -104,10 +104,10 @@ export default function SpotifyWidget() {
 				initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
 				animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
 				transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.32 }}
-				className="h-40 rounded-[20px] bg-[var(--muted-bg)] px-[17px] py-[15px] flex flex-col overflow-hidden relative"
+				className="relative flex h-40 flex-col overflow-hidden rounded-[20px] bg-[var(--muted-bg)] px-[17px] py-[15px]"
 			>
 				{/* Header */}
-				<div className="flex items-center justify-between relative">
+				<div className="relative flex items-center justify-between">
 					<img src={SPOTIFY_LOGO} alt="Spotify" width="85" height="24" className="h-3.5 w-auto" />
 
 					<AnimatePresence>
@@ -119,7 +119,7 @@ export default function SpotifyWidget() {
 								className="flex items-center gap-[5px]"
 							>
 								<MusicBars />
-								<span className="text-[9px] tracking-[0.07em] uppercase text-[var(--text-ghost)] font-medium">
+								<span className="font-medium text-[9px] text-[var(--text-ghost)] uppercase tracking-[0.07em]">
 									Now Playing
 								</span>
 							</m.div>
@@ -128,7 +128,7 @@ export default function SpotifyWidget() {
 				</div>
 
 				{/* Main content */}
-				<div className="flex-1 flex items-center relative">
+				<div className="relative flex flex-1 items-center">
 					<AnimatePresence mode="wait">
 						{loading ? (
 							<m.div
@@ -136,10 +136,10 @@ export default function SpotifyWidget() {
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 								exit={{ opacity: 0 }}
-								className="flex gap-[13px] items-center w-full"
+								className="flex w-full items-center gap-[13px]"
 							>
 								<ShimmerBlock w={ART_SIZE} h={ART_SIZE} r={10} />
-								<div className="flex-1 flex flex-col gap-[7px]">
+								<div className="flex flex-1 flex-col gap-[7px]">
 									<ShimmerBlock w="75%" h={12} r={5} />
 									<ShimmerBlock w="55%" h={10} r={5} />
 									<ShimmerBlock w="40%" h={9} r={5} />
@@ -152,36 +152,36 @@ export default function SpotifyWidget() {
 								animate={{ opacity: 1, y: 0 }}
 								exit={{ opacity: 0, y: -5 }}
 								transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1] }}
-								className="flex gap-[13px] items-center w-full"
+								className="flex w-full items-center gap-[13px]"
 							>
 								{/* Album art */}
 								{track.albumArt ? (
 									<img
 										src={track.albumArt}
 										alt={track.album ?? 'Album art'}
-										className="rounded-[10px] object-cover shrink-0 w-16 h-16"
+										className="h-16 w-16 shrink-0 rounded-[10px] object-cover"
 									/>
 								) : (
-									<div className="rounded-[10px] shrink-0 bg-[var(--border)] flex items-center justify-center text-[var(--text-ghost)] w-16 h-16">
+									<div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-[10px] bg-[var(--border)] text-[var(--text-ghost)]">
 										<img src={SPOTIFY_LOGO} alt="Spotify" className="w-10 opacity-40" />
 									</div>
 								)}
 
 								{/* Track info */}
-								<div className="flex-1 min-w-0 flex flex-col gap-0.5">
+								<div className="flex min-w-0 flex-1 flex-col gap-0.5">
 									<a
 										href={track.songUrl}
 										target="_blank"
 										rel="noopener noreferrer"
-										className="text-[13px] font-semibold tracking-[-0.02em] text-[var(--text-primary)] no-underline overflow-hidden text-ellipsis whitespace-nowrap block leading-[1.3] transition-colors duration-150 hover:text-[#1DB954]"
+										className="block overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-[13px] text-[var(--text-primary)] leading-[1.3] tracking-[-0.02em] no-underline transition-colors duration-150 hover:text-[#1DB954]"
 									>
 										{track.title}
 									</a>
-									<span className="text-xs text-[var(--text-secondary)] overflow-hidden text-ellipsis whitespace-nowrap tracking-[-0.01em]">
+									<span className="overflow-hidden text-ellipsis whitespace-nowrap text-[var(--text-secondary)] text-xs tracking-[-0.01em]">
 										{track.artist}
 									</span>
 									{track.album && (
-										<span className="text-[11px] text-[var(--text-ghost)] overflow-hidden text-ellipsis whitespace-nowrap mt-0.5">
+										<span className="mt-0.5 overflow-hidden text-ellipsis whitespace-nowrap text-[11px] text-[var(--text-ghost)]">
 											{track.album}
 										</span>
 									)}
@@ -194,7 +194,7 @@ export default function SpotifyWidget() {
 								animate={{ opacity: 1 }}
 								className="flex flex-col gap-[3px]"
 							>
-								<span className="text-[13px] font-medium text-[var(--text-secondary)] tracking-[-0.01em]">
+								<span className="font-medium text-[13px] text-[var(--text-secondary)] tracking-[-0.01em]">
 									Not playing
 								</span>
 								<span className="text-[11px] text-[var(--text-ghost)]">Nothing in queue</span>
@@ -208,7 +208,7 @@ export default function SpotifyWidget() {
 					<AnimatePresence>
 						{track.isPlaying && track.duration ? (
 							<m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-								<div className="flex justify-between mb-[5px]">
+								<div className="mb-[5px] flex justify-between">
 									<span className="text-[9px] text-[var(--text-ghost)] tracking-[0.02em]">
 										{formatTime(liveProgress)}
 									</span>
@@ -216,9 +216,9 @@ export default function SpotifyWidget() {
 										{formatTime(track.duration)}
 									</span>
 								</div>
-								<div className="h-1 bg-[var(--border)] rounded-full overflow-hidden">
+								<div className="h-1 overflow-hidden rounded-full bg-[var(--border)]">
 									<m.div
-										className="h-full bg-[#1DB954] rounded-full"
+										className="h-full rounded-full bg-[#1DB954]"
 										animate={{ width: `${progressPct}%` }}
 										transition={{ duration: 1, ease: 'linear' }}
 									/>

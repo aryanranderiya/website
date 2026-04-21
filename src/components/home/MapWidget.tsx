@@ -134,9 +134,9 @@ function MapWidgetInner() {
 				initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
 				animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
 				transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.32 }}
-				className="rounded-2xl overflow-hidden h-40 bg-black/[0.06]"
+				className="h-40 overflow-hidden rounded-2xl bg-black/[0.06]"
 			>
-				<div ref={setContainerRef} className="w-full h-full" />
+				<div ref={setContainerRef} className="h-full w-full" />
 			</m.div>
 		</LazyMotion>
 	);

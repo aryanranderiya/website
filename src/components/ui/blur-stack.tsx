@@ -33,7 +33,7 @@ export default function BlurStack({
 						<div
 							// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
 							key={index}
-							className="absolute inset-0 pointer-events-none"
+							className="pointer-events-none absolute inset-0"
 							// biome-ignore lint/nursery/noInlineStyles: dynamic zIndex, maskImage, and backdropFilter from layer data
 							style={{
 								zIndex: layer.zIndex,

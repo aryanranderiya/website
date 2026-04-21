@@ -38,7 +38,7 @@ function RatingDots({ rating, max = 10 }: { rating: number; max?: number }) {
 					/>
 				))}
 			</div>
-			<span className="text-[13px] font-semibold text-white/90 tracking-[-0.02em]">
+			<span className="font-semibold text-[13px] text-white/90 tracking-[-0.02em]">
 				{rating}/10
 			</span>
 		</div>
@@ -73,7 +73,7 @@ export default function MovieDetail({
 							</Dialog.Overlay>
 							<Dialog.Content asChild>
 								<m.div
-									className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 overflow-hidden bg-[var(--background)] rounded-2xl max-h-[88vh] overflow-y-auto"
+									className="fixed top-1/2 left-1/2 z-50 max-h-[88vh] w-full max-w-md -translate-x-1/2 -translate-y-1/2 overflow-hidden overflow-y-auto rounded-2xl bg-[var(--background)]"
 									initial={{ opacity: 0, scale: 0.96, y: 10 }}
 									animate={{ opacity: 1, scale: 1, y: 0 }}
 									exit={{ opacity: 0, scale: 0.96, y: 10 }}
@@ -85,7 +85,7 @@ export default function MovieDetail({
 									<Dialog.Close asChild>
 										<button
 											type="button"
-											className="absolute top-3 right-3 z-20 w-7 h-7 rounded-full flex items-center justify-center bg-black/35 backdrop-blur-[4px] cursor-pointer"
+											className="absolute top-3 right-3 z-20 flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-black/35 backdrop-blur-[4px]"
 											aria-label="Close"
 										>
 											<HugeiconsIcon icon={Cancel01Icon} size={12} color="rgba(255,255,255,0.8)" />
@@ -93,14 +93,14 @@ export default function MovieDetail({
 									</Dialog.Close>
 
 									{/* Hero header - blurred poster bg */}
-									<div className="relative overflow-hidden h-[200px]">
+									<div className="relative h-[200px] overflow-hidden">
 										{/* Background blur */}
 										{movie.cover && (
 											<img
 												src={movie.cover}
 												alt=""
 												aria-hidden="true"
-												className="absolute inset-0 w-full h-full object-cover scale-[1.2] blur-[24px] saturate-[0.8] brightness-50"
+												className="absolute inset-0 h-full w-full scale-[1.2] object-cover blur-[24px] brightness-50 saturate-[0.8]"
 											/>
 										)}
 										<div
@@ -114,24 +114,24 @@ export default function MovieDetail({
 										/>
 
 										{/* Poster + info row */}
-										<div className="absolute inset-0 flex items-end p-5 gap-4">
+										<div className="absolute inset-0 flex items-end gap-4 p-5">
 											{/* Poster */}
-											<div className="shrink-0 overflow-hidden aspect-[2/3] w-[72px] rounded-lg shadow-[0_8px_24px_rgba(0,0,0,0.5)] bg-black/30">
+											<div className="aspect-[2/3] w-[72px] shrink-0 overflow-hidden rounded-lg bg-black/30 shadow-[0_8px_24px_rgba(0,0,0,0.5)]">
 												{movie.cover && (
 													<img
 														src={movie.cover}
 														alt={movie.title}
-														className="w-full h-full object-cover"
+														className="h-full w-full object-cover"
 													/>
 												)}
 											</div>
 
 											{/* Title & meta */}
-											<div className="flex-1 min-w-0 pb-1">
-												<h2 className="text-[20px] font-bold text-white/95 tracking-[-0.03em] leading-[1.2] mb-1 m-0">
+											<div className="min-w-0 flex-1 pb-1">
+												<h2 className="m-0 mb-1 font-bold text-[20px] text-white/95 leading-[1.2] tracking-[-0.03em]">
 													{movie.title}
 												</h2>
-												<div className="text-[12px] text-white/50 mb-2 tracking-[-0.01em]">
+												<div className="mb-2 text-[12px] text-white/50 tracking-[-0.01em]">
 													{movie.year}
 													{movie.director && ` · ${movie.director}`}
 												</div>
@@ -141,14 +141,14 @@ export default function MovieDetail({
 									</div>
 
 									{/* Body */}
-									<div className="p-5 space-y-5">
+									<div className="space-y-5 p-5">
 										{/* Genre tags */}
 										{movie.genre.length > 0 && (
 											<div className="flex flex-wrap gap-1.5">
 												{movie.genre.map((g) => (
 													<span
 														key={g}
-														className="capitalize text-[11px] font-medium px-[10px] py-[3px] rounded-full bg-[var(--muted)] text-[var(--muted-foreground)]"
+														className="rounded-full bg-[var(--muted)] px-[10px] py-[3px] font-medium text-[11px] text-[var(--muted-foreground)] capitalize"
 													>
 														{g}
 													</span>
@@ -159,10 +159,10 @@ export default function MovieDetail({
 										{/* Review */}
 										{movie.review && (
 											<div>
-												<div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 mb-2">
+												<div className="mb-2 font-medium text-[10px] text-[var(--muted-foreground)] uppercase tracking-[0.08em] opacity-60">
 													My Review
 												</div>
-												<p className="text-[13px] leading-[1.65] text-[var(--foreground)] opacity-75 tracking-[-0.01em] m-0">
+												<p className="m-0 text-[13px] text-[var(--foreground)] leading-[1.65] tracking-[-0.01em] opacity-75">
 													{movie.review}
 												</p>
 											</div>
@@ -171,10 +171,10 @@ export default function MovieDetail({
 										{/* Pre-watch thoughts */}
 										{movie.thoughts && (
 											<div>
-												<div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 mb-2">
+												<div className="mb-2 font-medium text-[10px] text-[var(--muted-foreground)] uppercase tracking-[0.08em] opacity-60">
 													Why I Want to Watch
 												</div>
-												<p className="text-[13px] leading-[1.65] text-[var(--foreground)] opacity-75 tracking-[-0.01em] m-0">
+												<p className="m-0 text-[13px] text-[var(--foreground)] leading-[1.65] tracking-[-0.01em] opacity-75">
 													{movie.thoughts}
 												</p>
 											</div>
@@ -183,14 +183,14 @@ export default function MovieDetail({
 										{/* Favourite characters */}
 										{movie.favCharacters.length > 0 && (
 											<div>
-												<div className="text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--muted-foreground)] opacity-60 mb-2">
+												<div className="mb-2 font-medium text-[10px] text-[var(--muted-foreground)] uppercase tracking-[0.08em] opacity-60">
 													Favourite Characters
 												</div>
 												<div className="flex flex-wrap gap-1.5">
 													{movie.favCharacters.map((char) => (
 														<span
 															key={char}
-															className="text-[12px] font-medium px-3 py-1 rounded-full bg-[var(--muted)] text-[var(--foreground)] opacity-80"
+															className="rounded-full bg-[var(--muted)] px-3 py-1 font-medium text-[12px] text-[var(--foreground)] opacity-80"
 														>
 															{char}
 														</span>
@@ -205,7 +205,7 @@ export default function MovieDetail({
 												href={`https://www.imdb.com/title/${movie.imdbId}`}
 												target="_blank"
 												rel="noopener noreferrer"
-												className="inline-flex items-center gap-1 text-[11px] font-bold px-3 py-[5px] rounded-[6px] bg-[#f5c518] text-black no-underline tracking-[0.02em] opacity-90 transition-opacity duration-150 hover:opacity-100"
+												className="inline-flex items-center gap-1 rounded-[6px] bg-[#f5c518] px-3 py-[5px] font-bold text-[11px] text-black tracking-[0.02em] no-underline opacity-90 transition-opacity duration-150 hover:opacity-100"
 											>
 												IMDB ↗
 											</a>

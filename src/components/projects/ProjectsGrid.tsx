@@ -173,7 +173,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 					transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
 				>
 					{/* Type filter chips */}
-					<div className="flex items-center gap-[6px] mb-[16px] flex-wrap">
+					<div className="mb-[16px] flex flex-wrap items-center gap-[6px]">
 						<button
 							type="button"
 							onClick={() => setActiveTypeFilter(null)}
@@ -226,14 +226,14 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 					</div>
 
 					{/* Filter button + search */}
-					<div className="flex items-center gap-2 mb-7 w-full">
+					<div className="mb-7 flex w-full items-center gap-2">
 						{/* Tag filter button */}
 						<div className="relative shrink-0">
 							<button
 								type="button"
 								ref={filterBtnRef}
 								onClick={() => setTagPopoverOpen((o) => !o)}
-								className={`inline-flex items-center gap-[5px] px-[10px] py-1 rounded-full bg-[var(--muted-bg)] cursor-pointer transition-all duration-150 text-[11px] tracking-[0.01em] leading-[1.45] ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
+								className={`inline-flex cursor-pointer items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[10px] py-1 text-[11px] leading-[1.45] tracking-[0.01em] transition-all duration-150 ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
 							>
 								<HugeiconsIcon icon={FilterIcon} size={11} color="currentColor" />
 								<span>
@@ -246,17 +246,17 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 							{tagPopoverOpen && (
 								<div
 									ref={popoverRef}
-									className="absolute top-[calc(100%+6px)] left-0 z-[100] bg-[var(--background)] rounded-[20px] p-1.5 min-w-[210px] max-h-[300px] overflow-y-auto shadow-[var(--shadow-lg)]"
+									className="absolute top-[calc(100%+6px)] left-0 z-[100] max-h-[300px] min-w-[210px] overflow-y-auto rounded-[20px] bg-[var(--background)] p-1.5 shadow-[var(--shadow-lg)]"
 								>
-									<div className="flex items-center justify-between px-2 pb-1.5 pt-1">
-										<span className="text-[11px] font-normal text-[var(--text-ghost)] tracking-[-0.01em]">
+									<div className="flex items-center justify-between px-2 pt-1 pb-1.5">
+										<span className="font-normal text-[11px] text-[var(--text-ghost)] tracking-[-0.01em]">
 											Filter by tag
 										</span>
 										{activeTagFilters.length > 0 && (
 											<button
 												type="button"
 												onClick={() => setActiveTagFilters([])}
-												className="inline-flex items-center gap-1 px-1.5 py-[2px] text-[10px] text-[#ef4444] bg-transparent cursor-pointer rounded-[6px] tracking-[0.01em]"
+												className="inline-flex cursor-pointer items-center gap-1 rounded-[6px] bg-transparent px-1.5 py-[2px] text-[#ef4444] text-[10px] tracking-[0.01em]"
 											>
 												Clear
 												<HugeiconsIcon icon={Delete01Icon} size={11} color="currentColor" />
@@ -271,11 +271,11 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 												type="button"
 												key={tag}
 												onClick={() => toggleTagFilter(tag)}
-												className={`flex items-center w-full px-2 py-[5px] rounded-lg cursor-pointer text-[12px] tracking-[-0.01em] transition-[background] duration-100 gap-[7px] ${isOn ? 'bg-[var(--muted-bg)] text-[var(--text-primary)] font-medium' : 'bg-transparent text-[var(--text-secondary)] font-normal'}`}
+												className={`flex w-full cursor-pointer items-center gap-[7px] rounded-lg px-2 py-[5px] text-[12px] tracking-[-0.01em] transition-[background] duration-100 ${isOn ? 'bg-[var(--muted-bg)] font-medium text-[var(--text-primary)]' : 'bg-transparent font-normal text-[var(--text-secondary)]'}`}
 											>
 												{/* Checkbox */}
 												<span
-													className={`w-3.5 h-3.5 rounded-[4px] shrink-0 flex items-center justify-center transition-all duration-100 ${isOn ? 'bg-[var(--text-primary)]' : 'bg-[var(--muted-bg)]'}`}
+													className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[4px] transition-all duration-100 ${isOn ? 'bg-[var(--text-primary)]' : 'bg-[var(--muted-bg)]'}`}
 												>
 													{isOn && (
 														<svg width="9" height="9" viewBox="0 0 12 12" fill="none">
@@ -296,7 +296,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 														alt={tag}
 														width={13}
 														height={13}
-														className={`object-contain shrink-0 ${isOn ? 'opacity-100' : 'opacity-70'}`}
+														className={`shrink-0 object-contain ${isOn ? 'opacity-100' : 'opacity-70'}`}
 													/>
 												) : (
 													<span className="w-[13px] shrink-0" />
@@ -315,7 +315,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 						<div className="flex-1" />
 
 						<div className="relative shrink-0">
-							<span className="absolute left-2.5 top-1/2 -translate-y-1/2 flex items-center text-[var(--text-ghost)] pointer-events-none">
+							<span className="pointer-events-none absolute top-1/2 left-2.5 flex -translate-y-1/2 items-center text-[var(--text-ghost)]">
 								<HugeiconsIcon icon={Search01Icon} size={12} />
 							</span>
 							<input
@@ -326,10 +326,10 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								onFocus={() => setSearchFocused(true)}
 								onBlur={() => setSearchFocused(false)}
 								placeholder="Search..."
-								className={`bg-[var(--muted-bg)] rounded-full pl-7 text-[12px] text-[var(--text-primary)] outline-none tracking-[-0.01em] w-[140px] py-[5px] ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
+								className={`w-[140px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
 							/>
 							{!searchFocused && !search && (
-								<kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] text-[var(--text-ghost)] pointer-events-none font-[inherit] tracking-[0]">
+								<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
 									⌘F
 								</kbd>
 							)}
@@ -388,7 +388,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 									animate={{ opacity: 1, scale: 1, rotate: rotation }}
 									exit={{ opacity: 0, scale: 0.84 }}
 									transition={{ duration: 0.22, ease: [0.19, 1, 0.22, 1] }}
-									className="fixed rounded-xl overflow-hidden pointer-events-none z-[9999] w-[200px]"
+									className="pointer-events-none fixed z-[9999] w-[200px] overflow-hidden rounded-xl"
 									style={{
 										left: hovered.rect.right + 24,
 										top: previewTop,
@@ -398,10 +398,10 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 									<img
 										src={hovered.project.coverImage}
 										alt={hovered.project.title}
-										className="w-full h-auto block"
+										className="block h-auto w-full"
 									/>
-									<div className="px-[10px] pt-[8px] pb-[10px] bg-[var(--background)]">
-										<p className="text-[10px] text-[var(--text-muted)] leading-[1.5] tracking-[-0.01em] m-0">
+									<div className="bg-[var(--background)] px-[10px] pt-[8px] pb-[10px]">
+										<p className="m-0 text-[10px] text-[var(--text-muted)] leading-[1.5] tracking-[-0.01em]">
 											{hovered.project.description}
 										</p>
 									</div>

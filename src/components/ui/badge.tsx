@@ -11,13 +11,13 @@ const colorClasses: Record<string, string> = {
 };
 
 const badgeVariants = cva(
-	'inline-flex items-center rounded-full text-xs font-medium transition-colors',
+	'inline-flex items-center rounded-full font-medium text-xs transition-colors',
 	{
 		variants: {
 			variant: {
-				default: 'px-2.5 py-0.5 border',
+				default: 'border px-2.5 py-0.5',
 				solid: 'px-2.5 py-0.5',
-				dot: 'pl-2 pr-2.5 py-0.5 gap-1.5 border',
+				dot: 'gap-1.5 border py-0.5 pr-2.5 pl-2',
 			},
 		},
 		defaultVariants: { variant: 'default' },
@@ -42,7 +42,7 @@ export function Badge({
 	return (
 		<span className={cn(badgeVariants({ variant }), colorClasses[color], className)} {...props}>
 			{(variant === 'dot' || showDot) && (
-				<span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-current" />
+				<span className="h-1.5 w-1.5 flex-shrink-0 rounded-full bg-current" />
 			)}
 			{children}
 		</span>

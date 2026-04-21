@@ -151,16 +151,16 @@ export function PetLauncher() {
 			{open && (
 				// biome-ignore lint/nursery/noInlineStyles: dynamic position computed from pet coordinates
 				<div ref={popoverRef} style={getPopoverStyle()}>
-					<div className="bg-[var(--card,#fafafa)] rounded-[18px] px-[10px] pt-[10px] pb-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.10)]">
-						<p className="text-[9px] tracking-[0.06em] uppercase text-[var(--text-ghost,rgba(0,0,0,0.3))] mb-[7px] font-medium">
+					<div className="rounded-[18px] bg-[var(--card,#fafafa)] px-[10px] pt-[10px] pb-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.10)]">
+						<p className="mb-[7px] font-medium text-[9px] text-[var(--text-ghost,rgba(0,0,0,0.3))] uppercase tracking-[0.06em]">
 							Choose pet
 						</p>
 
-						<div className="grid [grid-template-columns:repeat(5,1fr)] gap-[3px]">
+						<div className="grid gap-[3px] [grid-template-columns:repeat(5,1fr)]">
 							{/* No pet option */}
 							<PetButton isSelected={isNone} onClick={() => select(NO_PET)} title="None">
 								<span
-									className="w-[28px] h-[28px] flex items-center justify-center text-[16px]"
+									className="flex h-[28px] w-[28px] items-center justify-center text-[16px]"
 									// biome-ignore lint/nursery/noInlineStyles: dynamic color based on selection state
 									style={{
 										color: isNone
@@ -188,7 +188,7 @@ export function PetLauncher() {
 											alt={ANIMAL_MAP[animal]?.label}
 											width={28}
 											height={28}
-											className="[image-rendering:pixelated] object-contain w-7 h-7 shrink-0"
+											className="h-7 w-7 shrink-0 object-contain [image-rendering:pixelated]"
 										/>
 										{/* biome-ignore lint/nursery/noInlineStyles: dynamic label styles based on selection state */}
 										<span style={labelStyle(isSelected)}>{ANIMAL_MAP[animal]?.label}</span>
@@ -201,7 +201,7 @@ export function PetLauncher() {
 							href="https://github.com/sankalpaacharya/webpets"
 							target="_blank"
 							rel="noopener noreferrer"
-							className="flex items-center justify-center gap-[4px] mt-[8px] text-[9px] text-[var(--text-ghost,rgba(0,0,0,0.28))] no-underline transition-[color] duration-[120ms]"
+							className="mt-[8px] flex items-center justify-center gap-[4px] text-[9px] text-[var(--text-ghost,rgba(0,0,0,0.28))] no-underline transition-[color] duration-[120ms]"
 							onMouseEnter={(e) => {
 								(e.currentTarget as HTMLElement).style.color = 'var(--text-muted, rgba(0,0,0,0.5))';
 							}}
@@ -223,7 +223,7 @@ export function PetLauncher() {
 					type="button"
 					onClick={() => setOpen((o) => !o)}
 					aria-label="Choose pet companion"
-					className="fixed bottom-[16px] right-[16px] w-[32px] h-[32px] rounded-full border border-[var(--border,rgba(0,0,0,0.08))] bg-[var(--card,#fafafa)] cursor-pointer text-[14px] flex items-center justify-center z-[9999] shadow-[0_2px_8px_rgba(0,0,0,0.08)] text-[var(--text-ghost,rgba(0,0,0,0.4))]"
+					className="fixed right-[16px] bottom-[16px] z-[9999] flex h-[32px] w-[32px] cursor-pointer items-center justify-center rounded-full border border-[var(--border,rgba(0,0,0,0.08))] bg-[var(--card,#fafafa)] text-[14px] text-[var(--text-ghost,rgba(0,0,0,0.4))] shadow-[0_2px_8px_rgba(0,0,0,0.08)]"
 					title="Choose pet"
 				>
 					<HugeiconsIcon icon={Add01Icon} size={14} />
@@ -249,7 +249,7 @@ function PetButton({
 			type="button"
 			onClick={onClick}
 			title={title}
-			className={`flex flex-col items-center gap-[3px] px-[4px] pt-[6px] pb-[5px] rounded-[10px] border-none cursor-pointer transition-[background] duration-[120ms] outline-none ${isSelected ? 'bg-[var(--muted-bg,rgba(0,0,0,0.06))]' : 'bg-transparent'}`}
+			className={`flex cursor-pointer flex-col items-center gap-[3px] rounded-[10px] border-none px-[4px] pt-[6px] pb-[5px] outline-none transition-[background] duration-[120ms] ${isSelected ? 'bg-[var(--muted-bg,rgba(0,0,0,0.06))]' : 'bg-transparent'}`}
 			onMouseEnter={(e) => {
 				if (!isSelected)
 					(e.currentTarget as HTMLElement).style.background = 'var(--muted-bg, rgba(0,0,0,0.04))';

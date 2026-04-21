@@ -4,10 +4,10 @@ import {
 	ArrowLeft01Icon,
 	ArrowRight01Icon,
 	Cancel01Icon,
+	CircleArrowUpRight02Icon,
 	GithubIcon,
 	HugeiconsIcon,
 	ImageNotFound01Icon,
-	CircleArrowUpRight02Icon,
 } from '@icons';
 import * as Dialog from '@radix-ui/react-dialog';
 import { AnimatePresence, LazyMotion } from 'motion/react';
@@ -54,11 +54,11 @@ function CarouselImage({ src, alt }: { src: string; alt: string }) {
 		<>
 			{/* Placeholder shown while loading or on error */}
 			{(!loaded || errored) && (
-				<div className="absolute inset-0 bg-[var(--muted-bg)] flex items-center justify-center">
+				<div className="absolute inset-0 flex items-center justify-center bg-[var(--muted-bg)]">
 					{errored ? (
 						<HugeiconsIcon icon={ImageNotFound01Icon} size={20} color="var(--text-ghost)" />
 					) : (
-						<div className="w-6 h-6 rounded-full border-2 border-[var(--border)] border-t-[var(--text-ghost)] animate-spin" />
+						<div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--border)] border-t-[var(--text-ghost)]" />
 					)}
 				</div>
 			)}
@@ -72,7 +72,7 @@ function CarouselImage({ src, alt }: { src: string; alt: string }) {
 						setLoaded(true);
 						setErrored(true);
 					}}
-					className="w-full h-full object-cover block transition-opacity duration-200"
+					className="block h-full w-full object-cover transition-opacity duration-200"
 					// biome-ignore lint/nursery/noInlineStyles: dynamic opacity based on loaded state
 					style={{ opacity: loaded ? 1 : 0 }}
 				/>
@@ -122,7 +122,7 @@ export default function ProjectDrawer({
 							{/* Right-side drawer */}
 							<Dialog.Content asChild>
 								<m.div
-									className="fixed top-0 right-0 bottom-0 z-50 flex flex-col w-[420px] max-w-full bg-[var(--background)] rounded-tl-2xl rounded-bl-2xl overflow-x-hidden"
+									className="fixed top-0 right-0 bottom-0 z-50 flex w-[420px] max-w-full flex-col overflow-x-hidden rounded-tl-2xl rounded-bl-2xl bg-[var(--background)]"
 									initial={{ x: '100%' }}
 									animate={{ x: 0 }}
 									exit={{ x: '100%' }}
@@ -134,7 +134,7 @@ export default function ProjectDrawer({
 									<Dialog.Close asChild>
 										<button
 											type="button"
-											className="absolute top-4 right-4 z-10 w-7 h-7 rounded-[6px] bg-[var(--muted-bg)] text-[var(--text-muted)] cursor-pointer flex items-center justify-center transition-opacity duration-150 hover:opacity-60"
+											className="absolute top-4 right-4 z-10 flex h-7 w-7 cursor-pointer items-center justify-center rounded-[6px] bg-[var(--muted-bg)] text-[var(--text-muted)] transition-opacity duration-150 hover:opacity-60"
 											aria-label="Close"
 										>
 											<HugeiconsIcon icon={Cancel01Icon} size={12} />
@@ -142,10 +142,10 @@ export default function ProjectDrawer({
 									</Dialog.Close>
 
 									{/* Scrollable content area */}
-									<div className="overflow-y-auto flex-1">
+									<div className="flex-1 overflow-y-auto">
 										{/* Image carousel */}
 										{images.length > 0 && (
-											<div className="relative w-full aspect-video bg-[var(--muted-bg)] overflow-hidden shrink-0">
+											<div className="relative aspect-video w-full shrink-0 overflow-hidden bg-[var(--muted-bg)]">
 												<AnimatePresence mode="wait" initial={false}>
 													<m.div
 														key={`${project.slug}-${safeActiveImage}`}
@@ -164,14 +164,14 @@ export default function ProjectDrawer({
 
 												{/* Dot indicators */}
 												{images.length > 1 && (
-													<div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 items-center z-[2]">
+													<div className="absolute bottom-3 left-1/2 z-[2] flex -translate-x-1/2 items-center gap-1.5">
 														{images.map((_, i) => (
 															<button
 																type="button"
 																// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
 																key={i}
 																onClick={() => setActiveImage(i)}
-																className="h-1.5 rounded-full cursor-pointer p-0 transition-all duration-200"
+																className="h-1.5 cursor-pointer rounded-full p-0 transition-all duration-200"
 																// biome-ignore lint/nursery/noInlineStyles: dynamic dot indicator width and color based on active state
 																style={{
 																	width: i === safeActiveImage ? '16px' : '6px',
@@ -187,33 +187,33 @@ export default function ProjectDrawer({
 										)}
 
 										{/* Content */}
-										<div className="p-6 flex-1">
+										<div className="flex-1 p-6">
 											{/* Type row */}
-											<div className="flex items-center gap-1.5 mb-2.5">
-												<span className="text-[10px] px-2 py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] tracking-[0.02em]">
+											<div className="mb-2.5 flex items-center gap-1.5">
+												<span className="rounded-full bg-[var(--muted-bg)] px-2 py-[2px] text-[10px] text-[var(--text-muted)] tracking-[0.02em]">
 													{TYPE_LABELS[project.type] ?? project.type}
 												</span>
 												{project.folder && project.folder !== 'Projects' && (
-													<span className="text-[10px] px-2 py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] tracking-[0.02em]">
+													<span className="rounded-full bg-[var(--muted-bg)] px-2 py-[2px] text-[10px] text-[var(--text-muted)] tracking-[0.02em]">
 														{project.folder}
 													</span>
 												)}
 											</div>
 
 											{/* Title + action links */}
-											<div className="flex items-start justify-between gap-3 mb-3">
-												<h2 className="text-[22px] font-semibold tracking-[-0.03em] text-[var(--text-primary)] leading-[1.2] m-0">
+											<div className="mb-3 flex items-start justify-between gap-3">
+												<h2 className="m-0 font-semibold text-[22px] text-[var(--text-primary)] leading-[1.2] tracking-[-0.03em]">
 													{project.title}
 												</h2>
 
-												<div className="flex items-center gap-2 shrink-0 pt-[2px]">
+												<div className="flex shrink-0 items-center gap-2 pt-[2px]">
 													{images.length > 1 && (
 														<div className="flex gap-1">
 															<button
 																type="button"
 																onClick={() => setActiveImage((i) => Math.max(0, i - 1))}
 																disabled={safeActiveImage === 0}
-																className={`w-8 h-8 rounded-[6px] bg-[var(--muted-bg)] flex items-center justify-center text-[var(--text-secondary)] transition-opacity duration-150 ${safeActiveImage === 0 ? 'opacity-[0.35] cursor-default' : 'cursor-pointer'}`}
+																className={`flex h-8 w-8 items-center justify-center rounded-[6px] bg-[var(--muted-bg)] text-[var(--text-secondary)] transition-opacity duration-150 ${safeActiveImage === 0 ? 'cursor-default opacity-[0.35]' : 'cursor-pointer'}`}
 																aria-label="Previous image"
 															>
 																<HugeiconsIcon icon={ArrowLeft01Icon} size={13} />
@@ -224,7 +224,7 @@ export default function ProjectDrawer({
 																	setActiveImage((i) => Math.min(images.length - 1, i + 1))
 																}
 																disabled={safeActiveImage === images.length - 1}
-																className={`w-8 h-8 rounded-[6px] bg-[var(--muted-bg)] flex items-center justify-center text-[var(--text-secondary)] transition-opacity duration-150 ${safeActiveImage === images.length - 1 ? 'opacity-[0.35] cursor-default' : 'cursor-pointer'}`}
+																className={`flex h-8 w-8 items-center justify-center rounded-[6px] bg-[var(--muted-bg)] text-[var(--text-secondary)] transition-opacity duration-150 ${safeActiveImage === images.length - 1 ? 'cursor-default opacity-[0.35]' : 'cursor-pointer'}`}
 																aria-label="Next image"
 															>
 																<HugeiconsIcon icon={ArrowRight01Icon} size={13} />
@@ -236,7 +236,7 @@ export default function ProjectDrawer({
 															href={project.github}
 															target="_blank"
 															rel="noopener noreferrer"
-															className="w-8 h-8 rounded-[6px] flex items-center justify-center bg-[var(--muted-bg)] text-[var(--text-secondary)] transition-opacity duration-150 hover:opacity-65"
+															className="flex h-8 w-8 items-center justify-center rounded-[6px] bg-[var(--muted-bg)] text-[var(--text-secondary)] transition-opacity duration-150 hover:opacity-65"
 															title="View source"
 														>
 															<HugeiconsIcon icon={GithubIcon} size={15} />
@@ -254,14 +254,14 @@ export default function ProjectDrawer({
 											</div>
 
 											{/* Description */}
-											<p className="text-[13px] text-[var(--text-muted)] leading-[1.65] mb-6 m-0">
+											<p className="m-0 mb-6 text-[13px] text-[var(--text-muted)] leading-[1.65]">
 												{project.description}
 											</p>
 
 											{/* Tags */}
 											{project.tags.length > 0 && (
 												<div>
-													<div className="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2.5">
+													<div className="mb-2.5 font-medium text-[10px] text-[var(--text-ghost)] uppercase tracking-[0.07em]">
 														Tags
 													</div>
 													<div className="flex flex-wrap gap-1.5">
@@ -270,7 +270,7 @@ export default function ProjectDrawer({
 															return (
 																<span
 																	key={tag}
-																	className="inline-flex items-center gap-[5px] text-[11px] px-[9px] py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-secondary)] tracking-[0.01em]"
+																	className="inline-flex items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[9px] py-1 text-[11px] text-[var(--text-secondary)] tracking-[0.01em]"
 																>
 																	{iconUrl && (
 																		<img

@@ -37,7 +37,7 @@ function ToolIcon({ src, name, size = 40 }: { src: string; name: string; size?: 
 	if (errored) {
 		return (
 			<div
-				className="flex items-center justify-center bg-[var(--muted-bg)] text-[var(--text-ghost)] font-semibold"
+				className="flex items-center justify-center bg-[var(--muted-bg)] font-semibold text-[var(--text-ghost)]"
 				// biome-ignore lint/nursery/noInlineStyles: dynamic size/borderRadius/fontSize computed from prop
 				style={{ width: size, height: size, borderRadius: size * 0.225, fontSize: size * 0.4 }}
 			>
@@ -53,7 +53,7 @@ function ToolIcon({ src, name, size = 40 }: { src: string; name: string; size?: 
 			width={size}
 			height={size}
 			onError={() => setErrored(true)}
-			className="block object-cover shrink-0"
+			className="block shrink-0 object-cover"
 			// biome-ignore lint/nursery/noInlineStyles: dynamic borderRadius computed from prop
 			style={{ borderRadius: size * 0.225 }}
 		/>
@@ -88,7 +88,7 @@ function ToolDrawer({
 
 							<Dialog.Content asChild>
 								<m.div
-									className="fixed top-0 right-0 bottom-0 z-50 w-[min(360px,100vw)] bg-[var(--background)] rounded-tl-xl rounded-bl-xl overflow-y-auto shadow-[-8px_0_32px_rgba(0,0,0,0.12)]"
+									className="fixed top-0 right-0 bottom-0 z-50 w-[min(360px,100vw)] overflow-y-auto rounded-tl-xl rounded-bl-xl bg-[var(--background)] shadow-[-8px_0_32px_rgba(0,0,0,0.12)]"
 									initial={{ x: '100%' }}
 									animate={{ x: 0 }}
 									exit={{ x: '100%' }}
@@ -100,7 +100,7 @@ function ToolDrawer({
 									<Dialog.Close asChild>
 										<button
 											type="button"
-											className="absolute top-4 left-4 w-7 h-7 rounded-[6px] bg-[var(--muted-bg)] text-[var(--text-muted)] cursor-pointer flex items-center justify-center"
+											className="absolute top-4 left-4 flex h-7 w-7 cursor-pointer items-center justify-center rounded-[6px] bg-[var(--muted-bg)] text-[var(--text-muted)]"
 											aria-label="Close"
 										>
 											<HugeiconsIcon icon={Cancel01Icon} size={12} />
@@ -108,16 +108,16 @@ function ToolDrawer({
 									</Dialog.Close>
 
 									{/* Content */}
-									<div className="pt-14 px-6 pb-10">
+									<div className="px-6 pt-14 pb-10">
 										{/* Icon centered at top */}
-										<div className="flex flex-col items-center mb-5">
+										<div className="mb-5 flex flex-col items-center">
 											<ToolIcon src={tool.icon} name={tool.name} size={64} />
-											<h2 className="text-[20px] font-semibold tracking-[-0.03em] text-[var(--text-primary)] leading-[1.2] mt-3 mb-1.5 text-center">
+											<h2 className="mt-3 mb-1.5 text-center font-semibold text-[20px] text-[var(--text-primary)] leading-[1.2] tracking-[-0.03em]">
 												{tool.name}
 											</h2>
-											<div className="flex items-center gap-1.5 mb-4">
+											<div className="mb-4 flex items-center gap-1.5">
 												<span
-													className="text-[10px] px-2 py-[2px] rounded-full tracking-[0.02em] font-medium"
+													className="rounded-full px-2 py-[2px] font-medium text-[10px] tracking-[0.02em]"
 													// biome-ignore lint/nursery/noInlineStyles: dynamic category-based colors from lookup table
 													style={{
 														background: CATEGORY_COLORS[tool.category],
@@ -136,7 +136,7 @@ function ToolDrawer({
 												href={tool.website}
 												target="_blank"
 												rel="noopener noreferrer"
-												className="inline-flex items-center gap-[5px] text-[12px] text-[var(--text-muted)] no-underline tracking-[-0.01em] transition-colors duration-150 hover:text-[var(--text-primary)]"
+												className="inline-flex items-center gap-[5px] text-[12px] text-[var(--text-muted)] tracking-[-0.01em] no-underline transition-colors duration-150 hover:text-[var(--text-primary)]"
 											>
 												{tool.website.replace(/^https?:\/\//, '')}
 												<HugeiconsIcon icon={LinkSquare02Icon} size={11} />
@@ -144,13 +144,13 @@ function ToolDrawer({
 										</div>
 
 										{/* Divider */}
-										<div className="h-px bg-[var(--border)] mb-5" />
+										<div className="mb-5 h-px bg-[var(--border)]" />
 
 										{/* Thoughts */}
-										<div className="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2.5">
+										<div className="mb-2.5 font-medium text-[10px] text-[var(--text-ghost)] uppercase tracking-[0.07em]">
 											My thoughts
 										</div>
-										<p className="text-[13px] text-[var(--text-muted)] leading-[1.7] m-0">
+										<p className="m-0 text-[13px] text-[var(--text-muted)] leading-[1.7]">
 											{tool.thoughts}
 										</p>
 									</div>
@@ -181,13 +181,13 @@ export default function ToolsGrid() {
 		<LazyMotion features={loadFeatures}>
 			<div>
 				{/* Category filters */}
-				<div className="flex flex-wrap gap-1.5 mb-7">
+				<div className="mb-7 flex flex-wrap gap-1.5">
 					{(['All', ...TOOL_CATEGORIES] as const).map((cat) => (
 						<button
 							type="button"
 							key={cat}
 							onClick={() => setActiveCategory(cat)}
-							className="text-[11px] px-[10px] py-[3px] rounded-full border cursor-pointer tracking-[0.01em] transition-all duration-150"
+							className="cursor-pointer rounded-full border px-[10px] py-[3px] text-[11px] tracking-[0.01em] transition-all duration-150"
 							// biome-ignore lint/nursery/noInlineStyles: dynamic background/color/borderColor based on active category
 							style={{
 								background: activeCategory === cat ? 'var(--foreground)' : 'transparent',
@@ -214,10 +214,10 @@ export default function ToolsGrid() {
 								whileHover={{ scale: 1.06 }}
 								whileTap={{ scale: 0.96 }}
 								onClick={() => openTool(tool)}
-								className="flex flex-col items-center gap-2 bg-transparent cursor-pointer px-1 py-2 rounded-[10px]"
+								className="flex cursor-pointer flex-col items-center gap-2 rounded-[10px] bg-transparent px-1 py-2"
 							>
 								<ToolIcon src={tool.icon} name={tool.name} size={44} />
-								<span className="text-[11px] text-[var(--text-muted)] tracking-[-0.01em] leading-[1.2] text-center max-w-[72px]">
+								<span className="max-w-[72px] text-center text-[11px] text-[var(--text-muted)] leading-[1.2] tracking-[-0.01em]">
 									{tool.name}
 								</span>
 							</m.button>

@@ -77,7 +77,7 @@ function SortIcon({ dir }: { dir: SortDir | null }) {
 				icon={ArrowUpDownIcon}
 				size={10}
 				color="var(--text-ghost)"
-				className="ml-[3px] opacity-40 shrink-0"
+				className="ml-[3px] shrink-0 opacity-40"
 			/>
 		);
 	if (dir === 'asc')
@@ -116,7 +116,7 @@ function PlatformIcon({ platform, model }: { platform: string; model: string }) 
 		// biome-ignore lint/a11y/noStaticElementInteractions: hover-only tooltip trigger, no keyboard equivalent needed
 		<span
 			ref={ref}
-			className="inline-flex items-center shrink-0 cursor-default"
+			className="inline-flex shrink-0 cursor-default items-center"
 			onMouseEnter={handleMouseEnter}
 			onMouseLeave={() => setTooltipPos(null)}
 		>
@@ -125,7 +125,7 @@ function PlatformIcon({ platform, model }: { platform: string; model: string }) 
 				alt={label}
 				width={14}
 				height={14}
-				className="rounded-[3px] opacity-70 block w-[14px] h-[14px] shrink-0"
+				className="block h-[14px] w-[14px] shrink-0 rounded-[3px] opacity-70"
 			/>
 			<style>{`
         @keyframes tooltip-in {
@@ -156,7 +156,7 @@ function PlatformIcon({ platform, model }: { platform: string; model: string }) 
 					}}
 				>
 					{label}
-					<span className="opacity-30 mx-[4px]">/</span>
+					<span className="mx-[4px] opacity-30">/</span>
 					<span
 						// biome-ignore lint/nursery/noInlineStyles: fontFamily/fontSize have no Tailwind equivalent for var(--font-mono)
 						style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', opacity: 0.8 }}
@@ -264,18 +264,18 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 								variants={rowVariants}
 								initial="initial"
 								animate="animate"
-								className="cursor-pointer group"
+								className="group cursor-pointer"
 								onClick={() => {
 									window.location.href = `/agent-convos/${convo.slug}`;
 								}}
 							>
 								{/* Title with platform icon -- no overflow:hidden on td so tooltip can escape */}
-								<td className="py-[9px] pr-[16px] border-b border-[var(--border)]">
-									<span className="flex items-center gap-[7px] min-w-0">
+								<td className="border-[var(--border)] border-b py-[9px] pr-[16px]">
+									<span className="flex min-w-0 items-center gap-[7px]">
 										<PlatformIcon platform={convo.platform} model={convo.model} />
 										<a
 											href={`/agent-convos/${convo.slug}`}
-											className="text-[13px] text-[var(--text-primary)] no-underline overflow-hidden text-ellipsis whitespace-nowrap min-w-0 flex-1"
+											className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[13px] text-[var(--text-primary)] no-underline"
 											// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
 											style={{
 												fontVariationSettings: '"wght" 480',
@@ -289,7 +289,7 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 								</td>
 
 								{/* Tokens */}
-								<td className="py-[9px] pr-[12px] border-b border-[var(--border)] whitespace-nowrap">
+								<td className="whitespace-nowrap border-[var(--border)] border-b py-[9px] pr-[12px]">
 									<span
 										className="text-[11px] tracking-[-0.02em]"
 										// biome-ignore lint/nursery/noInlineStyles: dynamic color based on token availability; fontFamily is var(--font-mono)
@@ -306,7 +306,7 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 								</td>
 
 								{/* Date */}
-								<td className="py-[9px] border-b border-[var(--border)] whitespace-nowrap">
+								<td className="whitespace-nowrap border-[var(--border)] border-b py-[9px]">
 									<time
 										dateTime={convo.date}
 										className="text-[11px] text-[var(--text-ghost)]"

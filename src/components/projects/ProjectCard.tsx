@@ -100,32 +100,32 @@ export default function ProjectCard({
 				onClick={() => {
 					window.location.href = `/projects/${project.slug}`;
 				}}
-				className={`flex items-center gap-4 px-3 py-[10px] rounded-[10px] cursor-pointer min-w-0 transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+				className={`flex min-w-0 cursor-pointer items-center gap-4 rounded-[10px] px-3 py-[10px] transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 			>
 				{/* Title + description stacked */}
-				<div className="flex-1 min-w-0">
-					<div className="flex items-center gap-[7px] mb-[2px]">
+				<div className="min-w-0 flex-1">
+					<div className="mb-[2px] flex items-center gap-[7px]">
 						<span
-							className={`text-[13px] font-semibold tracking-[-0.02em] truncate transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+							className={`truncate font-semibold text-[13px] tracking-[-0.02em] transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
 						>
 							{project.title}
 						</span>
 					</div>
-					<span className="text-[11px] text-[var(--text-ghost)] block truncate tracking-[-0.01em] leading-[1.4]">
+					<span className="block truncate text-[11px] text-[var(--text-ghost)] leading-[1.4] tracking-[-0.01em]">
 						{project.description}
 					</span>
 				</div>
 
 				{/* Right side: type + tags + folder chip + arrow */}
-				<div className="flex items-center gap-1.5 shrink-0">
+				<div className="flex shrink-0 items-center gap-1.5">
 					{/* Type badge */}
-					<span className="text-[10px] px-[7px] py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)] tracking-[0.01em]">
+					<span className="rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-ghost)] tracking-[0.01em]">
 						{typeLabel}
 					</span>
 
 					{chip && (
 						<span
-							className="text-[10px] px-2 py-[2px] rounded-full font-medium tracking-[0.01em] shrink-0"
+							className="shrink-0 rounded-full px-2 py-[2px] font-medium text-[10px] tracking-[0.01em]"
 							// biome-ignore lint/nursery/noInlineStyles: dynamic chip background and color from data
 							style={{ background: chip.bg, color: chip.color }}
 						>
@@ -133,7 +133,7 @@ export default function ProjectCard({
 						</span>
 					)}
 
-					<div className="w-4 flex items-center justify-center">
+					<div className="flex w-4 items-center justify-center">
 						{project.url && (
 							<a
 								href={project.url}

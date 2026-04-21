@@ -25,16 +25,16 @@ export default function SocialsRow() {
 							viewport={{ once: true }}
 							transition={{ duration: 0.35, ease: EASE, delay: i * 0.04 }}
 							whileHover={{ scale: 1.08, transition: { duration: 0.15, ease: 'easeOut' } }}
-							className="inline-flex flex-col items-center gap-1.5 no-underline cursor-pointer"
+							className="inline-flex cursor-pointer flex-col items-center gap-1.5 no-underline"
 						>
 							<img
 								src={social.icon}
 								width={24}
 								height={24}
 								alt={social.name}
-								className="block rounded-[6px] w-6 h-6 shrink-0"
+								className="block h-6 w-6 shrink-0 rounded-[6px]"
 							/>
-							<span className="text-[10px] text-[var(--text-ghost)] tracking-[-0.01em] leading-none whitespace-nowrap">
+							<span className="whitespace-nowrap text-[10px] text-[var(--text-ghost)] leading-none tracking-[-0.01em]">
 								{social.name}
 							</span>
 						</m.a>

@@ -4,8 +4,8 @@ import {
 	ArrowLeft02Icon,
 	ArrowRight02Icon,
 	Cancel01Icon,
-	HugeiconsIcon,
 	CircleArrowUpRight02Icon,
+	HugeiconsIcon,
 } from '@icons';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
@@ -122,7 +122,7 @@ function ProjectDetail({
 			type="button"
 			onClick={onClick}
 			disabled={disabled}
-			className="w-6 h-6 rounded-md bg-[var(--muted-bg)] flex items-center justify-center border-none cursor-pointer transition-opacity duration-150 disabled:opacity-25 hover:opacity-60"
+			className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border-none bg-[var(--muted-bg)] transition-opacity duration-150 hover:opacity-60 disabled:opacity-25"
 			aria-label={label}
 		>
 			<HugeiconsIcon icon={icon} size={11} color="var(--text-muted)" />
@@ -132,23 +132,23 @@ function ProjectDetail({
 	return (
 		<m.div
 			key={project.name}
-			className="flex flex-col bg-[var(--background)] w-full h-full overflow-y-auto"
+			className="flex h-full w-full flex-col overflow-y-auto bg-[var(--background)]"
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			exit={{ opacity: 0 }}
 			transition={{ duration: 0.18 }}
 		>
 			{/* Header */}
-			<div className="flex items-center justify-between px-6 pt-5 pb-4 shrink-0 gap-3">
+			<div className="flex shrink-0 items-center justify-between gap-3 px-6 pt-5 pb-4">
 				{/* Left: type + project nav */}
-				<div className="flex items-center gap-2 min-w-0">
+				<div className="flex min-w-0 items-center gap-2">
 					<NavBtn
 						onClick={onPrev}
 						disabled={!hasPrev}
 						icon={ArrowLeft02Icon}
 						label="Previous project"
 					/>
-					<span className="text-[11px] px-2 py-[3px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] tracking-[0.02em] truncate">
+					<span className="truncate rounded-full bg-[var(--muted-bg)] px-2 py-[3px] text-[11px] text-[var(--text-muted)] tracking-[0.02em]">
 						{project.type}
 					</span>
 					<NavBtn
@@ -159,7 +159,7 @@ function ProjectDetail({
 					/>
 				</div>
 				{/* Right: image nav + visit + close */}
-				<div className="flex items-center gap-1.5 shrink-0">
+				<div className="flex shrink-0 items-center gap-1.5">
 					{total > 1 && (
 						<>
 							<NavBtn
@@ -168,7 +168,7 @@ function ProjectDetail({
 								icon={ArrowLeft02Icon}
 								label="Previous image"
 							/>
-							<span className="text-[10px] text-[var(--text-ghost)] tabular-nums w-[28px] text-center">
+							<span className="w-[28px] text-center text-[10px] text-[var(--text-ghost)] tabular-nums">
 								{activeImage + 1}/{total}
 							</span>
 							<NavBtn
@@ -184,7 +184,7 @@ function ProjectDetail({
 							href={project.url}
 							target="_blank"
 							rel="noopener noreferrer"
-							className={`${buttonVariants({ variant: 'default', size: 'sm' })} no-underline shrink-0 gap-[5px] ml-1`}
+							className={`${buttonVariants({ variant: 'default', size: 'sm' })} ml-1 shrink-0 gap-[5px] no-underline`}
 						>
 							Visit
 							<HugeiconsIcon icon={CircleArrowUpRight02Icon} size={10} color="currentColor" />
@@ -193,7 +193,7 @@ function ProjectDetail({
 					<button
 						type="button"
 						onClick={onClose}
-						className="w-6 h-6 rounded-md bg-[var(--muted-bg)] text-[var(--text-muted)] cursor-pointer flex items-center justify-center transition-opacity duration-150 hover:opacity-60 border-none ml-1"
+						className="ml-1 flex h-6 w-6 cursor-pointer items-center justify-center rounded-md border-none bg-[var(--muted-bg)] text-[var(--text-muted)] transition-opacity duration-150 hover:opacity-60"
 						aria-label="Close"
 					>
 						<HugeiconsIcon icon={Cancel01Icon} size={11} color="currentColor" />
@@ -205,7 +205,7 @@ function ProjectDetail({
 			{total > 0 && (
 				<button
 					type="button"
-					className="relative mx-5 rounded-xl overflow-hidden shrink-0 bg-[var(--muted-bg)] select-none cursor-pointer aspect-video"
+					className="relative mx-5 aspect-video shrink-0 cursor-pointer select-none overflow-hidden rounded-xl bg-[var(--muted-bg)]"
 					onWheel={handleWheel}
 					onClick={() => setLightboxOpen(true)}
 				>
@@ -214,7 +214,7 @@ function ProjectDetail({
 							key={activeImage}
 							src={project.images[activeImage]}
 							alt={project.name}
-							className="w-full h-full object-cover block absolute inset-0"
+							className="absolute inset-0 block h-full w-full object-cover"
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
 							exit={{ opacity: 0 }}
@@ -236,7 +236,7 @@ function ProjectDetail({
 								exit={{ opacity: 0 }}
 								transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
 								onClick={() => setLightboxOpen(false)}
-								className="fixed inset-0 flex items-center justify-center z-[9999] bg-[color-mix(in_srgb,var(--background)_60%,transparent)]"
+								className="fixed inset-0 z-[9999] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_60%,transparent)]"
 							>
 								<m.img
 									key={activeImage}
@@ -247,7 +247,7 @@ function ProjectDetail({
 									exit={{ scale: 0.94, opacity: 0 }}
 									transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
 									onClick={(e) => e.stopPropagation()}
-									className="max-h-[90vh] max-w-[90vw] object-contain block rounded-[6px]"
+									className="block max-h-[90vh] max-w-[90vw] rounded-[6px] object-contain"
 									draggable={false}
 								/>
 								<button
@@ -257,7 +257,7 @@ function ProjectDetail({
 										setLightboxOpen(false);
 									}}
 									aria-label="Close"
-									className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
+									className="absolute top-4 right-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
 								>
 									<HugeiconsIcon icon={Cancel01Icon} size={16} color="currentColor" />
 								</button>
@@ -271,7 +271,7 @@ function ProjectDetail({
 											}}
 											disabled={activeImage === 0}
 											aria-label="Previous"
-											className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer disabled:opacity-25 bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
+											className="absolute top-1/2 left-4 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)] disabled:opacity-25"
 										>
 											<HugeiconsIcon icon={ArrowLeft02Icon} size={16} color="currentColor" />
 										</button>
@@ -283,11 +283,11 @@ function ProjectDetail({
 											}}
 											disabled={activeImage === total - 1}
 											aria-label="Next"
-											className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-full cursor-pointer disabled:opacity-25 bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
+											className="absolute top-1/2 right-4 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)] disabled:opacity-25"
 										>
 											<HugeiconsIcon icon={ArrowRight02Icon} size={16} color="currentColor" />
 										</button>
-										<div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-[12px] pointer-events-none text-[color-mix(in_srgb,var(--foreground)_45%,transparent)] tracking-[0.04em]">
+										<div className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 text-[12px] text-[color-mix(in_srgb,var(--foreground)_45%,transparent)] tracking-[0.04em]">
 											{activeImage + 1} / {total}
 										</div>
 									</>
@@ -299,10 +299,10 @@ function ProjectDetail({
 				)}
 
 			{/* Content */}
-			<div className="px-6 py-5 flex flex-col gap-5">
+			<div className="flex flex-col gap-5 px-6 py-5">
 				{/* Title */}
 				<div>
-					<h2 className="text-[22px] font-semibold tracking-[-0.03em] text-[var(--text-primary)] leading-[1.2]">
+					<h2 className="font-semibold text-[22px] text-[var(--text-primary)] leading-[1.2] tracking-[-0.03em]">
 						{project.name}
 					</h2>
 				</div>
@@ -313,7 +313,7 @@ function ProjectDetail({
 				{/* Tech stack */}
 				{project.tech.length > 0 && (
 					<div>
-						<div className="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2">
+						<div className="mb-2 font-medium text-[10px] text-[var(--text-ghost)] uppercase tracking-[0.07em]">
 							Tech Stack
 						</div>
 						<div className="flex flex-wrap gap-[6px]">
@@ -322,7 +322,7 @@ function ProjectDetail({
 								return (
 									<span
 										key={t}
-										className="inline-flex items-center gap-[5px] text-[11px] px-[9px] py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-secondary)]"
+										className="inline-flex items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[9px] py-1 text-[11px] text-[var(--text-secondary)]"
 									>
 										{slug && <DeviconImg slug={slug} size={12} />}
 										{t}
@@ -336,17 +336,17 @@ function ProjectDetail({
 				{/* Testimonial */}
 				{project.testimonial && (
 					<div>
-						<div className="text-[10px] font-medium tracking-[0.07em] uppercase text-[var(--text-ghost)] mb-2">
+						<div className="mb-2 font-medium text-[10px] text-[var(--text-ghost)] uppercase tracking-[0.07em]">
 							Testimonial
 						</div>
-						<div className="p-4 rounded-xl bg-[var(--muted-bg)]">
-							<p className="text-[13px] text-[var(--text-secondary)] leading-[1.6] italic mb-2">
+						<div className="rounded-xl bg-[var(--muted-bg)] p-4">
+							<p className="mb-2 text-[13px] text-[var(--text-secondary)] italic leading-[1.6]">
 								"{project.testimonial.quote}"
 							</p>
-							<span className="text-[12px] font-semibold text-[var(--text-primary)]">
+							<span className="font-semibold text-[12px] text-[var(--text-primary)]">
 								{project.testimonial.author}
 							</span>
-							<span className="text-[11px] text-[var(--text-ghost)] ml-[6px]">
+							<span className="ml-[6px] text-[11px] text-[var(--text-ghost)]">
 								{project.testimonial.role}
 							</span>
 						</div>
@@ -441,21 +441,21 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 								key={work.name}
 								type="button"
 								onClick={() => handleSelect(work)}
-								className={`flex items-center justify-between py-[10px] px-[6px] -mx-[6px] transition-[background] duration-150 cursor-pointer w-[calc(100%+12px)] border-none [border-block-end:1px_solid_var(--border)] text-left font-[inherit] hover:bg-[var(--muted-bg)] ${isActive ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+								className={`-mx-[6px] flex w-[calc(100%+12px)] cursor-pointer items-center justify-between border-none px-[6px] py-[10px] text-left font-[inherit] transition-[background] duration-150 [border-block-end:1px_solid_var(--border)] hover:bg-[var(--muted-bg)] ${isActive ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 							>
-								<div className="flex items-center gap-3 min-w-0">
-									<span className="text-[13px] font-semibold text-[var(--text-primary)] whitespace-nowrap truncate">
+								<div className="flex min-w-0 items-center gap-3">
+									<span className="truncate whitespace-nowrap font-semibold text-[13px] text-[var(--text-primary)]">
 										{work.name}
 									</span>
-									<span className="text-[12px] text-[var(--text-ghost)] whitespace-nowrap shrink-0">
+									<span className="shrink-0 whitespace-nowrap text-[12px] text-[var(--text-ghost)]">
 										{work.type}
 									</span>
 								</div>
-								<div className="flex items-center gap-[5px] shrink-0 ml-2">
+								<div className="ml-2 flex shrink-0 items-center gap-[5px]">
 									{work.tech.slice(0, 2).map((tag) => (
 										<span
 											key={tag}
-											className="text-[10px] px-[7px] py-[2px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] whitespace-nowrap"
+											className="whitespace-nowrap rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-muted)]"
 										>
 											{tag}
 										</span>
@@ -464,7 +464,7 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 										icon={ArrowRight02Icon}
 										size={11}
 										color={isActive ? 'var(--text-secondary)' : 'var(--text-ghost)'}
-										className={`shrink-0 ml-[2px] transition-transform duration-200 ${isActive ? 'rotate-90' : ''}`}
+										className={`ml-[2px] shrink-0 transition-transform duration-200 ${isActive ? 'rotate-90' : ''}`}
 									/>
 								</div>
 							</button>
@@ -479,7 +479,7 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 						<AnimatePresence>
 							{selected && (
 								<m.div
-									className="fixed top-0 right-0 h-screen z-40 overflow-hidden w-[580px]"
+									className="fixed top-0 right-0 z-40 h-screen w-[580px] overflow-hidden"
 									initial={{ x: PANEL_WIDTH }}
 									animate={{ x: 0 }}
 									exit={{ x: PANEL_WIDTH }}

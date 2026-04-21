@@ -20,7 +20,15 @@
 		"rules": {
 			"recommended": true,
 			"nursery": {
-				"noInlineStyles": "warn"
+				"noInlineStyles": "warn",
+				"useSortedClasses": {
+					"level": "warn",
+					"fix": "safe",
+					"options": {
+						"attributes": ["className", "class"],
+						"functions": ["cn", "clsx", "cva", "cx", "twMerge", "twJoin"]
+					}
+				}
 			},
 			"style": {
 				"noUnusedTemplateLiteral": "warn",

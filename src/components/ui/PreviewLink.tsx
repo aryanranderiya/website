@@ -83,30 +83,30 @@ function PreviewCard({
 				target={isExternal ? '_blank' : undefined}
 				rel={isExternal ? 'noopener noreferrer' : undefined}
 				aria-label={preview.title ?? preview.name ?? displayHost}
-				className="group block w-[280px] rounded-xl bg-popover shadow-(--shadow-xl) overflow-hidden p-2.5 no-underline text-inherit cursor-pointer border-2 border-muted"
+				className="group block w-[280px] cursor-pointer overflow-hidden rounded-xl border-2 border-muted bg-popover p-2.5 text-inherit no-underline shadow-(--shadow-xl)"
 			>
 				{preview.image && (
-					<div className="rounded-lg overflow-hidden mb-2 aspect-[16/9] bg-[var(--muted-bg)]">
+					<div className="mb-2 aspect-[16/9] overflow-hidden rounded-lg bg-[var(--muted-bg)]">
 						<img
 							src={preview.image}
 							alt={preview.title ?? preview.name ?? ''}
-							className="w-full h-full object-cover block"
+							className="block h-full w-full object-cover"
 							loading="lazy"
 						/>
 					</div>
 				)}
 
 				{(preview.name || preview.favicon) && (
-					<div className="flex items-center gap-1.5 mb-1">
+					<div className="mb-1 flex items-center gap-1.5">
 						{preview.favicon && (
 							<img
 								src={preview.favicon}
 								alt=""
-								className="w-3.5 h-3.5 rounded-[3px] object-contain shrink-0"
+								className="h-3.5 w-3.5 shrink-0 rounded-[3px] object-contain"
 							/>
 						)}
 						{preview.name && (
-							<span className="text-[11px] font-medium text-[var(--text-secondary)] tracking-[-0.01em] truncate transition-colors duration-150 group-hover:text-[var(--text-primary)]">
+							<span className="truncate font-medium text-[11px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover:text-[var(--text-primary)]">
 								{preview.name}
 							</span>
 						)}
@@ -114,18 +114,18 @@ function PreviewCard({
 				)}
 
 				{preview.title && (
-					<div className="text-[12px] font-semibold text-[var(--text-primary)] tracking-[-0.01em] leading-[1.35] mb-0.5 transition-colors duration-150 group-hover:text-[var(--accent-blue)]">
+					<div className="mb-0.5 font-semibold text-[12px] text-[var(--text-primary)] leading-[1.35] tracking-[-0.01em] transition-colors duration-150 group-hover:text-[var(--accent-blue)]">
 						{preview.title}
 					</div>
 				)}
 
 				{preview.description && (
-					<p className="text-[11px] text-[var(--text-muted)] leading-[1.5] m-0 line-clamp-3">
+					<p className="m-0 line-clamp-3 text-[11px] text-[var(--text-muted)] leading-[1.5]">
 						{preview.description}
 					</p>
 				)}
 
-				<div className="text-[10px] text-[var(--text-ghost)] mt-2 truncate tracking-[0.01em] transition-colors duration-150 group-hover:text-[var(--text-muted)]">
+				<div className="mt-2 truncate text-[10px] text-[var(--text-ghost)] tracking-[0.01em] transition-colors duration-150 group-hover:text-[var(--text-muted)]">
 					{displayHost}
 				</div>
 			</a>
@@ -187,12 +187,12 @@ export default function PreviewLink({
 							<img
 								src={logo}
 								alt={name}
-								className={`inline align-middle w-auto h-[1.1em] mb-px ml-1${rounded ? ' rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
+								className={`mb-px inline h-[1.1em] w-auto align-middle ml-1${rounded ? 'rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
 							/>
 						)}
 						{logo && ' '}
 						<span
-							className={`font-medium underline underline-offset-4 decoration-dotted transition group-hover:text-foreground ${hoverTextClass ?? ''} hover:decoration-foreground decoration-muted-foreground/50`}
+							className={`font-medium underline decoration-dotted underline-offset-4 transition group-hover:text-foreground ${hoverTextClass ?? ''} decoration-muted-foreground/50 hover:decoration-foreground`}
 						>
 							{name}
 						</span>

@@ -1,16 +1,16 @@
 ---
-import PreviewLink from "@/components/ui/PreviewLink";
-import ButtonLink from "@/components/ui/ButtonLink";
-import { fetchOgMetadata } from "@/lib/fetchOgMetadata";
+import ButtonLink from '@/components/ui/ButtonLink';
+import PreviewLink from '@/components/ui/PreviewLink';
+import { fetchOgMetadata } from '@/lib/fetchOgMetadata';
 
 // Build-time OG scrape — the resulting `preview` payload is baked into the
 // page HTML and shipped to <PreviewLink> as static props. No client fetch,
 // no caching headaches, and the data is always whatever the target site
 // publishes at build time.
 const [experienceCompanyOg, gaiaOg, spotifyOg] = await Promise.all([
-	fetchOgMetadata("https://experience.heygaia.io"),
-	fetchOgMetadata("https://heygaia.io"),
-	fetchOgMetadata("https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"),
+	fetchOgMetadata('https://experience.heygaia.io'),
+	fetchOgMetadata('https://heygaia.io'),
+	fetchOgMetadata('https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH'),
 ]);
 ---
 

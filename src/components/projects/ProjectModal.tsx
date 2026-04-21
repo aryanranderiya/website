@@ -1,6 +1,6 @@
 'use client';
 
-import { Cancel01Icon, GithubIcon, HugeiconsIcon, CircleArrowUpRight02Icon } from '@icons';
+import { Cancel01Icon, CircleArrowUpRight02Icon, GithubIcon, HugeiconsIcon } from '@icons';
 import * as Dialog from '@radix-ui/react-dialog';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
@@ -55,7 +55,7 @@ export default function ProjectModal({
 
 							<Dialog.Content asChild>
 								<m.div
-									className="fixed left-1/2 top-1/2 z-50 w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 rounded-2xl overflow-hidden bg-[var(--card)] max-h-[85vh] overflow-y-auto"
+									className="fixed top-1/2 left-1/2 z-50 max-h-[85vh] w-full max-w-3xl -translate-x-1/2 -translate-y-1/2 overflow-hidden overflow-y-auto rounded-2xl bg-[var(--card)]"
 									initial={{ opacity: 0, scale: 0.95, y: 12 }}
 									animate={{ opacity: 1, scale: 1, y: 0 }}
 									exit={{ opacity: 0, scale: 0.95, y: 12 }}
@@ -67,7 +67,7 @@ export default function ProjectModal({
 									<Dialog.Close asChild>
 										<button
 											type="button"
-											className="absolute top-4 right-4 z-10 w-8 h-8 rounded-lg flex items-center justify-center transition-opacity hover:opacity-70 bg-[var(--muted)] text-[var(--muted-foreground)] cursor-pointer"
+											className="absolute top-4 right-4 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--muted-foreground)] transition-opacity hover:opacity-70"
 											aria-label="Close"
 										>
 											<HugeiconsIcon icon={Cancel01Icon} size={14} color="currentColor" />
@@ -76,21 +76,21 @@ export default function ProjectModal({
 
 									{/* Image gallery */}
 									{project.images && project.images.length > 0 && (
-										<div className="aspect-video bg-[var(--muted)] relative overflow-hidden">
+										<div className="relative aspect-video overflow-hidden bg-[var(--muted)]">
 											<img
 												src={project.images[activeImage]}
 												alt={project.title}
-												className="w-full h-full object-cover"
+												className="h-full w-full object-cover"
 											/>
 											{project.images.length > 1 && (
-												<div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+												<div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
 													{project.images.map((_, i) => (
 														<button
 															type="button"
 															// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
 															key={i}
 															onClick={() => setActiveImage(i)}
-															className="w-1.5 h-1.5 rounded-full transition-all cursor-pointer p-0"
+															className="h-1.5 w-1.5 cursor-pointer rounded-full p-0 transition-all"
 															// biome-ignore lint/nursery/noInlineStyles: dynamic dot indicator color and scale based on active state
 															style={{
 																background: i === activeImage ? '#00bbff' : 'rgba(255,255,255,0.5)',
@@ -105,25 +105,25 @@ export default function ProjectModal({
 
 									{/* Content */}
 									<div className="p-6">
-										<div className="flex items-start justify-between gap-4 mb-4">
+										<div className="mb-4 flex items-start justify-between gap-4">
 											<div>
-												<div className="flex items-center gap-2 mb-1">
-													<span className="text-xs px-2 py-0.5 rounded-full capitalize text-[var(--muted-foreground)] bg-[var(--muted-bg)]">
+												<div className="mb-1 flex items-center gap-2">
+													<span className="rounded-full bg-[var(--muted-bg)] px-2 py-0.5 text-[var(--muted-foreground)] text-xs capitalize">
 														{project.type}
 													</span>
 												</div>
-												<h2 className="text-2xl font-bold tracking-[-0.03em] text-[var(--foreground)] m-0">
+												<h2 className="m-0 font-bold text-2xl text-[var(--foreground)] tracking-[-0.03em]">
 													{project.title}
 												</h2>
 											</div>
 
-											<div className="flex items-center gap-2 flex-shrink-0">
+											<div className="flex flex-shrink-0 items-center gap-2">
 												{project.github && (
 													<a
 														href={project.github}
 														target="_blank"
 														rel="noopener noreferrer"
-														className="w-9 h-9 rounded-lg flex items-center justify-center transition-opacity hover:opacity-70 text-[var(--foreground)] bg-[var(--muted-bg)]"
+														className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--muted-bg)] text-[var(--foreground)] transition-opacity hover:opacity-70"
 													>
 														<HugeiconsIcon icon={GithubIcon} size={16} color="currentColor" />
 													</a>
@@ -133,29 +133,33 @@ export default function ProjectModal({
 														href={project.url}
 														target="_blank"
 														rel="noopener noreferrer"
-														className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97] bg-[#00bbff] text-black shadow-[0_2px_8px_rgba(0,187,255,0.2)]"
+														className="flex items-center gap-2 rounded-lg bg-[#00bbff] px-3 py-2 font-medium text-black text-sm shadow-[0_2px_8px_rgba(0,187,255,0.2)] transition-all active:scale-[0.97]"
 													>
 														Visit
-														<HugeiconsIcon icon={CircleArrowUpRight02Icon} size={12} color="currentColor" />
+														<HugeiconsIcon
+															icon={CircleArrowUpRight02Icon}
+															size={12}
+															color="currentColor"
+														/>
 													</a>
 												)}
 											</div>
 										</div>
 
-										<p className="text-sm leading-relaxed mb-6 text-[var(--muted-foreground)]">
+										<p className="mb-6 text-[var(--muted-foreground)] text-sm leading-relaxed">
 											{project.description}
 										</p>
 
 										{/* Tech stack */}
 										<div className="mb-6">
-											<div className="text-xs font-semibold mb-2 uppercase tracking-widest text-[var(--muted-foreground)]">
+											<div className="mb-2 font-semibold text-[var(--muted-foreground)] text-xs uppercase tracking-widest">
 												Tech Stack
 											</div>
 											<div className="flex flex-wrap gap-2">
 												{project.tech.map((t) => (
 													<span
 														key={t}
-														className="text-xs px-2.5 py-1 rounded-full text-[var(--foreground)] bg-[var(--muted)]"
+														className="rounded-full bg-[var(--muted)] px-2.5 py-1 text-[var(--foreground)] text-xs"
 													>
 														{t}
 													</span>
@@ -169,7 +173,7 @@ export default function ProjectModal({
 												{project.tags.map((tag) => (
 													<span
 														key={tag}
-														className="text-xs px-2 py-0.5 rounded-full bg-[rgba(0,187,255,0.1)] text-[#00bbff]"
+														className="rounded-full bg-[rgba(0,187,255,0.1)] px-2 py-0.5 text-[#00bbff] text-xs"
 													>
 														#{tag}
 													</span>

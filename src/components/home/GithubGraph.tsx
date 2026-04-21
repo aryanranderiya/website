@@ -84,7 +84,7 @@ function ContributionCell({
 	const [tooltip, setTooltip] = useState<{ x: number; y: number } | null>(null);
 
 	return (
-		<div className="flex-1 aspect-square relative">
+		<div className="relative aspect-square flex-1">
 			{/* biome-ignore lint/a11y/noStaticElementInteractions: tooltip-only hover on visual grid cell */}
 			<div
 				onMouseEnter={(e) => {
@@ -92,13 +92,13 @@ function ContributionCell({
 					setTooltip({ x: rect.left + rect.width / 2, y: rect.top });
 				}}
 				onMouseLeave={() => setTooltip(null)}
-				className={`w-full h-full rounded-[2px] cursor-default ${animated ? 'github-cell' : ''}`}
+				className={`h-full w-full cursor-default rounded-[2px] ${animated ? 'github-cell' : ''}`}
 				// biome-ignore lint/nursery/noInlineStyles: per-cell color from data
 				style={{ backgroundColor: LEVEL_COLORS[day.level] }}
 			/>
 			{tooltip && (
 				<div
-					className="fixed z-[9999] pointer-events-none"
+					className="pointer-events-none fixed z-[9999]"
 					// biome-ignore lint/nursery/noInlineStyles: dynamic position from mouse coordinates
 					style={{
 						left: tooltip.x,
@@ -106,13 +106,13 @@ function ContributionCell({
 						transform: 'translate(-50%, -100%)',
 					}}
 				>
-					<div className="bg-[#111] text-[#fdfdfc] text-[11px] leading-[1.5] px-[10px] py-[6px] rounded-[6px] whitespace-nowrap tracking-[-0.01em]">
+					<div className="whitespace-nowrap rounded-[6px] bg-[#111] px-[10px] py-[6px] text-[#fdfdfc] text-[11px] leading-[1.5] tracking-[-0.01em]">
 						<div className="font-semibold">
 							{day.count === 0
 								? 'No contributions'
 								: `${day.count} contribution${day.count !== 1 ? 's' : ''}`}
 						</div>
-						<div className="opacity-50 text-[10px] mt-[1px]">{formatDate(day.date)}</div>
+						<div className="mt-[1px] text-[10px] opacity-50">{formatDate(day.date)}</div>
 					</div>
 				</div>
 			)}
@@ -135,7 +135,7 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 		<div className="w-full">
 			{isLoading ? (
 				// Skeleton - full width grid
-				<div className="grid [grid-template-columns:repeat(52,1fr)] gap-[3px] w-full">
+				<div className="grid w-full gap-[3px] [grid-template-columns:repeat(52,1fr)]">
 					{Array.from({ length: 52 }).map((_, i) => (
 						<div
 							// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
@@ -146,7 +146,7 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 								<div
 									// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
 									key={j}
-									className="animate-pulse aspect-square rounded-[2px] w-full bg-[rgba(64,196,99,0.10)]"
+									className="aspect-square w-full animate-pulse rounded-[2px] bg-[rgba(64,196,99,0.10)]"
 								/>
 							))}
 						</div>
@@ -156,11 +156,11 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 				<div className="relative w-full">
 					{/* Month labels */}
 					{!compact && (
-						<div className="relative h-4 mb-1 w-full">
+						<div className="relative mb-1 h-4 w-full">
 							{monthLabels.map(({ label, index }) => (
 								<span
 									key={label + index}
-									className="absolute text-[10px] text-[var(--text-muted)] tracking-[0.02em] leading-none"
+									className="absolute text-[10px] text-[var(--text-muted)] leading-none tracking-[0.02em]"
 									// biome-ignore lint/nursery/noInlineStyles: dynamic computed left position
 									style={{ left: `${(index / 52) * 100}%` }}
 								>
@@ -171,7 +171,7 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 					)}
 
 					{/* Grid */}
-					<div className="grid [grid-template-columns:repeat(52,1fr)] gap-[3px] w-full">
+					<div className="grid w-full gap-[3px] [grid-template-columns:repeat(52,1fr)]">
 						{weeks.map((week, wi) => (
 							<div
 								// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
@@ -198,29 +198,29 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 
 	return (
 		<section className="pb-12">
-			<div className="flex items-center justify-between mb-4 min-h-[42px]">
+			<div className="mb-4 flex min-h-[42px] items-center justify-between">
 				<div className="section-header mb-0">GitHub Contributions</div>
 				<div className="text-right">
-					<div className="text-2xl font-bold tracking-[-0.03em] [font-variant-numeric:tabular-nums]">
+					<div className="font-bold text-2xl tracking-[-0.03em] [font-variant-numeric:tabular-nums]">
 						{isLoading ? '\u00A0' : totalContributions.toLocaleString()}
 					</div>
-					<div className="text-xs text-[var(--text-muted)]">contributions this year</div>
+					<div className="text-[var(--text-muted)] text-xs">contributions this year</div>
 				</div>
 			</div>
 
 			{graph}
 
-			<div className="flex items-center gap-2 mt-3 justify-end">
-				<span className="text-xs text-[var(--text-muted)]">Less</span>
+			<div className="mt-3 flex items-center justify-end gap-2">
+				<span className="text-[var(--text-muted)] text-xs">Less</span>
 				{[0, 1, 2, 3, 4].map((level) => (
 					<div
 						key={level}
-						className="w-[10px] h-[10px] rounded-[2px]"
+						className="h-[10px] w-[10px] rounded-[2px]"
 						// biome-ignore lint/nursery/noInlineStyles: dynamic background from level color lookup
 						style={{ background: LEVEL_COLORS[level] }}
 					/>
 				))}
-				<span className="text-xs text-[var(--text-muted)]">More</span>
+				<span className="text-[var(--text-muted)] text-xs">More</span>
 			</div>
 		</section>
 	);
@@ -231,8 +231,8 @@ function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
 	// rides above the grid to read as "loading" without looking like
 	// random contribution levels.
 	const grid = (
-		<div className="relative github-graph-shimmer w-full">
-			<div className="grid [grid-template-columns:repeat(52,1fr)] gap-[3px] w-full">
+		<div className="github-graph-shimmer relative w-full">
+			<div className="grid w-full gap-[3px] [grid-template-columns:repeat(52,1fr)]">
 				{Array.from({ length: 52 }).map((_, i) => (
 					<div
 						// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
@@ -243,7 +243,7 @@ function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
 							<div
 								// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
 								key={j}
-								className="aspect-square rounded-[2px] bg-[rgba(64,196,99,0.10)] w-full"
+								className="aspect-square w-full rounded-[2px] bg-[rgba(64,196,99,0.10)]"
 							/>
 						))}
 					</div>
@@ -254,7 +254,7 @@ function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
 	if (compact) return grid;
 	return (
 		<section className="pb-12">
-			<div className="flex items-center justify-between mb-4">
+			<div className="mb-4 flex items-center justify-between">
 				<div className="h-[14px] w-[160px] rounded-[4px] bg-black/[0.08]" />
 				<div className="h-9 w-16 rounded-[4px] bg-black/[0.08]" />
 			</div>

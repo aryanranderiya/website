@@ -102,7 +102,7 @@ export default function Book3D({ title, author, cover, pages, onClick, index = 0
 					>
 						{/* Spine title text */}
 						<span
-							className="text-[7.5px] font-bold text-[rgba(255,255,255,0.7)] tracking-[0.08em] overflow-hidden whitespace-nowrap uppercase"
+							className="overflow-hidden whitespace-nowrap font-bold text-[7.5px] text-[rgba(255,255,255,0.7)] uppercase tracking-[0.08em]"
 							// biome-ignore lint/nursery/noInlineStyles: dynamic maxHeight from props; writingMode/textOrientation have no Tailwind equivalent
 							style={{
 								writingMode: 'vertical-rl',
@@ -115,7 +115,7 @@ export default function Book3D({ title, author, cover, pages, onClick, index = 0
 						</span>
 						{/* Spine gloss strip */}
 						<div
-							className="absolute top-0 left-0 w-[45%] bottom-0 pointer-events-none"
+							className="pointer-events-none absolute top-0 bottom-0 left-0 w-[45%]"
 							// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
 							style={{
 								background: 'linear-gradient(90deg, rgba(255,255,255,0.08) 0%, transparent 100%)',
@@ -141,30 +141,30 @@ export default function Book3D({ title, author, cover, pages, onClick, index = 0
 								src={cover}
 								alt={`${title} cover`}
 								onError={() => setImgError(true)}
-								className="w-full h-full object-cover block"
+								className="block h-full w-full object-cover"
 							/>
 						) : (
 							<div
-								className="w-full h-full flex flex-col items-center justify-center px-[8px] py-[10px] gap-[5px]"
+								className="flex h-full w-full flex-col items-center justify-center gap-[5px] px-[8px] py-[10px]"
 								// biome-ignore lint/nursery/noInlineStyles: dynamic gradient from props
 								style={{
 									background: `linear-gradient(150deg, ${bg}ee 0%, ${bg}99 100%)`,
 								}}
 							>
 								<div
-									className="w-[55%] h-[1px] mb-[3px]"
+									className="mb-[3px] h-[1px] w-[55%]"
 									// biome-ignore lint/nursery/noInlineStyles: rgba background has no Tailwind equivalent
 									style={{ background: 'rgba(255,255,255,0.22)' }}
 								/>
-								<span className="text-[9px] font-bold text-[rgba(255,255,255,0.9)] text-center leading-[1.3] tracking-[0.01em]">
+								<span className="text-center font-bold text-[9px] text-[rgba(255,255,255,0.9)] leading-[1.3] tracking-[0.01em]">
 									{title}
 								</span>
 								<div
-									className="w-[38%] h-[1px]"
+									className="h-[1px] w-[38%]"
 									// biome-ignore lint/nursery/noInlineStyles: rgba background has no Tailwind equivalent
 									style={{ background: 'rgba(255,255,255,0.15)' }}
 								/>
-								<span className="text-[7px] text-[rgba(255,255,255,0.5)] text-center tracking-[0.04em]">
+								<span className="text-center text-[7px] text-[rgba(255,255,255,0.5)] tracking-[0.04em]">
 									{author}
 								</span>
 							</div>
@@ -172,7 +172,7 @@ export default function Book3D({ title, author, cover, pages, onClick, index = 0
 
 						{/* Page-edge line -- right side */}
 						<div
-							className="absolute top-0 right-0 w-[2px] bottom-0 pointer-events-none"
+							className="pointer-events-none absolute top-0 right-0 bottom-0 w-[2px]"
 							// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
 							style={{
 								background:
@@ -182,7 +182,7 @@ export default function Book3D({ title, author, cover, pages, onClick, index = 0
 
 						{/* Cover gloss -- top-left diagonal highlight */}
 						<div
-							className="absolute inset-0 pointer-events-none"
+							className="pointer-events-none absolute inset-0"
 							// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
 							style={{
 								background: 'linear-gradient(150deg, rgba(255,255,255,0.09) 0%, transparent 40%)',
