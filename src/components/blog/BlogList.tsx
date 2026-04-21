@@ -48,27 +48,22 @@ export default function BlogList({
 							ease: EASE,
 							delay: animateDelay ? Math.min(i, 5) * 0.05 : 0,
 						}}
-						className={[
-							'group flex items-center gap-[14px] py-[10px] no-underline',
-							'-mx-2 rounded-[var(--radius-sm)] px-2',
-							'transition-[background] duration-150 hover:bg-[var(--muted-bg)]',
-							i < posts.length - 1 ? 'border-[var(--border)] border-b' : '',
-						].join(' ')}
+						className="group -mx-2 flex items-center gap-[14px] rounded-[var(--radius-sm)] px-2 py-[7px] no-underline transition-[background] duration-150 hover:bg-[var(--muted-bg)]"
 					>
-						<time className="w-[72px] shrink-0 text-[11px] text-[var(--text-ghost)] tabular-nums leading-[1.5]">
-							{formatDate(post.date)}
-						</time>
-
 						<div className="flex min-w-0 flex-1 items-center gap-2">
 							<span className="truncate font-medium text-[13px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover:text-[var(--text-primary)]">
 								{post.title}
 							</span>
 							{post.featured && (
-								<span className="shrink-0 rounded-full bg-[var(--border)] px-1.5 py-[2px] font-medium text-[10px] text-[var(--text-muted)] tracking-[0.02em]">
+								<span className="shrink-0 rounded-full bg-[var(--muted-bg)] px-1.5 py-[2px] font-normal text-[10px] text-[var(--text-ghost)] tracking-[0.02em]">
 									Featured
 								</span>
 							)}
 						</div>
+
+						<time className="shrink-0 text-[13px] text-[var(--text-ghost)] tabular-nums leading-[1.5]">
+							{formatDate(post.date)}
+						</time>
 
 						<span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text-ghost)] opacity-0 transition-opacity duration-150 group-hover:opacity-100">
 							<ChevronRight size={13} />

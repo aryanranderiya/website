@@ -27,6 +27,7 @@ interface Project {
 	slug: string;
 	title: string;
 	description: string;
+	shortDescription?: string;
 	tags: string[];
 	tech: string[];
 	type: string;

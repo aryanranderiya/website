@@ -1,6 +1,7 @@
 ---
 title: Bauhaus Screensaver
 description: Free, open-source recreation of the Bauhaus Clock screensaver for macOS - minimalist geometric design.
+shortDescription: Open-source macOS Bauhaus clock screensaver
 date: 2024-05-01
 tags: [Open Source]
 tech: [Objective-C]

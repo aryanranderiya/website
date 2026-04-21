@@ -1,6 +1,7 @@
 ---
 title: URL Shortener
 description: Full-stack MERN app to generate custom or randomized short URLs with expiration date functionality.
+shortDescription: Custom URL shortener with expiry dates
 date: 2024-03-01
 tags: [Utility]
 tech: [React, Node.js, Express, MongoDB, TailwindCSS]

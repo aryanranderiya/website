@@ -1,6 +1,7 @@
 ---
 title: Browser Automation
 description: Natural language browser automation platform - describe what you want done on the web, and it does it.
+shortDescription: Natural language web automation platform
 date: 2025-01-01
 tags: [Automation, AI / ML]
 tech: [Python, FastAPI, Next.js, TypeScript]

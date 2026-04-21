@@ -1,6 +1,7 @@
 ---
 title: Dungeon Quest
 description: Retro-style platformer with pixel art graphics, collectible items, and classic dungeon exploration - built for a frontend hackathon.
+shortDescription: Retro dungeon platformer hackathon game
 date: 2025-04-01
 tags: [Canvas, Game]
 tech: [Next.js, TypeScript, TailwindCSS]

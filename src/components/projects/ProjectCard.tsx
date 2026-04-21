@@ -21,6 +21,7 @@ interface Project {
 	slug: string;
 	title: string;
 	description: string;
+	shortDescription?: string;
 	tags: string[];
 	tech: string[];
 	type: string;
@@ -100,29 +101,18 @@ export default function ProjectCard({
 				onClick={() => {
 					window.location.href = `/projects/${project.slug}`;
 				}}
-				className={`flex min-w-0 cursor-pointer items-center gap-4 rounded-[10px] px-3 py-[10px] transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+				className={`flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 			>
-				{/* Title + description stacked */}
-				<div className="min-w-0 flex-1">
-					<div className="mb-[2px] flex items-center gap-[7px]">
-						<span
-							className={`truncate font-semibold text-[13px] tracking-[-0.02em] transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
-						>
-							{project.title}
-						</span>
-					</div>
-					<span className="block truncate text-[11px] text-[var(--text-ghost)] leading-[1.4] tracking-[-0.01em]">
-						{project.description}
+				{/* Left: title + type chip + folder chip */}
+				<div className="flex min-w-0 shrink items-center gap-1.5">
+					<span
+						className={`truncate font-medium text-[13px] tracking-[-0.02em] transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+					>
+						{project.title}
 					</span>
-				</div>
-
-				{/* Right side: type + tags + folder chip + arrow */}
-				<div className="flex shrink-0 items-center gap-1.5">
-					{/* Type badge */}
-					<span className="rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-ghost)] tracking-[0.01em]">
+					<span className="shrink-0 rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-ghost)] tracking-[0.01em]">
 						{typeLabel}
 					</span>
-
 					{chip && (
 						<span
 							className="shrink-0 rounded-full px-2 py-[2px] font-medium text-[10px] tracking-[0.01em]"
@@ -132,20 +122,28 @@ export default function ProjectCard({
 							{chip.label}
 						</span>
 					)}
+				</div>
 
-					<div className="flex w-4 items-center justify-center">
-						{project.url && (
-							<a
-								href={project.url}
-								target="_blank"
-								rel="noopener noreferrer"
-								onClick={(e) => e.stopPropagation()}
-								className={`flex items-center transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-muted)]' : 'text-transparent'}`}
-							>
-								<HugeiconsIcon icon={ArrowUpRight01Icon} size={13} color="currentColor" />
-							</a>
-						)}
-					</div>
+				{/* Right: short description */}
+				{project.shortDescription && (
+					<span className="ml-auto max-w-[42%] shrink-0 truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
+						{project.shortDescription}
+					</span>
+				)}
+
+				{/* External link arrow */}
+				<div className="flex w-4 shrink-0 items-center justify-center">
+					{project.url && (
+						<a
+							href={project.url}
+							target="_blank"
+							rel="noopener noreferrer"
+							onClick={(e) => e.stopPropagation()}
+							className={`flex items-center transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-muted)]' : 'text-transparent'}`}
+						>
+							<HugeiconsIcon icon={ArrowUpRight01Icon} size={13} color="currentColor" />
+						</a>
+					)}
 				</div>
 			</m.div>
 		</LazyMotion>

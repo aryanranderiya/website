@@ -21,6 +21,7 @@ export function mapProject(entry: CollectionEntry<'projects'>) {
 		slug: entry.slug,
 		title: entry.data.title,
 		description: entry.data.description,
+		shortDescription: entry.data.shortDescription,
 		tags: entry.data.tags,
 		tech: entry.data.tech,
 		type: entry.data.type,

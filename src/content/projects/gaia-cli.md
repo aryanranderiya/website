@@ -1,6 +1,7 @@
 ---
 title: GAIA CLI
 description: A command-line tool for self-hosting and developing GAIA  --  interactive setup wizards, service orchestration, health dashboards, and live log streaming all in one terminal UI.
+shortDescription: Self-hosting CLI for GAIA with live dashboards
 date: 2024-11-01
 tags: [CLI, DevOps, Open Source]
 tech: [Node.js, TypeScript, React, Ink, Docker, Commander]

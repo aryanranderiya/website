@@ -1,6 +1,7 @@
 ---
 title: Blink Analytics
 description: A comprehensive analytics dashboard for real-time client reporting with custom charts, metrics, and data export. Built with React and TypeScript.
+shortDescription: Real-time analytics dashboard for clients
 date: 2025-02-01
 tags: [SaaS, Analytics]
 tech: [React, TypeScript, TailwindCSS]

@@ -187,12 +187,12 @@ export default function PreviewLink({
 							<img
 								src={logo}
 								alt={name}
-								className={`mb-px inline h-[1.1em] w-auto align-middle ml-1${rounded ? 'rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
+								className={`mb-px inline h-[1.1em] w-auto align-middle ml-1${rounded ? ' rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
 							/>
 						)}
 						{logo && ' '}
 						<span
-							className={`font-medium underline decoration-dotted underline-offset-4 transition group-hover:text-foreground ${hoverTextClass ?? ''} decoration-muted-foreground/50 hover:decoration-foreground`}
+							className={`font-medium underline decoration-dotted underline-offset-4 transition group-hover:text-foreground ${hoverTextClass ?? ''} decoration-muted-foreground/30`}
 						>
 							{name}
 						</span>

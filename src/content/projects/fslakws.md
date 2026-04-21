@@ -1,6 +1,7 @@
 ---
 title: Few-Shot Keyword Spotting
 description: Multilingual keyword detection in audio using minimal training data - built for Smart India Hackathon 2024.
+shortDescription: Multilingual keyword detection in audio
 date: 2024-09-01
 tags: [AI / ML, Speech Recognition]
 tech: [TypeScript, Python, Next.js]

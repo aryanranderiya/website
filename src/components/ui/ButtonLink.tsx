@@ -56,12 +56,18 @@ export default function ButtonLink({
 			asChild
 			variant={variant}
 			size={size}
-			className={['gap-1.5', className ?? ''].join(' ').trim()}
+			className={['group gap-1.5 pr-2!', className ?? ''].join(' ').trim()}
 		>
 			<a href={href} download={download} target={target} rel={rel}>
 				{IconComp && <HugeiconsIcon icon={IconComp} size={iconSize} />}
 				{label}
-				{trailingArrow && <HugeiconsIcon icon={CircleArrowRight02Icon} size={iconSize + 3} />}
+				{trailingArrow && (
+					<HugeiconsIcon
+						className="group-hover:-rotate-45 transition duration-100"
+						icon={CircleArrowRight02Icon}
+						size={iconSize + 3}
+					/>
+				)}
 			</a>
 		</RaisedButton>
 	);

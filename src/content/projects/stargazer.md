@@ -1,6 +1,7 @@
 ---
 title: Stargazer
 description: Terminal UI tool in Go that collects GitHub stargazers, resolves email addresses, and exports to CSV.
+shortDescription: GitHub stargazer email collector in Go
 date: 2025-03-01
 tags: [Developer Tools, Analytics]
 tech: [Go]

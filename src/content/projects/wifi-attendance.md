@@ -1,6 +1,7 @@
 ---
 title: Wi-Fi Attendance
 description: Android app that streamlines classroom attendance tracking using the university's Wi-Fi BSSID and unique device hardware IDs, with Excel export support.
+shortDescription: Wi-Fi-based classroom attendance for Android
 date: 2023-11-01
 tags: [Education, Automation]
 tech: [Java, Android, Firebase]
