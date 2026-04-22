@@ -522,7 +522,7 @@ function SocialChip({ social, activeId, setActiveId, leaveTimer }: SocialChipPro
 					target="_blank"
 					rel="noopener noreferrer"
 					className={[
-						'inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 outline-none',
+						'inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] px-3 py-1.5 outline-none',
 						'select-none whitespace-nowrap font-medium text-xs tracking-[-0.01em] no-underline',
 						'transition-[background-color,color,transform] duration-150',
 						hovered
