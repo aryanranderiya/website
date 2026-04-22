@@ -335,7 +335,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								onFocus={() => setSearchFocused(true)}
 								onBlur={() => setSearchFocused(false)}
 								placeholder="Search..."
-								className={`w-[140px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none transition-shadow duration-150 focus:ring-1 focus:ring-[var(--text-ghost)]/40 ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
+								className={`w-[140px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none transition-shadow duration-150 focus:ring-1 focus:ring-[var(--text-ghost)]/40 focus:ring-offset-0 ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
 							/>
 							{!searchFocused && !search && (
 								<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
