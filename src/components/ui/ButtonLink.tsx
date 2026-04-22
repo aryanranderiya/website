@@ -63,7 +63,7 @@ export default function ButtonLink({
 				{label}
 				{trailingArrow && (
 					<HugeiconsIcon
-						className="group-hover:-rotate-45 transition duration-100"
+						className="transition duration-100 group-hover:-rotate-45"
 						icon={CircleArrowRight02Icon}
 						size={iconSize + 3}
 					/>

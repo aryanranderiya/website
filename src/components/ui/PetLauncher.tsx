@@ -51,6 +51,7 @@ function getStored(): { animal: string; color: string } {
 
 export function PetLauncher() {
 	const preloaderDone = useAfterPreloader();
+	const [mounted, setMounted] = useState(false);
 	const [pet, setPet] = useState<{ animal: string; color: string }>({
 		animal: 'dog',
 		color: 'brown',
@@ -61,6 +62,7 @@ export function PetLauncher() {
 	const rafRef = useRef<number | null>(null);
 
 	useEffect(() => {
+		setMounted(true);
 		setPet(getStored());
 	}, []);
 
@@ -136,7 +138,7 @@ export function PetLauncher() {
 
 	return (
 		<>
-			{preloaderDone && !isNone && (
+			{mounted && preloaderDone && !isNone && (
 				<WebPet
 					animal={pet.animal}
 					color={pet.color}
@@ -218,7 +220,7 @@ export function PetLauncher() {
 			)}
 
 			{/* Floating trigger when pet is hidden */}
-			{preloaderDone && isNone && (
+			{mounted && preloaderDone && isNone && (
 				<button
 					type="button"
 					onClick={() => setOpen((o) => !o)}

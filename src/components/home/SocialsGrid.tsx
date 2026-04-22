@@ -465,10 +465,11 @@ function PreviewCard({ visible, rect, children, onMouseEnter, onMouseLeave }: Pr
 			style={{
 				top: anchorY,
 				left: anchorX,
-				transform: `translateX(-50%) translateY(${above ? 'calc(-100% - 4px)' : '4px'})`,
+				transform: `translateX(-50%) translateY(${above ? 'calc(-100% - 4px)' : '4px'}) scale(${visible ? 1 : 0.96})`,
 				opacity: visible ? 1 : 0,
 				pointerEvents: visible ? 'auto' : 'none',
-				transition: 'opacity 0.15s ease',
+				transition: 'opacity 0.15s ease-out, transform 0.2s cubic-bezier(0.19,1,0.22,1)',
+				transformOrigin: above ? 'bottom center' : 'top center',
 			}}
 		>
 			{children}
@@ -523,7 +524,7 @@ function SocialChip({ social, activeId, setActiveId, leaveTimer }: SocialChipPro
 					className={[
 						'inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] px-3 py-1.5 outline-none',
 						'select-none whitespace-nowrap font-medium text-xs tracking-[-0.01em] no-underline',
-						'transition-all duration-150',
+						'transition-[background-color,color,transform] duration-150',
 						hovered
 							? '-translate-y-px bg-[var(--muted-bg)] text-[var(--text-primary)]'
 							: 'translate-y-0 bg-transparent text-[var(--text-muted)]',
@@ -558,7 +559,7 @@ function SocialChip({ social, activeId, setActiveId, leaveTimer }: SocialChipPro
 
 function SocialsGridInner() {
 	const [activeId, setActiveId] = useState<string | null>(null);
-	const leaveTimer = useRef<ReturnType<typeof setTimeout>>();
+	const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
 	useEffect(() => () => clearTimeout(leaveTimer.current), []);
 

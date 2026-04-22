@@ -9,6 +9,7 @@ import {
 	File01Icon,
 	HugeiconsIcon,
 } from '@icons';
+import TableOfContents from '@/components/ui/TableOfContents.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { formatDate } from '@/lib/utils';
 
@@ -25,7 +26,8 @@ interface Props {
 }
 
 const { convo } = Astro.props;
-const { Content } = await convo.render();
+const { Content, headings } = await convo.render();
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 const platformLabels: Record<string, string> = {
 	'claude-code': 'Claude Code',
@@ -65,8 +67,10 @@ const tokensDisplay = formatTokensExact(convo.data.tokenCount, convo.data.tokens
   description={convo.data.description}
   ogType="article"
   articleDate={convo.data.date}
+  fullWidth={true}
 >
-  <article style="padding-bottom: 64px;">
+  <div class="flex ml-[max(0px,calc((100%-var(--content-max-width))/2))] gap-14 items-start">
+  <article class="flex-1 min-w-0 max-w-[var(--content-max-width)]" style="padding-bottom: 64px;">
 
     {/* Breadcrumb */}
     <nav class="flex items-center gap-1.5 text-xs mb-8" style="color: var(--text-ghost);" aria-label="Breadcrumb">
@@ -163,4 +167,11 @@ const tokensDisplay = formatTokensExact(convo.data.tokenCount, convo.data.tokens
       </a>
     </div>
   </article>
+
+  {tocHeadings.length > 1 && (
+    <aside class="hidden min-[1080px]:block w-56 shrink-0 sticky top-[calc(var(--section-padding-top)+24px)]">
+      <TableOfContents headings={headings} />
+    </aside>
+  )}
+  </div>
 </PageLayout>

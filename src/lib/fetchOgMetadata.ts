@@ -13,6 +13,7 @@ function parseTagAttrs(tag: string): MetaTag {
 	const out: MetaTag = {};
 	let match: RegExpExecArray | null;
 	ATTR_RE.lastIndex = 0;
+	// biome-ignore lint/suspicious/noAssignInExpressions: standard regex exec loop
 	while ((match = ATTR_RE.exec(tag)) !== null) {
 		const key = (match[1] ?? match[3]).toLowerCase();
 		const value = match[2] ?? match[4];
@@ -64,6 +65,7 @@ async function fetchOnce(url: string): Promise<LinkPreview | null> {
 		const meta: Record<string, string> = {};
 		let m: RegExpExecArray | null;
 		META_RE.lastIndex = 0;
+		// biome-ignore lint/suspicious/noAssignInExpressions: standard regex exec loop
 		while ((m = META_RE.exec(head)) !== null) {
 			const attrs = parseTagAttrs(m[0]);
 			const key = (attrs.property || attrs.name)?.toLowerCase();
@@ -72,6 +74,7 @@ async function fetchOnce(url: string): Promise<LinkPreview | null> {
 
 		let favicon: string | undefined;
 		LINK_RE.lastIndex = 0;
+		// biome-ignore lint/suspicious/noAssignInExpressions: standard regex exec loop
 		while ((m = LINK_RE.exec(head)) !== null) {
 			const attrs = parseTagAttrs(m[0]);
 			const rel = attrs.rel?.toLowerCase() ?? '';

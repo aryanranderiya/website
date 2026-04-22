@@ -1,4 +1,4 @@
-import { ArrowRight01Icon, CircleArrowRight02Icon, HugeiconsIcon } from '@icons';
+import { CircleArrowRight02Icon, HugeiconsIcon } from '@icons';
 
 interface SectionLinkProps {
 	href: string;

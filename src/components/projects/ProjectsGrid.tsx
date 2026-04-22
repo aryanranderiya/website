@@ -167,8 +167,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			<>
-				<m.div
+			<m.div
 					initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
 					animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
 					transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
@@ -234,7 +233,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								type="button"
 								ref={filterBtnRef}
 								onClick={() => setTagPopoverOpen((o) => !o)}
-								className={`inline-flex cursor-pointer items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[10px] py-1 text-[11px] leading-[1.45] tracking-[0.01em] transition-all duration-150 ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
+								className={`inline-flex cursor-pointer items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[10px] py-1 text-[11px] leading-[1.45] tracking-[0.01em] transition-[color,opacity] duration-150 ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
 							>
 								<HugeiconsIcon icon={FilterIcon} size={11} color="currentColor" />
 								<span>
@@ -244,9 +243,15 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								</span>
 							</button>
 
+							<AnimatePresence>
 							{tagPopoverOpen && (
-								<div
+								<m.div
 									ref={popoverRef}
+									initial={{ opacity: 0, scale: 0.95, y: -4 }}
+									animate={{ opacity: 1, scale: 1, y: 0 }}
+									exit={{ opacity: 0, scale: 0.95, y: -4 }}
+									transition={{ duration: 0.15, ease: [0.19, 1, 0.22, 1] }}
+									style={{ transformOrigin: 'top left' }}
 									className="absolute top-[calc(100%+6px)] left-0 z-[100] max-h-[300px] min-w-[210px] overflow-y-auto rounded-[20px] bg-[var(--background)] p-1.5 shadow-[var(--shadow-lg)]"
 								>
 									<div className="flex items-center justify-between px-2 pt-1 pb-1.5">
@@ -309,8 +314,9 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 											</button>
 										);
 									})}
-								</div>
+								</m.div>
 							)}
+							</AnimatePresence>
 						</div>
 
 						<div className="flex-1" />
@@ -327,7 +333,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								onFocus={() => setSearchFocused(true)}
 								onBlur={() => setSearchFocused(false)}
 								placeholder="Search..."
-								className={`w-[140px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
+								className={`w-[140px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none transition-shadow duration-150 focus:ring-1 focus:ring-[var(--text-ghost)]/40 focus:ring-offset-0 focus-visible:outline-none ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
 							/>
 							{!searchFocused && !search && (
 								<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
@@ -411,7 +417,6 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 						</AnimatePresence>,
 						document.body
 					)}
-			</>
 		</LazyMotion>
 	);
 }
