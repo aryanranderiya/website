@@ -1062,6 +1062,14 @@ a {
 	animation-delay: 0.24s;
 }
 
+/* On navigation, suppress element-level CSS entrance animations.
+   The view transition handles the page entrance; per-element animations
+   would start from opacity:0 (backward fill) and make content invisible
+   in the view-transition snapshot. */
+html.has-transitioned .animate-fade-in {
+	animation: none;
+}
+
 /* ============================================
    REDUCED MOTION
    ============================================ */

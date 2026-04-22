@@ -9,28 +9,25 @@ function isPreloaderDone() {
 }
 
 export function useAfterPreloader() {
-	// Always start as `false` even if the preloader has already been shown.
-	// This guarantees that any framer-motion `animate={ready ? ... : ...}`
-	// observes a state change after mount, so entrance animations actually
-	// run on subsequent navigations within the same session.
-	const [ready, setReady] = useState(false);
+	// Start as `true` so SSR renders components in their visible (show) state.
+	// This ensures the view-transition snapshot captures visible content, not
+	// the opacity:0 initial state that caused content to vanish after navigation.
+	//
+	// On first visit (preloader not done), useEffect immediately resets to false
+	// and waits for preloader:done — the preloader overlay covers the brief flash.
+	const [ready, setReady] = useState(true);
 
 	useEffect(() => {
-		if (ready) return;
-		// If preloader already finished in this session, flip to ready on the
-		// next frame so the initial render paints with `ready=false`, then
-		// animation kicks in.
-		if (isPreloaderDone()) {
-			const id = requestAnimationFrame(() => setReady(true));
-			return () => cancelAnimationFrame(id);
-		}
+		// Navigation / repeat visit: preloader already shown — stay ready immediately.
+		if (isPreloaderDone()) return;
 
-		// Primary: listen for the event dispatched by Preloader
+		// First visit: reset and wait for the preloader to signal done.
+		setReady(false);
+
 		const handler = () => setReady(true);
 		window.addEventListener('preloader:done', handler, { once: true });
 
-		// Fallback: if we mounted after the event already fired, poll sessionStorage
-		// (sessionStorage is written ~400ms after the event, so poll briefly)
+		// Fallback: poll in case the event fired before we mounted.
 		const interval = setInterval(() => {
 			if (isPreloaderDone()) {
 				setReady(true);
@@ -42,7 +39,7 @@ export function useAfterPreloader() {
 			window.removeEventListener('preloader:done', handler);
 			clearInterval(interval);
 		};
-	}, [ready]);
+	}, []);
 
 	return ready;
 }

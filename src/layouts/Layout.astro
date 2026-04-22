@@ -171,7 +171,21 @@ const ogImageURL = ogImage.startsWith('http')
         }
       }
       applyTheme();
-      document.addEventListener('astro:after-swap', applyTheme);
+      // On navigation (preloader already done), mark the document so CSS entrance
+      // animations are suppressed — the view transition provides the page entrance.
+      try {
+        if (sessionStorage.getItem('preloader_shown')) {
+          document.documentElement.classList.add('has-transitioned');
+        }
+      } catch {}
+      document.addEventListener('astro:after-swap', function() {
+        applyTheme();
+        try {
+          if (sessionStorage.getItem('preloader_shown')) {
+            document.documentElement.classList.add('has-transitioned');
+          }
+        } catch {}
+      });
     </script>
   </head>
   <body>
