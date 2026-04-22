@@ -1,8 +1,8 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
-import { CircleArrowLeft02Icon, CircleArrowUpRight02Icon, GithubIcon, HugeiconsIcon } from '@icons';
+import { CircleArrowLeft02Icon, HugeiconsIcon } from '@icons';
 import Lightbox from '@/components/ui/Lightbox.astro';
-import { RaisedButton } from '@/components/ui/raised-button';
+import ProjectCTAs from '@/components/projects/ProjectCTAs';
 import { SITE } from '@/constants/site';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { getTechIconUrl } from '@/utils/techIcons';
@@ -125,26 +125,7 @@ const [heroImage, ...galleryImages] = allImages;
       {p.description}
     </p>
 
-    {(p.url || p.github) && (
-      <div class="flex items-center gap-2">
-        {p.github && (
-          <RaisedButton asChild={true} size="sm" variant="secondary">
-            <a href={p.github} target="_blank" rel="noopener noreferrer" class="gap-1.5 no-underline">
-              <HugeiconsIcon icon={GithubIcon} size={13} color="currentColor" />
-              GitHub
-            </a>
-          </RaisedButton>
-        )}
-        {p.url && (
-          <RaisedButton asChild={true} size="sm" variant="default">
-            <a href={p.url} target="_blank" rel="noopener noreferrer" class="gap-1.5 no-underline">
-              Visit
-              <HugeiconsIcon icon={CircleArrowUpRight02Icon} size={13} color="currentColor" />
-            </a>
-          </RaisedButton>
-        )}
-      </div>
-    )}
+    <ProjectCTAs url={p.url} github={p.github} />
   </header>
 
   <!-- Tech stack + Tags -->
