@@ -559,7 +559,7 @@ function SocialChip({ social, activeId, setActiveId, leaveTimer }: SocialChipPro
 
 function SocialsGridInner() {
 	const [activeId, setActiveId] = useState<string | null>(null);
-	const leaveTimer = useRef<ReturnType<typeof setTimeout>>();
+	const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
 	useEffect(() => () => clearTimeout(leaveTimer.current), []);
 

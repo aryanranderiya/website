@@ -56,6 +56,7 @@ function MapWidgetInner() {
 		if (el && !containerReady) setContainerReady(true);
 	};
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: containerReady triggers re-run when ref is mounted
 	useEffect(() => {
 		if (!containerRef.current || mapRef.current || !TOKEN) return;
 

@@ -1,5 +1,5 @@
 ---
-title: CS50P: Introduction to Programming with Python
+title: "CS50P: Introduction to Programming with Python"
 description: Complete solutions to Harvard's CS50P course, covering nine weeks from functions and variables through OOP, with a final project.
 shortDescription: Harvard CS50P full course solutions in Python
 date: 2023-08-10

@@ -188,7 +188,7 @@ export default function PreviewLink({
 							<img
 								src={logo}
 								alt={name}
-								className={`mb-px inline h-[1.1em] w-auto align-middle ml-1${rounded ? ' rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
+								className={`mb-px inline h-[1.1em] w-auto align-middle ml-1${rounded ? 'rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
 							/>
 						)}
 						{logo && ' '}
