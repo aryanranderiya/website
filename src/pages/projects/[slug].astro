@@ -1,6 +1,6 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
-import { ArrowLeft01Icon, CircleArrowUpRight02Icon, GithubIcon, HugeiconsIcon } from '@icons';
+import { CircleArrowUpRight02Icon, GithubIcon, HugeiconsIcon } from '@icons';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import { RaisedButton } from '@/components/ui/raised-button';
 import { SITE } from '@/constants/site';
@@ -75,13 +75,12 @@ const [heroImage, ...galleryImages] = allImages;
 
   <!-- Back nav -->
   <nav class="mb-8">
-    <a
-      href="/projects"
-      class="inline-flex items-center gap-1 text-[11px] text-[var(--text-ghost)] no-underline transition-colors duration-150 hover:text-[var(--text-muted)]"
-    >
-      <HugeiconsIcon icon={ArrowLeft01Icon} size={11} color="currentColor" />
-      Projects
-    </a>
+    <RaisedButton asChild={true} variant="secondary" size="sm">
+      <a href="/projects" class="gap-1.5 no-underline">
+        <HugeiconsIcon icon={CircleArrowUpRight02Icon} size={13} color="currentColor" />
+        Projects
+      </a>
+    </RaisedButton>
   </nav>
 
   <!-- Hero image: visual-first, full width -->
@@ -126,20 +125,23 @@ const [heroImage, ...galleryImages] = allImages;
     </p>
 
     {(p.url || p.github) && (
-      <div class="flex flex-wrap items-center gap-2">
+      <div class="flex items-center gap-2">
+        {p.github && (
+          <a
+            href={p.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            title="View source"
+            class="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[var(--muted-bg)] text-[var(--text-secondary)] no-underline transition-opacity duration-150 hover:opacity-65"
+          >
+            <HugeiconsIcon icon={GithubIcon} size={15} color="currentColor" />
+          </a>
+        )}
         {p.url && (
           <RaisedButton asChild={true} size="sm" variant="default">
             <a href={p.url} target="_blank" rel="noopener noreferrer" class="gap-1.5 no-underline">
               Visit
-              <HugeiconsIcon icon={CircleArrowUpRight02Icon} size={13} color="currentColor" />
-            </a>
-          </RaisedButton>
-        )}
-        {p.github && (
-          <RaisedButton asChild={true} size="sm" variant="secondary">
-            <a href={p.github} target="_blank" rel="noopener noreferrer" class="gap-1.5 no-underline">
-              <HugeiconsIcon icon={GithubIcon} size={13} color="currentColor" />
-              GitHub
+              <HugeiconsIcon icon={CircleArrowUpRight02Icon} size={11} color="currentColor" />
             </a>
           </RaisedButton>
         )}

@@ -84,7 +84,7 @@ function PreviewCard({
 				target={isExternal ? '_blank' : undefined}
 				rel={isExternal ? 'noopener noreferrer' : undefined}
 				aria-label={preview.title ?? preview.name ?? displayHost}
-				className="group block w-[280px] cursor-pointer overflow-hidden rounded-xl bg-popover p-2.5 text-inherit no-underline shadow-[0_8px_32px_rgba(0,0,0,0.1),0_2px_8px_rgba(0,0,0,0.06)]"
+				className="group block w-[280px] cursor-pointer overflow-hidden rounded-xl border border-[var(--border)] bg-popover p-2.5 text-inherit no-underline shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.05)]"
 			>
 				{preview.image && (
 					<div className="mb-2 aspect-[16/9] overflow-hidden rounded-lg bg-[var(--muted-bg)]">
