@@ -188,8 +188,7 @@ export default function PreviewLink({
 							<img
 								src={logo}
 								alt={name}
-								// biome-ignore lint/nursery/useSortedClasses: space before conditional class is load-bearing for string concatenation
-								className={`mb-px inline h-[1.1em] w-auto align-middle ml-1${rounded ? ' rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
+								className={`mb-px ml-1 inline h-[1.1em] w-auto align-middle ${rounded ? 'rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
 							/>
 						)}
 						{logo && ' '}
