@@ -85,6 +85,7 @@
 	--border-strong: rgba(0, 0, 0, 0.14);
 	--muted: rgba(0, 0, 0, 0.04);
 	--muted-bg: rgba(0, 0, 0, 0.04);
+	--muted-bg-strong: rgba(0, 0, 0, 0.08);
 	--muted-foreground: rgba(0, 0, 0, 0.45);
 
 	/* Shimmer */
@@ -202,6 +203,7 @@
 	--border-strong: rgba(255, 255, 255, 0.14);
 	--muted: rgba(255, 255, 255, 0.05);
 	--muted-bg: rgba(255, 255, 255, 0.05);
+	--muted-bg-strong: rgba(255, 255, 255, 0.10);
 	--muted-foreground: rgba(255, 255, 255, 0.45);
 
 	/* Shimmer */
@@ -642,11 +644,18 @@ a {
 .prose img {
 	border-radius: var(--radius-lg);
 	border: 1px solid var(--border);
-	width: var(--img-w, 100%);
+	width: 100%;
 	max-width: 100%;
 	height: auto;
 	max-height: var(--img-max-h, none);
 	cursor: zoom-in;
+}
+
+/* Opt-in fit mode via class on the <img>. Element shrinks to the
+   picture's natural dimensions (capped by --img-max-h), so the border +
+   radius wrap the picture instead of empty letterbox. */
+.prose img.fit {
+	width: auto;
 }
 
 .prose hr {

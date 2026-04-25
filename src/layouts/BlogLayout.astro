@@ -1,7 +1,6 @@
 ---
 import BlogLinks from '@/components/blog/BlogLinks';
 import Giscus from '@/components/blog/Giscus.astro';
-import { Calendar01Icon, Clock01Icon, PencilEdit01Icon, Tag01Icon } from '@/components/icons';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import TableOfContents from '@/components/ui/TableOfContents.astro';
 import { SITE } from '@/constants/site';
@@ -175,49 +174,29 @@ const breadcrumbJsonLd = JSON.stringify({
       <header class="mb-12">
         <h1 class="text-heading-1 mb-4">{title}</h1>
         <p class="text-body mb-5 text-[var(--text-muted)]">{description}</p>
-        <div class="flex flex-wrap items-center gap-1.5">
-          {
-            category && (
-              <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
-                <Tag01Icon width={11} height={11} />
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </span>
-            )
-          }
-          <time
-            datetime={date.toISOString()}
-            class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none"
-          >
-            <Calendar01Icon width={11} height={11} />
-            {formatDate(date)}
-          </time>
-          {
-            readingTime && (
-              <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
-                <Clock01Icon width={11} height={11} />
-                {readingTime} min read
-              </span>
-            )
-          }
-          {
-            updated && (
-              <span class="inline-flex items-center gap-1 text-[11px] px-2 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] leading-none">
-                <PencilEdit01Icon width={11} height={11} />
-                Updated {formatDate(updated)}
-              </span>
-            )
-          }
+        <div class="flex flex-wrap items-center text-[12px] text-[var(--text-ghost)] tracking-[-0.01em] gap-x-3 gap-y-1.5">
+          {category && (
+            <a
+              href={`/blog?tag=${encodeURIComponent(category.toLowerCase())}`}
+              class="no-underline! text-[var(--text-ghost)] hover:text-[var(--text-primary)] transition-colors duration-150"
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </a>
+          )}
+          <time datetime={date.toISOString()}>{formatDate(date)}</time>
+          {readingTime && (<span>{readingTime} min read</span>)}
+          {updated && (<span>Updated {formatDate(updated)}</span>)}
         </div>
         {
           tags.length > 0 && (
             <div class="flex flex-wrap gap-1.5 mt-3">
               {tags.map((tag) => (
-                <span class="text-xs px-2.5 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)]">
-                  {tag
-                    .split(" ")
-                    .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
-                    .join(" ")}
-                </span>
+                <a
+                  href={`/blog?tag=${encodeURIComponent(tag.toLowerCase())}`}
+                  class="no-underline! text-[11px] px-2 py-[3px] rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)] hover:text-[var(--text-secondary)] hover:bg-[var(--muted-bg-strong,var(--muted-bg))] transition-colors duration-150"
+                >
+                  {tag.toLowerCase()}
+                </a>
               ))}
             </div>
           )
@@ -246,6 +225,7 @@ const breadcrumbJsonLd = JSON.stringify({
 
             var wrap = document.createElement('div');
             wrap.className = 'prose-img-wrap';
+            if (img.classList.contains('fit')) wrap.classList.add('fit');
             img.parentNode.insertBefore(wrap, img);
             wrap.appendChild(img);
 
@@ -302,15 +282,15 @@ const breadcrumbJsonLd = JSON.stringify({
     display: block;
   }
 
-  /* Fit mode: when the inner img opts in via --img-w, the wrapper
-     shrinks to the picture's natural size so the border hugs the
-     image instead of empty letterbox. The parent <figure> centers it. */
-  .prose-img-wrap:has(img[style*="--img-w"]) {
+  /* Fit mode: wrapper shrinks to the picture's natural size so the
+     border hugs the image instead of empty letterbox. The wrapper class
+     is mirrored from the inner <img class="fit"> at wrap time. */
+  .prose-img-wrap.fit {
     display: inline-block;
     max-width: 100%;
     vertical-align: top;
   }
-  .prose figure:has(.prose-img-wrap img[style*="--img-w"]) {
+  .prose figure:has(.prose-img-wrap.fit) {
     text-align: center;
   }
 

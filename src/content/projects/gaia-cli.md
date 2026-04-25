@@ -4,7 +4,7 @@ description: A command-line tool for self-hosting and developing GAIA  --  inter
 shortDescription: Self-hosting CLI for GAIA with live dashboards
 date: 2024-11-01
 tags: [CLI, DevOps, Open Source]
-tech: [Node.js, TypeScript, React, Ink, Docker, Commander]
+tech: [Node.js, TypeScript, React, Docker]
 featured: false
 type: cli
 folder: Projects

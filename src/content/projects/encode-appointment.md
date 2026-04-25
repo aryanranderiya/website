@@ -4,7 +4,7 @@ description: Full-stack appointment booking app with a React + Vite frontend and
 shortDescription: Full-stack appointment booking app, CS club entry assignment
 date: 2024-07-17
 tags: [Productivity]
-tech: [React, TypeScript, Vite, Express.js, MongoDB, Node.js]
+tech: [React, TypeScript, Vite, Express, MongoDB, Node.js]
 featured: false
 type: web
 folder: Projects

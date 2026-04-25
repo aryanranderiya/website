@@ -36,6 +36,12 @@ export default function BlogSearch({ posts }: { posts: Post[] }) {
 		return () => window.removeEventListener('keydown', handler);
 	}, []);
 
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		const tag = params.get('tag');
+		if (tag) setQuery(tag);
+	}, []);
+
 	const ready = useAfterPreloader();
 
 	const filtered = useMemo(() => {
@@ -45,7 +51,8 @@ export default function BlogSearch({ posts }: { posts: Post[] }) {
 			(p) =>
 				p.title.toLowerCase().includes(q) ||
 				p.description.toLowerCase().includes(q) ||
-				p.tags.some((t) => t.toLowerCase().includes(q))
+				p.tags.some((t) => t.toLowerCase().includes(q)) ||
+				(p.category?.toLowerCase().includes(q) ?? false)
 		);
 	}, [posts, query]);
 

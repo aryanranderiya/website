@@ -4,7 +4,7 @@ description: Mobile-first food ordering platform with real-time cart management,
 shortDescription: Mobile food ordering app with OTP order verification
 date: 2024-10-23
 tags: [Consumer]
-tech: [React, TypeScript, Vite, Deno, MongoDB, NextUI, TailwindCSS]
+tech: [React, TypeScript, Vite, Deno, MongoDB, TailwindCSS]
 featured: false
 type: web
 folder: Client
