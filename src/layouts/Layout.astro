@@ -60,9 +60,8 @@ const ogImageURL = ogImage.startsWith('http')
     <link rel="canonical" href={canonicalURL.toString()} />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+    <link rel="icon" type="image/webp" href="/old-portfolio-logo.webp" />
+    <link rel="apple-touch-icon" href="/old-portfolio-logo.webp" />
     <link rel="manifest" href="/favicon/site.webmanifest" />
 
     <!-- Font preload — starts downloading in parallel with CSS parse -->
@@ -98,6 +97,23 @@ const ogImageURL = ogImage.startsWith('http')
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin />
+    <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
+    <!-- Google Analytics -->
+    <script async is:inline src="https://www.googletagmanager.com/gtag/js?id=G-S3XP36W3P9"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-S3XP36W3P9');
+      document.addEventListener('astro:after-swap', function() {
+        gtag('event', 'page_view', {
+          page_title: document.title,
+          page_location: location.href,
+        });
+      });
+    </script>
 
     <!-- Structured Data: Person -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify({
@@ -193,7 +209,7 @@ const ogImageURL = ogImage.startsWith('http')
       Skip to content
     </a>
 
-    <div id="main-content" transition:animate="fade" class:list={['min-h-screen flex flex-col', className]}>
+    <div id="main-content" class:list={['min-h-screen flex flex-col', className]}>
       <slot />
     </div>
     <Preloader client:load />

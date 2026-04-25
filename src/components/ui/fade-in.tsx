@@ -6,6 +6,14 @@ import { staggerContainer, staggerItem } from '@/lib/motion';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
+// On view-transition navigation the page-level crossfade is the single
+// entrance animation; per-element fade-ins replay on top of it and read
+// as jank. `has-transitioned` is set in Layout.astro whenever the
+// preloader has already played (every nav after first page load).
+const isNavigation = () =>
+	typeof document !== 'undefined' &&
+	document.documentElement.classList.contains('has-transitioned');
+
 interface FadeInProps extends HTMLMotionProps<'div'> {
 	delay?: number;
 	duration?: number;
@@ -21,11 +29,12 @@ export function FadeIn({
 	once = true,
 	...props
 }: FadeInProps) {
+	const skip = isNavigation();
 	return (
 		<LazyMotion features={loadFeatures}>
 			<m.div
-				initial={{ opacity: 0, y: 8, filter: blur ? 'blur(6px)' : 'none' }}
-				whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+				initial={skip ? false : { opacity: 0, y: 8, filter: blur ? 'blur(6px)' : 'none' }}
+				whileInView={skip ? undefined : { opacity: 1, y: 0, filter: 'blur(0px)' }}
 				viewport={{ once, margin: '-20px' }}
 				transition={{
 					duration,
@@ -55,13 +64,14 @@ export function StaggerList({
 	delayChildren = 0,
 	once = true,
 }: StaggerListProps) {
+	const skip = isNavigation();
 	return (
 		<LazyMotion features={loadFeatures}>
 			<m.div
 				className={className}
 				variants={staggerContainer(stagger, delayChildren)}
-				initial="hidden"
-				whileInView="visible"
+				initial={skip ? false : 'hidden'}
+				whileInView={skip ? undefined : 'visible'}
 				viewport={{ once, margin: '-20px' }}
 			>
 				{children}

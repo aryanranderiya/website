@@ -18,6 +18,7 @@ import {
 	PenTool02Icon,
 	QuillWrite02Icon,
 	SparklesIcon,
+	Stamp02Icon,
 } from '@icons';
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
 import type { ComponentType } from 'react';
@@ -98,6 +99,12 @@ export const PAGES: NavPage[] = [
 		description: 'My work experience and skills',
 		icon: 'NoteIcon',
 	},
+	{
+		href: '/colophon',
+		label: 'Colophon',
+		description: 'The tools, technologies, and inspirations behind this site',
+		icon: 'Stamp02Icon',
+	},
 ];
 
 export const SOCIAL_LINKS = [
@@ -144,6 +151,7 @@ export const NAV_ICON_MAP: Record<string, ComponentType<IconProps>> = {
 	QuillWrite02Icon,
 	AiChat02Icon,
 	NoteIcon,
+	Stamp02Icon,
 	GithubIcon,
 	NewTwitterIcon,
 	LinkedinIcon,

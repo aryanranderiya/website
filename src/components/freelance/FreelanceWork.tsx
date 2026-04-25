@@ -361,13 +361,17 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 	const [selected, setSelected] = useState<FreelanceProject | null>(() =>
 		initialSlug ? (pastWork.find((p) => p.slug === initialSlug) ?? null) : null
 	);
+	// Track whether the panel has ever been opened so the reset animation
+	// only runs when actually closing a panel, not on every initial mount.
+	const hadSelectedRef = useRef(false);
 
 	// Sync URL with selected project
 	useEffect(() => {
 		if (selected) {
 			history.pushState({}, '', `/freelance/${selected.slug}`);
 		} else {
-			history.pushState({}, '', '/freelance');
+			// replaceState avoids adding a duplicate /freelance history entry on mount
+			history.replaceState({}, '', '/freelance');
 		}
 	}, [selected]);
 
@@ -392,13 +396,15 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 			'max-width 0.35s cubic-bezier(0.19, 1, 0.22, 1), margin-left 0.35s cubic-bezier(0.19, 1, 0.22, 1), margin-right 0.35s cubic-bezier(0.19, 1, 0.22, 1)';
 
 		if (selected && window.innerWidth >= MIN_VIEWPORT_FOR_SIDE_BY_SIDE) {
+			hadSelectedRef.current = true;
 			el.style.transition = TRANSITION;
 			const currentLeft = (window.innerWidth - Math.min(window.innerWidth, CONTENT_MAX_WIDTH)) / 2;
 			const panelLeft = window.innerWidth - PANEL_WIDTH;
 			el.style.marginLeft = `${currentLeft}px`;
 			el.style.marginRight = '0px';
 			el.style.maxWidth = `${panelLeft - currentLeft}px`;
-		} else if (!selected) {
+		} else if (!selected && hadSelectedRef.current) {
+			// Only animate back when actually closing a panel — not on initial mount
 			el.style.transition = TRANSITION;
 			// Animate back to centered px values - can't transition to 'auto'
 			const centeredMargin = Math.max(0, (window.innerWidth - CONTENT_MAX_WIDTH) / 2);
@@ -411,6 +417,7 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 				el.style.marginRight = '';
 				el.style.maxWidth = '';
 				el.style.transition = '';
+				hadSelectedRef.current = false;
 			}, 400);
 			return () => clearTimeout(t);
 		}
@@ -432,71 +439,71 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 	return (
 		<LazyMotion features={loadFeatures}>
 			{/* Project list -- always full width of its container */}
-				<div>
-					{pastWork.map((work) => {
-						const isActive = selected?.name === work.name;
-						return (
-							<button
-								key={work.name}
-								type="button"
-								onClick={() => handleSelect(work)}
-								className={`-mx-[6px] flex w-[calc(100%+12px)] cursor-pointer items-center justify-between border-none px-[6px] py-[10px] text-left font-[inherit] transition-[background] duration-150 [border-block-end:1px_solid_var(--border)] hover:bg-[var(--muted-bg)] ${isActive ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
-							>
-								<div className="flex min-w-0 items-center gap-3">
-									<span className="truncate whitespace-nowrap font-semibold text-[13px] text-[var(--text-primary)]">
-										{work.name}
+			<div>
+				{pastWork.map((work) => {
+					const isActive = selected?.name === work.name;
+					return (
+						<button
+							key={work.name}
+							type="button"
+							onClick={() => handleSelect(work)}
+							className={`-mx-[6px] flex w-[calc(100%+12px)] cursor-pointer items-center justify-between border-none px-[6px] py-[10px] text-left font-[inherit] transition-[background] duration-150 [border-block-end:1px_solid_var(--border)] hover:bg-[var(--muted-bg)] ${isActive ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+						>
+							<div className="flex min-w-0 items-center gap-3">
+								<span className="truncate whitespace-nowrap font-semibold text-[13px] text-[var(--text-primary)]">
+									{work.name}
+								</span>
+								<span className="shrink-0 whitespace-nowrap text-[12px] text-[var(--text-ghost)]">
+									{work.type}
+								</span>
+							</div>
+							<div className="ml-2 flex shrink-0 items-center gap-[5px]">
+								{work.tech.slice(0, 2).map((tag) => (
+									<span
+										key={tag}
+										className="whitespace-nowrap rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-muted)]"
+									>
+										{tag}
 									</span>
-									<span className="shrink-0 whitespace-nowrap text-[12px] text-[var(--text-ghost)]">
-										{work.type}
-									</span>
-								</div>
-								<div className="ml-2 flex shrink-0 items-center gap-[5px]">
-									{work.tech.slice(0, 2).map((tag) => (
-										<span
-											key={tag}
-											className="whitespace-nowrap rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-muted)]"
-										>
-											{tag}
-										</span>
-									))}
-									<HugeiconsIcon
-										icon={ArrowRight02Icon}
-										size={11}
-										color={isActive ? 'var(--text-secondary)' : 'var(--text-ghost)'}
-										className={`ml-[2px] shrink-0 transition-transform duration-200 ${isActive ? 'rotate-90' : ''}`}
-									/>
-								</div>
-							</button>
-						);
-					})}
-				</div>
+								))}
+								<HugeiconsIcon
+									icon={ArrowRight02Icon}
+									size={11}
+									color={isActive ? 'var(--text-secondary)' : 'var(--text-ghost)'}
+									className={`ml-[2px] shrink-0 transition-transform duration-200 ${isActive ? 'rotate-90' : ''}`}
+								/>
+							</div>
+						</button>
+					);
+				})}
+			</div>
 
-				{/* Detail panel -- portalled to body so position:fixed is relative to viewport,
+			{/* Detail panel -- portalled to body so position:fixed is relative to viewport,
           not to the transformed #page-content ancestor */}
-				{typeof document !== 'undefined' &&
-					createPortal(
-						<AnimatePresence>
-							{selected && (
-								<m.div
-									className="fixed top-0 right-0 z-40 h-screen w-[580px] overflow-hidden"
-									initial={{ x: PANEL_WIDTH }}
-									animate={{ x: 0 }}
-									exit={{ x: PANEL_WIDTH }}
-									transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
-								>
-									<ProjectDetail
-										project={selected}
-										onClose={() => setSelected(null)}
-										onPrev={handlePrevProject}
-										onNext={handleNextProject}
-										hasPrev={selectedIdx > 0}
-										hasNext={selectedIdx < pastWork.length - 1}
-									/>
-								</m.div>
-							)}
-						</AnimatePresence>,
-						document.body
-					)}
+			{typeof document !== 'undefined' &&
+				createPortal(
+					<AnimatePresence>
+						{selected && (
+							<m.div
+								className="fixed top-0 right-0 z-40 h-screen w-[580px] overflow-hidden"
+								initial={{ x: PANEL_WIDTH }}
+								animate={{ x: 0 }}
+								exit={{ x: PANEL_WIDTH }}
+								transition={{ duration: 0.35, ease: [0.19, 1, 0.22, 1] }}
+							>
+								<ProjectDetail
+									project={selected}
+									onClose={() => setSelected(null)}
+									onPrev={handlePrevProject}
+									onNext={handleNextProject}
+									hasPrev={selectedIdx > 0}
+									hasNext={selectedIdx < pastWork.length - 1}
+								/>
+							</m.div>
+						)}
+					</AnimatePresence>,
+					document.body
+				)}
 		</LazyMotion>
 	);
 }

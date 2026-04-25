@@ -55,7 +55,7 @@ function MusicBars() {
 	);
 }
 
-const SPOTIFY_LOGO = '/images/spotify-logo-small.webp';
+const SPOTIFY_LOGO = '/images/spotify-logo.webp';
 
 function formatTime(ms?: number): string {
 	if (!ms) return '0:00';
@@ -108,7 +108,7 @@ export default function SpotifyWidget() {
 			>
 				{/* Header */}
 				<div className="relative flex items-center justify-between">
-					<img src={SPOTIFY_LOGO} alt="Spotify" width="85" height="24" className="h-3.5 w-auto" />
+					<img src={SPOTIFY_LOGO} alt="Spotify" width="320" height="87" className="h-3.5 w-auto" />
 
 					<AnimatePresence>
 						{track.isPlaying && (

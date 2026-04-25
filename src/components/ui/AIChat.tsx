@@ -513,7 +513,7 @@ export default function AIChat() {
 										onChange={(e) => setInput(e.target.value)}
 										placeholder={isModelReady ? 'Ask anything...' : 'Loading model...'}
 										disabled={!isModelReady || isStreaming}
-										className="w-full rounded-full border-none bg-transparent py-2.5 pr-11 pl-4 text-[13px] text-[var(--foreground)] tracking-[-0.01em] shadow-none outline-none transition-opacity focus:outline-none focus:ring-0 disabled:opacity-40"
+										className="w-full rounded-full border-none bg-transparent py-2.5 pr-11 pl-4 text-[13px] text-[var(--foreground)] tracking-[-0.01em] shadow-none outline-none transition-opacity focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-40"
 									/>
 									<m.button
 										type="submit"

@@ -177,6 +177,14 @@ const rowVariants = {
 	}),
 };
 
+// On view-transition navigation, the page-level crossfade already handles
+// the entrance — a second per-row stagger reads as a double animation.
+// `has-transitioned` is set in Layout.astro whenever the preloader has
+// already played (i.e. every nav after the first page load).
+const hasTransitioned =
+	typeof document !== 'undefined' &&
+	document.documentElement.classList.contains('has-transitioned');
+
 export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 	const [sortKey, setSortKey] = useState<SortKey>('date');
 	const [sortDir, setSortDir] = useState<SortDir>('desc');
@@ -262,11 +270,18 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 								key={convo.slug}
 								custom={i}
 								variants={rowVariants}
-								initial="initial"
+								initial={hasTransitioned ? false : 'initial'}
 								animate="animate"
 								className="group cursor-pointer"
-								onClick={() => {
-									window.location.href = `/agent-convos/${convo.slug}`;
+								onClick={(e) => {
+									// Let the inner <a> drive navigation so Astro's view
+									// transitions take over (window.location.href reloads
+									// the whole document and skips the crossfade).
+									if ((e.target as HTMLElement).closest('a')) return;
+									const link = e.currentTarget.querySelector<HTMLAnchorElement>(
+										`a[href="/agent-convos/${convo.slug}"]`
+									);
+									link?.click();
 								}}
 							>
 								{/* Title with platform icon -- no overflow:hidden on td so tooltip can escape */}

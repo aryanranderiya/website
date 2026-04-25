@@ -57,7 +57,10 @@ export default defineConfig({
   ],
   prefetch: {
     prefetchAll: true,
-    defaultStrategy: 'hover',
+    // `viewport` fires a prefetch as soon as a link enters the viewport.
+    // Sidebar nav links are always in view, so every page is one HTML
+    // parse away the moment the user clicks — no hover/fetch round-trip.
+    defaultStrategy: 'viewport',
   },
   image: {
     remotePatterns: [

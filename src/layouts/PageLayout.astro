@@ -35,12 +35,20 @@ const {
 	articleModified={articleModified}
 	section={section}
 >
-	<Sidebar pathname={Astro.url.pathname} section={section} client:load transition:persist />
-	<main
-		id="page-content"
-		class:list={["flex-1 pt-[60px]", fullWidth ? "" : "page-container"]}
-	>
-		<slot />
+	<Sidebar
+		pathname={Astro.url.pathname}
+		section={section}
+		client:load
+		transition:persist
+	/>
+	<main id="page-content" class="flex-1 pt-[60px]">
+		{fullWidth ? (
+			<slot />
+		) : (
+			<div class="page-container">
+				<slot />
+			</div>
+		)}
 	</main>
 	<Footer />
 </Layout>

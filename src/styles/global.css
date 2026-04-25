@@ -1086,17 +1086,79 @@ html.has-transitioned .animate-fade-in {
 
 /* ============================================
    VIEW TRANSITIONS
+
+   Scoped to #page-content only — the sidebar and footer stay still,
+   so the browser only snapshots/paints the content region. This is
+   the same pattern shud.in uses (vt-name="crossfade" on <article>).
+
+   Overlapping crossfade: old fades out 200ms, new fades in 280ms
+   starting at 80ms — the two animations overlap so there's no
+   blank frame and the whole swap completes inside ~360ms.
    ============================================ */
 @view-transition {
 	navigation: auto;
 }
 
-::view-transition-old(root) {
-	animation: 180ms ease both fade-out;
+/* The sidebar, footer, and any transition:persist'd element must NOT
+   participate in the view transition. If they do, the browser hides
+   the real DOM node for the full duration of the VT (~420ms) and
+   paints a snapshot in its place. The real <a> stops being hit-testable,
+   so :hover drops and cursor reverts to default for a split second on
+   every click — which is exactly the sidebar "flash" bug.
+
+   Fix: opt these out of VT via view-transition-name: none. The !important
+   overrides the inline `view-transition-name: sidebar` that Astro writes
+   for `transition:name="sidebar"` and `transition:persist`. With no name,
+   the element is never captured, real DOM stays visible and hit-testable,
+   :hover/cursor survive the navigation.
+
+   We also opt html out so there's no root snapshot — only #page-content
+   (the one named participant) animates. This is the `shud.in` pattern. */
+html,
+[data-astro-transition-persist] {
+	view-transition-name: none !important;
 }
 
-::view-transition-new(root) {
-	animation: 280ms var(--ease-expo) both fade-in-blur;
+/* Only #page-content participates in the VT — it's the one region that
+   actually changes between pages. Sidebar and footer render live
+   throughout, so hover/cursor state is uninterrupted. */
+#page-content {
+	view-transition-name: page-content;
+}
+::view-transition-group(page-content) {
+	animation: none;
+}
+::view-transition-image-pair(page-content) {
+	isolation: auto;
+}
+::view-transition-old(page-content) {
+	animation: 220ms cubic-bezier(0.6, 0, 0.8, 1) forwards page-hide;
+}
+::view-transition-new(page-content) {
+	opacity: 0;
+	animation: 320ms 100ms var(--ease-expo) forwards page-appear;
+}
+
+@keyframes fade-in {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@keyframes page-hide {
+	from { opacity: 1; filter: blur(0); }
+	to   { opacity: 0; filter: blur(3px); }
+}
+
+@keyframes page-appear {
+	from { opacity: 0; filter: blur(3px); }
+	to   { opacity: 1; filter: blur(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(page-content),
+	::view-transition-new(page-content) {
+		animation: none;
+	}
 }
 
 /* ============================================

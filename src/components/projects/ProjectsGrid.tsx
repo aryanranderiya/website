@@ -168,82 +168,81 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 	return (
 		<LazyMotion features={loadFeatures}>
 			<m.div
-					initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-					animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
-					transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
-				>
-					{/* Type filter chips */}
-					<div className="mb-[16px] flex flex-wrap items-center gap-[6px]">
+				initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
+				animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+				transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
+			>
+				{/* Type filter chips */}
+				<div className="mb-[16px] flex flex-wrap items-center gap-[6px]">
+					<button
+						type="button"
+						onClick={() => setActiveTypeFilter(null)}
+						// biome-ignore lint/nursery/noInlineStyles: dynamic active-state background, color, and fontWeight
+						style={{
+							padding: '3px 10px',
+							borderRadius: '9999px',
+							border: 'none',
+							background: activeTypeFilter === null ? 'var(--text-primary)' : 'var(--muted-bg)',
+							color: activeTypeFilter === null ? 'var(--background)' : 'var(--text-ghost)',
+							cursor: 'pointer',
+							fontSize: '11px',
+							fontWeight: activeTypeFilter === null ? 500 : 400,
+							letterSpacing: '-0.01em',
+							transition: 'all 150ms ease',
+						}}
+					>
+						All
+					</button>
+					{availableTypes.map((chip) => (
 						<button
 							type="button"
-							onClick={() => setActiveTypeFilter(null)}
+							key={chip.value}
+							onClick={() =>
+								setActiveTypeFilter(activeTypeFilter === chip.value ? null : chip.value)
+							}
 							// biome-ignore lint/nursery/noInlineStyles: dynamic active-state background, color, and fontWeight
 							style={{
+								display: 'inline-flex',
+								alignItems: 'center',
+								gap: 5,
 								padding: '3px 10px',
 								borderRadius: '9999px',
 								border: 'none',
-								background: activeTypeFilter === null ? 'var(--text-primary)' : 'var(--muted-bg)',
-								color: activeTypeFilter === null ? 'var(--background)' : 'var(--text-ghost)',
+								background:
+									activeTypeFilter === chip.value ? 'var(--text-primary)' : 'var(--muted-bg)',
+								color: activeTypeFilter === chip.value ? 'var(--background)' : 'var(--text-ghost)',
 								cursor: 'pointer',
 								fontSize: '11px',
-								fontWeight: activeTypeFilter === null ? 500 : 400,
+								fontWeight: activeTypeFilter === chip.value ? 500 : 400,
 								letterSpacing: '-0.01em',
 								transition: 'all 150ms ease',
 							}}
 						>
-							All
+							{chip.icon && <HugeiconsIcon icon={chip.icon} size={11} color="currentColor" />}
+							{chip.label}
 						</button>
-						{availableTypes.map((chip) => (
-							<button
-								type="button"
-								key={chip.value}
-								onClick={() =>
-									setActiveTypeFilter(activeTypeFilter === chip.value ? null : chip.value)
-								}
-								// biome-ignore lint/nursery/noInlineStyles: dynamic active-state background, color, and fontWeight
-								style={{
-									display: 'inline-flex',
-									alignItems: 'center',
-									gap: 5,
-									padding: '3px 10px',
-									borderRadius: '9999px',
-									border: 'none',
-									background:
-										activeTypeFilter === chip.value ? 'var(--text-primary)' : 'var(--muted-bg)',
-									color:
-										activeTypeFilter === chip.value ? 'var(--background)' : 'var(--text-ghost)',
-									cursor: 'pointer',
-									fontSize: '11px',
-									fontWeight: activeTypeFilter === chip.value ? 500 : 400,
-									letterSpacing: '-0.01em',
-									transition: 'all 150ms ease',
-								}}
-							>
-								{chip.icon && <HugeiconsIcon icon={chip.icon} size={11} color="currentColor" />}
-								{chip.label}
-							</button>
-						))}
-					</div>
+					))}
+				</div>
 
-					{/* Filter button + search */}
-					<div className="mb-7 flex w-full items-center gap-2">
-						{/* Tag filter button */}
-						<div className="relative shrink-0">
-							<button
-								type="button"
-								ref={filterBtnRef}
-								onClick={() => setTagPopoverOpen((o) => !o)}
-								className={`inline-flex cursor-pointer items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[10px] py-1 text-[11px] leading-[1.45] tracking-[0.01em] transition-[color,opacity] duration-150 ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
-							>
-								<HugeiconsIcon icon={FilterIcon} size={11} color="currentColor" />
-								<span>
-									{activeTagFilters.length > 0
-										? `${activeTagFilters.length} filter${activeTagFilters.length > 1 ? 's' : ''}`
-										: 'Filter'}
-								</span>
-							</button>
+				{/* Filter button + search */}
+				<div className="mb-7 flex w-full items-center gap-2">
+					{/* Tag filter button */}
+					<div className="relative shrink-0">
+						<button
+							type="button"
+							ref={filterBtnRef}
+							onClick={() => setTagPopoverOpen((o) => !o)}
+							className={`inline-flex cursor-pointer items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[10px] py-1 text-[11px] leading-[1.45] tracking-[0.01em] transition-[color,opacity] duration-150 ${activeTagFilters.length > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
+						>
+							<HugeiconsIcon icon={FilterIcon} size={11} color="currentColor" />
+							<span>
+								{activeTagFilters.length > 0
+									? `${activeTagFilters.length} filter${activeTagFilters.length > 1 ? 's' : ''}`
+									: 'Filter'}
+							</span>
+						</button>
 
-							<AnimatePresence>
+						<AnimatePresence>
 							{tagPopoverOpen && (
 								<m.div
 									ref={popoverRef}
@@ -262,7 +261,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 											<button
 												type="button"
 												onClick={() => setActiveTagFilters([])}
-												className="inline-flex cursor-pointer items-center gap-1 rounded-[6px] bg-transparent px-1.5 py-[2px] text-[#ef4444] text-[10px] tracking-[0.01em]"
+												className="inline-flex cursor-pointer items-center gap-1 rounded-[6px] bg-transparent px-1.5 py-[2px] text-[#ef4444] text-[10px] tracking-[0.01em] transition-colors duration-100 hover:bg-[#ef4444]/10"
 											>
 												Clear
 												<HugeiconsIcon icon={Delete01Icon} size={11} color="currentColor" />
@@ -277,7 +276,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 												type="button"
 												key={tag}
 												onClick={() => toggleTagFilter(tag)}
-												className={`flex w-full cursor-pointer items-center gap-[7px] rounded-lg px-2 py-[5px] text-[12px] tracking-[-0.01em] transition-[background] duration-100 ${isOn ? 'bg-[var(--muted-bg)] font-medium text-[var(--text-primary)]' : 'bg-transparent font-normal text-[var(--text-secondary)]'}`}
+												className={`flex w-full cursor-pointer items-center gap-[7px] rounded-lg px-2 py-[7px] text-[12px] tracking-[-0.01em] transition-[background] duration-100 ${isOn ? 'bg-[var(--muted-bg)] font-medium text-[var(--text-primary)]' : 'bg-transparent font-normal text-[var(--text-secondary)] hover:bg-[var(--muted-bg)]/50'}`}
 											>
 												{/* Checkbox */}
 												<span
@@ -316,107 +315,107 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 									})}
 								</m.div>
 							)}
-							</AnimatePresence>
-						</div>
-
-						<div className="flex-1" />
-
-						<div className="relative shrink-0">
-							<span className="pointer-events-none absolute top-1/2 left-2.5 flex -translate-y-1/2 items-center text-[var(--text-ghost)]">
-								<HugeiconsIcon icon={Search01Icon} size={12} />
-							</span>
-							<input
-								ref={searchRef}
-								type="text"
-								value={search}
-								onChange={(e) => setSearch(e.target.value)}
-								onFocus={() => setSearchFocused(true)}
-								onBlur={() => setSearchFocused(false)}
-								placeholder="Search..."
-								className={`w-[140px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none transition-shadow duration-150 focus:ring-1 focus:ring-[var(--text-ghost)]/40 focus:ring-offset-0 focus-visible:outline-none ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
-							/>
-							{!searchFocused && !search && (
-								<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
-									⌘F
-								</kbd>
-							)}
-						</div>
+						</AnimatePresence>
 					</div>
 
-					{/* Project list */}
-					<AnimatePresence mode="sync" initial={false}>
-						{filtered.length > 0 ? (
+					<div className="flex-1" />
+
+					<div className="relative shrink-0">
+						<span className="pointer-events-none absolute top-1/2 left-2.5 flex -translate-y-1/2 items-center text-[var(--text-ghost)]">
+							<HugeiconsIcon icon={Search01Icon} size={12} />
+						</span>
+						<input
+							ref={searchRef}
+							type="text"
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
+							onFocus={() => setSearchFocused(true)}
+							onBlur={() => setSearchFocused(false)}
+							placeholder="Search..."
+							className={`w-[140px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none transition-shadow duration-150 focus:ring-1 focus:ring-[var(--text-ghost)]/40 focus:ring-offset-0 focus-visible:outline-none ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
+						/>
+						{!searchFocused && !search && (
+							<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
+								⌘F
+							</kbd>
+						)}
+					</div>
+				</div>
+
+				{/* Project list */}
+				<AnimatePresence mode="sync" initial={false}>
+					{filtered.length > 0 ? (
+						<m.div
+							key={search + activeTagFilters.join(',') + (activeTypeFilter ?? '')}
+							initial="hidden"
+							animate={ready ? 'show' : 'hidden'}
+							exit={{ opacity: 0 }}
+							variants={{
+								hidden: {},
+								show: { transition: { staggerChildren: 0.04, delayChildren: 0.15 } },
+							}}
+							className="flex flex-col gap-0.5"
+						>
+							{filtered.map((project: Project, i: number) => (
+								<ProjectCard
+									key={project.slug}
+									project={project}
+									index={i}
+									onHoverChange={handleHoverChange}
+								/>
+							))}
+						</m.div>
+					) : (
+						<m.div
+							key="empty"
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							className="py-16 text-center text-[13px] text-[var(--text-ghost)]"
+						>
+							No projects found.
+						</m.div>
+					)}
+				</AnimatePresence>
+			</m.div>
+
+			{/* Preview image portal -- rendered at body to avoid filter/transform containing block */}
+			{typeof document !== 'undefined' &&
+				createPortal(
+					<AnimatePresence>
+						{hovered?.project.coverImage && (
 							<m.div
-								key={search + activeTagFilters.join(',') + (activeTypeFilter ?? '')}
-								initial="hidden"
-								animate={ready ? 'show' : 'hidden'}
-								exit={{ opacity: 0 }}
-								variants={{
-									hidden: {},
-									show: { transition: { staggerChildren: 0.04, delayChildren: 0.15 } },
+								key={hovered.project.slug}
+								initial={{
+									opacity: 0,
+									scale: 0.84,
+									rotate: rotation > 0 ? rotation + 12 : rotation - 12,
 								}}
-								className="flex flex-col gap-0.5"
+								animate={{ opacity: 1, scale: 1, rotate: rotation }}
+								exit={{ opacity: 0, scale: 0.84 }}
+								transition={{ duration: 0.22, ease: [0.19, 1, 0.22, 1] }}
+								className="pointer-events-none fixed z-[9999] w-[200px] overflow-hidden rounded-xl"
+								style={{
+									left: hovered.rect.right + 24,
+									top: previewTop,
+									y: '-50%',
+								}}
 							>
-								{filtered.map((project: Project, i: number) => (
-									<ProjectCard
-										key={project.slug}
-										project={project}
-										index={i}
-										onHoverChange={handleHoverChange}
-									/>
-								))}
-							</m.div>
-						) : (
-							<m.div
-								key="empty"
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								exit={{ opacity: 0 }}
-								className="py-16 text-center text-[13px] text-[var(--text-ghost)]"
-							>
-								No projects found.
+								<img
+									src={hovered.project.coverImage}
+									alt={hovered.project.title}
+									className="block h-auto w-full"
+								/>
+								<div className="bg-[var(--background)] px-[10px] pt-[8px] pb-[10px]">
+									<p className="m-0 text-[10px] text-[var(--text-muted)] leading-[1.5] tracking-[-0.01em]">
+										{hovered.project.description}
+									</p>
+								</div>
 							</m.div>
 						)}
-					</AnimatePresence>
-				</m.div>
-
-				{/* Preview image portal -- rendered at body to avoid filter/transform containing block */}
-				{typeof document !== 'undefined' &&
-					createPortal(
-						<AnimatePresence>
-							{hovered?.project.coverImage && (
-								<m.div
-									key={hovered.project.slug}
-									initial={{
-										opacity: 0,
-										scale: 0.84,
-										rotate: rotation > 0 ? rotation + 12 : rotation - 12,
-									}}
-									animate={{ opacity: 1, scale: 1, rotate: rotation }}
-									exit={{ opacity: 0, scale: 0.84 }}
-									transition={{ duration: 0.22, ease: [0.19, 1, 0.22, 1] }}
-									className="pointer-events-none fixed z-[9999] w-[200px] overflow-hidden rounded-xl"
-									style={{
-										left: hovered.rect.right + 24,
-										top: previewTop,
-										y: '-50%',
-									}}
-								>
-									<img
-										src={hovered.project.coverImage}
-										alt={hovered.project.title}
-										className="block h-auto w-full"
-									/>
-									<div className="bg-[var(--background)] px-[10px] pt-[8px] pb-[10px]">
-										<p className="m-0 text-[10px] text-[var(--text-muted)] leading-[1.5] tracking-[-0.01em]">
-											{hovered.project.description}
-										</p>
-									</div>
-								</m.div>
-							)}
-						</AnimatePresence>,
-						document.body
-					)}
+					</AnimatePresence>,
+					document.body
+				)}
 		</LazyMotion>
 	);
 }

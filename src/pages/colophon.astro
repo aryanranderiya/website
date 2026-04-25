@@ -1,0 +1,470 @@
+---
+import ButtonLink from '@/components/ui/ButtonLink';
+import TableOfContents from '@/components/ui/TableOfContents.astro';
+import PageLayout from '@/layouts/PageLayout.astro';
+
+const technology = [
+	{
+		label: 'Framework',
+		items: [
+			{
+				name: 'Astro',
+				icon: 'astro.png',
+				site: 'astro.build',
+				desc: 'Static framework with islands architecture',
+			},
+			{
+				name: 'React 19',
+				icon: 'react.png',
+				site: 'react.dev',
+				desc: 'For interactive islands and client components',
+			},
+			{
+				name: 'TypeScript',
+				icon: 'typescript.png',
+				site: 'typescriptlang.org',
+				desc: 'Strict typing across pages, data, and components',
+			},
+			{
+				name: 'MDX',
+				icon: 'mdx.png',
+				site: 'mdxjs.com',
+				desc: 'Long-form content for blog and project pages',
+			},
+			{
+				name: 'Vite',
+				icon: 'vite.png',
+				site: 'vitejs.dev',
+				desc: 'Bundler under the hood, lightning dev reloads',
+			},
+		],
+	},
+	{
+		label: 'Styling',
+		items: [
+			{
+				name: 'Tailwind CSS 4',
+				icon: 'tailwindcss.png',
+				site: 'tailwindcss.com',
+				desc: 'Utility-first styling with CSS variables for tokens',
+			},
+			{
+				name: 'Motion',
+				icon: 'motion.png',
+				site: 'motion.dev',
+				desc: 'Stagger entrances, blur-fades, spring easing',
+			},
+			{
+				name: 'GSAP',
+				icon: 'gsap.png',
+				site: 'gsap.com',
+				desc: 'For the heavier scroll-tied animations',
+			},
+			{
+				name: 'Radix UI',
+				icon: 'radix-ui.png',
+				site: 'radix-ui.com',
+				desc: 'Headless primitives for popovers, dialogs, tooltips',
+			},
+		],
+	},
+	{
+		label: 'Content',
+		items: [
+			{
+				name: 'Astro Content Collections',
+				icon: 'astro.png',
+				site: 'astro.build',
+				desc: 'Type-safe MDX for blog, projects, books, movies, now',
+			},
+			{
+				name: 'TanStack Query',
+				icon: 'tanstack.png',
+				site: 'tanstack.com',
+				desc: 'Caches Spotify, GitHub, and other live data',
+			},
+			{
+				name: 'SWR',
+				icon: 'swr.png',
+				site: 'swr.vercel.app',
+				desc: 'Lightweight fetching for smaller widgets',
+			},
+			{
+				name: 'Mapbox',
+				icon: 'mapbox.png',
+				site: 'mapbox.com',
+				desc: 'Map background for the location widget',
+			},
+		],
+	},
+	{
+		label: 'Type & Icons',
+		items: [
+			{
+				name: 'Inter',
+				icon: 'inter.png',
+				site: 'rsms.me',
+				desc: 'Variable weight axis powers the hover state animations',
+			},
+			{
+				name: 'Hugeicons',
+				icon: 'hugeicons.png',
+				site: 'hugeicons.com',
+				desc: 'A single icon family used across every surface',
+			},
+			{
+				name: 'Devicon',
+				icon: 'devicon.png',
+				site: 'devicon.dev',
+				desc: 'Logo set for the tech stack chips on the projects page',
+			},
+		],
+	},
+	{
+		label: 'Hosting',
+		items: [
+			{
+				name: 'Cloudflare Pages',
+				icon: 'cloudflare.png',
+				site: 'cloudflare.com',
+				desc: 'Edge deploys via the Astro Cloudflare adapter',
+			},
+			{
+				name: 'Cloudflare Workers',
+				icon: 'cloudflare.png',
+				site: 'workers.cloudflare.com',
+				desc: 'Tiny edge endpoints for live data widgets',
+			},
+			{
+				name: 'GitHub',
+				icon: 'github.svg',
+				site: 'github.com',
+				desc: 'Source of truth, push to deploy',
+			},
+		],
+	},
+	{
+		label: 'Tooling',
+		items: [
+			{ name: 'Node.js', icon: 'nodejs.png', site: 'nodejs.org', desc: 'Build runtime' },
+			{
+				name: 'pnpm',
+				icon: 'pnpm.svg',
+				site: 'pnpm.io',
+				desc: 'Fast, disk-efficient package manager',
+			},
+			{
+				name: 'Biome',
+				icon: 'biome.png',
+				site: 'biomejs.dev',
+				desc: 'Linter and formatter, replaces ESLint and Prettier',
+			},
+			{
+				name: 'Knip',
+				icon: 'knip.png',
+				site: 'knip.dev',
+				desc: 'Catches unused exports, files, and dependencies',
+			},
+			{
+				name: 'Playwright',
+				icon: 'playwright.png',
+				site: 'playwright.dev',
+				desc: 'Smoke tests for the critical pages',
+			},
+			{
+				name: 'Lighthouse CI',
+				icon: 'lighthouse.png',
+				site: 'web.dev',
+				desc: 'Performance and accessibility budgets per PR',
+			},
+			{
+				name: 'Lefthook',
+				icon: 'lefthook.png',
+				site: 'evilmartians.com',
+				desc: 'Pre-commit format, lint, type-check',
+			},
+		],
+	},
+];
+
+// Resolved (opaque) hex values of every token actually rendered on the page.
+// rgba tokens are flattened over the light background so swatches read true.
+// Items flagged `needsBorder` blend with `--background`, so they get a hairline
+// border that adapts to dark mode via `--border-strong`.
+const palette = [
+	{ name: 'Background', value: '#fdfdfc', swatch: '#fdfdfc', needsBorder: true },
+	{ name: 'Surface', value: '#F3F3F2', swatch: '#F3F3F2', needsBorder: true },
+	{ name: 'Border', value: '#E9E9E8', swatch: '#E9E9E8', needsBorder: true },
+	{ name: 'Muted', value: '#ACACAB', swatch: '#ACACAB' },
+	{ name: 'Secondary', value: '#727271', swatch: '#727271' },
+	{ name: 'Primary', value: '#262626', swatch: '#262626' },
+	{ name: 'Foreground', value: '#111111', swatch: '#111111' },
+	{ name: 'Accent', value: '#00BBFF', swatch: '#00BBFF' },
+];
+
+const sections = [
+	{ id: 'technology', n: '01', label: 'Technology' },
+	{ id: 'components', n: '02', label: 'Components' },
+	{ id: 'palette', n: '03', label: 'Palette' },
+	{ id: 'typography', n: '04', label: 'Typography' },
+	{ id: 'design', n: '05', label: 'Design' },
+	{ id: 'deployment', n: '06', label: 'Deployment' },
+	{ id: 'personal', n: '07', label: 'Personal' },
+];
+
+const tocHeadings = sections.map((s) => ({ depth: 2, slug: s.id, text: s.label }));
+---
+
+<PageLayout
+  title="Colophon"
+  description="The tools, technologies, and details behind this website."
+  fullWidth={true}
+>
+  <div class="flex ml-[max(0px,calc((100%-var(--content-max-width))/2))] gap-14 items-start px-6 min-[960px]:px-0">
+
+    <article class="flex-1 min-w-0 max-w-[var(--content-max-width)] pb-20">
+
+      <!-- ── Header ───────────────────────────────────────────────── -->
+      <div class="mb-14">
+        <h1 class="text-heading-1 mb-4 animate-fade-in stagger-1">Colophon</h1>
+        <p class="text-body max-w-lg animate-fade-in stagger-2">
+          Every framework, font, and design decision behind this site, in plain view.
+        </p>
+      </div>
+
+      <!-- ── Technology ───────────────────────────────────────────── -->
+      <section class="mb-20 scroll-mt-24" id={sections[0].id}>
+        <h2 class="section-title animate-fade-in" style="animation-delay:0.05s">
+          <span class="section-num">{sections[0].n}</span>
+          {sections[0].label}
+        </h2>
+
+        <div class="flex flex-col gap-7 animate-fade-in" style="animation-delay:0.1s">
+          {technology.map((cat) => (
+            <div>
+              <div class="text-[11px] font-medium text-[var(--text-ghost)] mb-2">
+                {cat.label}
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-5">
+                {cat.items.map((item) => (
+                  <a
+                    href={`https://${item.site}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group flex items-center gap-2.5 py-2 -mx-2 px-2 rounded-md transition-colors duration-150 hover:bg-[var(--muted-bg)]"
+                  >
+                    <img
+                      src={`/icons/colophon/${item.icon}`}
+                      alt=""
+                      width="18"
+                      height="18"
+                      class="w-[18px] h-[18px] rounded-[4px] shrink-0 object-contain"
+                      loading="lazy"
+                    />
+                    <span class="text-[13px] font-medium text-[var(--text-primary)] tracking-[-0.01em] shrink-0">
+                      {item.name}
+                    </span>
+                    <span class="text-[12px] text-[var(--text-ghost)] truncate group-hover:text-[var(--text-muted)] transition-colors">
+                      {item.desc}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- ── Components ───────────────────────────────────────────── -->
+      <section class="mb-20 scroll-mt-24" id={sections[1].id}>
+        <h2 class="section-title animate-fade-in" style="animation-delay:0.05s">
+          <span class="section-num">{sections[1].n}</span>
+          {sections[1].label}
+        </h2>
+
+        <p class="text-body max-w-lg mb-6 animate-fade-in" style="animation-delay:0.1s">
+          Every button on the site is the same primitive in different clothes.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-2 animate-fade-in" style="animation-delay:0.15s">
+          <ButtonLink href="#" label="Default" icon="arrow-right" size="sm" client:load />
+          <ButtonLink href="#" label="Secondary" icon="folder" variant="secondary" size="sm" client:load />
+          <ButtonLink href="#" label="Accent" icon="arrow-right" variant="accent" size="sm" client:load />
+          <ButtonLink href="#" label="Outline" icon="download" variant="outline" size="sm" client:load />
+          <ButtonLink href="#" label="Ghost" icon="mail" variant="ghost" size="sm" client:load />
+        </div>
+      </section>
+
+      <!-- ── Palette ──────────────────────────────────────────────── -->
+      <section class="mb-20 scroll-mt-24" id={sections[2].id}>
+        <h2 class="section-title animate-fade-in" style="animation-delay:0.05s">
+          <span class="section-num">{sections[2].n}</span>
+          {sections[2].label}
+        </h2>
+
+        <p class="text-body max-w-lg mb-7 animate-fade-in" style="animation-delay:0.1s">
+          Hover any swatch to read its hex. The whole site runs on this palette plus its dark inverse.
+        </p>
+
+        <div class="flex -space-x-2 animate-fade-in" style="animation-delay:0.15s">
+          {palette.map((color) => (
+            <div class="palette-swatch group relative">
+              <div
+                class:list={[
+                  'palette-swatch__circle w-9 h-9 rounded-full transition-transform duration-200 ease-out group-hover:-translate-y-1.5 group-hover:scale-110',
+                  color.needsBorder && 'border border-[var(--border-strong)]',
+                ]}
+                style={`background:${color.swatch}`}
+              ></div>
+              <div class="palette-swatch__tip pointer-events-none absolute left-1/2 -translate-x-1/2 -top-11 opacity-0 transition-all duration-200 ease-out group-hover:opacity-100 group-hover:-top-12 z-10 whitespace-nowrap">
+                <div class="rounded-md bg-[var(--text-primary)] px-2 py-1 text-[10.5px] text-[var(--background)] tracking-[-0.005em] flex flex-col items-center gap-0.5">
+                  <span class="font-medium">{color.name}</span>
+                  <span class="font-mono opacity-70 text-[9.5px]">{color.value}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- ── Typography ───────────────────────────────────────────── -->
+      <section class="mb-20 scroll-mt-24" id={sections[3].id}>
+        <h2 class="section-title">
+          <span class="section-num">{sections[3].n}</span>
+          {sections[3].label}
+        </h2>
+
+        <p class="text-body max-w-lg mb-8">
+          One typeface across every surface — Inter Variable.
+        </p>
+
+        <div class="flex flex-col">
+          <div class="text-[40px] font-semibold tracking-[-0.04em] text-[var(--text-primary)] leading-[1.15]">
+            Inter Variable
+          </div>
+          <div class="text-[20px] font-semibold tracking-[-0.025em] text-[var(--text-primary)] leading-snug">
+            The quick brown fox jumps
+          </div>
+          <div class="text-[13px] text-[var(--text-secondary)] leading-[1.7] tracking-[-0.01em] max-w-lg">
+            Body text sits at 13 pixels. Editorial weight for prose, descriptions, and most copy.
+          </div>
+          <div class="text-[11px] text-[var(--text-ghost)] leading-[1.5] tracking-[-0.005em]">
+            Caption — used for metadata, dates, and the quietest details.
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Design ───────────────────────────────────────────────── -->
+      <section class="mb-20 scroll-mt-24" id={sections[4].id}>
+        <h2 class="section-title">
+          <span class="section-num">{sections[4].n}</span>
+          {sections[4].label}
+        </h2>
+
+        <div class="flex flex-col gap-4 text-body max-w-lg">
+          <p>
+            Minimal, editorial, and quiet. Body text sits at 13 pixels, never the generic 16. Headings
+            carry aggressive negative letter-spacing. Hierarchy comes from opacity, not from a rainbow
+            of greys.
+          </p>
+          <p>
+            The layout is a transparent fixed sidebar against a 640 pixel content column. No top
+            navbar, no decorative borders, no shadows for show. Surface differentiation is a four
+            percent black wash.
+          </p>
+          <p>
+            Motion is fast and consistent. 150 to 200 milliseconds for interactions, 300 to 400 for
+            entrances, an expo-out cubic-bezier of (0.19, 1, 0.22, 1) for nearly everything that
+            moves. Lists stagger at 40 to 60 milliseconds per item.
+          </p>
+        </div>
+      </section>
+
+      <!-- ── Deployment ───────────────────────────────────────────── -->
+      <section class="mb-20 scroll-mt-24" id={sections[5].id}>
+        <h2 class="section-title">
+          <span class="section-num">{sections[5].n}</span>
+          {sections[5].label}
+        </h2>
+
+        <div class="flex flex-col gap-4 text-body max-w-lg">
+          <p>
+            Pushed to GitHub, built by Cloudflare Pages, served from their edge. Each pull request
+            gets a preview URL. Lighthouse CI runs on every build to catch regressions in performance
+            and accessibility before they ship.
+          </p>
+          <p>
+            A small Cloudflare Worker fetches Spotify and GitHub data so the home widgets stay live
+            without baking secrets into the static bundle.
+          </p>
+        </div>
+      </section>
+
+      <!-- ── Personal ─────────────────────────────────────────────── -->
+      <section class="scroll-mt-24" id={sections[6].id}>
+        <h2 class="section-title">
+          <span class="section-num">{sections[6].n}</span>
+          {sections[6].label}
+        </h2>
+
+        <p class="text-body max-w-lg mb-6">
+          This site is a workshop. I rebuild it whenever my taste shifts, which is often. If a detail
+          catches your eye, the source is on
+          <a
+            href="https://github.com/aryanranderiya/portfolio"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-[var(--text-primary)] underline decoration-[var(--border-strong)] underline-offset-4 hover:decoration-[var(--text-secondary)] transition-colors"
+          >GitHub</a>. Steal anything you like.
+        </p>
+
+        <div class="flex flex-wrap gap-2">
+          <ButtonLink
+            href="https://github.com/aryanranderiya/portfolio"
+            label="View source"
+            icon="arrow-right"
+            trailingArrow
+            target="_blank"
+            rel="noopener noreferrer"
+            size="sm"
+            client:load
+          />
+          <ButtonLink
+            href="mailto:aryan@heygaia.io"
+            label="Say hi"
+            icon="mail"
+            variant="secondary"
+            size="sm"
+            client:load
+          />
+        </div>
+      </section>
+
+    </article>
+
+    <aside class="hidden min-[1080px]:block w-56 shrink-0 sticky top-[calc(var(--section-padding-top,96px)+24px)]">
+      <TableOfContents headings={tocHeadings} />
+    </aside>
+
+  </div>
+</PageLayout>
+
+<style>
+  .section-title {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin: 0 0 24px 0;
+  }
+  .section-num {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-ghost);
+    letter-spacing: -0.02em;
+  }
+
+</style>
