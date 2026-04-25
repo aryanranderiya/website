@@ -6,6 +6,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { fileURLToPath } from 'node:url';
+import { rehypeOgPreview } from './src/lib/rehypeOgPreview.ts';
 
 export default defineConfig({
   site: 'https://aryanranderiya.com',
@@ -92,5 +93,6 @@ export default defineConfig({
       theme: 'github-dark',
       wrap: true,
     },
+    rehypePlugins: [rehypeOgPreview],
   },
 });

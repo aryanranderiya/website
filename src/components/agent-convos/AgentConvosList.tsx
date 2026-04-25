@@ -235,7 +235,7 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 	return (
 		<LazyMotion features={loadFeatures}>
 			<div className="overflow-x-auto">
-				<table className="w-full border-collapse [table-layout:fixed]">
+				<table className="dim-list w-full border-collapse [table-layout:fixed]">
 					<colgroup>
 						<col className="w-[72%]" />
 						<col className="w-[13%]" />
@@ -272,7 +272,7 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 								variants={rowVariants}
 								initial={hasTransitioned ? false : 'initial'}
 								animate="animate"
-								className="group cursor-pointer"
+								className="dim-list-row group cursor-pointer"
 								onClick={(e) => {
 									// Let the inner <a> drive navigation so Astro's view
 									// transitions take over (window.location.href reloads

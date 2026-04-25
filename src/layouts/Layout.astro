@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import { SEO, SITE } from '@/constants/site';
 import '@/styles/global.css';
 import interLatinFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
@@ -135,7 +135,18 @@ const ogImageURL = ogImage.startsWith('http')
     })} />
 
     <!-- View Transitions -->
-    <ViewTransitions />
+    <ClientRouter />
+
+    {/* react-scan — dev only. Visualizes component re-renders as colored
+        outlines + a toolbar. Must load before any React island hydrates so
+        it can monkey-patch the reconciler. Strip in prod. */}
+    {import.meta.env.DEV && (
+      <script
+        is:inline
+        crossorigin="anonymous"
+        src="https://unpkg.com/react-scan/dist/auto.global.js"
+      />
+    )}
 
     <!-- Theme init - light by default, dark only if explicitly stored -->
     <script is:inline>
@@ -212,17 +223,29 @@ const ogImageURL = ogImage.startsWith('http')
     <div id="main-content" class:list={['min-h-screen flex flex-col', className]}>
       <slot />
     </div>
-    <Preloader client:load />
-    <BlurStack client:idle className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none" />
-    {/* The three components below were previously "lazy-loaded" via bare
-        dynamic imports — but the imports never rendered the components,
-        which is why the pet cursor and the command palette stopped
-        appearing. They genuinely need to hydrate; `client:idle` is the
-        right lever (runs on requestIdleCallback, not the critical path). */}
-    <CommandK client:idle />
-    <PetLauncher client:idle />
-    <AgentationOverlay client:idle />
-    <div id="ai-chat-mount"></div>
+    {/* Every fixed-position chrome element below MUST have `transition:persist`,
+        otherwise Astro's view-transition swap blows away its DOM (and remounts
+        the React island) on every navigation. That was the BlurStack flash.
+
+        Explicit string names (transition:persist="...") are REQUIRED here — not
+        optional. Astro's auto-generated persist keys are derived from element
+        position, so when one page has different/extra islands inside the layout
+        (e.g. /projects has ProjectsGrid + GithubGraph but /projects/[slug] has
+        none), the auto-keys shift and these chrome elements stop matching across
+        pages → silent tear-down + remount → sidebar re-animates from blur:3px.
+
+        `transition:persist-props` freezes props at first mount so a persisted
+        island doesn't re-render when Astro hands it new props from the new page. */}
+    <Preloader client:load transition:persist="preloader" transition:persist-props />
+    <BlurStack
+      client:idle
+      transition:persist="blurstack"
+      className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none"
+    />
+    <CommandK client:idle transition:persist="commandk" transition:persist-props />
+    <PetLauncher client:idle transition:persist="petlauncher" transition:persist-props />
+    <AgentationOverlay client:idle transition:persist="agentation" transition:persist-props />
+    <div id="ai-chat-mount" transition:persist="ai-chat"></div>
     <script>import '@/bones/registry'</script>
     <script>
       (function() {

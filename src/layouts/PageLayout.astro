@@ -35,11 +35,18 @@ const {
 	articleModified={articleModified}
 	section={section}
 >
+	{/* Explicit `transition:persist="sidebar"` name — auto-generated keys are
+	    position-based and shift when adjacent islands change between pages
+	    (e.g. /projects → /projects/[slug]), which would silently remount the
+	    sidebar and re-trigger its Framer Motion entrance animation.
+	    `transition:persist-props` freezes props so React doesn't re-render
+	    when Astro hands new pathname/section in from the next page. */}
 	<Sidebar
 		pathname={Astro.url.pathname}
 		section={section}
 		client:load
-		transition:persist
+		transition:persist="sidebar"
+		transition:persist-props
 	/>
 	<main id="page-content" class="flex-1 pt-[60px]">
 		{fullWidth ? (

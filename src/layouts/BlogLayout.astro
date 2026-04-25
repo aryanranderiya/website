@@ -1,4 +1,5 @@
 ---
+import BlogLinks from '@/components/blog/BlogLinks';
 import Giscus from '@/components/blog/Giscus.astro';
 import { Calendar01Icon, Clock01Icon, PencilEdit01Icon, Tag01Icon } from '@/components/icons';
 import Lightbox from '@/components/ui/Lightbox.astro';
@@ -231,7 +232,45 @@ const breadcrumbJsonLd = JSON.stringify({
       <Giscus />
     </article>
 
-    <Lightbox target=".prose img, .prose figure img" />
+    <BlogLinks client:idle />
+
+    <Lightbox target=".prose img:not(.blog-link-favicon), .prose figure img:not(.blog-link-favicon)" />
+
+    <script is:inline>
+      (function () {
+        function setupProseImages() {
+          document.querySelectorAll('.prose img').forEach(function (img) {
+            if (img.classList.contains('blog-link-favicon')) return;
+            if (img.closest('a')) return;
+            if (img.parentNode.classList.contains('prose-img-wrap')) return;
+
+            var wrap = document.createElement('div');
+            wrap.className = 'prose-img-wrap';
+            img.parentNode.insertBefore(wrap, img);
+            wrap.appendChild(img);
+
+            // Shimmer while image loads — give wrap a temporary height so
+            // the shimmer is visible before the browser knows image dimensions
+            if (!img.complete || img.naturalWidth === 0) {
+              wrap.style.minHeight = '160px';
+              var shimmer = document.createElement('div');
+              shimmer.className = 'img-shimmer';
+              wrap.appendChild(shimmer);
+              var removeShimmer = function () {
+                shimmer.remove();
+                wrap.style.minHeight = '';
+              };
+              img.addEventListener('load', removeShimmer, { once: true });
+              img.addEventListener('error', removeShimmer, { once: true });
+            }
+
+          });
+        }
+
+        setupProseImages();
+        document.addEventListener('astro:after-swap', setupProseImages);
+      })();
+    </script>
 
 
     {
@@ -243,3 +282,57 @@ const breadcrumbJsonLd = JSON.stringify({
     }
   </div>
 </PageLayout>
+
+<style is:global>
+  /* Wrapper injected around every .prose img */
+  .prose-img-wrap {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    line-height: 0;
+    cursor: zoom-in;
+  }
+
+  /* Reset img styles — wrapper owns border + radius now */
+  .prose .prose-img-wrap img {
+    border: none;
+    border-radius: 0;
+    display: block;
+  }
+
+  /* Fit mode: when the inner img opts in via --img-w, the wrapper
+     shrinks to the picture's natural size so the border hugs the
+     image instead of empty letterbox. The parent <figure> centers it. */
+  .prose-img-wrap:has(img[style*="--img-w"]) {
+    display: inline-block;
+    max-width: 100%;
+    vertical-align: top;
+  }
+  .prose figure:has(.prose-img-wrap img[style*="--img-w"]) {
+    text-align: center;
+  }
+
+  /* Shimmer skeleton shown while image is loading */
+  .prose-img-wrap .img-shimmer {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: linear-gradient(
+      110deg,
+      var(--shimmer-base) 8%,
+      var(--shimmer-sweep) 18%,
+      var(--shimmer-base) 33%
+    );
+    background-size: 220% 100%;
+    animation: prose-img-shimmer 1.4s linear infinite;
+    pointer-events: none;
+  }
+
+  @keyframes prose-img-shimmer {
+    from { background-position: 220% 0; }
+    to   { background-position: -120% 0; }
+  }
+
+</style>

@@ -354,7 +354,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								hidden: {},
 								show: { transition: { staggerChildren: 0.04, delayChildren: 0.15 } },
 							}}
-							className="flex flex-col gap-0.5"
+							className="dim-list flex flex-col gap-0.5"
 						>
 							{filtered.map((project: Project, i: number) => (
 								<ProjectCard

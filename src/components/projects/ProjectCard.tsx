@@ -78,7 +78,7 @@ export default function ProjectCard({
 				onClick={() => {
 					window.location.href = `/projects/${project.slug}`;
 				}}
-				className={`flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+				className={`dim-list-row flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 			>
 				{/* Left: title + single chip — folder chip takes priority over type */}
 				<div className="flex min-w-0 shrink items-center gap-1.5">

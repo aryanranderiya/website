@@ -22,7 +22,7 @@ import type { IconProps } from '@theexperiencecompany/gaia-icons';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 import type { ComponentType } from 'react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- icons used in JSX
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 
@@ -167,8 +167,15 @@ export default function Sidebar({
 	pathname?: string;
 	section?: string | null;
 }) {
-	const [pathname, setPathname] = useState(initialPathname);
-	const [section, setSection] = useState<string | null>(initialSection);
+	// Pathname/section are tracked in a ref, NOT useState. On client navigation
+	// we mutate the active class directly on the DOM (see effect below), so the
+	// React tree does NOT re-render — that re-render was the source of the
+	// "cursor flashes default → pointer" bug: even with the sidebar opted out
+	// of the view transition, a React render mid-swap caused Framer Motion to
+	// briefly re-evaluate variants on the <m.div> wrappers, which dropped the
+	// :hover state on the <a> for a frame. Refs are stable, no render fires.
+	const routeRef = useRef({ path: initialPathname, section: initialSection });
+
 	const [theme, setTheme] = useState<Theme>('light');
 	const [typography, setTypography] = useState<Typography>('helvetica');
 	const [shuffleOpen, setShuffleOpen] = useState(false);
@@ -198,9 +205,25 @@ export default function Sidebar({
 		const observer = new MutationObserver(handleThemeChange);
 		observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
+		// Bypass React on navigation — mutate the active class directly.
+		// Selector targets only nav items (data-nav), not the bottom action buttons
+		// which also use .nav-link styling but should never get --active.
 		const handleNavigation = () => {
-			setPathname(window.location.pathname);
-			setSection(document.documentElement.dataset.section ?? null);
+			const path = window.location.pathname;
+			const section = document.documentElement.dataset.section ?? null;
+			routeRef.current = { path, section };
+
+			const matches = (href: string) => {
+				if (href === '/') return path === '/';
+				if (section && href === `/${section}`) return true;
+				return path.startsWith(href);
+			};
+
+			document.querySelectorAll<HTMLAnchorElement>('a[data-nav]').forEach((a) => {
+				const href = a.getAttribute('href') ?? '';
+				a.classList.toggle('nav-link--active', matches(href));
+			});
+
 			setMobileOpen(false);
 		};
 		document.addEventListener('astro:page-load', handleNavigation);
@@ -276,11 +299,14 @@ export default function Sidebar({
 		setTypography(pick.id);
 	}
 
-	const isActive = (href: string) => {
-		if (href === '/') return pathname === '/';
+	// Reads from the ref so re-renders triggered by theme / mobileOpen / shuffle
+	// AFTER a client navigation still compute the correct active item.
+	const isActive = useCallback((href: string) => {
+		const { path, section } = routeRef.current;
+		if (href === '/') return path === '/';
 		if (section && href === `/${section}`) return true;
-		return pathname.startsWith(href);
-	};
+		return path.startsWith(href);
+	}, []);
 
 	const themeLabel = theme === 'light' ? 'Dark' : theme === 'dark' ? 'Shuffle' : 'Light';
 	const themeIcon = theme === 'light' ? Moon02Icon : theme === 'dark' ? ColorsIcon : Sun01Icon;
@@ -342,6 +368,7 @@ export default function Sidebar({
 									<a
 										key={item.href}
 										href={item.href}
+										data-nav
 										className={`nav-link flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-[3px] text-[12px] tracking-[-0.01em] no-underline outline-none ${isActive(item.href) ? 'nav-link--active' : ''}`}
 									>
 										<HugeiconsIcon
@@ -810,6 +837,7 @@ export default function Sidebar({
 										<a
 											key={item.href}
 											href={item.href}
+											data-nav
 											className={`nav-link flex items-center gap-2.5 whitespace-nowrap py-[9px] text-[15px] tracking-[-0.01em] no-underline ${isActive(item.href) ? 'nav-link--active' : ''}`}
 											onClick={() => setMobileOpen(false)}
 										>

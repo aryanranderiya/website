@@ -87,6 +87,10 @@
 	--muted-bg: rgba(0, 0, 0, 0.04);
 	--muted-foreground: rgba(0, 0, 0, 0.45);
 
+	/* Shimmer */
+	--shimmer-base: rgba(0, 0, 0, 0.04);
+	--shimmer-sweep: rgba(0, 0, 0, 0.10);
+
 	/* Input / Ring */
 	--input: rgba(0, 0, 0, 0.08);
 	--ring: rgba(0, 0, 0, 0.2);
@@ -199,6 +203,10 @@
 	--muted: rgba(255, 255, 255, 0.05);
 	--muted-bg: rgba(255, 255, 255, 0.05);
 	--muted-foreground: rgba(255, 255, 255, 0.45);
+
+	/* Shimmer */
+	--shimmer-base: rgba(255, 255, 255, 0.05);
+	--shimmer-sweep: rgba(255, 255, 255, 0.14);
 
 	--input: rgba(255, 255, 255, 0.08);
 	--ring: rgba(255, 255, 255, 0.2);
@@ -445,6 +453,23 @@ body {
 }
 
 /* ============================================
+   DIM-ON-HOVER LIST
+   Hover any row → others fade to 0.25.
+   Apply .dim-list to the container, .dim-list-row to each row.
+   ============================================ */
+.dim-list-row {
+	transition: opacity var(--transition-fast);
+}
+
+.dim-list:hover .dim-list-row {
+	opacity: 0.25 !important;
+}
+
+.dim-list .dim-list-row:hover {
+	opacity: 1 !important;
+}
+
+/* ============================================
    LINK STYLES
    ============================================ */
 a {
@@ -529,6 +554,19 @@ a {
 	text-decoration-color: var(--text-muted);
 }
 
+.prose a img.blog-link-favicon {
+	display: inline-block;
+	width: 1em;
+	height: 1em;
+	margin: 0 0.25em -0.15em 0;
+	vertical-align: baseline;
+	border: none;
+	border-radius: 3px;
+	object-fit: contain;
+	cursor: inherit;
+	background: var(--muted-bg);
+}
+
 .prose code {
 	background: var(--muted-bg);
 	border: 1px solid var(--border);
@@ -604,7 +642,11 @@ a {
 .prose img {
 	border-radius: var(--radius-lg);
 	border: 1px solid var(--border);
-	width: 100%;
+	width: var(--img-w, 100%);
+	max-width: 100%;
+	height: auto;
+	max-height: var(--img-max-h, none);
+	cursor: zoom-in;
 }
 
 .prose hr {
@@ -1173,6 +1215,10 @@ html,
    font-variation-settings can't be expressed with Tailwind hover utilities
    ============================================ */
 .nav-link {
+	/* Explicit cursor — never let the browser fall back to `auto` during a
+	   view transition swap. The sidebar is opted out of VT, but defending
+	   the cursor at the rule level removes any ambiguity. */
+	cursor: pointer;
 	color: var(--nav-text);
 	font-variation-settings: "wght" 430;
 	transition:

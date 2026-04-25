@@ -1,5 +1,6 @@
 'use client';
 
+import { CheckmarkCircle02Icon, Copy01Icon, HugeiconsIcon, Mail01Icon } from '@icons';
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -37,7 +38,7 @@ interface PreviewLinkProps {
 	anchorClassName?: string;
 }
 
-function PreviewCard({
+export function PreviewCard({
 	rect,
 	visible,
 	preview,
@@ -57,6 +58,7 @@ function PreviewCard({
 	const above = rect.top > window.innerHeight * 0.5;
 	const anchorY = above ? rect.top : rect.bottom;
 	const anchorX = rect.left + rect.width / 2;
+	const isMailto = href.startsWith('mailto:');
 	const displayHost = href
 		.replace(/^https?:\/\//, '')
 		.replace(/^mailto:/, '')
@@ -97,14 +99,20 @@ function PreviewCard({
 					</div>
 				)}
 
-				{(preview.name || preview.favicon) && (
+				{(preview.name || preview.favicon || isMailto) && (
 					<div className="mb-1 flex items-center gap-1.5">
-						{preview.favicon && (
-							<img
-								src={preview.favicon}
-								alt=""
-								className="h-3.5 w-3.5 shrink-0 rounded-[3px] object-contain"
-							/>
+						{isMailto ? (
+							<span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center text-[var(--text-muted)]">
+								<HugeiconsIcon icon={Mail01Icon} size={13} />
+							</span>
+						) : (
+							preview.favicon && (
+								<img
+									src={preview.favicon}
+									alt=""
+									className="h-3.5 w-3.5 shrink-0 rounded-[3px] object-contain"
+								/>
+							)
 						)}
 						{preview.name && (
 							<span className="truncate font-medium text-[11px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover:text-[var(--text-primary)]">
@@ -115,7 +123,7 @@ function PreviewCard({
 				)}
 
 				{preview.title && (
-					<div className="mb-0.5 font-semibold text-[12px] text-[var(--text-primary)] leading-[1.35] tracking-[-0.01em]">
+					<div className="mb-0.5 line-clamp-2 overflow-hidden font-semibold text-[12px] text-[var(--text-primary)] leading-[1.35] tracking-[-0.01em]">
 						{preview.title}
 					</div>
 				)}
@@ -126,9 +134,11 @@ function PreviewCard({
 					</p>
 				)}
 
-				<div className="mt-2 truncate text-[10px] text-[var(--text-ghost)] tracking-[0.01em] transition-colors duration-150 group-hover:text-[var(--text-muted)]">
-					{displayHost}
-				</div>
+				{!isMailto && displayHost !== preview.title && (
+					<div className="mt-2 truncate text-[10px] text-[var(--text-ghost)] tracking-[0.01em] transition-colors duration-150 group-hover:text-[var(--text-muted)]">
+						{displayHost}
+					</div>
+				)}
 			</a>
 		</div>
 	);
@@ -147,10 +157,12 @@ export default function PreviewLink({
 	anchorClassName,
 }: PreviewLinkProps) {
 	const isExternal = external ?? !href.startsWith('mailto:');
+	const isMailto = href.startsWith('mailto:');
 	const anchorRef = useRef<HTMLAnchorElement>(null);
 	const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 	const [hovered, setHovered] = useState(false);
 	const [rect, setRect] = useState<DOMRect | null>(null);
+	const [copied, setCopied] = useState(false);
 
 	useEffect(() => () => clearTimeout(leaveTimer.current), []);
 
@@ -169,6 +181,18 @@ export default function PreviewLink({
 		setHovered(false);
 	}, []);
 
+	const handleClick = useCallback(
+		(e: React.MouseEvent) => {
+			if (isMailto) {
+				e.preventDefault();
+				navigator.clipboard.writeText(href.replace('mailto:', ''));
+				setCopied(true);
+				setTimeout(() => setCopied(false), 2000);
+			}
+		},
+		[href, isMailto]
+	);
+
 	return (
 		<>
 			<a
@@ -180,6 +204,7 @@ export default function PreviewLink({
 				onMouseLeave={hideFromAnchor}
 				onFocus={show}
 				onBlur={hideFromAnchor}
+				onClick={isMailto ? handleClick : undefined}
 				className={anchorClassName ?? 'group inline'}
 			>
 				{children ?? (
@@ -197,6 +222,23 @@ export default function PreviewLink({
 						>
 							{name}
 						</span>
+						{isMailto && (
+							<span
+								className="ml-1 inline-block align-middle text-[var(--text-muted)] leading-none"
+								// biome-ignore lint/nursery/noInlineStyles: dynamic slide-in animation driven by hovered state
+								style={{
+									opacity: hovered ? 1 : 0,
+									transform: hovered ? 'translateX(0)' : 'translateX(-5px)',
+									transition: 'opacity 0.2s ease, transform 0.2s cubic-bezier(0.19,1,0.22,1)',
+								}}
+							>
+								<HugeiconsIcon
+									icon={copied ? CheckmarkCircle02Icon : Copy01Icon}
+									size={copied ? 17 : 14}
+									className={copied ? 'text-[#00bbff]' : undefined}
+								/>
+							</span>
+						)}
 					</>
 				)}
 			</a>

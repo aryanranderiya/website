@@ -1,16 +1,16 @@
 ---
-import ButtonLink from '@/components/ui/ButtonLink';
-import PreviewLink from '@/components/ui/PreviewLink';
-import { fetchOgMetadata } from '@/lib/fetchOgMetadata';
+import ButtonLink from "@/components/ui/ButtonLink";
+import PreviewLink from "@/components/ui/PreviewLink";
+import { fetchOgMetadata } from "@/lib/fetchOgMetadata";
 
 // Build-time OG scrape — the resulting `preview` payload is baked into the
 // page HTML and shipped to <PreviewLink> as static props. No client fetch,
 // no caching headaches, and the data is always whatever the target site
 // publishes at build time.
 const [experienceCompanyOg, gaiaOg, spotifyOg] = await Promise.all([
-	fetchOgMetadata('https://experience.heygaia.io'),
-	fetchOgMetadata('https://heygaia.io'),
-	fetchOgMetadata('https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH'),
+	fetchOgMetadata("https://experience.heygaia.io"),
+	fetchOgMetadata("https://heygaia.io"),
+	fetchOgMetadata("https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"),
 ]);
 ---
 
@@ -76,7 +76,7 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = await Promise.all([
 </p>
 
 <p
-	class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-5 max-w-2xl animate-fade-in"
+	class="text-[14px] text-(--text-muted) leading-[1.65] m-0 mb-5 max-w-2xl animate-fade-in"
 	style="animation-delay:0.22s"
 >
 	The fastest way to reach me is{" "}
@@ -85,18 +85,16 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = await Promise.all([
 		href="mailto:aryan@heygaia.io"
 		name="aryan@heygaia.io"
 		preview={{
-			favicon: "/gaia-logo.webp",
 			name: "Email",
 			title: "aryan@heygaia.io",
 			description:
-				"I respond to all my emails within reason — say hi, pitch an idea, or just ramble about a side project.",
+				"Say hi! I try to respond to all my emails within reason.",
 		}}
 	/>
-	. I respond to all my emails within reason.
 </p>
 
 <p
-	class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-5 max-w-2xl animate-fade-in"
+	class="text-[14px] text-(--text-muted) leading-[1.65] m-0 mb-5 max-w-2xl animate-fade-in"
 	style="animation-delay:0.26s"
 >
 	I'm a tech nerd who's been tinkering with computers since a very young age.
