@@ -1,0 +1,35 @@
+# .cirun.yml — Cirun-managed GitHub Actions runners
+# Docs: https://docs.cirun.io/reference/yaml
+#
+# This file declares the runner pool that Cirun spins up on demand for jobs
+# whose `runs-on:` matches a label below. GitHub-hosted runners are free for
+# public repos and plenty fast for this site, so most jobs stay on those —
+# we only route the heaviest job (build) through Cirun as a working demo.
+#
+# ─── One-time setup (NOT done by this file) ────────────────────────────────
+#   1. Sign in at https://cirun.io and install the Cirun GitHub App on this
+#      repo (https://github.com/aryanranderiya/website).
+#   2. In the Cirun dashboard → Cloud, add credentials for AWS (or whichever
+#      cloud you choose; if so, also update the `cloud:` field below).
+#   3. Push a commit referencing one of the labels below — Cirun reads this
+#      file from your default branch and provisions runners on demand.
+# ───────────────────────────────────────────────────────────────────────────
+
+runners:
+  # Small, cheap x86 runner for normal CI work (lint, type-check, build).
+  # AMI is Ubuntu 22.04 LTS x86_64 (Canonical) in us-east-1 — replace with
+  # the equivalent for your region (or use a custom image with node+pnpm
+  # pre-baked to skip the install step on every run).
+  - name: small
+    cloud: aws
+    instance_type: t3.medium          # 2 vCPU / 4 GB RAM, ~$0.042/hr on-demand
+    machine_image: ami-0c7217cdde317cfec
+    region: us-east-1
+    preemptible: true                  # spot instances → ~70% cheaper
+    labels:
+      - cirun-small
+    extra_config:
+      BlockDeviceMappings:
+        - DeviceName: /dev/sda1
+          VolumeSize: 30               # GB — leaves room for node_modules + build output
+          VolumeType: gp3

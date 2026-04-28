@@ -15,6 +15,12 @@ name: Tech Debt Prevention
 #   security-audit    pnpm audit — known npm vulnerabilities
 #   secret-scan       gitleaks — committed secrets / API keys
 #   lint:emdash       custom check — em-dash characters in prose
+#
+# Cirun: the `build` job routes through a Cirun-managed runner (see .cirun.yml).
+# Until you install the Cirun GitHub App + add cloud credentials at
+# https://cirun.io, that one job will hang in queue. Other jobs are
+# unaffected. To disable Cirun until then, set `runs-on: ubuntu-latest` on
+# the build job.
 
 on:
   push:
@@ -39,7 +45,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: '${{ env.PNPM_VERSION }}' }
+        with:
+          version: ${{ env.PNPM_VERSION }}
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -54,7 +61,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: '${{ env.PNPM_VERSION }}' }
+        with:
+          version: ${{ env.PNPM_VERSION }}
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -64,11 +72,15 @@ jobs:
 
   build:
     name: Build (astro)
-    runs-on: ubuntu-latest
+    # Routes through Cirun (see .cirun.yml). The trailing run_id makes the
+    # runner unique per workflow run — required by Cirun. Revert to
+    # `ubuntu-latest` if Cirun isn't installed on the repo yet.
+    runs-on: "cirun-small--${{ github.run_id }}"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: '${{ env.PNPM_VERSION }}' }
+        with:
+          version: ${{ env.PNPM_VERSION }}
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -82,7 +94,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: '${{ env.PNPM_VERSION }}' }
+        with:
+          version: ${{ env.PNPM_VERSION }}
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -99,7 +112,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: '${{ env.PNPM_VERSION }}' }
+        with:
+          version: ${{ env.PNPM_VERSION }}
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -115,7 +129,8 @@ jobs:
       - name: Install ffmpeg
         run: sudo apt-get update && sudo apt-get install -y ffmpeg
       - uses: pnpm/action-setup@v4
-        with: { version: '${{ env.PNPM_VERSION }}' }
+        with:
+          version: ${{ env.PNPM_VERSION }}
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -129,7 +144,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: ${{ env.NODE_VERSION }} }
+        with:
+          node-version: ${{ env.NODE_VERSION }}
       - run: node scripts/image-budget.mjs
 
   # ─── Security lane ─────────────────────────────────────────────────────────
@@ -140,7 +156,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
-        with: { version: '${{ env.PNPM_VERSION }}' }
+        with:
+          version: ${{ env.PNPM_VERSION }}
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
@@ -154,7 +171,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { fetch-depth: 0 }
+        with:
+          fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
