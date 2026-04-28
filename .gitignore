@@ -29,5 +29,3 @@ pnpm-debug.log*
 .idea/
 
 .pnpm-store.lighthouseci/
-
-skills-lock.json
