@@ -23,7 +23,7 @@ export const pastWork: FreelanceProject[] = [
 		description:
 			'Official website and analytics dashboard for Blink Analytics, a generative AI and data analytics company. Real-time client reporting with custom charts, metrics, and data export.',
 		images: [
-			'/ProjectMedia/BlinkAnalytics/1.png',
+			'/ProjectMedia/BlinkAnalytics/1.webp',
 			'/ProjectMedia/BlinkAnalytics/2.webp',
 			'/ProjectMedia/BlinkAnalytics/3.webp',
 			'/ProjectMedia/BlinkAnalytics/4.webp',

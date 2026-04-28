@@ -14,7 +14,10 @@
 		"check": "biome check ./src",
 		"check:fix": "biome check --write ./src",
 		"type-check": "astro check",
-		"lint:emdash": "! grep -r '\\xe2\\x80\\x94' src --include='*.ts' --include='*.tsx' --include='*.astro' --include='*.md' --include='*.mdx' -l"
+		"lint:emdash": "! grep -r '\\xe2\\x80\\x94' src --include='*.ts' --include='*.tsx' --include='*.astro' --include='*.md' --include='*.mdx' -l",
+		"unused-assets": "node scripts/find-unused-assets.mjs",
+		"validate-media": "node scripts/validate-media.mjs",
+		"image-budget": "node scripts/image-budget.mjs"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^12.6.13",
