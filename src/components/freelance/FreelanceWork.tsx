@@ -431,8 +431,7 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			<>
-				{/* Project list -- always full width of its container */}
+			{/* Project list -- always full width of its container */}
 				<div>
 					{pastWork.map((work) => {
 						const isActive = selected?.name === work.name;
@@ -498,7 +497,6 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 						</AnimatePresence>,
 						document.body
 					)}
-			</>
 		</LazyMotion>
 	);
 }

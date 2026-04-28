@@ -166,8 +166,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			<>
-				<m.div
+			<m.div
 					initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
 					animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
 					transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
@@ -410,7 +409,6 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 						</AnimatePresence>,
 						document.body
 					)}
-			</>
 		</LazyMotion>
 	);
 }

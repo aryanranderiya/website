@@ -283,8 +283,7 @@ export default function Sidebar({
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			<>
-				{/* ── Desktop sidebar ── */}
+			{/* ── Desktop sidebar ── */}
 				<nav className="hidden min-[960px]:flex flex-col gap-0.5 bg-transparent overflow-visible z-40 fixed top-[60px] bottom-[128px] left-[calc(50%-472px)] w-[100px]">
 					<m.div
 						variants={sidebarContainer}
@@ -793,7 +792,6 @@ export default function Sidebar({
 						</m.div>
 					)}
 				</AnimatePresence>
-			</>
 		</LazyMotion>
 	);
 }

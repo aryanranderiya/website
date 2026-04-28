@@ -1,6 +1,6 @@
 ---
-title: "Venturing into the Unknown"
-description: I'm leaving my job on the 1st of May to work on my startup.
+title: "taking the leap"
+description: I'm leaving my job to work on my startup.
 date: 2026-04-14
 category: personal
 featured: true
@@ -17,10 +17,10 @@ I also don't think fintech is for me, I already did kinda know that but now it's
 
 It's not all bad though. I should be grateful for the culture they have and are trying so hard to inculcate. Employees and interns truly have an opportunity to create an impact through their work from day one. I should feel lucky that I got the opportunity to work here. It's quite a shame tho, i suppose in another world where I didn't have something else to work on, I would actually be trying my best here.
 
-I suppose making the decision was quite easy. I've had a couple of breakdowns in the past few months where I've felt frustrated and lost. I had sort of planned or thought that I'd stay in this job for at least and at most a year but over the months it was apparent that I wouldn't be able to be here for long. I've been working on my startup with my co founder for about more than a year now, and when I think about it, I don't really have a reason why i chose to take this job which is shocking to say the least. I'm a builder by nature, and being confined by rules in an environment like this just feels unnatural. I'm truly grateful for having supportive parents who understand all of this and choose to support me regardless.
+I suppose making the decision was quite easy. I've had a couple of breakdowns in the past few months where I've felt frustrated and lost. I had sort of planned or thought that I'd stay in this job for at least and at most a year but over the months it was apparent that I wouldn't be able to be here for long. I've been working on my startup with my co founder for about more than a year now, and when I think about it, I don't really have a reason why i chose to take this job which is shocking to say the least. I'm a builder by nature, and being confined by rules in an environment like this just feels unnatural.
 
 I feel like this is the best time after the dot com bubble to build a company (the ai bubble) and I really should make the best out of this time. I'm young (20), I have no financial obligations, my parents are practical and understanding, i'm driven and ambitious, I think the best decision for me would be to just burn the ships and take the leap. 
-I just cannot see myself doing a job, as a kid too i've never seen myself working a job as an adult. I don't think i could ever feel fulfilled working a job my entire life. I'm a creative person, I'm a builder, I want to create, I want to lead, I think the best work for my persona type to do or for my self fulfillment will only come from starting something of my own. And in the worst case scenario, if all turns to shit, I could go anywhere in the world because i'm lucky enough to have british passport, and I am pretty confident that i'm skilled enough to get another job and work in someplace like a startup.
+Frankly speaking, I just can't see myself doing a job, as a kid too i've never seen myself working a job as an adult. I don't think i could ever feel fulfilled working a job my entire life. I'm a creative person, I'm a builder, I want to create, I want to lead, I think the best work for my persona type to do or for my self fulfillment will only come from starting something of my own. And in the worst case scenario, if all turns to shit, I'm pretty confident that i'm skilled enough to get another job and work in someplace like a startup or even go back to freelancing.
 
 I really think we're headed in the right direction. Dhruv and I have grown so much in the past year, regardless of external success we've made so much progress with understanding what we're doing and the direction we should be going in. We truly believe with the direction the world is going in, we are really doing something right. A couple of competitors to GAIA would be products like OpenClaw and Poke (by The Interaction Company) and even still, they're not mainstream or even widely known by the masses. There's a massive fucking gap to fill where everyone in this world can have their own proactive, insanely powerful personal assistant that can virtually do anything.
 
@@ -33,4 +33,9 @@ I know it's going to be hard and it'll take some time, but building generational
 ![](https://substackcdn.com/image/fetch/f_auto,q_auto:good,fl_progressive:steep/https%3A%2F%2Fsubstack-post-media.s3.amazonaws.com%2Fpublic%2Fimages%2F6ae1275f-1b3e-49d3-afcb-f4ca9045279e_5438x6448.png)
 > How long it took for companies to go from idea to product market fit. <br/> *Credits to Lenny's Newsletter*
 
-TO BE CONTINUED
+
+I understand that building a startup is going to be excruciatingly hard, especially in an industry like this, in times like these. But it's fine, U'm willing to take on the challenge no matter how hard. We are not from prestigious colleges, we are not the most privileged, but we will persevere.
+
+I look up to people like Steve Jobs, Jack Dorsey, Pavel Durov, Brian Chesky. These people give us hope, they show us that creating an impact to billions is possible even when not from the best backgrounds.
+
+Shit might be fine after all.
