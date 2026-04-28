@@ -73,7 +73,9 @@ export default function BlogLinks() {
 
 		return () => {
 			clearTimeout(leaveTimer.current);
-			cleanup.forEach((fn) => fn());
+			cleanup.forEach((fn) => {
+				fn();
+			});
 		};
 	}, []);
 

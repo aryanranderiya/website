@@ -175,8 +175,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
 	const totalActiveFacets = activeTagFilters.length + activeTechFilters.length;
 
-	const hasAnyFilter =
-		!!activeTypeFilter || totalActiveFacets > 0 || !!search.trim();
+	const hasAnyFilter = !!activeTypeFilter || totalActiveFacets > 0 || !!search.trim();
 
 	const clearAllFilters = () => {
 		setActiveTypeFilter(null);
@@ -417,7 +416,13 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								aria-label={`Remove filter ${tag}`}
 							>
 								{iconUrl && (
-									<img src={iconUrl} alt="" width={11} height={11} className="shrink-0 object-contain" />
+									<img
+										src={iconUrl}
+										alt=""
+										width={11}
+										height={11}
+										className="shrink-0 object-contain"
+									/>
 								)}
 								<span>{tag}</span>
 								<HugeiconsIcon
@@ -440,7 +445,13 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								aria-label={`Remove filter ${tech}`}
 							>
 								{iconUrl && (
-									<img src={iconUrl} alt="" width={11} height={11} className="shrink-0 object-contain" />
+									<img
+										src={iconUrl}
+										alt=""
+										width={11}
+										height={11}
+										className="shrink-0 object-contain"
+									/>
 								)}
 								<span>{tech}</span>
 								<HugeiconsIcon
@@ -495,7 +506,12 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 				<AnimatePresence mode="sync" initial={false}>
 					{filtered.length > 0 ? (
 						<m.div
-							key={search + activeTagFilters.join(',') + activeTechFilters.join(',') + (activeTypeFilter ?? '')}
+							key={
+								search +
+								activeTagFilters.join(',') +
+								activeTechFilters.join(',') +
+								(activeTypeFilter ?? '')
+							}
 							initial="hidden"
 							animate={ready ? 'show' : 'hidden'}
 							exit={{ opacity: 0 }}

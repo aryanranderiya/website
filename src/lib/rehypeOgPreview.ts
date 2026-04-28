@@ -34,7 +34,10 @@ function shouldSkipAnchor(node: HastNode): boolean {
 	if (getProp(props, 'dataFootnoteBackref', 'data-footnote-backref') != null) return true;
 	if (getProp(props, 'dataNoPreview', 'data-no-preview') != null) return true;
 	const className = props.className ?? props.class;
-	if (Array.isArray(className) && className.some((c) => typeof c === 'string' && c.includes('footnote'))) {
+	if (
+		Array.isArray(className) &&
+		className.some((c) => typeof c === 'string' && c.includes('footnote'))
+	) {
 		return true;
 	}
 	return false;
