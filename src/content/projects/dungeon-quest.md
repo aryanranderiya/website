@@ -15,6 +15,7 @@ images:
   - /ProjectMedia/DungeonQuest/screenshot-1.png
   - /ProjectMedia/DungeonQuest/screenshot-2.png
   - /ProjectMedia/DungeonQuest/screenshot-3.png
+  - /ProjectMedia/DungeonQuest/screenshot-4.png
 status: completed
 order: 20
 url: https://pixel-quest.vercel.app/

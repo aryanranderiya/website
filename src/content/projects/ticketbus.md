@@ -8,16 +8,23 @@ tech: [Java, Android, Firebase]
 featured: true
 type: mobile
 folder: Featured
-coverImage: /ProjectMedia/TicketBus/TicketBus_project_banner.png
+coverImage: /ProjectMedia/TicketBus/TicketBus_project_banner.webp
 images:
-  - /ProjectMedia/TicketBus/TicketBus_project_banner.png
-  - /ProjectMedia/TicketBus/AdminPanel.png
+  - /ProjectMedia/TicketBus/TicketBus_project_banner.webp
+  - /ProjectMedia/TicketBus/SplashScreen.png
+  - /ProjectMedia/TicketBus/Onboarding.png
+  - /ProjectMedia/TicketBus/Login_Signup.png
   - /ProjectMedia/TicketBus/Dashboard.png
   - /ProjectMedia/TicketBus/Map.png
-  - /ProjectMedia/TicketBus/Login_Signup.png
   - /ProjectMedia/TicketBus/TicketBooking.png
   - /ProjectMedia/TicketBus/Bus_Pass.png
-  - /ProjectMedia/TicketBus/Onboarding.png
+  - /ProjectMedia/TicketBus/User_Profile.png
+  - /ProjectMedia/TicketBus/AdminPanel.png
+  - /ProjectMedia/TicketBus/AdminPanel_Bus.png
+  - /ProjectMedia/TicketBus/AdminPanel_BusPass.png
+  - /ProjectMedia/TicketBus/AdminPanel_Location.png
+  - /ProjectMedia/TicketBus/AdminPanel_Users.png
+video: /ProjectMedia/TicketBus/Ticketbus.mp4
 status: completed
 order: 5
 github: https://github.com/aryanranderiya/TicketBus

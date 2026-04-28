@@ -11,6 +11,7 @@ folder: Projects
 coverImage: /ProjectMedia/Encode_Official Website/encode.png
 images:
   - /ProjectMedia/Encode_Official Website/encode.png
+  - /ProjectMedia/Encode_Official Website/image.png
   - /ProjectMedia/Encode_Official Website/1.webp
   - /ProjectMedia/Encode_Official Website/2.webp
   - /ProjectMedia/Encode_Official Website/3.webp

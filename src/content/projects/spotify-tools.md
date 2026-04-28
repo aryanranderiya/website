@@ -11,6 +11,7 @@ folder: Projects
 coverImage: /ProjectMedia/Spotify_Tools/spotify_tools_project_banner.png
 images:
   - /ProjectMedia/Spotify_Tools/spotify_tools_project_banner.png
+video: /ProjectMedia/Spotify_Tools/SpotifyTools_demo.mp4
 status: completed
 order: 19
 github: https://github.com/aryanranderiya/SpotifyTools

@@ -2,7 +2,10 @@ pre-commit:
   parallel: true
   commands:
     biome:
-      glob: "*.{ts,tsx,astro,json}"
+      # Match biome.json's `files.includes` (src/**/*.{ts,tsx,astro}) so we don't
+      # hand biome paths it ignores (package.json, etc.) — biome exits non-zero
+      # when every staged file is on its ignore list.
+      glob: "src/**/*.{ts,tsx,astro}"
       # Safe fixes only — --unsafe would destructively delete style props (noInlineStyles)
       run: pnpm biome check --write {staged_files}
       stage_fixed: true
