@@ -1,0 +1,166 @@
+# CircleCI config — replaces .github/workflows/tech-debt.yml because the
+# GitHub-side Actions account is currently restricted (unpaid dues). CircleCI
+# runs on its own infrastructure (separate from GitHub Actions) and listens
+# to GitHub via webhook + OAuth, so it works regardless of GH Actions status.
+#
+# Free tier: 6,000 build minutes/month, no credit card required.
+# Personal accounts supported.
+#
+# One-time setup:
+#   1. Sign up at https://circleci.com with your GitHub account (OAuth, no card).
+#   2. Dashboard → Projects → set up project for `aryanranderiya/website`.
+#   3. Choose "fastest" → CircleCI detects this file and starts the first build.
+#
+# Each job runs in parallel via the workflow at the bottom of this file.
+# The `required` job depends on every other job and is the natural target
+# for branch protection.
+
+version: 2.1
+
+# ─── Shared executor ─────────────────────────────────────────────────────────
+# cimg/node is the official CircleCI Node image. Ubuntu-based, has sudo, lets
+# us apt-get ffmpeg in the media-validation job.
+
+executors:
+  node:
+    docker:
+      - image: cimg/node:22.11
+    resource_class: medium  # 2 vCPU / 4 GB — well within the free tier
+
+# ─── Reusable command: install pnpm + project deps with cache ────────────────
+
+commands:
+  install_deps:
+    description: Install pnpm via corepack and project deps with caching
+    steps:
+      - checkout
+      - run:
+          name: Enable pnpm
+          command: |
+            corepack enable
+            corepack prepare pnpm@10 --activate
+      - restore_cache:
+          keys:
+            - pnpm-v1-{{ checksum "pnpm-lock.yaml" }}
+            - pnpm-v1-
+      - run:
+          name: pnpm install
+          command: pnpm install --frozen-lockfile
+      - save_cache:
+          key: pnpm-v1-{{ checksum "pnpm-lock.yaml" }}
+          paths:
+            - ~/.local/share/pnpm/store
+            - node_modules
+
+# ─── Jobs ────────────────────────────────────────────────────────────────────
+
+jobs:
+
+  # Code-quality lane
+
+  lint:
+    executor: node
+    steps:
+      - install_deps
+      - run: pnpm check
+      - run: pnpm lint:emdash
+
+  type-check:
+    executor: node
+    steps:
+      - install_deps
+      - run: pnpm type-check
+
+  build:
+    executor: node
+    steps:
+      - install_deps
+      - run: pnpm build
+
+  dead-code:
+    executor: node
+    steps:
+      - install_deps
+      - run:
+          name: knip (report only — non-blocking until baselined)
+          command: pnpm dead-code --reporter compact || true
+
+  # Asset lane
+
+  unused-assets:
+    executor: node
+    steps:
+      - install_deps
+      - run: pnpm unused-assets
+
+  media-validation:
+    executor: node
+    steps:
+      - install_deps
+      - run:
+          name: Install ffmpeg
+          command: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - run: pnpm validate-media
+
+  image-budget:
+    executor: node
+    steps:
+      - checkout
+      # No deps needed — the script is pure Node stdlib.
+      - run: node scripts/image-budget.mjs
+
+  # Security lane
+
+  security-audit:
+    executor: node
+    steps:
+      - install_deps
+      - run:
+          name: pnpm audit (high+ severity only)
+          command: pnpm audit --audit-level=high
+
+  secret-scan:
+    executor: node
+    steps:
+      - checkout
+      - run:
+          name: Install gitleaks
+          command: |
+            curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.22.1/gitleaks_8.22.1_linux_x64.tar.gz | tar -xz
+            sudo mv gitleaks /usr/local/bin/
+      - run:
+          name: Scan for committed secrets
+          command: gitleaks detect --source . --verbose --redact
+
+  # Aggregate gate — depend on everything; this is the job to mark "Required"
+  # in CircleCI's branch protection.
+
+  required:
+    executor: node
+    steps:
+      - run: echo "All required checks passed."
+
+# ─── Workflow ────────────────────────────────────────────────────────────────
+
+workflows:
+  tech-debt:
+    jobs:
+      - lint
+      - type-check
+      - build
+      - dead-code
+      - unused-assets
+      - media-validation
+      - image-budget
+      - security-audit
+      - secret-scan
+      - required:
+          requires:
+            - lint
+            - type-check
+            - build
+            - unused-assets
+            - media-validation
+            - image-budget
+            - security-audit
+            - secret-scan
