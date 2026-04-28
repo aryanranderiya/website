@@ -16,11 +16,12 @@ name: Tech Debt Prevention
 #   secret-scan       gitleaks — committed secrets / API keys
 #   lint:emdash       custom check — em-dash characters in prose
 #
-# Cirun: the `build` job routes through a Cirun-managed runner (see .cirun.yml).
-# Until you install the Cirun GitHub App + add cloud credentials at
-# https://cirun.io, that one job will hang in queue. Other jobs are
-# unaffected. To disable Cirun until then, set `runs-on: ubuntu-latest` on
-# the build job.
+# Runners: every job uses Ubicloud (https://ubicloud.com), 1,250 free
+# minutes/month on personal accounts via the `ubicloud-standard-2` label.
+# One-time setup: install the "Ubicloud Managed Runners" GitHub App on this
+# repo from the Ubicloud dashboard. No repo-side config file needed — just
+# `runs-on: ubicloud-standard-2` and Ubicloud takes over runner provisioning.
+# To revert to GitHub-hosted runners, swap to `ubuntu-latest`.
 
 on:
   push:
@@ -41,7 +42,7 @@ jobs:
 
   lint:
     name: Lint (biome)
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -57,7 +58,7 @@ jobs:
 
   type-check:
     name: Type Check (astro check)
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -72,10 +73,7 @@ jobs:
 
   build:
     name: Build (astro)
-    # Routes through Cirun (see .cirun.yml). The trailing run_id makes the
-    # runner unique per workflow run — required by Cirun. Revert to
-    # `ubuntu-latest` if Cirun isn't installed on the repo yet.
-    runs-on: "cirun-small--${{ github.run_id }}"
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -90,7 +88,7 @@ jobs:
 
   dead-code:
     name: Dead Code (knip)
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -108,7 +106,7 @@ jobs:
 
   unused-assets:
     name: Unused Assets
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -123,7 +121,7 @@ jobs:
 
   media-validation:
     name: Media Validation
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
       - name: Install ffmpeg
@@ -140,7 +138,7 @@ jobs:
 
   image-budget:
     name: Image Size Budget
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -152,7 +150,7 @@ jobs:
 
   security-audit:
     name: Security Audit (pnpm audit)
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -168,7 +166,7 @@ jobs:
 
   secret-scan:
     name: Secret Scan (gitleaks)
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     steps:
       - uses: actions/checkout@v4
         with:
@@ -183,7 +181,7 @@ jobs:
 
   required:
     name: Required Checks
-    runs-on: ubuntu-latest
+    runs-on: ubicloud-standard-2
     if: ${{ always() }}
     needs:
       - lint
