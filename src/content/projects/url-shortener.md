@@ -8,11 +8,11 @@ tech: [React, Node.js, Express, MongoDB, TailwindCSS]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/URL_Shortener/URLShortener.png
+coverImage: /ProjectMedia/URL_Shortener/URLShortener.webp
 images:
-  - /ProjectMedia/URL_Shortener/URLShortener.png
-  - /ProjectMedia/URL_Shortener/2024-03-14_21-13.png
-  - /ProjectMedia/URL_Shortener/screenshot-1.png
+  - /ProjectMedia/URL_Shortener/URLShortener.webp
+  - /ProjectMedia/URL_Shortener/2024-03-14_21-13.webp
+  - /ProjectMedia/URL_Shortener/screenshot-1.webp
 status: completed
 order: 11
 url: https://links.aryanranderiya.com

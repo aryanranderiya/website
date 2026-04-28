@@ -101,7 +101,7 @@ export const experience: Experience[] = [
 		website: '/f4llout',
 		skills: ['Team Management', 'Brand Design', 'Photoshop', 'Illustrator', 'Content Strategy'],
 		featured: false,
-		logo: '/icons/favicons/f4llout.png',
+		logo: '/icons/favicons/f4llout.webp',
 	},
 	{
 		company: 'Rezrek',
@@ -171,7 +171,7 @@ export const education = [
 		startYear: '2020',
 		endYear: '2023',
 		location: 'Gujarat, India',
-		logo: '/icons/favicons/gtu-ac-in.png',
+		logo: '/icons/favicons/gtu-ac-in.webp',
 	},
 ];
 

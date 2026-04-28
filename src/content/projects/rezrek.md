@@ -8,7 +8,7 @@ tech: [Next.js, Python, Supabase]
 featured: true
 type: mobile
 folder: Client
-coverImage: /ProjectMedia/Rezrek/image (1).png
+coverImage: /ProjectMedia/Rezrek/image (1).webp
 images:
   - /ProjectMedia/Rezrek/rezrek main.webp
   - /ProjectMedia/Rezrek/0.webp

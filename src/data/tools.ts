@@ -38,7 +38,7 @@ export const TOOLS: Tool[] = [
 		website: 'https://cursor.sh',
 		category: 'Development',
 		tagline: 'AI-first code editor',
-		icon: '/icons/apps/cursor.png',
+		icon: '/icons/apps/cursor.webp',
 		thoughts:
 			'Built on VS Code so nothing feels foreign, but the AI integration is a league above Copilot. Tab completion that anticipates multi-line edits, and Composer for larger refactors - it genuinely feels like pair programming with someone fast.',
 	},

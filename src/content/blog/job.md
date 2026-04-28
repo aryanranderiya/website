@@ -4,7 +4,7 @@ description: I'm leaving my job on the 1st of May to work on my startup.
 date: 2026-04-14
 category: personal
 featured: true
-cover: "/blog/gaia1.png"
+cover: "/blog/gaia1.webp"
 ---
 
 It's honestly a terrifying decision, but i feel like it was a no brainer for me. It's not terrifying because i'm conflicted if it's the right decision, but because i'm venturing into the unknown without a safety net. 

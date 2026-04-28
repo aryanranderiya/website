@@ -26,7 +26,7 @@ function createAvatarMarkerEl() {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background-image: url('/memoji.png');
+    background-image: url('/memoji.webp');
     background-size: cover;
     background-position: center;
     border: 2.5px solid white;

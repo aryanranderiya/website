@@ -8,13 +8,13 @@ tech: [Next.js, TypeScript, TailwindCSS, SQLite]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/Pesronal_Blog/blog_project_banner.png
+coverImage: /ProjectMedia/Pesronal_Blog/blog_project_banner.webp
 images:
-  - /ProjectMedia/Pesronal_Blog/blog_project_banner.png
-  - /ProjectMedia/Pesronal_Blog/screenshot-1.png
-  - /ProjectMedia/Pesronal_Blog/screenshot-2.png
-  - /ProjectMedia/Pesronal_Blog/screenshot-3.png
-  - /ProjectMedia/Pesronal_Blog/screenshot-4.png
+  - /ProjectMedia/Pesronal_Blog/blog_project_banner.webp
+  - /ProjectMedia/Pesronal_Blog/screenshot-1.webp
+  - /ProjectMedia/Pesronal_Blog/screenshot-2.webp
+  - /ProjectMedia/Pesronal_Blog/screenshot-3.webp
+  - /ProjectMedia/Pesronal_Blog/screenshot-4.webp
 status: completed
 order: 19
 url: https://blog.aryanranderiya.com

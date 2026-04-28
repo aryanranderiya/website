@@ -8,12 +8,12 @@ tech: [HTML, CSS, JavaScript, Firebase]
 featured: false
 type: web
 folder: Hackathon
-coverImage: /ProjectMedia/Smart_Student Projects/SSPBanner.png
+coverImage: /ProjectMedia/Smart_Student Projects/SSPBanner.webp
 images:
-  - /ProjectMedia/Smart_Student Projects/SSPBanner.png
-  - /ProjectMedia/Smart_Student Projects/screenshot-1.png
-  - /ProjectMedia/Smart_Student Projects/screenshot-2.png
-  - /ProjectMedia/Smart_Student Projects/screenshot-3.png
+  - /ProjectMedia/Smart_Student Projects/SSPBanner.webp
+  - /ProjectMedia/Smart_Student Projects/screenshot-1.webp
+  - /ProjectMedia/Smart_Student Projects/screenshot-2.webp
+  - /ProjectMedia/Smart_Student Projects/screenshot-3.webp
 status: completed
 order: 26
 url: http://projects.aryanranderiya.com/SmartStudentProjects/

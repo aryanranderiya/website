@@ -8,35 +8,35 @@ tech: [HTML, CSS, JavaScript, Firebase, GSAP]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/Portfolio/Website-Homepage.png
+coverImage: /ProjectMedia/Portfolio/Website-Homepage.webp
 images:
-  - /ProjectMedia/Portfolio/Website-Homepage.png
-  - /ProjectMedia/Portfolio/304815490-aee4f364-4434-416b-a265-cdc3c21f458a.png
-  - /ProjectMedia/Portfolio/304815557-d8f8521a-a70a-4cd8-a4ef-9320cb154029.png
-  - /ProjectMedia/Portfolio/304815629-15d1b6c3-d8d6-4a7e-905a-07a941f76cf6.png
-  - /ProjectMedia/Portfolio/304815662-ac666075-fb4a-4ac5-bdcf-fd774db3fc7e.png
-  - /ProjectMedia/Portfolio/304815810-20f915cc-cc2f-4c93-acfb-6c52c0cabd61.png
-  - /ProjectMedia/Portfolio/304816206-f3d4bc70-edcb-4c01-adec-f209b0773c99.png
-  - /ProjectMedia/Portfolio/304816390-05bd1f27-f3ef-4518-ad59-dfc263c96a9b.png
-  - /ProjectMedia/Portfolio/304816745-734a2488-44b0-4433-9b45-eec0602c24bf.png
-  - /ProjectMedia/Portfolio/304808063-b9372b80-6cb0-4ad2-957d-8925a2906d5c.png
-  - /ProjectMedia/Portfolio/304808197-8f6a4391-272a-4d6d-987c-64b70b871256.png
-  - /ProjectMedia/Portfolio/304808497-7d1da441-3969-4a1d-b800-bef031322051.png
-  - /ProjectMedia/Portfolio/304813012-af9281fe-3eb2-46f6-ae1b-095b6ab09498.png
-  - /ProjectMedia/Portfolio/304813094-6908cb56-95f2-4bd1-9d08-e9e5b458f491.png
-  - /ProjectMedia/Portfolio/304813312-080aeaca-53f5-4c95-8ea5-e856e81abe98.png
-  - /ProjectMedia/Portfolio/304813509-1a2502aa-103d-4375-8d6a-e1122c7c84cc.png
-  - /ProjectMedia/Portfolio/304813593-fc9dd15a-e767-44fd-aeab-59a4c24215e4.png
-  - /ProjectMedia/Portfolio/designprojects_0.png
-  - /ProjectMedia/Portfolio/designprojects_1.png
-  - /ProjectMedia/Portfolio/designprojects_2.png
-  - /ProjectMedia/Portfolio/designprojects_3.png
-  - /ProjectMedia/Portfolio/designprojects_4.png
-  - /ProjectMedia/Portfolio/designprojects_5.png
-  - /ProjectMedia/Portfolio/designprojects_6.png
-  - /ProjectMedia/Portfolio/designprojects_7.png
-  - /ProjectMedia/Portfolio/designprojects_8.png
-  - /ProjectMedia/Portfolio/designprojects_9.png
+  - /ProjectMedia/Portfolio/Website-Homepage.webp
+  - /ProjectMedia/Portfolio/304815490-aee4f364-4434-416b-a265-cdc3c21f458a.webp
+  - /ProjectMedia/Portfolio/304815557-d8f8521a-a70a-4cd8-a4ef-9320cb154029.webp
+  - /ProjectMedia/Portfolio/304815629-15d1b6c3-d8d6-4a7e-905a-07a941f76cf6.webp
+  - /ProjectMedia/Portfolio/304815662-ac666075-fb4a-4ac5-bdcf-fd774db3fc7e.webp
+  - /ProjectMedia/Portfolio/304815810-20f915cc-cc2f-4c93-acfb-6c52c0cabd61.webp
+  - /ProjectMedia/Portfolio/304816206-f3d4bc70-edcb-4c01-adec-f209b0773c99.webp
+  - /ProjectMedia/Portfolio/304816390-05bd1f27-f3ef-4518-ad59-dfc263c96a9b.webp
+  - /ProjectMedia/Portfolio/304816745-734a2488-44b0-4433-9b45-eec0602c24bf.webp
+  - /ProjectMedia/Portfolio/304808063-b9372b80-6cb0-4ad2-957d-8925a2906d5c.webp
+  - /ProjectMedia/Portfolio/304808197-8f6a4391-272a-4d6d-987c-64b70b871256.webp
+  - /ProjectMedia/Portfolio/304808497-7d1da441-3969-4a1d-b800-bef031322051.webp
+  - /ProjectMedia/Portfolio/304813012-af9281fe-3eb2-46f6-ae1b-095b6ab09498.webp
+  - /ProjectMedia/Portfolio/304813094-6908cb56-95f2-4bd1-9d08-e9e5b458f491.webp
+  - /ProjectMedia/Portfolio/304813312-080aeaca-53f5-4c95-8ea5-e856e81abe98.webp
+  - /ProjectMedia/Portfolio/304813509-1a2502aa-103d-4375-8d6a-e1122c7c84cc.webp
+  - /ProjectMedia/Portfolio/304813593-fc9dd15a-e767-44fd-aeab-59a4c24215e4.webp
+  - /ProjectMedia/Portfolio/designprojects_0.webp
+  - /ProjectMedia/Portfolio/designprojects_1.webp
+  - /ProjectMedia/Portfolio/designprojects_2.webp
+  - /ProjectMedia/Portfolio/designprojects_3.webp
+  - /ProjectMedia/Portfolio/designprojects_4.webp
+  - /ProjectMedia/Portfolio/designprojects_5.webp
+  - /ProjectMedia/Portfolio/designprojects_6.webp
+  - /ProjectMedia/Portfolio/designprojects_7.webp
+  - /ProjectMedia/Portfolio/designprojects_8.webp
+  - /ProjectMedia/Portfolio/designprojects_9.webp
 video: /ProjectMedia/Personal_Portfolio/portfolio-demo.mp4
 status: archived
 order: 35

@@ -10,7 +10,7 @@ type: web
 folder: Client
 coverImage: /ProjectMedia/MWI/1.webp
 images:
-  - /ProjectMedia/MWI/2025-02-04_19-02.png
+  - /ProjectMedia/MWI/2025-02-04_19-02.webp
   - /ProjectMedia/MWI/1.webp
   - /ProjectMedia/MWI/2.webp
   - /ProjectMedia/MWI/3.webp

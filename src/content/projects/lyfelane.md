@@ -8,19 +8,19 @@ tech: [React, Node.js, Express, MongoDB, JavaScript]
 featured: false
 type: web
 folder: Client
-coverImage: /ProjectMedia/LyfeLane/2024-11-22_22-18.png
+coverImage: /ProjectMedia/LyfeLane/2024-11-22_22-18.webp
 images:
-  - /ProjectMedia/LyfeLane/2024-11-22_22-18.png
-  - /ProjectMedia/LyfeLane/2024-11-22_22-19.png
-  - /ProjectMedia/LyfeLane/2024-11-22_22-19_1.png
-  - /ProjectMedia/LyfeLane/2024-11-22_22-20.png
-  - /ProjectMedia/LyfeLane/2024-11-22_22-22.png
-  - /ProjectMedia/LyfeLane/2024-11-22_22-23.png
-  - /ProjectMedia/LyfeLane/2024-11-22_22-23_1.png
-  - /ProjectMedia/LyfeLane/2024-11-22_22-24.png
-  - /ProjectMedia/LyfeLane/2024-11-22_22-24_1.png
-  - /ProjectMedia/LyfeLane/2024-11-22_22-24_2.png
-  - /ProjectMedia/LyfeLane/2024-11-22_22-24_3.png
+  - /ProjectMedia/LyfeLane/2024-11-22_22-18.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-19.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-19_1.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-20.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-22.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-23.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-23_1.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-24.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-24_1.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-24_2.webp
+  - /ProjectMedia/LyfeLane/2024-11-22_22-24_3.webp
 status: completed
 order: 32
 url: https://lyfelane.com

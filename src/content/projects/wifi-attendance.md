@@ -8,16 +8,16 @@ tech: [Java, Android, Firebase]
 featured: false
 type: mobile
 folder: Hackathon
-coverImage: /ProjectMedia/Wi-Fi_Attendance/wifi_project_banner.png
+coverImage: /ProjectMedia/Wi-Fi_Attendance/wifi_project_banner.webp
 images:
-  - /ProjectMedia/Wi-Fi_Attendance/wifi_project_banner.png
-  - /ProjectMedia/Wi-Fi_Attendance/287043334-95748acf-6050-45c4-abd3-b3590645cfdb.png
-  - /ProjectMedia/Wi-Fi_Attendance/287043315-93d9a24c-5bfe-4311-b624-463531ae9d93.png
-  - /ProjectMedia/Wi-Fi_Attendance/287043321-0016e2a9-eedd-438b-84d2-033ae890e865.png
-  - /ProjectMedia/Wi-Fi_Attendance/287043256-4f5a301d-1d8a-4ea4-9c37-171ccb541baf.png
-  - /ProjectMedia/Wi-Fi_Attendance/287043284-8b3cd6d3-7c5c-42e4-b404-e3b1beefd9d3.png
-  - /ProjectMedia/Wi-Fi_Attendance/287043323-25c59090-053b-4d49-b83a-0b5241624a17.png
-  - /ProjectMedia/Wi-Fi_Attendance/287043329-5ebec9eb-1e0e-4c7f-8732-d92fc4d843f9.png
+  - /ProjectMedia/Wi-Fi_Attendance/wifi_project_banner.webp
+  - /ProjectMedia/Wi-Fi_Attendance/287043334-95748acf-6050-45c4-abd3-b3590645cfdb.webp
+  - /ProjectMedia/Wi-Fi_Attendance/287043315-93d9a24c-5bfe-4311-b624-463531ae9d93.webp
+  - /ProjectMedia/Wi-Fi_Attendance/287043321-0016e2a9-eedd-438b-84d2-033ae890e865.webp
+  - /ProjectMedia/Wi-Fi_Attendance/287043256-4f5a301d-1d8a-4ea4-9c37-171ccb541baf.webp
+  - /ProjectMedia/Wi-Fi_Attendance/287043284-8b3cd6d3-7c5c-42e4-b404-e3b1beefd9d3.webp
+  - /ProjectMedia/Wi-Fi_Attendance/287043323-25c59090-053b-4d49-b83a-0b5241624a17.webp
+  - /ProjectMedia/Wi-Fi_Attendance/287043329-5ebec9eb-1e0e-4c7f-8732-d92fc4d843f9.webp
 status: completed
 order: 23
 github: https://github.com/aryanranderiya/WifiClassroomAttendance

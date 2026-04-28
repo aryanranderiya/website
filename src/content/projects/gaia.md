@@ -8,10 +8,10 @@ tech: [React Native, TypeScript, Python, FastAPI]
 featured: true
 type: mobile
 folder: Featured
-coverImage: /ProjectMedia/GAIA/IntroducingGAIABanner.png
+coverImage: /ProjectMedia/GAIA/IntroducingGAIABanner.webp
 images:
-  - /ProjectMedia/GAIA/IntroducingGAIABanner.png
-  - /ProjectMedia/GAIA/homepage_image.png
+  - /ProjectMedia/GAIA/IntroducingGAIABanner.webp
+  - /ProjectMedia/GAIA/homepage_image.webp
   - /ProjectMedia/GAIA/WhatsApp Image 2024-06-22 at 20.09.10.jpeg
 status: in-progress
 order: 1

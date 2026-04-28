@@ -11,19 +11,19 @@ folder: Featured
 coverImage: /ProjectMedia/TicketBus/TicketBus_project_banner.webp
 images:
   - /ProjectMedia/TicketBus/TicketBus_project_banner.webp
-  - /ProjectMedia/TicketBus/SplashScreen.png
-  - /ProjectMedia/TicketBus/Onboarding.png
-  - /ProjectMedia/TicketBus/Login_Signup.png
-  - /ProjectMedia/TicketBus/Dashboard.png
-  - /ProjectMedia/TicketBus/Map.png
-  - /ProjectMedia/TicketBus/TicketBooking.png
-  - /ProjectMedia/TicketBus/Bus_Pass.png
-  - /ProjectMedia/TicketBus/User_Profile.png
-  - /ProjectMedia/TicketBus/AdminPanel.png
-  - /ProjectMedia/TicketBus/AdminPanel_Bus.png
-  - /ProjectMedia/TicketBus/AdminPanel_BusPass.png
-  - /ProjectMedia/TicketBus/AdminPanel_Location.png
-  - /ProjectMedia/TicketBus/AdminPanel_Users.png
+  - /ProjectMedia/TicketBus/SplashScreen.webp
+  - /ProjectMedia/TicketBus/Onboarding.webp
+  - /ProjectMedia/TicketBus/Login_Signup.webp
+  - /ProjectMedia/TicketBus/Dashboard.webp
+  - /ProjectMedia/TicketBus/Map.webp
+  - /ProjectMedia/TicketBus/TicketBooking.webp
+  - /ProjectMedia/TicketBus/Bus_Pass.webp
+  - /ProjectMedia/TicketBus/User_Profile.webp
+  - /ProjectMedia/TicketBus/AdminPanel.webp
+  - /ProjectMedia/TicketBus/AdminPanel_Bus.webp
+  - /ProjectMedia/TicketBus/AdminPanel_BusPass.webp
+  - /ProjectMedia/TicketBus/AdminPanel_Location.webp
+  - /ProjectMedia/TicketBus/AdminPanel_Users.webp
 video: /ProjectMedia/TicketBus/Ticketbus.mp4
 status: completed
 order: 5

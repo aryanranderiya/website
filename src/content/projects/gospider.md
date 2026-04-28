@@ -11,7 +11,7 @@ folder: Projects
 coverImage: /ProjectMedia/GoSpider/screenshot-1.png
 images:
   - /ProjectMedia/GoSpider/screenshot-1.png
-  - /ProjectMedia/GoSpider/screenshot-2.png
+  - /ProjectMedia/GoSpider/screenshot-2.webp
 status: completed
 order: 18
 github: https://github.com/aryanranderiya/GoSpider

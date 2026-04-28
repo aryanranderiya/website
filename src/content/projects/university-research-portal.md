@@ -8,20 +8,20 @@ tech: [React, Node.js, Express, Supabase]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/University_Research Portal/UniversityPortalBanner.png
+coverImage: /ProjectMedia/University_Research Portal/UniversityPortalBanner.webp
 images:
-  - /ProjectMedia/University_Research Portal/UniversityPortalBanner.png
+  - /ProjectMedia/University_Research Portal/UniversityPortalBanner.webp
   - /ProjectMedia/University_Research Portal/0.png
-  - /ProjectMedia/University_Research Portal/1.png
-  - /ProjectMedia/University_Research Portal/2.png
-  - /ProjectMedia/University_Research Portal/3.png
-  - /ProjectMedia/University_Research Portal/4.png
-  - /ProjectMedia/University_Research Portal/5.png
-  - /ProjectMedia/University_Research Portal/6.png
-  - /ProjectMedia/University_Research Portal/7.png
-  - /ProjectMedia/University_Research Portal/8.png
-  - /ProjectMedia/University_Research Portal/9.png
-  - /ProjectMedia/University_Research Portal/10.png
+  - /ProjectMedia/University_Research Portal/1.webp
+  - /ProjectMedia/University_Research Portal/2.webp
+  - /ProjectMedia/University_Research Portal/3.webp
+  - /ProjectMedia/University_Research Portal/4.webp
+  - /ProjectMedia/University_Research Portal/5.webp
+  - /ProjectMedia/University_Research Portal/6.webp
+  - /ProjectMedia/University_Research Portal/7.webp
+  - /ProjectMedia/University_Research Portal/8.webp
+  - /ProjectMedia/University_Research Portal/9.webp
+  - /ProjectMedia/University_Research Portal/10.webp
 status: completed
 order: 13
 ---

@@ -8,10 +8,10 @@ tech: [Next.js, TailwindCSS, NestJS, PostgreSQL, Prisma, Docker, TypeScript]
 featured: false
 type: web
 folder: Hackathon
-coverImage: /ProjectMedia/Odoo_Expense/screenshot-1.png
+coverImage: /ProjectMedia/Odoo_Expense/screenshot-1.webp
 images:
-  - /ProjectMedia/Odoo_Expense/screenshot-1.png
-  - /ProjectMedia/Odoo_Expense/screenshot-2.png
+  - /ProjectMedia/Odoo_Expense/screenshot-1.webp
+  - /ProjectMedia/Odoo_Expense/screenshot-2.webp
 status: completed
 order: 27
 url: https://odoow25video.aryanranderiya.com

@@ -8,13 +8,13 @@ tech: [Next.js, TypeScript, FastAPI, Python]
 featured: false
 type: web
 folder: Hackathon
-coverImage: /ProjectMedia/TechNova/screenshot-1.png
+coverImage: /ProjectMedia/TechNova/screenshot-1.webp
 images:
-  - /ProjectMedia/TechNova/screenshot-1.png
-  - /ProjectMedia/TechNova/screenshot-2.png
-  - /ProjectMedia/TechNova/screenshot-3.png
-  - /ProjectMedia/TechNova/screenshot-4.png
-  - /ProjectMedia/TechNova/screenshot-5.png
+  - /ProjectMedia/TechNova/screenshot-1.webp
+  - /ProjectMedia/TechNova/screenshot-2.webp
+  - /ProjectMedia/TechNova/screenshot-3.webp
+  - /ProjectMedia/TechNova/screenshot-4.webp
+  - /ProjectMedia/TechNova/screenshot-5.webp
 status: completed
 order: 25
 url: https://tech-nova-hackathon.vercel.app
