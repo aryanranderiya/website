@@ -348,7 +348,13 @@ body {
 	width: 100%;
 	max-width: var(--content-max-width);
 	margin: 0 auto;
-	/* padding: 0 var(--page-inset); */
+}
+
+@media (max-width: 59.9375rem) {
+	.page-container {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
 }
 
 .content-container {

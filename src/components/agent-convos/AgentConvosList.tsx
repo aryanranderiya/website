@@ -235,11 +235,18 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 	return (
 		<LazyMotion features={loadFeatures}>
 			<div className="overflow-x-auto">
+				<style>{`
+					@media (max-width: 639px) {
+						.agent-convos-col-title { width: 62%; }
+						.agent-convos-col-tokens { width: 14%; }
+						.agent-convos-col-date { width: 24%; }
+					}
+				`}</style>
 				<table className="dim-list w-full border-collapse [table-layout:fixed]">
 					<colgroup>
-						<col className="w-[72%]" />
-						<col className="w-[13%]" />
-						<col className="w-[15%]" />
+						<col className="agent-convos-col-title w-[72%]" />
+						<col className="agent-convos-col-tokens w-[13%]" />
+						<col className="agent-convos-col-date w-[15%]" />
 					</colgroup>
 					<thead>
 						<tr>
