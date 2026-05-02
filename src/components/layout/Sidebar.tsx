@@ -664,14 +664,24 @@ export default function Sidebar({
 
 			{/* ── Mobile top bar ── */}
 			<div className="fixed top-0 right-0 left-0 z-50 flex h-[52px] items-center justify-between bg-[var(--glass-bg)] px-5 backdrop-blur-[12px] min-[960px]:hidden">
-				<a
-					href="/"
-					className="text-[13px] text-[var(--text-primary)] tracking-[-0.02em] no-underline"
-					// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
-					style={{ fontVariationSettings: '"wght" 600' }}
+				<button
+					type="button"
+					className="cursor-pointer border-0 bg-transparent p-0"
+					onClick={() =>
+						setAvatarSrc((s) =>
+							s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp'
+						)
+					}
+					aria-label="Toggle avatar"
 				>
-					Aryan Randeriya
-				</a>
+					<img
+						src={avatarSrc}
+						alt="Aryan Randeriya"
+						width={28}
+						height={28}
+						className="block h-7 w-7 shrink-0 rounded-full opacity-90"
+					/>
+				</button>
 				<div className="flex items-center gap-3">
 					<button
 						type="button"
@@ -796,17 +806,28 @@ export default function Sidebar({
 						animate={{ opacity: 1, x: 0 }}
 						exit={{ opacity: 0, x: 16 }}
 						transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1] }}
-						className="fixed inset-0 z-[48] bg-[var(--background)]"
+						className="fixed inset-0 z-[48] flex flex-col bg-[var(--background)]"
 					>
+						{/* Menu top bar */}
 						<div className="flex h-[52px] items-center justify-between px-5">
-							<a
-								href="/"
-								className="text-[13px] text-[var(--text-primary)] tracking-[-0.02em] no-underline"
-								// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
-								style={{ fontVariationSettings: '"wght" 600' }}
+							<button
+								type="button"
+								className="cursor-pointer border-0 bg-transparent p-0"
+								onClick={() =>
+									setAvatarSrc((s) =>
+										s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp'
+									)
+								}
+								aria-label="Toggle avatar"
 							>
-								Aryan Randeriya
-							</a>
+								<img
+									src={avatarSrc}
+									alt="Aryan Randeriya"
+									width={28}
+									height={28}
+									className="block h-7 w-7 shrink-0 rounded-full opacity-90"
+								/>
+							</button>
 							<button
 								type="button"
 								onClick={() => setMobileOpen(false)}
@@ -817,40 +838,138 @@ export default function Sidebar({
 							</button>
 						</div>
 
-						<div className="px-6 pt-6">
+						{/* Nav items — same classes as desktop sidebar */}
+						<div className="-mx-2 flex flex-col px-5 pt-2">
 							{NAV_GROUPS.map((group, gi) => (
 								<div
 									// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
 									key={gi}
-									className={group.label ? '' : 'mb-2'}
+									className={gi > 0 ? 'mt-4' : ''}
 								>
 									{group.label && (
 										<div
-											className={`mb-1 text-[10px] text-[var(--text-ghost)] uppercase tracking-[0.07em] ${gi === 0 ? '' : 'mt-5'}`}
+											className="mt-4 mb-1 text-[10px] text-[var(--text-ghost)] uppercase tracking-[0.07em]"
 											// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
 											style={{ fontVariationSettings: '"wght" 500' }}
 										>
 											{group.label}
 										</div>
 									)}
-									{group.items.map((item) => (
-										<a
-											key={item.href}
-											href={item.href}
-											data-nav
-											className={`nav-link flex items-center gap-2.5 whitespace-nowrap py-[9px] text-[15px] tracking-[-0.01em] no-underline ${isActive(item.href) ? 'nav-link--active' : ''}`}
-											onClick={() => setMobileOpen(false)}
-										>
-											<HugeiconsIcon
-												icon={item.icon}
-												size={16}
-												className="shrink-0 opacity-[0.85]"
-											/>
-											{item.label}
-										</a>
-									))}
+									<div className="flex flex-col">
+										{group.items.map((item) => (
+											<a
+												key={item.href}
+												href={item.href}
+												data-nav
+												className={`nav-link flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-[3px] text-[12px] tracking-[-0.01em] no-underline outline-none ${isActive(item.href) ? 'nav-link--active' : ''}`}
+												onClick={() => setMobileOpen(false)}
+											>
+												<HugeiconsIcon
+													icon={item.icon}
+													size={14}
+													color="currentColor"
+													className="shrink-0"
+												/>
+												{item.label}
+											</a>
+										))}
+									</div>
 								</div>
 							))}
+						</div>
+
+						{/* Bottom actions — same as desktop sidebar, horizontal-friendly */}
+						<div className="mt-auto flex flex-col gap-1 px-5 pb-8">
+							<div className="mb-2 h-px bg-[var(--border)]" />
+
+							{/* Command palette */}
+							<button
+								type="button"
+								onClick={() => {
+									setMobileOpen(false);
+									window.dispatchEvent(new CustomEvent('open-cmdk'));
+								}}
+								aria-label="Open command palette (⌘K / Ctrl+K)"
+								className="nav-link -mx-2 flex w-[calc(100%+16px)] cursor-pointer items-center gap-1.5 rounded-md border-0 bg-transparent px-2 py-[3px] text-left text-[12px]"
+							>
+								<kbd className="inline-flex h-[15px] min-w-[15px] shrink-0 items-center justify-center rounded-[4px] bg-[var(--muted-bg)] px-[4px] font-[inherit] text-[10px] text-[var(--text-muted)] leading-none tracking-[0]">
+									⌘K
+								</kbd>
+								<span className="text-[11px]">Command palette</span>
+							</button>
+
+							{/* Theme toggle */}
+							<button
+								type="button"
+								onClick={handleThemeButtonClick}
+								className="nav-link nav-link--dim -mx-2 flex cursor-pointer items-center gap-1.5 rounded-md border-0 bg-transparent px-2 py-[3px] text-[12px]"
+								aria-label="Cycle theme"
+							>
+								<HugeiconsIcon icon={themeIcon} size={13} />
+								<span className="text-[11px]">{themeLabel}</span>
+							</button>
+
+							{/* Built in Astro */}
+							<a
+								href="https://astro.build"
+								target="_blank"
+								rel="noopener noreferrer"
+								aria-label="Built in Astro"
+								className="nav-link -mx-2 flex items-center gap-1.5 rounded-md px-2 py-[3px] text-[12px] no-underline"
+							>
+								<img
+									src={
+										isDark
+											? 'https://astro.build/assets/press/astro-icon-light-gradient.png'
+											: 'https://astro.build/assets/press/astro-icon-dark.svg'
+									}
+									width={13}
+									height={13}
+									alt="Astro"
+									className="h-[13px] w-[13px] shrink-0 rounded-[3px]"
+								/>
+								<span className="text-[11px]">Built in Astro</span>
+							</a>
+
+							{/* Old portfolio */}
+							<a
+								href="https://aryanranderiya.com"
+								target="_blank"
+								rel="noopener noreferrer"
+								aria-label="Old portfolio (aryanranderiya.com)"
+								className="nav-link -mx-2 flex items-center gap-1.5 rounded-md px-2 py-[3px] text-[12px] no-underline"
+							>
+								<img
+									src="/old-portfolio-logo.webp"
+									width={13}
+									height={13}
+									alt="Old portfolio"
+									className="h-[13px] w-[13px] shrink-0 rounded-[2px]"
+								/>
+								<span className="text-[11px]">Old portfolio</span>
+							</a>
+
+							{/* GitHub */}
+							<a
+								href="https://github.com/aryanranderiya/website"
+								target="_blank"
+								rel="noopener noreferrer"
+								aria-label="View source on GitHub"
+								className="nav-link -mx-2 flex items-center gap-1.5 rounded-md px-2 py-[3px] text-[12px] no-underline"
+							>
+								<svg
+									width="13"
+									height="13"
+									viewBox="0 0 16 16"
+									fill="currentColor"
+									xmlns="http://www.w3.org/2000/svg"
+									className="shrink-0"
+								>
+									<title>GitHub</title>
+									<path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+								</svg>
+								<span className="text-[11px]">Source on GitHub</span>
+							</a>
 						</div>
 					</m.div>
 				)}
