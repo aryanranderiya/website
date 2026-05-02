@@ -23,6 +23,7 @@ import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 import type { ComponentType } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Popover, PopoverAnchor, PopoverContent } from '@/components/ui/popover';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- icons used in JSX
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 
@@ -183,9 +184,6 @@ export default function Sidebar({
 	const [avatarSrc, setAvatarSrc] = useState('/avatar.webp');
 	const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
-	const popoverRef = useRef<HTMLDivElement>(null);
-	const shuffleBtnRef = useRef<HTMLButtonElement>(null);
-
 	const isDark = theme === 'dark';
 
 	useEffect(() => {
@@ -233,29 +231,6 @@ export default function Sidebar({
 			document.removeEventListener('astro:page-load', handleNavigation);
 		};
 	}, []);
-
-	useEffect(() => {
-		if (!shuffleOpen) return;
-		function onMouseDown(e: MouseEvent) {
-			if (
-				popoverRef.current &&
-				!popoverRef.current.contains(e.target as Node) &&
-				shuffleBtnRef.current &&
-				!shuffleBtnRef.current.contains(e.target as Node)
-			) {
-				setShuffleOpen(false);
-			}
-		}
-		function onKeyDown(e: KeyboardEvent) {
-			if (e.key === 'Escape') setShuffleOpen(false);
-		}
-		document.addEventListener('mousedown', onMouseDown);
-		document.addEventListener('keydown', onKeyDown);
-		return () => {
-			document.removeEventListener('mousedown', onMouseDown);
-			document.removeEventListener('keydown', onKeyDown);
-		};
-	}, [shuffleOpen]);
 
 	function handleThemeButtonClick() {
 		const html = document.documentElement;
@@ -491,131 +466,127 @@ export default function Sidebar({
 						</a>
 
 						{/* Theme toggle + shuffle popover */}
-						<div className="relative">
-							<button
-								type="button"
-								ref={shuffleBtnRef}
-								onClick={handleThemeButtonClick}
-								className="nav-link nav-link--dim -mx-2 flex cursor-pointer items-center gap-1.5 rounded-md border-0 bg-transparent px-2 py-[3px] text-[12px]"
-								onMouseEnter={() => setHoveredAction('theme')}
-								onMouseLeave={() => setHoveredAction(null)}
-								aria-label="Cycle theme"
+						<Popover open={shuffleOpen} onOpenChange={setShuffleOpen}>
+							<PopoverAnchor asChild>
+								<button
+									type="button"
+									onClick={handleThemeButtonClick}
+									className="nav-link nav-link--dim -mx-2 flex cursor-pointer items-center gap-1.5 rounded-md border-0 bg-transparent px-2 py-[3px] text-[12px]"
+									onMouseEnter={() => setHoveredAction('theme')}
+									onMouseLeave={() => setHoveredAction(null)}
+									aria-label="Cycle theme"
+								>
+									<HugeiconsIcon icon={themeIcon} size={13} />
+									<span
+										className="inline-block whitespace-nowrap text-[11px]"
+										// biome-ignore lint/nursery/noInlineStyles: dynamic opacity/transform based on hover state
+										style={{
+											opacity: hoveredAction === 'theme' || shuffleOpen ? 1 : 0,
+											transform:
+												hoveredAction === 'theme' || shuffleOpen
+													? 'translateY(0) perspective(300px) rotateX(0deg)'
+													: 'translateY(5px) perspective(300px) rotateX(-40deg)',
+											transformOrigin: '50% 100%',
+											transition:
+												'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+										}}
+									>
+										{themeLabel}
+									</span>
+								</button>
+							</PopoverAnchor>
+							<PopoverContent
+								side="right"
+								align="end"
+								sideOffset={14}
+								onOpenAutoFocus={(e) => e.preventDefault()}
+								className="hidden w-[164px] rounded-xl p-3 min-[960px]:block"
 							>
-								<HugeiconsIcon icon={themeIcon} size={13} />
-								<span
-									className="inline-block whitespace-nowrap text-[11px]"
-									// biome-ignore lint/nursery/noInlineStyles: dynamic opacity/transform based on hover state
+								<div className="mb-2.5 flex items-center justify-between">
+									<span
+										className="text-[10px] text-[var(--foreground)] tracking-[-0.01em]"
+										// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+										style={{
+											fontVariationSettings: '"wght" 560',
+											fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+										}}
+									>
+										Customize
+									</span>
+									<button
+										type="button"
+										onClick={() => setShuffleOpen(false)}
+										className="flex cursor-pointer border-0 bg-transparent p-0 text-[var(--muted-foreground)] leading-none transition-colors duration-150 hover:text-[var(--foreground)]"
+										aria-label="Close"
+									>
+										<HugeiconsIcon icon={Cancel01Icon} size={12} color="currentColor" />
+									</button>
+								</div>
+
+								<p
+									className="mt-0 mb-1.5 text-[9px] text-[var(--muted-foreground)] uppercase tracking-[0.08em]"
+									// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
 									style={{
-										opacity: hoveredAction === 'theme' || shuffleOpen ? 1 : 0,
-										transform:
-											hoveredAction === 'theme' || shuffleOpen
-												? 'translateY(0) perspective(300px) rotateX(0deg)'
-												: 'translateY(5px) perspective(300px) rotateX(-40deg)',
-										transformOrigin: '50% 100%',
-										transition: 'opacity 0.2s ease, transform 0.25s cubic-bezier(0.19, 1, 0.22, 1)',
+										fontVariationSettings: '"wght" 600',
+										fontFamily: "'Inter var', Inter, sans-serif",
 									}}
 								>
-									{themeLabel}
-								</span>
-							</button>
+									Colors
+								</p>
+								<button
+									type="button"
+									onClick={handleShuffleColors}
+									aria-label="Shuffle color palette"
+									className="flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2 py-1.5 text-[11px] text-[var(--foreground)] transition-opacity duration-150 hover:opacity-65"
+									// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+									style={{
+										fontVariationSettings: '"wght" 480',
+										fontFamily: "'Inter var', Inter, sans-serif",
+									}}
+								>
+									<HugeiconsIcon icon={ShuffleIcon} size={12} color="currentColor" />
+									Shuffle palette
+								</button>
 
-							<AnimatePresence>
-								{shuffleOpen && (
-									<m.div
-										ref={popoverRef}
-										initial={{ opacity: 0, x: -6, scale: 0.97 }}
-										animate={{ opacity: 1, x: 0, scale: 1 }}
-										exit={{ opacity: 0, x: -6, scale: 0.97 }}
-										transition={{ duration: 0.16, ease: [0.19, 1, 0.22, 1] }}
-										className="absolute -bottom-1 left-[calc(100%+14px)] z-[200] w-[164px] rounded-xl bg-[var(--popover)] p-3 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)]"
-									>
-										<div className="mb-2.5 flex items-center justify-between">
-											<span
-												className="text-[10px] text-[var(--foreground)] tracking-[-0.01em]"
-												// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
-												style={{
-													fontVariationSettings: '"wght" 560',
-													fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-												}}
-											>
-												Customize
-											</span>
-											<button
-												type="button"
-												onClick={() => setShuffleOpen(false)}
-												className="flex cursor-pointer border-0 bg-transparent p-0 text-[var(--muted-foreground)] leading-none transition-colors duration-150 hover:text-[var(--foreground)]"
-												aria-label="Close"
-											>
-												<HugeiconsIcon icon={Cancel01Icon} size={12} color="currentColor" />
-											</button>
-										</div>
+								<p
+									className="mt-3 mb-1.5 text-[9px] text-[var(--muted-foreground)] uppercase tracking-[0.08em]"
+									// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+									style={{
+										fontVariationSettings: '"wght" 600',
+										fontFamily: "'Inter var', Inter, sans-serif",
+									}}
+								>
+									Typography
+								</p>
+								<button
+									type="button"
+									onClick={handleShuffleFont}
+									aria-label="Shuffle typography"
+									className="flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2 py-1.5 text-[11px] text-[var(--foreground)] transition-opacity duration-150 hover:opacity-65"
+									// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+									style={{
+										fontVariationSettings: '"wght" 480',
+										fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+									}}
+								>
+									<HugeiconsIcon icon={ShuffleIcon} size={12} color="currentColor" />
+									Shuffle font
+								</button>
 
-										<p
-											className="mt-0 mb-1.5 text-[9px] text-[var(--muted-foreground)] uppercase tracking-[0.08em]"
-											// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
-											style={{
-												fontVariationSettings: '"wght" 600',
-												fontFamily: "'Inter var', Inter, sans-serif",
-											}}
-										>
-											Colors
-										</p>
-										<button
-											type="button"
-											onClick={handleShuffleColors}
-											aria-label="Shuffle color palette"
-											className="flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2 py-1.5 text-[11px] text-[var(--foreground)] transition-opacity duration-150 hover:opacity-65"
-											// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
-											style={{
-												fontVariationSettings: '"wght" 480',
-												fontFamily: "'Inter var', Inter, sans-serif",
-											}}
-										>
-											<HugeiconsIcon icon={ShuffleIcon} size={12} color="currentColor" />
-											Shuffle palette
-										</button>
-
-										<p
-											className="mt-3 mb-1.5 text-[9px] text-[var(--muted-foreground)] uppercase tracking-[0.08em]"
-											// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
-											style={{
-												fontVariationSettings: '"wght" 600',
-												fontFamily: "'Inter var', Inter, sans-serif",
-											}}
-										>
-											Typography
-										</p>
-										<button
-											type="button"
-											onClick={handleShuffleFont}
-											aria-label="Shuffle typography"
-											className="flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2 py-1.5 text-[11px] text-[var(--foreground)] transition-opacity duration-150 hover:opacity-65"
-											// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
-											style={{
-												fontVariationSettings: '"wght" 480',
-												fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-											}}
-										>
-											<HugeiconsIcon icon={ShuffleIcon} size={12} color="currentColor" />
-											Shuffle font
-										</button>
-
-										{/* Current font preview */}
-										<div
-											className="mt-1.5 text-[var(--muted-foreground)]"
-											// biome-ignore lint/nursery/noInlineStyles: dynamic fontFamily/fontSize/letterSpacing based on typography selection
-											style={{
-												fontFamily: currentTypography?.family,
-												fontSize: typography === 'pixel' ? '13px' : '10px',
-												letterSpacing: typography === 'mono' ? '-0.02em' : '0',
-											}}
-										>
-											{currentTypography?.label}
-										</div>
-									</m.div>
-								)}
-							</AnimatePresence>
-						</div>
+								{/* Current font preview */}
+								<div
+									className="mt-1.5 text-[var(--muted-foreground)]"
+									// biome-ignore lint/nursery/noInlineStyles: dynamic fontFamily/fontSize/letterSpacing based on typography selection
+									style={{
+										fontFamily: currentTypography?.family,
+										fontSize: typography === 'pixel' ? '13px' : '10px',
+										letterSpacing: typography === 'mono' ? '-0.02em' : '0',
+									}}
+								>
+									{currentTypography?.label}
+								</div>
+							</PopoverContent>
+						</Popover>
 
 						{/* GitHub */}
 						<a
@@ -673,14 +644,108 @@ export default function Sidebar({
 					Aryan Randeriya
 				</a>
 				<div className="flex items-center gap-3">
-					<button
-						type="button"
-						onClick={handleThemeButtonClick}
-						className="flex cursor-pointer items-center border-0 bg-transparent p-1 text-[var(--muted-foreground)]"
-						aria-label="Cycle theme"
-					>
-						<HugeiconsIcon icon={themeIcon} size={13} />
-					</button>
+					<Popover open={shuffleOpen} onOpenChange={setShuffleOpen}>
+						<PopoverAnchor asChild>
+							<button
+								type="button"
+								onClick={handleThemeButtonClick}
+								className="flex cursor-pointer items-center border-0 bg-transparent p-1 text-[var(--muted-foreground)]"
+								aria-label="Cycle theme"
+							>
+								<HugeiconsIcon icon={themeIcon} size={13} />
+							</button>
+						</PopoverAnchor>
+						<PopoverContent
+							side="bottom"
+							align="end"
+							sideOffset={8}
+							onOpenAutoFocus={(e) => e.preventDefault()}
+							className="w-[calc(100vw-32px)] rounded-xl p-3.5 min-[960px]:hidden"
+						>
+							<div className="mb-2.5 flex items-center justify-between">
+								<span
+									className="text-[11px] text-[var(--foreground)] tracking-[-0.01em]"
+									// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+									style={{
+										fontVariationSettings: '"wght" 560',
+										fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+									}}
+								>
+									Customize
+								</span>
+								<button
+									type="button"
+									onClick={() => setShuffleOpen(false)}
+									className="flex cursor-pointer border-0 bg-transparent p-0 text-[var(--muted-foreground)] leading-none"
+									aria-label="Close"
+								>
+									<HugeiconsIcon icon={Cancel01Icon} size={13} color="currentColor" />
+								</button>
+							</div>
+
+							<p
+								className="mt-0 mb-1.5 text-[9px] text-[var(--muted-foreground)] uppercase tracking-[0.08em]"
+								// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+								style={{
+									fontVariationSettings: '"wght" 600',
+									fontFamily: "'Inter var', Inter, sans-serif",
+								}}
+							>
+								Colors
+							</p>
+							<button
+								type="button"
+								onClick={handleShuffleColors}
+								aria-label="Shuffle color palette"
+								className="flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2.5 py-2 text-[var(--foreground)] text-xs"
+								// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+								style={{
+									fontVariationSettings: '"wght" 480',
+									fontFamily: "'Inter var', Inter, sans-serif",
+								}}
+							>
+								<HugeiconsIcon icon={ShuffleIcon} size={13} color="currentColor" />
+								Shuffle palette
+							</button>
+
+							<p
+								className="mt-3 mb-1.5 text-[9px] text-[var(--muted-foreground)] uppercase tracking-[0.08em]"
+								// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+								style={{
+									fontVariationSettings: '"wght" 600',
+									fontFamily: "'Inter var', Inter, sans-serif",
+								}}
+							>
+								Typography
+							</p>
+							<button
+								type="button"
+								onClick={handleShuffleFont}
+								aria-label="Shuffle typography"
+								className="flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2.5 py-2 text-[var(--foreground)] text-xs"
+								// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+								style={{
+									fontVariationSettings: '"wght" 480',
+									fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
+								}}
+							>
+								<HugeiconsIcon icon={ShuffleIcon} size={13} color="currentColor" />
+								Shuffle font
+							</button>
+
+							<div
+								className="mt-1.5 text-[var(--muted-foreground)]"
+								// biome-ignore lint/nursery/noInlineStyles: dynamic fontFamily/fontSize/letterSpacing based on typography selection
+								style={{
+									fontFamily: currentTypography?.family,
+									fontSize: typography === 'pixel' ? '14px' : '11px',
+									letterSpacing: typography === 'mono' ? '-0.02em' : '0',
+								}}
+							>
+								{currentTypography?.label}
+							</div>
+						</PopoverContent>
+					</Popover>
 					<button
 						type="button"
 						onClick={() => setMobileOpen((v) => !v)}
@@ -691,102 +756,6 @@ export default function Sidebar({
 					</button>
 				</div>
 			</div>
-
-			{/* ── Mobile shuffle popover ── */}
-			<AnimatePresence>
-				{shuffleOpen && (
-					<m.div
-						initial={{ opacity: 0, y: -6 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: -6 }}
-						transition={{ duration: 0.18, ease: [0.19, 1, 0.22, 1] }}
-						className="fixed top-[60px] right-4 left-4 z-[60] rounded-xl bg-[var(--popover)] p-3.5 shadow-[0_8px_32px_rgba(0,0,0,0.12),0_2px_8px_rgba(0,0,0,0.06)] min-[960px]:hidden"
-					>
-						<div className="mb-2.5 flex items-center justify-between">
-							<span
-								className="text-[11px] text-[var(--foreground)] tracking-[-0.01em]"
-								// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
-								style={{
-									fontVariationSettings: '"wght" 560',
-									fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-								}}
-							>
-								Customize
-							</span>
-							<button
-								type="button"
-								onClick={() => setShuffleOpen(false)}
-								className="flex cursor-pointer border-0 bg-transparent p-0 text-[var(--muted-foreground)] leading-none"
-								aria-label="Close"
-							>
-								<HugeiconsIcon icon={Cancel01Icon} size={13} color="currentColor" />
-							</button>
-						</div>
-
-						<p
-							className="mt-0 mb-1.5 text-[9px] text-[var(--muted-foreground)] uppercase tracking-[0.08em]"
-							// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
-							style={{
-								fontVariationSettings: '"wght" 600',
-								fontFamily: "'Inter var', Inter, sans-serif",
-							}}
-						>
-							Colors
-						</p>
-						<button
-							type="button"
-							onClick={handleShuffleColors}
-							aria-label="Shuffle color palette"
-							className="flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2.5 py-2 text-[var(--foreground)] text-xs"
-							// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
-							style={{
-								fontVariationSettings: '"wght" 480',
-								fontFamily: "'Inter var', Inter, sans-serif",
-							}}
-						>
-							<HugeiconsIcon icon={ShuffleIcon} size={13} color="currentColor" />
-							Shuffle palette
-						</button>
-
-						<p
-							className="mt-3 mb-1.5 text-[9px] text-[var(--muted-foreground)] uppercase tracking-[0.08em]"
-							// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
-							style={{
-								fontVariationSettings: '"wght" 600',
-								fontFamily: "'Inter var', Inter, sans-serif",
-							}}
-						>
-							Typography
-						</p>
-						<button
-							type="button"
-							onClick={handleShuffleFont}
-							aria-label="Shuffle typography"
-							className="flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2.5 py-2 text-[var(--foreground)] text-xs"
-							// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
-							style={{
-								fontVariationSettings: '"wght" 480',
-								fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
-							}}
-						>
-							<HugeiconsIcon icon={ShuffleIcon} size={13} color="currentColor" />
-							Shuffle font
-						</button>
-
-						<div
-							className="mt-1.5 text-[var(--muted-foreground)]"
-							// biome-ignore lint/nursery/noInlineStyles: dynamic fontFamily/fontSize/letterSpacing based on typography selection
-							style={{
-								fontFamily: currentTypography?.family,
-								fontSize: typography === 'pixel' ? '14px' : '11px',
-								letterSpacing: typography === 'mono' ? '-0.02em' : '0',
-							}}
-						>
-							{currentTypography?.label}
-						</div>
-					</m.div>
-				)}
-			</AnimatePresence>
 
 			{/* ── Mobile fullscreen menu ── */}
 			<AnimatePresence>
