@@ -3,19 +3,22 @@ title: "Agent Team for Notion-Tier Onboarding Polish"
 description: "A Conductor session spawned an agent team -- QA Tester, Evaluator, and Implementer -- to iteratively polish a product onboarding flow until it matched the quality bar of Notion. The team ran autonomously, filing issues, prioritizing, and fixing them in cycles."
 date: 2026-03-27
 platform: claude-code
-model: claude-opus-4-6
+model: claude-sonnet-4-6
 harness: "Claude Code v2.1.87"
 category: multi-agent
 featured: false
-tokens: "~15MB session"
-messageCount: 380
-duration: "~5 hours"
+tokens: "1.4M"
+tokenCount: 1446762
+apiCalls: 646
+messageCount: 1093
+duration: "5h 35m 58s"
 filesChanged: 34
 linesChanged: "+1,800 / -650"
 agents: ["QA Tester (evaluator)", "Evaluator (prioritizer)", "Implementer (fixer)"]
 agentCount: 3
 project: "GAIA"
 branch: "feat/onboarding-polish"
+sessionId: "6c6d3c82-dc44-4a5c-8b5a-49ab4e717599"
 ---
 
 The brief was specific: make the onboarding feel Notion-tier. Not just functional  --  the kind of polish where every transition feels considered, every loading state is intentional, and the flow feels like it was built by designers who obsess over details. The structure of the flow was fixed. This was purely a quality pass. I set up three specialized agents in a continuous loop and let them run.

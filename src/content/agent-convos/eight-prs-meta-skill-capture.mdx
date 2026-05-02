@@ -7,16 +7,18 @@ model: claude-sonnet-4-6
 harness: "Claude Code (cc2 OrbStack VM session)"
 category: multi-agent
 featured: true
-tokens: "85.8M"
-tokenCount: 85772680
-messageCount: 1029
-duration: "11h 51m 52s"
+tokens: "4.7M"
+tokenCount: 4672308
+apiCalls: 656
+messageCount: 1099
+duration: "14h 8m 44s"
 filesChanged: 41
 linesChanged: "+2,891 / -4,309"
 agents: ["develop-cleanup (dead code + Nx cache disable)", "pr-659-lint-fix (TodoTitle stable keys + develop merge)", "pr-660-imports-fix (organizeImports + develop merge)", "pr-665-a11y-fix (useSemanticElements + develop merge)", "pr-666-type-fix (Workflow|undefined narrowing + organizeImports)", "backend-bulk-merger (4 backend PRs)", "pr-659-rams-review (20 Rams comments triaged)", "pr-660-rams-sonar-review (1 Sonar + 5 Rams)", "pr-663-sonar-review (1 CRITICAL Sonar)", "pr-664-rams-sonar-review (1 Sonar + 12 Rams)", "pr-665-rams-sonar-review (4 Sonar + 8 Rams)", "pr-666-rams-sonar-review (1 Sonar + 7 Rams + ConfirmationDialog refactor)"]
 agentCount: 12
 project: "GAIA"
 branch: "develop + 8 feature branches"
+sessionId: "2bced3e5-6417-49c4-85a6-dd6d026a1cd2"
 ---
 
 The session opened where a previous one had ended: eight Linear-tracked PRs implemented across eight git worktrees, but seven of them were red. The failures were a mix. Some were genuine bugs in the new code. But four PRs were failing on the same pre-existing biome violations sitting in `apps/web/src/components/ui/sidebar.tsx`, `apps/web/src/app/[locale]/(landing)/client.tsx`, `apps/web/src/app/styles/globals.css`, and `apps/web/src/features/workflows/components/WorkflowSkeletons.tsx`. Develop's CI never caught them because the Quality Checks workflow only runs on PRs *into* develop, never on pushes *to* it. Frontend PRs touched the web project, invalidated the nx cache, biome ran on the full codebase, and surfaced fourteen unused sidebar primitives plus a dead `ProductivityOSShowcaseSection` dynamic import whose only consumer was a commented-out line of JSX.
@@ -33,4 +35,4 @@ CI went green and the second wave started. SonarCloud and Rams Design Review had
 
 ## The meta move
 
-The session's final act was meta. The user asked for a personal slash command capturing the whole workflow so the next pass would start smaller. I wrote `/do-linear-issues` at exactly 386 lines: a "Quality bar" preamble that gets pasted verbatim into every spawned agent's prompt, pre-flight verification of develop, parallel agent dispatch with explicit prohibitions on `--no-verify`, `any`, underscore-prefixed unused vars, and silent scope reductions, a CI watch loop with grep-based failure triage, three-tier review-bot handling sorted by signal-to-noise (Sonar always, CodeRabbit when not rate-limited, Rams with judgment), Linear MCP touchpoints for status transitions and comment cadence, and Linear↔GitHub auto-link mechanics with a recommended PR body template. The cc2 OrbStack system prompt also gained ten gotchas distilled from the session: `~` ≠ `/Users/aryan/`, `/tmp` not shared between VM and Mac, `pnpm install` requiring `CI=true`, biome binary collisions across darwin and linux architectures, GitHub credentials living only on the Mac side, and others. Twelve agents, 85.8 million tokens processed across 1,029 messages over 11 hours 51 minutes 52 seconds, 41 files touched across the GAIA monorepo plus the portfolio plus the user's global Claude config, and the next iteration of this exact problem now has a 386-line head start.
+The session's final act was meta. The user asked for a personal slash command capturing the whole workflow so the next pass would start smaller. I wrote `/do-linear-issues` at exactly 386 lines: a "Quality bar" preamble that gets pasted verbatim into every spawned agent's prompt, pre-flight verification of develop, parallel agent dispatch with explicit prohibitions on `--no-verify`, `any`, underscore-prefixed unused vars, and silent scope reductions, a CI watch loop with grep-based failure triage, three-tier review-bot handling sorted by signal-to-noise (Sonar always, CodeRabbit when not rate-limited, Rams with judgment), Linear MCP touchpoints for status transitions and comment cadence, and Linear↔GitHub auto-link mechanics with a recommended PR body template. The cc2 OrbStack system prompt also gained ten gotchas distilled from the session: `~` ≠ `/Users/aryan/`, `/tmp` not shared between VM and Mac, `pnpm install` requiring `CI=true`, biome binary collisions across darwin and linux architectures, GitHub credentials living only on the Mac side, and others. Twelve agents, 4,602,952 net tokens (input + output + cache_creation, excluding 88.7M of cache rereads) across 1,065 messages and 637 API calls over 13 hours 28 minutes 33 seconds, 41 files touched across the GAIA monorepo plus the portfolio plus the user's global Claude config, and the next iteration of this exact problem now has a 386-line head start.

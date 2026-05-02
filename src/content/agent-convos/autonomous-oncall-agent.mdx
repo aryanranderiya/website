@@ -7,15 +7,42 @@ model: claude-opus-4-6
 harness: "Claude Code v2.1.79"
 category: full-stack
 featured: true
-tokens: "~8MB across sessions"
-messageCount: 300
-duration: "~2 days (23 sessions)"
+tokens: "4.5M"
+tokenCount: 4486431
+apiCalls: 1696
+messageCount: 2965
+duration: "25h 21m 40s"
 filesChanged: 45
 linesChanged: "+4,200 / -800"
 agents: []
 agentCount: 0
 project: "On-Call Assist (Ignosis)"
 branch: "main"
+sessionId:
+  - 0b15546e-0289-4e8a-aa6d-1590ef508a82
+  - 15be36b7-5f68-4de3-a27e-63410dbb5345
+  - 56aaee5e-102a-449a-bf0e-d39de36bc13a
+  - 6579b350-8da8-4d58-9b28-95df7f7431eb
+  - 77a50f68-1482-4b5e-be93-2922e9bcc12a
+  - 7a198db5-1f51-4331-99a4-9444a338d101
+  - 7ad98efd-6bd0-4e2d-baa5-e29c991e6f63
+  - 7ef05f69-6439-4deb-9585-851e0a332446
+  - 898afa77-724e-4075-80e6-ad0a49858bc1
+  - 94bb5d63-5a66-4bf4-a650-2f8f5d05d920
+  - 96abf9ed-2750-4d7d-902c-c588b0f7ef57
+  - 9f925d03-d928-43e9-a24e-e516519c6210
+  - a4085822-ee89-4285-b351-7e773abdbb93
+  - bd44079c-bf72-4379-9b19-540583fd62f5
+  - d03b1ba3-6d0a-4894-8255-a2c9d396a0f1
+  - d07aa02e-5d44-47de-b696-179b42075b34
+  - d0870cf2-a4e1-4f07-ab4c-c2d158d1fe5f
+  - d0b6f816-2c99-46cc-89db-95f15b3a0321
+  - d727a3c0-0e2a-4e00-ae66-eb636a1a8d09
+  - d9d0fc3d-9833-403f-94a5-b5dfaad0d5ba
+  - dff762d9-a1d0-4270-9783-ada573c18c3d
+  - e06ddc1d-3302-465d-b2cd-2122d2ba3580
+  - e2255850-bd5f-4152-be55-175b3bd8cd8c
+  - eb94d0a6-ce0c-4e42-a74e-44a35e3761c5
 ---
 
 Over two days and twenty-three sessions, a complete autonomous incident response system was built from a blank directory. No boilerplate, no starter template  --  just conversation. The system receives Sentry error webhooks, investigates them across five different observability tools via MCP, and posts structured incident analysis to Slack. Every layer  --  FastAPI backend, PostgreSQL storage, LangGraph agent graph, MCP server integrations, Slack bot  --  was designed, implemented, and tested in conversation with Claude Code.

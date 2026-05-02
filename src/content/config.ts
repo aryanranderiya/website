@@ -114,7 +114,8 @@ const agentConvos = defineCollection({
 		featured: z.boolean().default(false),
 		// Session metrics
 		tokens: z.string().optional(), // human-readable e.g. "75M", "41.9M"
-		tokenCount: z.number().optional(), // raw number for sorting
+		tokenCount: z.number().optional(), // raw number for sorting (NET: input + output + cache_creation, excludes cache_read)
+		apiCalls: z.number().optional(), // count of records with .message.usage in source JSONL
 		messageCount: z.number().optional(),
 		duration: z.string().optional(), // e.g. "~4 hours", "overnight"
 		filesChanged: z.number().optional(),
@@ -126,6 +127,8 @@ const agentConvos = defineCollection({
 		project: z.string().optional(), // e.g. "GAIA", "Portfolio", "On-Call Assist"
 		repo: z.string().optional(), // github repo if public
 		branch: z.string().optional(),
+		// Source session(s) — JSONL filename minus .jsonl. String for single session, array for multi-session entries.
+		sessionId: z.union([z.string(), z.array(z.string())]).optional(),
 	}),
 });
 

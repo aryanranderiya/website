@@ -7,15 +7,18 @@ model: claude-sonnet-4-6
 harness: "Claude Code v2.1.92"
 category: browser-automation
 featured: false
-tokens: "~10.4MB session"
-messageCount: 280
-duration: "~3 hours"
+tokens: "2.5M"
+tokenCount: 2514696
+apiCalls: 648
+messageCount: 1119
+duration: "3h 13m 57s"
 filesChanged: 16
 linesChanged: "+420 / -180"
 agents: []
 agentCount: 0
 project: "Portfolio"
 branch: "master"
+sessionId: "b1a7de19-81bc-46c3-b1ca-9710b773e624"
 ---
 
 The portfolio site was functional but slow. Instead of running Lighthouse manually and interpreting a report, I connected an agent to Chrome DevTools MCP and asked it to do a full performance audit and fix what it found. It measured baselines, diagnosed root causes, implemented fixes, and re-measured  --  the full engineer workflow, end to end.

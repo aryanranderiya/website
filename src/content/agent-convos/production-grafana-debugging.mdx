@@ -7,15 +7,18 @@ model: claude-opus-4-6
 harness: "Claude Code v2.1.92"
 category: browser-automation
 featured: true
-tokens: "~17MB session"
-messageCount: 350
-duration: "~4 hours"
+tokens: "450k"
+tokenCount: 450288
+apiCalls: 188
+messageCount: 302
+duration: "50m 43s"
 filesChanged: 12
 linesChanged: "+180 / -95"
 agents: []
 agentCount: 0
 project: "GAIA"
 branch: "develop"
+sessionId: "030c2579-507a-4fc1-80d3-12a280afb09e"
 ---
 
 A routine deploy to production and everything broke. Every single Grafana dashboard  --  Docker containers, databases, application logs, API metrics  --  went completely empty. Data was still being collected; I could confirm it by curling the Prometheus endpoints directly on the VM. But nothing was rendering in Grafana. I handed the incident to the agent and it resolved it entirely through a combination of Chrome DevTools MCP navigation and SSH diagnostics, without me touching a terminal.

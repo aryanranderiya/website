@@ -7,15 +7,18 @@ model: claude-opus-4-6
 harness: "Claude Code v2.1.75"
 category: debugging
 featured: false
-tokens: "~18MB session"
-messageCount: 450
-duration: "~5 hours"
+tokens: "657k"
+tokenCount: 657083
+apiCalls: 222
+messageCount: 381
+duration: "2h 53m 18s"
 filesChanged: 22
 linesChanged: "+600 / -380"
 agents: ["Conductor Paris subagents"]
 agentCount: 3
 project: "GAIA"
 branch: "fix/streaming-architecture"
+sessionId: "7a9134a4-f0f2-4861-a16b-d2d6bc98c37f"
 ---
 
 After a deploy, real-time chat streaming broke in a way that looked like a rendering bug but wasn't. First messages streamed perfectly. Any message after the first in a conversation would show up in the Network tab  --  SSE events arriving, payloads complete, nothing dropped  --  but the chat UI wouldn't update. Reload the page and all the messages appeared instantly. The data was there. The screen just wasn't showing it.

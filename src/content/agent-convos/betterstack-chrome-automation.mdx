@@ -3,19 +3,22 @@ title: "Automating BetterStack Cleanup via Chrome DevTools"
 description: "Instead of manually clicking through dozens of incident reports, an AI agent used Chrome DevTools MCP to programmatically navigate BetterStack's UI, click context menus, and bulk-delete status reports and incidents."
 date: 2026-04-08
 platform: claude-code
-model: claude-opus-4-6
+model: claude-sonnet-4-6
 harness: "Claude Code v2.1.94"
 category: browser-automation
 featured: false
-tokens: "~5.8MB session"
-messageCount: 180
-duration: "~45 minutes"
+tokens: "200k"
+tokenCount: 199970
+apiCalls: 86
+messageCount: 128
+duration: "14m 11s"
 filesChanged: 0
 linesChanged: "0 (pure browser automation)"
 agents: []
 agentCount: 0
 project: "GAIA"
 branch: "fix/streaming-race-condition"
+sessionId: "87129949-e7ab-4982-8d7e-7ce765ec76bd"
 ---
 
 I had accumulated dozens of stale "API Down" status reports in BetterStack  --  artifacts from earlier in the project when monitoring thresholds were misconfigured and the system was generating false alarms. Deleting them manually means opening each report, clicking a three-dot menu, clicking Delete, and confirming a dialog. Thirty times. I asked the agent to handle it instead.
