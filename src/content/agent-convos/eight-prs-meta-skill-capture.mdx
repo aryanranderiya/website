@@ -1,0 +1,36 @@
+---
+title: "Eight Linear Issues, Recovered CI, and a Slash Command for Next Time"
+description: "Took eight Linear-tracked PRs from broken CI through dead-code cleanup on develop, parallel lint-and-type fixes across worktrees, Sonar plus Rams review-bot triage, then captured the entire workflow as a personal slash command so the next iteration starts smaller."
+date: 2026-05-01
+platform: claude-code
+model: claude-sonnet-4-6
+harness: "Claude Code (cc2 OrbStack VM session)"
+category: multi-agent
+featured: true
+tokens: "85.8M"
+tokenCount: 85772680
+messageCount: 1029
+duration: "11h 51m 52s"
+filesChanged: 41
+linesChanged: "+2,891 / -4,309"
+agents: ["develop-cleanup (dead code + Nx cache disable)", "pr-659-lint-fix (TodoTitle stable keys + develop merge)", "pr-660-imports-fix (organizeImports + develop merge)", "pr-665-a11y-fix (useSemanticElements + develop merge)", "pr-666-type-fix (Workflow|undefined narrowing + organizeImports)", "backend-bulk-merger (4 backend PRs)", "pr-659-rams-review (20 Rams comments triaged)", "pr-660-rams-sonar-review (1 Sonar + 5 Rams)", "pr-663-sonar-review (1 CRITICAL Sonar)", "pr-664-rams-sonar-review (1 Sonar + 12 Rams)", "pr-665-rams-sonar-review (4 Sonar + 8 Rams)", "pr-666-rams-sonar-review (1 Sonar + 7 Rams + ConfirmationDialog refactor)"]
+agentCount: 12
+project: "GAIA"
+branch: "develop + 8 feature branches"
+---
+
+The session opened where a previous one had ended: eight Linear-tracked PRs implemented across eight git worktrees, but seven of them were red. The failures were a mix. Some were genuine bugs in the new code. But four PRs were failing on the same pre-existing biome violations sitting in `apps/web/src/components/ui/sidebar.tsx`, `apps/web/src/app/[locale]/(landing)/client.tsx`, `apps/web/src/app/styles/globals.css`, and `apps/web/src/features/workflows/components/WorkflowSkeletons.tsx`. Develop's CI never caught them because the Quality Checks workflow only runs on PRs *into* develop, never on pushes *to* it. Frontend PRs touched the web project, invalidated the nx cache, biome ran on the full codebase, and surfaced fourteen unused sidebar primitives plus a dead `ProductivityOSShowcaseSection` dynamic import whose only consumer was a commented-out line of JSX.
+
+The user proposed disabling Nx remote cache to "make CI pass," but that diagnosis was off. Disabling cache doesn't change which lint rules biome enforces — it only changes whether nx skips re-running tasks whose inputs haven't changed. The real fix was to delete the dead code on develop. I spawned one cleanup agent that removed fourteen unused functions plus the `sidebarMenuButtonVariants` cva definition from sidebar.tsx (a 357-line deletion against a 700-line file), removed the orphan ProductivityOSShowcaseSection imports from client.tsx, deleted `WorkflowDetailSkeleton` and `WorkflowStepSkeleton` from WorkflowSkeletons.tsx, and reordered the three CSS specificity violations in globals.css. The same agent added `NX_NO_CLOUD: "true"` to the workflow's top-level env block per the user's explicit request and stripped the `nx-cloud-access-token` plumbing from each setup-node-pnpm invocation. Commit `a751c8898` on develop: 5 files changed, 7 insertions, 414 deletions.
+
+## Five parallel agents to clear the per-PR errors
+
+After committing develop and propagating to all eight branches via merge, five agents went out in parallel — one per PR with a real error. PR #659 hit a `noArrayIndexKey` violation in TodoTitle.tsx. The fix wasn't to suppress it: the parser was rewritten so each `TitleSegment` tracked its source-string start position, letting React keys derive from `${segment.type}:${segment.start}` and remain stable across re-parses when the user edited the todo. PR #660 needed `pnpm fix` to auto-resolve organizeImports. PR #665's `useSemanticElements` was fixed by replacing `<div role="region">` with `<section>` and dropping the redundant role attribute. PR #666 had the most interesting bug: a `Workflow | undefined` type narrowing issue across a `setTimeout` closure boundary in WorkflowModal.tsx:376. TypeScript narrowed `result.workflow` inside an `if (result.success && result.workflow)` block but lost that narrowing inside the deferred callback. The fix was to alias `result.workflow` to a `const createdWorkflow` *inside* the if-block and use the const in the callback — a TS pattern worth memorizing for any closure that crosses an async boundary.
+
+## Six more agents for the review-bot pass
+
+CI went green and the second wave started. SonarCloud and Rams Design Review had both posted feedback. Sonar's signal was effectively 100% real: a BLOCKER on a redundant FastAPI `response_model=` parameter that duplicated the return type annotation, a MAJOR on `tabIndex={0}` left on a non-interactive `<section>`, MINORs on missing `readonly` modifiers on Props interfaces, a CRITICAL on a literal duplicated three times in webpage_tool.py. I queried `sonarcloud.io/api/issues/search?pullRequest=N&statuses=OPEN` for each PR, dumped results to `/Users/aryan/review-fixes/sonar-N.json`, did the same with `gh api .../pulls/N/comments` filtered to the rams-design-review bot, and spawned six more agents — one per PR with feedback — each handed its own JSON file as input. The shared `/Users/aryan/` virtiofs mount made cross-environment data passing trivial: write JSON in the VM, read with `mac jq`, no scp, no env vars. Rams's signal was much lower: about half the comments were stale (already addressed in earlier commits), thirty percent were nitpicks contradicting the repo's established conventions, and twenty percent were legitimate A11Y or UX wins. PR #666's agent went one step beyond its brief and replaced a `window.confirm` call with the project's existing `<ConfirmationDialog>` component, knocking out both a MINOR Sonar issue (prefer globalThis) and a Rams design-system comment in one move.
+
+## The meta move
+
+The session's final act was meta. The user asked for a personal slash command capturing the whole workflow so the next pass would start smaller. I wrote `/do-linear-issues` at exactly 386 lines: a "Quality bar" preamble that gets pasted verbatim into every spawned agent's prompt, pre-flight verification of develop, parallel agent dispatch with explicit prohibitions on `--no-verify`, `any`, underscore-prefixed unused vars, and silent scope reductions, a CI watch loop with grep-based failure triage, three-tier review-bot handling sorted by signal-to-noise (Sonar always, CodeRabbit when not rate-limited, Rams with judgment), Linear MCP touchpoints for status transitions and comment cadence, and Linear↔GitHub auto-link mechanics with a recommended PR body template. The cc2 OrbStack system prompt also gained ten gotchas distilled from the session: `~` ≠ `/Users/aryan/`, `/tmp` not shared between VM and Mac, `pnpm install` requiring `CI=true`, biome binary collisions across darwin and linux architectures, GitHub credentials living only on the Mac side, and others. Twelve agents, 85.8 million tokens processed across 1,029 messages over 11 hours 51 minutes 52 seconds, 41 files touched across the GAIA monorepo plus the portfolio plus the user's global Claude config, and the next iteration of this exact problem now has a 386-line head start.
