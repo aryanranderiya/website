@@ -10,7 +10,6 @@ import {
 	HugeiconsIcon,
 	LaptopIcon,
 	MobileProgramming02Icon,
-	MoreHorizontalIcon,
 	Search01Icon,
 	WebDesignIcon,
 } from '@icons';
@@ -20,6 +19,9 @@ import * as m from 'motion/react-m';
 import type { ComponentType } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { CheckboxGroup, CheckboxItem } from '@/components/ui/checkbox-group';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { TabItem, Tabs, TabsList } from '@/components/ui/tabs';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 import { getTechIconUrl } from '../../utils/techIcons';
 import ProjectCard from './ProjectCard';
@@ -59,12 +61,13 @@ const TYPE_CHIPS: { value: string; label: string; icon: ComponentType<IconProps>
 	{ value: 'desktop', label: 'Desktop', icon: LaptopIcon },
 	{ value: 'game', label: 'Game', icon: GameController03Icon },
 	{ value: 'os', label: 'OS', icon: Apple01Icon },
-	{ value: 'other', label: 'Other', icon: MoreHorizontalIcon },
 ];
 
 type FilterTab = 'topics' | 'tech';
 
-export default function ProjectsGrid({ projects }: { projects: Project[] }) {
+export default function ProjectsGrid({ projects: rawProjects }: { projects: Project[] }) {
+	const projects = useMemo(() => rawProjects.filter((p) => p.type !== 'other'), [rawProjects]);
+
 	const [search, setSearch] = useState('');
 	const [searchFocused, setSearchFocused] = useState(false);
 	const [hovered, setHovered] = useState<HoveredState | null>(null);
@@ -75,8 +78,6 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 	const [filterTab, setFilterTab] = useState<FilterTab>('tech');
 	const [tagSearch, setTagSearch] = useState('');
 	const ready = useAfterPreloader();
-	const filterBtnRef = useRef<HTMLButtonElement>(null);
-	const popoverRef = useRef<HTMLDivElement>(null);
 	const searchRef = useRef<HTMLInputElement>(null);
 	const tagSearchRef = useRef<HTMLInputElement>(null);
 
@@ -91,22 +92,6 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 		window.addEventListener('keydown', handler);
 		return () => window.removeEventListener('keydown', handler);
 	}, []);
-
-	useEffect(() => {
-		if (!tagPopoverOpen) return;
-		const handler = (e: MouseEvent) => {
-			if (
-				popoverRef.current &&
-				!popoverRef.current.contains(e.target as Node) &&
-				filterBtnRef.current &&
-				!filterBtnRef.current.contains(e.target as Node)
-			) {
-				setTagPopoverOpen(false);
-			}
-		};
-		document.addEventListener('mousedown', handler);
-		return () => document.removeEventListener('mousedown', handler);
-	}, [tagPopoverOpen]);
 
 	const tagCounts = useMemo(() => {
 		const counts: Record<string, number> = {};
@@ -260,149 +245,132 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 
 				{/* Filter row: filter button + popular tags + active chips + search */}
 				<div className="mb-7 flex w-full flex-wrap items-center gap-1.5">
-					{/* Tag filter button */}
-					<div className="relative shrink-0">
-						<button
-							type="button"
-							ref={filterBtnRef}
-							onClick={() => setTagPopoverOpen((o) => !o)}
-							className={`inline-flex cursor-pointer items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[10px] py-1 text-[11px] leading-[1.45] tracking-[0.01em] transition-[color,opacity] duration-150 ${totalActiveFacets > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
+					{/* Tag filter popover */}
+					<Popover open={tagPopoverOpen} onOpenChange={setTagPopoverOpen}>
+						<PopoverTrigger asChild>
+							<button
+								type="button"
+								className={`inline-flex shrink-0 cursor-pointer items-center gap-[5px] rounded-full bg-[var(--muted-bg)] px-[10px] py-1 text-[11px] leading-[1.45] tracking-[0.01em] transition-[color,opacity] duration-150 ${totalActiveFacets > 0 ? 'text-[var(--text-secondary)]' : 'text-[var(--text-ghost)]'} ${tagPopoverOpen ? 'opacity-70' : 'opacity-100'}`}
+							>
+								<HugeiconsIcon icon={FilterIcon} size={11} color="currentColor" />
+								<span>
+									{totalActiveFacets > 0
+										? `${totalActiveFacets} filter${totalActiveFacets > 1 ? 's' : ''}`
+										: 'Filter'}
+								</span>
+							</button>
+						</PopoverTrigger>
+						<PopoverContent
+							side="bottom"
+							align="start"
+							sideOffset={6}
+							onOpenAutoFocus={(e) => {
+								e.preventDefault();
+								requestAnimationFrame(() => tagSearchRef.current?.focus());
+							}}
+							className="flex max-h-[360px] min-w-[240px] flex-col"
 						>
-							<HugeiconsIcon icon={FilterIcon} size={11} color="currentColor" />
-							<span>
-								{totalActiveFacets > 0
-									? `${totalActiveFacets} filter${totalActiveFacets > 1 ? 's' : ''}`
-									: 'Filter'}
-							</span>
-						</button>
-
-						<AnimatePresence>
-							{tagPopoverOpen && (
-								<m.div
-									ref={popoverRef}
-									initial={{ opacity: 0, scale: 0.95, y: -4 }}
-									animate={{ opacity: 1, scale: 1, y: 0 }}
-									exit={{ opacity: 0, scale: 0.95, y: -4 }}
-									transition={{ duration: 0.15, ease: [0.19, 1, 0.22, 1] }}
-									style={{ transformOrigin: 'top left' }}
-									className="absolute top-[calc(100%+6px)] left-0 z-[100] flex max-h-[360px] min-w-[240px] flex-col rounded-[20px] bg-[var(--background)] p-1.5 shadow-[var(--shadow-lg)]"
+							{/* Tabs */}
+							<div className="px-1 pt-1 pb-0.5">
+								<Tabs
+									value={filterTab}
+									onValueChange={(v) => {
+										setFilterTab(v as FilterTab);
+										setTagSearch('');
+										requestAnimationFrame(() => tagSearchRef.current?.focus());
+									}}
 								>
-									{/* Tabs */}
-									<div className="flex gap-1 px-1 pt-1 pb-1">
-										{(['tech', 'topics'] as const).map((tab) => {
-											const isActive = filterTab === tab;
-											const count =
-												tab === 'topics' ? activeTagFilters.length : activeTechFilters.length;
+									<TabsList className="w-full">
+										<TabItem value="tech" label="Tech" className="flex-1 justify-center" />
+										<TabItem value="topics" label="Topic" className="flex-1 justify-center" />
+									</TabsList>
+								</Tabs>
+							</div>
+
+							{/* Popover search */}
+							<div className="relative px-1 pt-1.5 pb-1">
+								<span className="pointer-events-none absolute top-1/2 left-3 flex -translate-y-1/2 items-center text-[var(--text-ghost)]">
+									<HugeiconsIcon icon={Search01Icon} size={11} />
+								</span>
+								<input
+									ref={tagSearchRef}
+									type="text"
+									value={tagSearch}
+									onChange={(e) => setTagSearch(e.target.value)}
+									placeholder={filterTab === 'topics' ? 'Search topics…' : 'Search tech…'}
+									className="w-full rounded-lg bg-[var(--muted-bg)] py-[5px] pr-2 pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none placeholder:text-[var(--text-ghost)]"
+								/>
+							</div>
+
+							{/* Clear-all row — always rendered (no layout shift) */}
+							<div className="flex h-[22px] items-center justify-end px-2">
+								<button
+									type="button"
+									onClick={() => {
+										setActiveTagFilters([]);
+										setActiveTechFilters([]);
+									}}
+									disabled={totalActiveFacets === 0}
+									className={`inline-flex items-center gap-1 rounded-[6px] bg-transparent px-1.5 py-[2px] text-[10px] tracking-[0.01em] transition-opacity duration-100 ${totalActiveFacets > 0 ? 'cursor-pointer text-[var(--text-ghost)] opacity-100 hover:text-[var(--text-secondary)]' : 'pointer-events-none opacity-0'}`}
+									aria-hidden={totalActiveFacets === 0}
+								>
+									<HugeiconsIcon icon={Delete02Icon} size={11} color="currentColor" />
+									Clear all
+								</button>
+							</div>
+
+							<div className="min-h-0 flex-1 overflow-y-auto px-1 pb-1">
+								{visibleEntries.length === 0 ? (
+									<p className="px-2 py-3 text-center text-[11px] text-[var(--text-ghost)]">
+										{filterTab === 'topics' ? 'No topics match.' : 'No tech matches.'}
+									</p>
+								) : (
+									<CheckboxGroup
+										key={filterTab}
+										checkedIndices={
+											new Set(
+												visibleEntries
+													.map(([entry], i) => (isEntryActive(entry) ? i : -1))
+													.filter((i) => i !== -1)
+											)
+										}
+									>
+										{visibleEntries.map(([entry, count], i) => {
+											const iconUrl = getTechIconUrl(entry);
 											return (
-												<button
-													type="button"
-													key={tab}
-													onClick={() => {
-														setFilterTab(tab);
-														setTagSearch('');
-														requestAnimationFrame(() => tagSearchRef.current?.focus());
-													}}
-													className={`flex-1 cursor-pointer rounded-md border-none px-2 py-[5px] text-[11px] tracking-[-0.01em] transition-colors duration-100 ${isActive ? 'bg-[var(--muted-bg)] font-medium text-[var(--text-primary)]' : 'bg-transparent font-normal text-[var(--text-ghost)] hover:text-[var(--text-secondary)]'}`}
-												>
-													{tab === 'topics' ? 'Topic' : 'Tech'}
-													{count > 0 && (
-														<span className="ml-1 text-[10px] text-[var(--text-muted)] [font-variant-numeric:tabular-nums]">
-															{count}
-														</span>
-													)}
-												</button>
+												<CheckboxItem
+													key={entry}
+													index={i}
+													checked={isEntryActive(entry)}
+													onToggle={() => toggleEntry(entry)}
+													ariaLabel={entry}
+													label={
+														<>
+															{iconUrl ? (
+																<img
+																	src={iconUrl}
+																	alt=""
+																	width={13}
+																	height={13}
+																	className="shrink-0 object-contain"
+																/>
+															) : (
+																<span className="w-[13px] shrink-0" />
+															)}
+															<span className="flex-1 text-left">{entry}</span>
+															<span className="text-[10px] text-[var(--text-muted)] [font-variant-numeric:tabular-nums]">
+																{count}
+															</span>
+														</>
+													}
+												/>
 											);
 										})}
-									</div>
-
-									{/* Popover search */}
-									<div className="relative px-1 pt-0.5 pb-1">
-										<span className="pointer-events-none absolute top-1/2 left-3 flex -translate-y-1/2 items-center text-[var(--text-ghost)]">
-											<HugeiconsIcon icon={Search01Icon} size={11} />
-										</span>
-										<input
-											ref={tagSearchRef}
-											type="text"
-											value={tagSearch}
-											onChange={(e) => setTagSearch(e.target.value)}
-											placeholder={filterTab === 'topics' ? 'Search topics…' : 'Search tech…'}
-											className="w-full rounded-lg bg-[var(--muted-bg)] py-[5px] pr-2 pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none placeholder:text-[var(--text-ghost)]"
-										/>
-									</div>
-
-									{/* Clear-all row — always rendered (no layout shift) */}
-									<div className="flex h-[22px] items-center justify-end px-2">
-										<button
-											type="button"
-											onClick={() => {
-												setActiveTagFilters([]);
-												setActiveTechFilters([]);
-											}}
-											disabled={totalActiveFacets === 0}
-											className={`inline-flex items-center gap-1 rounded-[6px] bg-transparent px-1.5 py-[2px] text-[10px] tracking-[0.01em] transition-opacity duration-100 ${totalActiveFacets > 0 ? 'cursor-pointer text-[var(--text-ghost)] opacity-100 hover:text-[var(--text-secondary)]' : 'pointer-events-none opacity-0'}`}
-											aria-hidden={totalActiveFacets === 0}
-										>
-											<HugeiconsIcon icon={Delete02Icon} size={11} color="currentColor" />
-											Clear all
-										</button>
-									</div>
-
-									<div className="min-h-0 flex-1 overflow-y-auto">
-										{visibleEntries.length === 0 ? (
-											<p className="px-2 py-3 text-center text-[11px] text-[var(--text-ghost)]">
-												{filterTab === 'topics' ? 'No topics match.' : 'No tech matches.'}
-											</p>
-										) : (
-											visibleEntries.map(([entry, count]) => {
-												const isOn = isEntryActive(entry);
-												const iconUrl = getTechIconUrl(entry);
-												return (
-													<button
-														type="button"
-														key={entry}
-														onClick={() => toggleEntry(entry)}
-														className={`flex w-full cursor-pointer items-center gap-[7px] rounded-lg px-2 py-[7px] text-[12px] tracking-[-0.01em] transition-[background] duration-100 ${isOn ? 'bg-[var(--muted-bg)] font-medium text-[var(--text-primary)]' : 'bg-transparent font-normal text-[var(--text-primary)] hover:bg-[var(--muted-bg)]/50'}`}
-													>
-														<span
-															className={`flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-[4px] transition-all duration-100 ${isOn ? 'bg-[var(--text-primary)]' : 'bg-[var(--muted-bg)]'}`}
-														>
-															{isOn && (
-																<svg width="9" height="9" viewBox="0 0 12 12" fill="none">
-																	<title>Checked</title>
-																	<path
-																		d="M2.5 6L5 8.5L9.5 3.5"
-																		stroke="var(--popover)"
-																		strokeWidth="1.8"
-																		strokeLinecap="round"
-																		strokeLinejoin="round"
-																	/>
-																</svg>
-															)}
-														</span>
-														{iconUrl ? (
-															<img
-																src={iconUrl}
-																alt={entry}
-																width={13}
-																height={13}
-																className="shrink-0 object-contain"
-															/>
-														) : (
-															<span className="w-[13px] shrink-0" />
-														)}
-														<span className="flex-1 text-left">{entry}</span>
-														<span className="text-[10px] text-[var(--text-muted)] [font-variant-numeric:tabular-nums]">
-															{count}
-														</span>
-													</button>
-												);
-											})
-										)}
-									</div>
-								</m.div>
-							)}
-						</AnimatePresence>
-					</div>
+									</CheckboxGroup>
+								)}
+							</div>
+						</PopoverContent>
+					</Popover>
 
 					{/* Active filter chips (tags + tech, removable) */}
 					{activeTagFilters.map((tag) => {
