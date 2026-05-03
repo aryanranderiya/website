@@ -1,6 +1,6 @@
 'use client';
 
-import { HugeiconsIcon, Layers01Icon } from '@icons';
+import { DiceIcon, HugeiconsIcon } from '@icons';
 import { LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 import { useEffect, useMemo, useState } from 'react';
@@ -13,25 +13,35 @@ const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.def
 const LNG = SITE.coords.lng;
 const LAT = SITE.coords.lat;
 
-// Free CARTO basemap presets. Each preset has a light + dark variant so the
-// map stays theme-compatible no matter which preset is selected.
-const BASEMAPS = [
-	{
-		id: 'positron',
-		light: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
-		dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
-	},
-	{
-		id: 'voyager',
-		light: 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
-		dark: 'https://basemaps.cartocdn.com/gl/voyager-nolabels-gl-style/style.json',
-	},
-	{
-		id: 'minimal',
-		light: 'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json',
-		dark: 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
-	},
+// Light-mode basemaps (only used when the site is in light mode).
+const LIGHT_STYLES = [
+	'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+	'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
+	'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json',
+	'https://basemaps.cartocdn.com/gl/voyager-nolabels-gl-style/style.json',
+	'https://tiles.openfreemap.org/styles/liberty',
+	'https://tiles.openfreemap.org/styles/bright',
+	'https://tiles.openfreemap.org/styles/positron',
 ] as const;
+
+// Dark-mode basemaps (only used when the site is in dark mode).
+const DARK_STYLES = [
+	'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
+	'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json',
+	'https://tiles.openfreemap.org/styles/dark',
+] as const;
+
+function useIsDark() {
+	const [dark, setDark] = useState(false);
+	useEffect(() => {
+		const compute = () => document.documentElement.classList.contains('dark');
+		setDark(compute());
+		const obs = new MutationObserver(() => setDark(compute()));
+		obs.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+		return () => obs.disconnect();
+	}, []);
+	return dark;
+}
 
 function MapWidgetFixture() {
 	return <div className="h-40 rounded-2xl bg-black/[0.06]" />;
@@ -49,23 +59,28 @@ function BasemapShuffle({ onClick }: { onClick: () => void }) {
 			type="button"
 			onClick={onClick}
 			aria-label="Shuffle map theme"
-			className="absolute top-2 right-2 z-10 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-white/85 text-[rgba(0,0,0,0.7)] shadow-[0_1px_3px_rgba(0,0,0,0.15)] backdrop-blur-md transition hover:bg-white dark:bg-neutral-900/85 dark:text-white/80 dark:hover:bg-neutral-900"
+			className="absolute top-2 right-2 z-10 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-white/40 text-[rgba(0,0,0,0.7)] shadow-[0_1px_3px_rgba(0,0,0,0.15)] backdrop-blur-md transition-all duration-200 ease-out hover:bg-white/60 active:scale-110 dark:bg-neutral-900/40 dark:text-white/80 dark:hover:bg-neutral-900/60"
 		>
-			<HugeiconsIcon icon={Layers01Icon} size={14} />
+			<HugeiconsIcon icon={DiceIcon} size={14} />
 		</button>
 	);
 }
 
 function MapWidgetInner() {
 	const ready = useAfterPreloader();
-	const [presetIndex, setPresetIndex] = useState(0);
+	const isDark = useIsDark();
+	const [lightIdx, setLightIdx] = useState(0);
+	const [darkIdx, setDarkIdx] = useState(0);
 
-	const styles = useMemo(() => {
-		const preset = BASEMAPS[presetIndex];
-		return { light: preset.light, dark: preset.dark };
-	}, [presetIndex]);
+	const styles = useMemo(
+		() => ({ light: LIGHT_STYLES[lightIdx], dark: DARK_STYLES[darkIdx] }),
+		[lightIdx, darkIdx]
+	);
 
-	const cycleBasemap = () => setPresetIndex((i) => (i + 1) % BASEMAPS.length);
+	const cycleBasemap = () => {
+		if (isDark) setDarkIdx((i) => (i + 1) % DARK_STYLES.length);
+		else setLightIdx((i) => (i + 1) % LIGHT_STYLES.length);
+	};
 
 	return (
 		<LazyMotion features={loadFeatures}>
