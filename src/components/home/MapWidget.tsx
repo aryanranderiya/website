@@ -1,6 +1,6 @@
 'use client';
 
-import { DiceIcon, HugeiconsIcon } from '@icons';
+import { DicesIcon } from '@icons';
 import { LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 import { useEffect, useMemo, useState } from 'react';
@@ -57,11 +57,16 @@ function BasemapShuffle({ onClick }: { onClick: () => void }) {
 	return (
 		<button
 			type="button"
-			onClick={onClick}
+			onPointerDown={(e) => e.stopPropagation()}
+			onMouseDown={(e) => e.stopPropagation()}
+			onClick={(e) => {
+				e.stopPropagation();
+				onClick();
+			}}
 			aria-label="Shuffle map theme"
-			className="absolute top-2 right-2 z-10 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-white/40 text-[rgba(0,0,0,0.7)] shadow-[0_1px_3px_rgba(0,0,0,0.15)] backdrop-blur-md transition-all duration-200 ease-out hover:bg-white/60 active:scale-110 dark:bg-neutral-900/40 dark:text-white/80 dark:hover:bg-neutral-900/60"
+			className="pointer-events-auto absolute top-2 right-2 z-50 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-white/40 text-[rgba(0,0,0,0.7)] shadow-[0_1px_3px_rgba(0,0,0,0.15)] backdrop-blur-md transition-all duration-200 ease-out hover:bg-white/60 active:scale-110 dark:bg-neutral-900/40 dark:text-white/80 dark:hover:bg-neutral-900/60"
 		>
-			<HugeiconsIcon icon={DiceIcon} size={14} />
+			<DicesIcon size={14} />
 		</button>
 	);
 }
