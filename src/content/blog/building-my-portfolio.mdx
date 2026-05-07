@@ -134,8 +134,6 @@ A bunch of small features I'm disproportionately proud of.
 
 **Progressive images.** Every image in the projects grid and design gallery loads with a [thumbhash](https://evanw.github.io/thumbhash/) blur. It's a 25-byte string baked into the project frontmatter, decoded client-side onto a tiny canvas, then crossfaded into the real image when it loads. Skeletons feel like loading states. Thumbhashes feel like images getting sharper.
 
-**The em-dash police.** Em dashes are banned in this codebase. Not as a code-style rule, as a writing-style rule. I overuse them when I write, and the codebase has a lot of writing in it (blog posts, project descriptions, page copy, even agent-conversation entries). So I added a `lint:emdash` script that greps every `.ts` / `.tsx` / `.astro` / `.md` / `.mdx` file for U+2014 and fails the pre-commit hook if it finds any. Biome has no native rule for this, so it's a literal grep in `package.json`. The replacement is " -- " with spaces around it, or just rewriting the sentence. Sounds insane and it kind of is, but I've stopped writing em dashes entirely now, including in this post.
-
 ---
 
 ## An archive of agent conversations
