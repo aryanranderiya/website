@@ -1,7 +1,7 @@
 'use client';
 
 import { DicesIcon } from '@icons';
-import { LazyMotion } from 'motion/react';
+import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 import { useEffect, useMemo, useState } from 'react';
 import { Map as MapcnMap, MapMarker, MarkerContent } from '@/components/ui/map';
@@ -64,7 +64,7 @@ function BasemapShuffle({ onClick }: { onClick: () => void }) {
 				onClick();
 			}}
 			aria-label="Shuffle map theme"
-			className="pointer-events-auto absolute top-2 right-2 z-50 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-white/40 text-[rgba(0,0,0,0.7)] shadow-[0_1px_3px_rgba(0,0,0,0.15)] backdrop-blur-md transition-all duration-200 ease-out hover:bg-white/60 active:scale-110 dark:bg-neutral-900/40 dark:text-white/80 dark:hover:bg-neutral-900/60"
+			className="pointer-events-auto absolute top-2 right-2 z-50 inline-flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-white/40 text-[rgba(0,0,0,0.7)] shadow-[0_1px_3px_rgba(0,0,0,0.15)] backdrop-blur-md transition-all duration-200 ease-out hover:scale-110 hover:bg-white/60 active:scale-90 dark:bg-neutral-900/40 dark:text-white/80 dark:hover:bg-neutral-900/60"
 		>
 			<DicesIcon size={14} />
 		</button>
@@ -95,19 +95,32 @@ function MapWidgetInner() {
 				transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.32 }}
 				className="relative h-40 overflow-hidden rounded-2xl bg-black/[0.06]"
 			>
-				<MapcnMap
-					className="h-full w-full"
-					viewport={{ center: [LNG, LAT], zoom: 10.5 }}
-					styles={styles}
-					attributionControl={false}
-					interactive
-				>
-					<MapMarker longitude={LNG} latitude={LAT} anchor="bottom">
-						<MarkerContent className="cursor-default">
-							<AvatarMarker />
-						</MarkerContent>
-					</MapMarker>
-				</MapcnMap>
+				<AnimatePresence initial={false}>
+					<m.div
+						key={isDark ? `d-${darkIdx}` : `l-${lightIdx}`}
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						exit={{ opacity: 0 }}
+						transition={{ duration: 0.5, ease: 'easeOut' }}
+						className="absolute inset-0"
+					>
+						<MapcnMap
+							className="h-full w-full"
+							viewport={{ center: [LNG, LAT], zoom: 10.5 }}
+							styles={styles}
+							theme={isDark ? 'dark' : 'light'}
+							attributionControl={false}
+							hideLoader
+							interactive
+						>
+							<MapMarker longitude={LNG} latitude={LAT} anchor="bottom">
+								<MarkerContent className="cursor-default">
+									<AvatarMarker />
+								</MarkerContent>
+							</MapMarker>
+						</MapcnMap>
+					</m.div>
+				</AnimatePresence>
 				<BasemapShuffle onClick={cycleBasemap} />
 			</m.div>
 		</LazyMotion>
