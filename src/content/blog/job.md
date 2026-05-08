@@ -42,7 +42,7 @@ I've never felt this way about anything before. It's an exhilarating feeling wak
 
 ## Playing the long game
 
-I know it's going to be hard and it'll take some time, but building generational companies takes years often decades. What comes off as overnight successes are almost always the result of years of hidden, consistent effort finally meeting opportunity. I'm in it for the long run, and I think the answer needs to be obvious when one is asked "Is this something you can see yourself working on a decade from now?". Companies like Notion, Figma, Linear truly inspire me in terms of taste and the chart below showing how long it takes to go from idea to product market fit really resonates with me and gives me a lot of hope.
+I know it's going to be hard and it'll take some time, but building generational companies takes years often decades. What comes off as overnight successes are almost always the result of years of hidden, consistent effort finally meeting opportunity. I'm in it for the long run, and I think the answer needs to be obvious when one is asked "Is this something you can see yourself working on a decade from now?" and for me the answer is easily a Yes. Companies like Notion, Figma, Linear truly inspire me in terms of taste and the chart below showing how long it takes to go from idea to product market fit really resonates with me and gives me a lot of hope.
 
 > Play Long-term Games With Long-term People - *Naval Ravikant*
 
@@ -51,4 +51,3 @@ I know it's going to be hard and it'll take some time, but building generational
   <figcaption>How long it took for companies to go from idea to product-market fit. Credits to <a href="https://www.lennysnewsletter.com" target="_blank" rel="noopener noreferrer">Lenny's Newsletter</a>.</figcaption>
 </figure>
 
-TO BE CONTINUED

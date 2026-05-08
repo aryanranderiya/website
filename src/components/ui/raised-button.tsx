@@ -34,7 +34,7 @@ const buttonVariants = cva(
 					'hover:bg-zinc-50 dark:hover:bg-zinc-800/50',
 				],
 				secondary: [
-					'border-[rgba(0,0,0,0.09)] bg-white text-[color:var(--text-secondary)]',
+					'!text-[rgba(0,0,0,0.7)] border-[rgba(0,0,0,0.09)] bg-white',
 					'shadow-[0_1px_2px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)]',
 					'hover:bg-[#f7f7f7]',
 				],
