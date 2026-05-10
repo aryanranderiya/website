@@ -183,7 +183,7 @@ export default function Signature() {
 	let letterIndex = 0;
 
 	return (
-		<section className="mt-8 h-[88px] pb-8">
+		<section className="mt-8 h-[88px] overflow-x-clip pb-8">
 			<div
 				ref={containerRef}
 				role="img"

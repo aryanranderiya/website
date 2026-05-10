@@ -71,6 +71,12 @@
 					}
 				}
 			}
+		},
+		{
+			"includes": ["src/components/ui/map.tsx"],
+			"linter": { "enabled": false },
+			"formatter": { "enabled": false },
+			"assist": { "enabled": false }
 		}
 	]
 }

@@ -31,7 +31,7 @@ const allProjects = sortProjects(allProjectEntries).map(mapProject);
 
   <!-- Spotify + Map -->
   <section class="pb-4">
-    <div class="grid grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <SpotifyWidget client:visible />
       <MapWidget client:visible />
     </div>

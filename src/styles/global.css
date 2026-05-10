@@ -348,7 +348,13 @@ body {
 	width: 100%;
 	max-width: var(--content-max-width);
 	margin: 0 auto;
-	/* padding: 0 var(--page-inset); */
+}
+
+@media (max-width: 59.9375rem) {
+	.page-container {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
 }
 
 .content-container {
@@ -1287,4 +1293,13 @@ html,
 [cmdk-root] *:focus-visible {
 	outline: none !important;
 	box-shadow: none !important;
+}
+
+@layer base {
+  .maplibregl-popup-content {
+    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+	}
+  .maplibregl-popup-tip {
+    @apply hidden!;
+	}
 }
