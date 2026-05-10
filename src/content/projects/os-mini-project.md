@@ -20,7 +20,9 @@ url: https://osproject.vercel.app
 github: https://github.com/aryanranderiya/OSMiniProject
 ---
 
-I built this during my Operating Systems course at PDEU because reading about classical OS algorithms in a textbook only goes so far - watching them execute step by step is a completely different experience. The app brings four foundational algorithms to life: Shortest Remaining Time Next for CPU scheduling, the Producer-Consumer bounded buffer problem with monitors for synchronization, Shortest Seek Time First for disk scheduling, and Optimal Page Replacement for memory management.
+I built this during my Operating Systems course at PDEU as my OS lab minor project. Was really excited to take this as an excuse to work with and learn Flask for the first time!
+
+ The app brings four foundational algorithms to life: Shortest Remaining Time Next for CPU scheduling, the Producer-Consumer bounded buffer problem with monitors for synchronization, Shortest Seek Time First for disk scheduling, and Optimal Page Replacement for memory management.
 
 For each algorithm, I built an interactive visualization that lets you supply your own input and step through the execution frame by frame. The SRTN scheduler shows how the CPU preempts running processes whenever a shorter job arrives, making the preemption logic concrete in a way that a static Gantt chart never achieves. The Producer-Consumer simulation shows how buffer states change as producers and consumers operate with monitors enforcing mutual exclusion, making synchronization and race conditions visually obvious.
 

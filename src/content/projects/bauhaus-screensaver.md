@@ -17,8 +17,10 @@ order: 17
 github: https://github.com/aryanranderiya/BauhausScreensaver
 ---
 
-I came across the Bauhaus Clock screensaver and immediately wanted it on my machine, but it was a paid app. Rather than pay for it, I decided to build my own open-source recreation from scratch. The result was a macOS `.saver` file written in Objective-C, a minimal geometric clock inspired by the Bauhaus design movement that anyone could download and install for free.
+I came across the Bauhaus Clock screensaver and immediately wanted it on my machine, but it was a paid app (really expensive like 19 dollars!). Rather than pay for it, I decided to build my own open-source recreation from scratch. The result was a macOS `.saver` file written in Objective-C, a minimal geometric clock inspired by the Bauhaus design movement that anyone could download and install for free.
 
-The installation was designed to be as frictionless as possible. I compiled the project and published the release binary so that users could simply download it from the GitHub releases page and double-click to install it directly into macOS System Preferences.
+It was quite painful to run and vibe-code this in an iterative testing loop because macOS is finicky with running screensaves like that. Or maybe i just didn't know any better! It turned out to be reasonably good but not as sick as the real thing tbh
 
-Building this gave me a real excuse to dig into Objective-C and the macOS screensaver APIs, neither of which I had worked with before. It was a small project in scope, but it scratched a genuine itch and resulted in something I actually used on my own desktop every day.
+Anyways, I ended up buying the real screensaver because I appreciate art and understand the time and effort taken to create such beautiful work.
+
+Shoutout __[Atilla](https://x.com/_atilla1)__ for the Student discount because i was broke :D

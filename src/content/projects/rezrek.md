@@ -10,6 +10,7 @@ type: mobile
 folder: Client
 coverImage: /ProjectMedia/Rezrek/image (1).webp
 images:
+  - /ProjectMedia/Rezrek/team.jpeg
   - /ProjectMedia/Rezrek/rezrek main.webp
   - /ProjectMedia/Rezrek/0.webp
   - /ProjectMedia/Rezrek/1.webp
@@ -26,6 +27,10 @@ images:
 status: completed
 order: 3
 url: https://rezrek.com
+---
+
+One of my very first freelance projects working with siblings Aditya and Khevna Gandhi. Really amazing human beings and people to work with. I learnt so much working with them and on this project and still turn to Aditya for advice running my own startup. They are such wonderful people and gave me so much creative freedom to work on this. Pics below for when we met for the first time and they were in a rush to catch the metro so we had to rush and drive three seater on a scooty 😭
+
 ---
 
 RezRek is a social commerce platform for Indian streetwear and fashion. The discovery feed surfaces clothing from independent brands - tees, hoodies, jewellery - with style-based filters like Desi Aesthetic, Shaadi Season, and Indo-Western. You can browse by category across men's and women's wear, search across content and brands, and watch product videos with direct buy links.

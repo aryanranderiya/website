@@ -1,17 +1,28 @@
 ---
 title: FoodPay
 description: Mobile-first food ordering platform with real-time cart management, product search, and OTP-verified order completion. React frontend backed by a Deno REST API and MongoDB.
-shortDescription: Mobile food ordering app with OTP order verification
+shortDescription: Mobile food ordering app
 date: 2024-10-23
 tags: [Consumer]
 tech: [React, TypeScript, Vite, Deno, MongoDB, TailwindCSS]
 featured: false
 type: web
 folder: Client
-images: []
 status: completed
 order: 36
-github: https://github.com/aryanranderiya/Foodpay-frontend
+coverImage: /ProjectMedia/FoodPay/1.jpeg
+images:
+  - /ProjectMedia/FoodPay/1.jpeg
+  - /ProjectMedia/FoodPay/2.jpeg
+  - /ProjectMedia/FoodPay/3.jpeg
+  - /ProjectMedia/FoodPay/4.jpeg
+github: https://github.com/aryanranderiya?tab=repositories&q=foodpay
+---
+
+Worked on this through a university professor with hopes (and dreams? 😂) of turning this into a potential mini-startup or a client facing project.
+
+Nothing really came out of this lol. I did get to work with Deno 2 which was new and fun to explore at the time
+
 ---
 
 FoodPay is a mobile-first food ordering application I built for a client. The frontend is a React + Vite + TypeScript SPA using NextUI for components and TailwindCSS for layout, designed for one-handed mobile use, with a fixed search bar at the top, a scrollable product grid in the middle, and a floating cart button pinned to the bottom that animates in once items are added.

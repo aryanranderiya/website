@@ -1,22 +1,22 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
-import { CircleArrowLeft02Icon, HugeiconsIcon } from '@icons';
-import ProjectCTAs from '@/components/projects/ProjectCTAs';
-import Lightbox from '@/components/ui/Lightbox.astro';
-import { SITE } from '@/constants/site';
-import PageLayout from '@/layouts/PageLayout.astro';
-import { getTechIconUrl } from '@/utils/techIcons';
+import { type CollectionEntry, getCollection } from "astro:content";
+import { CircleArrowLeft02Icon, HugeiconsIcon } from "@icons";
+import ProjectCTAs from "@/components/projects/ProjectCTAs";
+import Lightbox from "@/components/ui/Lightbox.astro";
+import { SITE } from "@/constants/site";
+import PageLayout from "@/layouts/PageLayout.astro";
+import { getTechIconUrl } from "@/utils/techIcons";
 
 export async function getStaticPaths() {
-	const projects = await getCollection('projects');
-	return projects.map((entry) => ({
-		params: { slug: entry.slug },
-		props: { entry },
-	}));
+  const projects = await getCollection("projects");
+  return projects.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
 }
 
 interface Props {
-	entry: CollectionEntry<'projects'>;
+  entry: CollectionEntry<"projects">;
 }
 
 const { entry } = Astro.props;
@@ -24,9 +24,9 @@ const { Content } = await entry.render();
 const p = entry.data;
 
 const FOLDER_CHIP: Record<string, { color: string; label: string }> = {
-	Featured: { color: '#f59e0b', label: 'Featured' },
-	Client: { color: '#10b981', label: 'Freelance' },
-	Hackathon: { color: '#a78bfa', label: 'Hackathon' },
+  Featured: { color: "#f59e0b", label: "Featured" },
+  Client: { color: "#10b981", label: "Freelance" },
+  Hackathon: { color: "#a78bfa", label: "Hackathon" },
 };
 
 const chip = p.folder ? FOLDER_CHIP[p.folder] : undefined;
@@ -35,38 +35,44 @@ const allImages = p.images ?? [];
 const canonicalURL = new URL(Astro.url.pathname, SITE.url).toString();
 
 const breadcrumbJsonLd = JSON.stringify({
-	'@context': 'https://schema.org',
-	'@type': 'BreadcrumbList',
-	itemListElement: [
-		{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
-		{ '@type': 'ListItem', position: 2, name: 'Projects', item: `${SITE.url}/projects` },
-		{ '@type': 'ListItem', position: 3, name: p.title, item: canonicalURL },
-	],
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Projects",
+      item: `${SITE.url}/projects`,
+    },
+    { "@type": "ListItem", position: 3, name: p.title, item: canonicalURL },
+  ],
 });
 
 const projectJsonLd = JSON.stringify({
-	'@context': 'https://schema.org',
-	'@type': 'SoftwareApplication',
-	name: p.title,
-	description: p.description,
-	url: p.url ?? canonicalURL,
-	dateCreated: new Date(p.date).toISOString(),
-	author: {
-		'@type': 'Person',
-		name: SITE.name,
-		url: SITE.url,
-	},
-	...(p.tech && p.tech.length > 0 ? { keywords: p.tech.join(', ') } : {}),
-	...(allImages[0]
-		? {
-				image: allImages[0].startsWith('http')
-					? allImages[0]
-					: new URL(allImages[0], SITE.url).toString(),
-			}
-		: {}),
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: p.title,
+  description: p.description,
+  url: p.url ?? canonicalURL,
+  dateCreated: new Date(p.date).toISOString(),
+  author: {
+    "@type": "Person",
+    name: SITE.name,
+    url: SITE.url,
+  },
+  ...(p.tech && p.tech.length > 0 ? { keywords: p.tech.join(", ") } : {}),
+  ...(allImages[0]
+    ? {
+        image: allImages[0].startsWith("http")
+          ? allImages[0]
+          : new URL(allImages[0], SITE.url).toString(),
+      }
+    : {}),
 });
 
-const [heroImage, ...galleryImages] = allImages;
+const heroImage = p.coverImage || allImages[0];
+const galleryImages = allImages;
 ---
 
 <PageLayout title={p.title} description={p.description} ogImage={heroImage}>
@@ -79,155 +85,193 @@ const [heroImage, ...galleryImages] = allImages;
       href="/projects"
       class="inline-flex items-center gap-1.5 text-[11px] text-[var(--text-ghost)] no-underline transition-colors duration-150 hover:text-[var(--text-secondary)]"
     >
-      <HugeiconsIcon icon={CircleArrowLeft02Icon} size={13} color="currentColor" />
-      Projects
+      <HugeiconsIcon
+        icon={CircleArrowLeft02Icon}
+        size={13}
+        color="currentColor"
+      />
+      Back to Projects
     </a>
   </nav>
 
   <!-- Hero image: visual-first, full width -->
-  {heroImage && (
-    <div class="gallery-target mb-8 overflow-hidden rounded-2xl bg-[var(--muted-bg)] cursor-pointer">
-      <img
-        src={heroImage}
-        alt={p.title}
-        class="block h-auto w-full"
-        loading="eager"
-      />
-    </div>
-  )}
+  {
+    heroImage && (
+      <div class="gallery-target mb-8 overflow-hidden rounded-2xl bg-[var(--muted-bg)] cursor-pointer">
+        <img
+          src={heroImage}
+          alt={p.title}
+          class="block h-auto w-full object-contain max-h-100"
+          loading="eager"
+        />
+      </div>
+    )
+  }
 
   <!-- Header -->
   <header class="mb-8">
     <!-- Meta row: type · year · folder · status -->
     <div class="mb-3 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-      <span class="text-[11px] uppercase tracking-[0.06em] text-[var(--text-ghost)]">{p.type}</span>
-      <span class="text-[var(--text-ghost)] text-[11px] opacity-40">·</span>
-      <span class="text-[11px] text-[var(--text-ghost)]">{year}</span>
-      {chip && (
-        <>
-          <span class="text-[var(--text-ghost)] text-[11px] opacity-40">·</span>
-          <span class="text-[11px]" style={`color: ${chip.color};`}>{chip.label}</span>
-        </>
-      )}
-      {p.status === 'archived' && (
-        <>
-          <span class="text-[var(--text-ghost)] text-[11px] opacity-40">·</span>
-          <span class="text-[11px] text-[var(--text-ghost)]">Archived</span>
-        </>
-      )}
+      {
+        chip && (
+          <>
+            <span
+              class="text-[11px] px-2 rounded-full"
+              style={`background-color: ${chip.color}20; color: ${chip.color};`}
+            >
+              {chip.label}
+            </span>
+            <span class="text-(--text-ghost) text-[11px] opacity-40">·</span>
+          </>
+        )
+      }
+      <span class="text-[11px] text-(--text-ghost)">{p.type}</span>
+      <span class="text-(--text-ghost) text-[11px] opacity-40">·</span>
+      <span class="text-[11px] text-(--text-ghost)">{year}</span>
+
+      {
+        p.status === "archived" && (
+          <>
+            <span class="text-(--text-ghost) text-[11px] opacity-40">·</span>
+            <span class="text-[11px] text-(--text-ghost)">Archived</span>
+          </>
+        )
+      }
     </div>
 
-    <h1 class="m-0 mb-3 text-[32px] font-semibold leading-[1.1] tracking-[-0.04em] text-[var(--text-primary)]">
+    <h1
+      class="m-0 mb-3 text-[32px] font-semibold leading-[1.1] tracking-[-0.04em] text-[var(--text-primary)]"
+    >
       {p.title}
     </h1>
 
-    <p class="m-0 mb-6 max-w-[520px] text-sm leading-[1.75] tracking-[-0.01em] text-[var(--text-muted)]">
+    <!-- Tech stack + Tags -->
+    {
+      ((p.tech && p.tech.length > 0) ||
+        (p.tags &&
+          p.tags.filter((tag: string) => !p.tech?.includes(tag)).length >
+            0)) && (
+        <div class="mb-2 flex flex-col gap-3">
+          {p.tech && p.tech.length > 0 && (
+            <div class="flex flex-wrap items-center gap-1.5">
+              {p.tech.map((t: string) => {
+                const iconUrl = getTechIconUrl(t);
+                return (
+                  <span class="inline-flex items-center gap-[5px] text-[11px] px-2.5 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-secondary)]">
+                    {iconUrl && (
+                      <img
+                        src={iconUrl}
+                        alt=""
+                        width="12"
+                        height="12"
+                        class="shrink-0 object-contain"
+                      />
+                    )}
+                    {t}
+                  </span>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    <p
+      class="m-0 mb-6 max-w-[520px] text-sm leading-[1.75] tracking-[-0.01em] text-[var(--text-muted)]"
+    >
       {p.description}
     </p>
 
     <ProjectCTAs url={p.url} github={p.github} />
   </header>
 
-  <!-- Tech stack + Tags -->
-  {((p.tech && p.tech.length > 0) || (p.tags && p.tags.filter((tag: string) => !p.tech?.includes(tag)).length > 0)) && (
-    <div class="mb-10 border-t border-[var(--border)] pt-6 flex flex-col gap-3">
-      {p.tech && p.tech.length > 0 && (
-        <div class="flex flex-wrap items-center gap-1.5">
-          {p.tech.map((t: string) => {
-            const iconUrl = getTechIconUrl(t);
-            return (
-              <span class="inline-flex items-center gap-[5px] text-[11px] px-2.5 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-secondary)]">
-                {iconUrl && (
-                  <img src={iconUrl} alt="" width="12" height="12" class="shrink-0 object-contain" />
-                )}
-                {t}
-              </span>
-            );
-          })}
-        </div>
-      )}
-      {p.tags && p.tags.filter((tag: string) => !p.tech?.includes(tag)).length > 0 && (
-        <div class="flex flex-wrap gap-1.5">
-          {p.tags.filter((tag: string) => !p.tech?.includes(tag)).map((tag: string) => (
-            <span class="text-[11px] px-[9px] py-[3px] rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)]">
-              {tag}
-            </span>
-          ))}
-        </div>
-      )}
-    </div>
-  )}
-
   <!-- Body content (rendered markdown) -->
-  {allImages.length === 0 ? (
-    <div class="mb-11 text-sm text-[var(--text-muted)] leading-[1.75] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[var(--text-primary)] [&_h2]:tracking-[-0.025em] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[var(--text-secondary)] [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-2">
-      <Content />
-    </div>
-  ) : (
-    <div class="mb-11 text-sm text-[var(--text-muted)] leading-[1.75] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[var(--text-primary)] [&_h2]:tracking-[-0.025em] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[var(--text-secondary)] [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-2">
-      <Content />
-    </div>
-  )}
+  {
+    allImages.length === 0 ? (
+      <div class="mb-11 text-sm text-[var(--text-muted)] leading-[1.75] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[var(--text-primary)] [&_h2]:tracking-[-0.025em] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[var(--text-secondary)] [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-2">
+        <Content />
+      </div>
+    ) : (
+      <div class="mb-11 text-sm text-[var(--text-muted)] leading-[1.75] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[var(--text-primary)] [&_h2]:tracking-[-0.025em] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[var(--text-secondary)] [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-2">
+        <Content />
+      </div>
+    )
+  }
 
   <!-- Gallery (remaining images after hero) -->
-  {galleryImages.length > 0 && (
-    <section id="gallery-grid-section" class="mb-11">
-      {galleryImages.length === 1 && (
-        <div class="gallery-target group relative cursor-pointer rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
-          <img
-            src={galleryImages[0]}
-            alt={`${p.title} screenshot 2`}
-            class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
-            loading="lazy"
-          />
-        </div>
-      )}
-      {galleryImages.length >= 2 && (
-        <div class="grid grid-cols-2 max-[600px]:grid-cols-1 gap-2" id="gallery-grid">
-          {galleryImages.map((img: string, i: number) => (
-            <div class="gallery-item gallery-target group relative cursor-pointer [&.landscape]:col-span-2 rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
-              <img
-                src={img}
-                alt={`${p.title} screenshot ${i + 2}`}
-                class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
-                loading="lazy"
-              />
-            </div>
-          ))}
-        </div>
-      )}
-    </section>
-  )}
+  {
+    galleryImages.length > 0 && (
+      <section id="gallery-grid-section" class="mb-11">
+        {galleryImages.length === 1 && (
+          <div class="gallery-target group relative cursor-pointer rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
+            <img
+              src={galleryImages[0]}
+              alt={`${p.title} screenshot 2`}
+              class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
+              loading="lazy"
+            />
+          </div>
+        )}
+        {galleryImages.length >= 2 && (
+          <div
+            class="grid grid-cols-2 max-[600px]:grid-cols-1 gap-2"
+            id="gallery-grid"
+          >
+            {galleryImages.map((img: string, i: number) => (
+              <div class="gallery-item gallery-target group relative cursor-pointer [&.landscape]:col-span-2 rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
+                <img
+                  src={img}
+                  alt={`${p.title} screenshot ${i + 2}`}
+                  class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+    )
+  }
 
   <Lightbox target=".gallery-target img" />
 
   <!-- Video (if present) -->
-  {p.video && (
-    <section class="mb-11">
-      <div class="rounded-[14px] overflow-hidden bg-[var(--muted-bg)] aspect-video">
-        <video
-          src={p.video}
-          controls
-          class="w-full h-full block object-cover"
-        />
-      </div>
-    </section>
-  )}
-
+  {
+    p.video && (
+      <section class="mb-11">
+        <div class="rounded-[14px] overflow-hidden bg-[var(--muted-bg)] aspect-video">
+          <video
+            src={p.video}
+            controls
+            class="w-full h-full block object-cover"
+          />
+        </div>
+      </section>
+    )
+  }
 </PageLayout>
 
 <script>
   // Smart grid: landscape images span both columns
-  const grid = document.getElementById('gallery-grid');
+  const grid = document.getElementById("gallery-grid");
   if (grid) {
-    Array.from(grid.querySelectorAll<HTMLElement>('.gallery-item')).forEach(item => {
-      const img = item.querySelector('img');
-      if (!img) return;
-      const applySpan = () => {
-        if (img.naturalWidth > 0 && img.naturalHeight > 0 && img.naturalWidth / img.naturalHeight > 1.3)
-          item.classList.add('landscape');
-      };
-      img.complete ? applySpan() : img.addEventListener('load', applySpan, { once: true });
-    });
+    Array.from(grid.querySelectorAll<HTMLElement>(".gallery-item")).forEach(
+      (item) => {
+        const img = item.querySelector("img");
+        if (!img) return;
+        const applySpan = () => {
+          if (
+            img.naturalWidth > 0 &&
+            img.naturalHeight > 0 &&
+            img.naturalWidth / img.naturalHeight > 1.3
+          )
+            item.classList.add("landscape");
+        };
+        img.complete
+          ? applySpan()
+          : img.addEventListener("load", applySpan, { once: true });
+      },
+    );
   }
 </script>

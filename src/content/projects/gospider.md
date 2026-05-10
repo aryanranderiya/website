@@ -17,7 +17,9 @@ order: 18
 github: https://github.com/aryanranderiya/GoSpider
 ---
 
-I built GoSpider because I needed to crawl and convert large documentation sites to Markdown quickly, and nothing I found was fast enough to be practical. The result was a high-performance, concurrent web crawler written in Go that implemented a producer-consumer architecture around Go's core concurrency primitives - goroutines, buffered channels, and thread-safe maps.
+I worked on this because I wanted to learn Go and scratch my own itch with scraping sites on a large scale. Yes i stole the name from the other gospider
+
+The result was a high-performance, concurrent web crawler written in Go that implemented a producer-consumer architecture around Go's core concurrency primitives - goroutines, buffered channels, and thread-safe maps.
 
 The architecture centered on a 10,000-URL buffered queue that fed a configurable pool of worker goroutines, each independently fetching pages, extracting links, and converting HTML to Markdown. I paired this with a singleton HTTP client that maintained up to 500 connections per host, which kept throughput high even when hitting the same domain repeatedly. A separate pool of 16 dedicated file-writer goroutines with 1MB buffers handled all disk I/O in parallel, reducing filesystem overhead significantly.
 

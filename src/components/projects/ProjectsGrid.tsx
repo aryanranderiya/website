@@ -578,7 +578,7 @@ export default function ProjectsGrid({ projects }: { projects: Project[] }) {
 								<img
 									src={hovered.project.coverImage}
 									alt={hovered.project.title}
-									className="block h-auto w-full"
+									className="block h-auto w-full aspect-video object-cover"
 								/>
 								<div className="bg-[var(--background)] px-[10px] pt-[8px] pb-[10px]">
 									<p className="m-0 text-[10px] text-[var(--text-muted)] leading-[1.5] tracking-[-0.01em]">

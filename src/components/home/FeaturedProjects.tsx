@@ -22,6 +22,7 @@ interface Project {
 	github?: string;
 	coverImage?: string;
 	date?: string;
+	featuredImage?: string;
 }
 
 const EASE = [0.19, 1, 0.22, 1] as const;

@@ -1,84 +1,86 @@
 ---
-import BlogLinks from '@/components/blog/BlogLinks';
-import Giscus from '@/components/blog/Giscus.astro';
-import Lightbox from '@/components/ui/Lightbox.astro';
-import TableOfContents from '@/components/ui/TableOfContents.astro';
-import { SITE } from '@/constants/site';
-import { formatDate } from '@/lib/utils';
-import PageLayout from './PageLayout.astro';
+import BlogLinks from "@/components/blog/BlogLinks";
+import Giscus from "@/components/blog/Giscus.astro";
+import Lightbox from "@/components/ui/Lightbox.astro";
+import TableOfContents from "@/components/ui/TableOfContents.astro";
+import { SITE } from "@/constants/site";
+import { formatDate } from "@/lib/utils";
+import PageLayout from "./PageLayout.astro";
 
 interface Heading {
-	depth: number;
-	slug: string;
-	text: string;
+  depth: number;
+  slug: string;
+  text: string;
 }
 
 interface Props {
-	title: string;
-	description: string;
-	date: Date;
-	updated?: Date;
-	tags?: string[];
-	category?: string;
-	cover?: string;
-	headings?: Heading[];
-	readingTime?: number;
+  title: string;
+  description: string;
+  date: Date;
+  updated?: Date;
+  tags?: string[];
+  category?: string;
+  cover?: string;
+  headings?: Heading[];
+  readingTime?: number;
 }
 
 const {
-	title,
-	description,
-	date,
-	updated,
-	tags = [],
-	category,
-	cover,
-	headings = [],
-	readingTime,
+  title,
+  description,
+  date,
+  updated,
+  tags = [],
+  category,
+  cover,
+  headings = [],
+  readingTime,
 } = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 const canonicalURL = new URL(Astro.url.pathname, SITE.url).toString();
 const articleJsonLd = JSON.stringify({
-	'@context': 'https://schema.org',
-	'@type': 'Article',
-	headline: title,
-	description: description,
-	datePublished: date.toISOString(),
-	...(updated ? { dateModified: updated.toISOString() } : {}),
-	author: {
-		'@type': 'Person',
-		name: SITE.name,
-		url: SITE.url,
-	},
-	publisher: {
-		'@type': 'Person',
-		name: SITE.name,
-		url: SITE.url,
-	},
-	...(cover
-		? {
-				image: cover.startsWith('http') ? cover : new URL(cover, SITE.url).toString(),
-			}
-		: {}),
-	url: canonicalURL,
-	inLanguage: 'en-US',
-	isPartOf: { '@type': 'Blog', url: `${SITE.url}/blog` },
+  "@context": "https://schema.org",
+  "@type": "Article",
+  headline: title,
+  description: description,
+  datePublished: date.toISOString(),
+  ...(updated ? { dateModified: updated.toISOString() } : {}),
+  author: {
+    "@type": "Person",
+    name: SITE.name,
+    url: SITE.url,
+  },
+  publisher: {
+    "@type": "Person",
+    name: SITE.name,
+    url: SITE.url,
+  },
+  ...(cover
+    ? {
+        image: cover.startsWith("http")
+          ? cover
+          : new URL(cover, SITE.url).toString(),
+      }
+    : {}),
+  url: canonicalURL,
+  inLanguage: "en-US",
+  isPartOf: { "@type": "Blog", url: `${SITE.url}/blog` },
 });
 
 const breadcrumbJsonLd = JSON.stringify({
-	'@context': 'https://schema.org',
-	'@type': 'BreadcrumbList',
-	itemListElement: [
-		{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
-		{
-			'@type': 'ListItem',
-			position: 2,
-			name: 'Blog',
-			item: `${SITE.url}/blog`,
-		},
-		{ '@type': 'ListItem', position: 3, name: title, item: canonicalURL },
-	],
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
+    {
+      "@type": "ListItem",
+      position: 2,
+      name: "Blog",
+      item: `${SITE.url}/blog`,
+    },
+    { "@type": "ListItem", position: 3, name: title, item: canonicalURL },
+  ],
 });
 ---
 
@@ -96,26 +98,28 @@ const breadcrumbJsonLd = JSON.stringify({
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
 
   <script is:inline>
-    document.addEventListener('DOMContentLoaded', () => {
-      const refs = document.querySelectorAll('.prose a[data-footnote-ref]');
+    document.addEventListener("DOMContentLoaded", () => {
+      const refs = document.querySelectorAll(".prose a[data-footnote-ref]");
       refs.forEach((ref) => {
-        const id = (ref.getAttribute('href') || '').slice(1);
+        const id = (ref.getAttribute("href") || "").slice(1);
         const fnEl = id ? document.getElementById(id) : null;
         if (!fnEl) return;
 
         let tooltip = null;
         let hideTimer = null;
 
-        ref.addEventListener('mouseenter', () => {
+        ref.addEventListener("mouseenter", () => {
           clearTimeout(hideTimer);
           if (tooltip) return;
 
           // Clone footnote content, strip the backref arrow
           const clone = fnEl.cloneNode(true);
-          clone.querySelectorAll('a[data-footnote-backref]').forEach((el) => el.remove());
+          clone
+            .querySelectorAll("a[data-footnote-backref]")
+            .forEach((el) => el.remove());
 
-          tooltip = document.createElement('div');
-          tooltip.className = 'fn-tooltip';
+          tooltip = document.createElement("div");
+          tooltip.className = "fn-tooltip";
           tooltip.innerHTML = clone.innerHTML;
           document.body.appendChild(tooltip);
 
@@ -127,15 +131,20 @@ const breadcrumbJsonLd = JSON.stringify({
           let left = r.left + window.scrollX + r.width / 2 - tw / 2;
           left = Math.max(8, Math.min(left, window.innerWidth - tw - 8));
           if (top < window.scrollY + 8) top = r.bottom + window.scrollY + 8;
-          tooltip.style.top = top + 'px';
-          tooltip.style.left = left + 'px';
+          tooltip.style.top = top + "px";
+          tooltip.style.left = left + "px";
 
-          requestAnimationFrame(() => tooltip && tooltip.classList.add('fn-tooltip--visible'));
+          requestAnimationFrame(
+            () => tooltip && tooltip.classList.add("fn-tooltip--visible"),
+          );
         });
 
-        ref.addEventListener('mouseleave', () => {
+        ref.addEventListener("mouseleave", () => {
           hideTimer = setTimeout(() => {
-            if (tooltip) { tooltip.remove(); tooltip = null; }
+            if (tooltip) {
+              tooltip.remove();
+              tooltip = null;
+            }
           }, 80);
         });
       });
@@ -145,10 +154,10 @@ const breadcrumbJsonLd = JSON.stringify({
   <div
     class="flex ml-[max(0px,calc((100%-var(--content-max-width))/2))] gap-14 items-start"
   >
-    <article class="flex-1 min-w-0 max-w-[var(--content-max-width)] pb-16">
+    <article class="flex-1 min-w-0 max-w-[var(--content-max-width)]">
       <!-- Breadcrumb -->
       <nav
-        class="flex items-center gap-1.5 text-xs mb-8 text-[var(--text-ghost)]"
+        class="flex items-center gap-1.5 text-xs mb-4 text-[var(--text-ghost)]"
         aria-label="Breadcrumb"
       >
         <a
@@ -171,23 +180,28 @@ const breadcrumbJsonLd = JSON.stringify({
       }
 
       <!-- Header -->
-      <header class="mb-12">
+      <header class="mb-6">
         <h1 class="text-heading-1 mb-4">{title}</h1>
-        <p class="text-body mb-5 text-[var(--text-muted)]">{description}</p>
-        <div class="flex flex-wrap items-center text-[12px] text-[var(--text-ghost)] tracking-[-0.01em] gap-x-3 gap-y-1.5">
-          {category && (
-            <a
-              href={`/blog?tag=${encodeURIComponent(category.toLowerCase())}`}
-              class="no-underline! text-[var(--text-ghost)] hover:text-[var(--text-primary)] transition-colors duration-150"
-            >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </a>
-          )}
+        <div
+          class="flex flex-wrap items-center text-[12px] text-(--text-ghost) tracking-[-0.01em] gap-x-3 gap-y-1.5 mb-4"
+        >
+          {
+            category && (
+              <a
+                href={`/blog?tag=${encodeURIComponent(category.toLowerCase())}`}
+                class="no-underline! hover:text-(--text-primary) transition-colors duration-150"
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </a>
+            )
+          }
           <time datetime={date.toISOString()}>{formatDate(date)}</time>
-          {readingTime && (<span>{readingTime} min read</span>)}
-          {updated && (<span>Updated {formatDate(updated)}</span>)}
+          {readingTime && <span>{readingTime} min read</span>}
+          {updated && <span>Updated {formatDate(updated)}</span>}
         </div>
-        {
+        <p class="text-body mb-5 text-(--text-muted)">{description}</p>
+
+        <!-- {
           tags.length > 0 && (
             <div class="flex flex-wrap gap-1.5 mt-3">
               {tags.map((tag) => (
@@ -200,7 +214,7 @@ const breadcrumbJsonLd = JSON.stringify({
               ))}
             </div>
           )
-        }
+        } -->
       </header>
 
       <!-- Content -->
@@ -213,45 +227,45 @@ const breadcrumbJsonLd = JSON.stringify({
 
     <BlogLinks client:idle />
 
-    <Lightbox target=".prose img:not(.blog-link-favicon), .prose figure img:not(.blog-link-favicon)" />
+    <Lightbox
+      target=".prose img:not(.blog-link-favicon), .prose figure img:not(.blog-link-favicon)"
+    />
 
     <script is:inline>
       (function () {
         function setupProseImages() {
-          document.querySelectorAll('.prose img').forEach(function (img) {
-            if (img.classList.contains('blog-link-favicon')) return;
-            if (img.closest('a')) return;
-            if (img.parentNode.classList.contains('prose-img-wrap')) return;
+          document.querySelectorAll(".prose img").forEach(function (img) {
+            if (img.classList.contains("blog-link-favicon")) return;
+            if (img.closest("a")) return;
+            if (img.parentNode.classList.contains("prose-img-wrap")) return;
 
-            var wrap = document.createElement('div');
-            wrap.className = 'prose-img-wrap';
-            if (img.classList.contains('fit')) wrap.classList.add('fit');
+            var wrap = document.createElement("div");
+            wrap.className = "prose-img-wrap";
+            if (img.classList.contains("fit")) wrap.classList.add("fit");
             img.parentNode.insertBefore(wrap, img);
             wrap.appendChild(img);
 
             // Shimmer while image loads — give wrap a temporary height so
             // the shimmer is visible before the browser knows image dimensions
             if (!img.complete || img.naturalWidth === 0) {
-              wrap.style.minHeight = '160px';
-              var shimmer = document.createElement('div');
-              shimmer.className = 'img-shimmer';
+              wrap.style.minHeight = "160px";
+              var shimmer = document.createElement("div");
+              shimmer.className = "img-shimmer";
               wrap.appendChild(shimmer);
               var removeShimmer = function () {
                 shimmer.remove();
-                wrap.style.minHeight = '';
+                wrap.style.minHeight = "";
               };
-              img.addEventListener('load', removeShimmer, { once: true });
-              img.addEventListener('error', removeShimmer, { once: true });
+              img.addEventListener("load", removeShimmer, { once: true });
+              img.addEventListener("error", removeShimmer, { once: true });
             }
-
           });
         }
 
         setupProseImages();
-        document.addEventListener('astro:after-swap', setupProseImages);
+        document.addEventListener("astro:after-swap", setupProseImages);
       })();
     </script>
-
 
     {
       tocHeadings.length > 1 && (
@@ -311,8 +325,11 @@ const breadcrumbJsonLd = JSON.stringify({
   }
 
   @keyframes prose-img-shimmer {
-    from { background-position: 220% 0; }
-    to   { background-position: -120% 0; }
+    from {
+      background-position: 220% 0;
+    }
+    to {
+      background-position: -120% 0;
+    }
   }
-
 </style>

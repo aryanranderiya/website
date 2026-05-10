@@ -464,7 +464,7 @@ body {
 }
 
 .dim-list:hover .dim-list-row {
-	opacity: 0.25 !important;
+	opacity: 0.5 !important;
 }
 
 .dim-list .dim-list-row:hover {
@@ -679,6 +679,11 @@ a {
 	color: var(--text-ghost);
 	text-decoration: line-through;
 	text-decoration-color: var(--border-strong);
+}
+
+hr {
+margin: 20px 0 ;
+opacity: 30%;
 }
 
 .prose mark {

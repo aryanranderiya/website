@@ -8,9 +8,9 @@ tech: [React, TypeScript, TailwindCSS]
 featured: false
 type: web
 folder: Client
-coverImage: /ProjectMedia/BlinkAnalytics/1.png
+coverImage: /ProjectMedia/BlinkAnalytics/1.webp
 images:
-  - /ProjectMedia/BlinkAnalytics/1.png
+  - /ProjectMedia/BlinkAnalytics/1.webp
   - /ProjectMedia/BlinkAnalytics/2.webp
   - /ProjectMedia/BlinkAnalytics/3.webp
   - /ProjectMedia/BlinkAnalytics/4.webp
@@ -22,8 +22,11 @@ images:
 status: completed
 order: 30
 url: https://blinkanalytics.in
+github: https://github.com/aryanranderiya/blink-analytics
 ---
 
-Built the official website and analytics dashboard for Blink Analytics, a generative AI and data analytics company. The landing page has that deep purple SaaS aesthetic with sections covering their generative AI and data analytics offerings. The dashboard side is where the real work went - real-time client reporting with custom charts, metrics breakdowns, and data export capabilities.
+Worked in this for a client during university with my co-head of Encode (The CS club),  Meet Dholakia. Honestly was a pretty bad experience with how cheap these clients were, constantly asking for changes, micro managing and the bunch. A nightmare to deal with honesty.
 
-Everything is React with TypeScript and TailwindCSS. The dashboard needed to handle a lot of data visualization cleanly, so we spent time getting the chart components right and making sure the export pipeline was reliable. It runs fast and looks polished, which is what mattered for a company that sells analytics to enterprise clients.
+Overall, I don't really like how this turned out :P
+
+Taught me to never freelance without a legal contract or agreement in place.

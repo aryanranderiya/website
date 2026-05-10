@@ -25,7 +25,7 @@ export default function BlogPreview({ posts }: { posts: Post[] }) {
 			<BlogList posts={latest} />
 
 			<div className="mt-[14px] flex justify-end">
-				<SectionLink href="/blog" label="All writing" />
+				<SectionLink href="/blog" label="All writings" />
 			</div>
 		</section>
 	);

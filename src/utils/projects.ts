@@ -33,5 +33,6 @@ export function mapProject(entry: CollectionEntry<'projects'>) {
 		github: entry.data.github,
 		coverImage: entry.data.coverImage,
 		date: entry.data.date?.toISOString(),
+		featuredImage: entry.data.featuredImage,
 	};
 }

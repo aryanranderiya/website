@@ -21,6 +21,7 @@ interface Project {
 	url?: string;
 	github?: string;
 	coverImage?: string;
+	featuredImage?: string;
 }
 
 const FOLDER_CHIP: Record<string, { bg: string; color: string; label: string }> = {

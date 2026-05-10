@@ -22,9 +22,9 @@ export default function SectionLink({ href, label, variant = 'pill' }: SectionLi
 	return (
 		<a
 			href={href}
-			className="inline-flex items-center gap-1 rounded-full bg-[var(--muted-bg)] px-[14px] py-[6px] pr-[10px] font-medium text-[12px] text-[var(--text-secondary)] no-underline transition-[filter] duration-150 hover:brightness-[0.96]"
+			className="inline-flex items-center gap-2 rounded-full bg-[var(--muted-bg)] px-[14px] py-[6px] pr-[10px] font-medium text-[12px] text-[var(--text-secondary)] no-underline transition-[filter] duration-150 hover:brightness-[0.96]"
 		>
-			{label} <HugeiconsIcon icon={CircleArrowRight02Icon} size={13} />
+			{label} <HugeiconsIcon icon={CircleArrowRight02Icon} size={15} />
 		</a>
 	);
 }

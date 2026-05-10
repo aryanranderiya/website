@@ -8,13 +8,16 @@ tech: [Go]
 featured: false
 type: cli
 folder: Projects
-images: []
 status: completed
 order: 18
 github: https://github.com/aryanranderiya/stargazer
+images:
+  - /ProjectMedia/Stargazer/screenshot.webp
 ---
 
-I built Stargazer because I needed to reach out to people who had starred a GitHub repository and found that no existing tool handled email resolution in a meaningful way. The core idea was simple: given any public GitHub repo, collect every account that had starred it and enrich each profile with a real email address wherever possible.
+I built Stargazer because I wanted to scrape any github repo's starrers emails to contact them
+
+The core idea was simple: given any public GitHub repo, collect every account that had starred it and enrich each profile with a real email address wherever possible.
 
 To make email resolution as thorough as possible, I implemented a three-step fallback strategy. The tool first checked the user's public GitHub profile for a listed email, then scraped commit history to surface any git-configured addresses, and finally fell back to GitHub's noreply address when neither source yielded a result. This layered approach recovered contact information for a much larger share of stargazers than a single lookup ever could.
 

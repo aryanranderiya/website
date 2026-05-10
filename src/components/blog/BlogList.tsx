@@ -64,13 +64,9 @@ export default function BlogList({
 								)}
 							</div>
 
-							<time className="shrink-0 text-[13px] text-[var(--text-ghost)] tabular-nums leading-[1.5]">
+							<time className="shrink-0 text-[13px] text-[var(--text-ghost)]">
 								{formatDate(post.date)}
 							</time>
-
-							<span className="flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border border-[var(--border)] text-[var(--text-ghost)] opacity-0 transition-opacity duration-150 group-hover/item:opacity-100">
-								<ChevronRight size={13} />
-							</span>
 						</a>
 					</m.div>
 				))}

@@ -30,6 +30,10 @@ order: 5
 github: https://github.com/aryanranderiya/TicketBus
 ---
 
+This was my first major software (and first mobile android dev) project that I completed as my final project during my diploma final year. I honestly learnt so much and working with Java as my first programmning language really invoked my love for programming, software development, design and problem solving in general. This really holds a special place in my heart.
+
+---
+
 I led a team to build TicketBus, an Android app aimed at making public transportation genuinely digital from end to end. The core experience lets commuters book tickets on the go, apply for bus passes that come with QR codes for quick validation at the gate, and manage everything through an integrated e-wallet so there's no need to carry cash or hunt for exact change. Real-time information about bus arrivals and route changes is surfaced throughout, so you're never guessing when the next bus is coming.
 
 The map module was one of the more technically interesting pieces to build. It's powered by the Mapbox API and gives users detailed route maps with bus stops and turn-by-turn directions for planning a trip, not just tracking one in progress. Getting that integrated cleanly with the rest of the app - so tapping a route in the booking flow took you directly to the map view - required thinking carefully about how the different screens handed off to each other.
