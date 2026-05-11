@@ -3,17 +3,13 @@ title: Spotify Tools
 description: Python desktop app with Spotify API integration - playlist management, mini player, and profile viewing.
 shortDescription: Desktop playlist manager & mini player
 date: 2023-08-01
-tags: [Music, Automation]
 tech: [Python, Spotify API]
 featured: false
 type: desktop
-folder: Projects
 coverImage: /ProjectMedia/Spotify_Tools/spotify_tools_project_banner.png
 images:
   - /ProjectMedia/Spotify_Tools/spotify_tools_project_banner.png
 video: /ProjectMedia/Spotify_Tools/SpotifyTools_demo.mp4
-status: completed
-order: 19
 github: https://github.com/aryanranderiya/SpotifyTools
 ---
 

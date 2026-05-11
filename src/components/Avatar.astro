@@ -1,0 +1,134 @@
+---
+/**
+ * Single avatar component used in two positions:
+ *  - inline={true}  → rendered inline in <Hero> on the homepage
+ *  - inline={false} → fixed-positioned at the sidebar profile slot on every other page
+ *
+ * Both variants share `transition:name="profile-avatar"`, so Astro's view
+ * transitions FLIP-morph the avatar between the inline position and the
+ * sidebar position on navigation. The Avatar is intentionally rendered
+ * *outside* the persisted <Sidebar> island — persisted elements have
+ * `view-transition-name: none !important` (see global.css) and cannot
+ * participate in the morph.
+ *
+ * Toggle behaviour (avatar.webp ↔ avatar-original.webp) is preserved via
+ * a small script that stores the current variant in sessionStorage and
+ * syncs every `[data-avatar-img]` on the page. Idempotent — safe to run
+ * across `astro:page-load` events.
+ */
+interface Props {
+  inline?: boolean;
+}
+const { inline = false } = Astro.props;
+---
+
+{inline ? (
+  <button
+    type="button"
+    data-avatar-toggle
+    aria-label="Toggle avatar"
+    class="avatar-trigger inline-flex cursor-pointer border-0 bg-transparent p-0 align-middle"
+  >
+    <img
+      data-avatar-img
+      src="/avatar.webp"
+      alt="Aryan Randeriya"
+      width={44}
+      height={44}
+      fetchpriority="high"
+      class="block h-11 w-11 shrink-0 rounded-full opacity-90"
+      transition:name="profile-avatar"
+    />
+  </button>
+) : (
+  <button
+    type="button"
+    data-avatar-toggle
+    aria-label="Toggle avatar"
+    class="avatar-trigger fixed top-[12px] left-[20px] z-[60] cursor-pointer border-0 bg-transparent p-0 min-[960px]:top-[60px] min-[960px]:left-[calc(50%-472px)]"
+  >
+    <img
+      data-avatar-img
+      src="/avatar.webp"
+      alt="Aryan Randeriya"
+      width={32}
+      height={32}
+      fetchpriority="high"
+      class="block h-7 w-7 shrink-0 rounded-full opacity-90 min-[960px]:h-8 min-[960px]:w-8"
+      transition:name="profile-avatar"
+    />
+  </button>
+)}
+
+<style is:global>
+  /* The avatar morphs position+size between pages. The default VT animation
+     would crossfade old/new, which flickers because the two snapshots are
+     pixel-identical. We disable old/new animations and let the FLIP group
+     transform do all the work — pure position/size morph, no opacity churn. */
+  ::view-transition-group(profile-avatar) {
+    animation-duration: 420ms;
+    animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  }
+  ::view-transition-old(profile-avatar),
+  ::view-transition-new(profile-avatar) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-group(profile-avatar) {
+      animation-duration: 0.001ms;
+    }
+  }
+</style>
+
+<script>
+  const VARIANT_KEY = 'avatar-variant';
+  const DEFAULT_SRC = '/avatar.webp';
+  const ALT_SRC = '/avatar-original.webp';
+
+  function currentSrc(): string {
+    return sessionStorage.getItem(VARIANT_KEY) === 'original' ? ALT_SRC : DEFAULT_SRC;
+  }
+
+  function syncAvatar() {
+    const src = currentSrc();
+    document.querySelectorAll<HTMLImageElement>('[data-avatar-img]').forEach((img) => {
+      if (!img.src.endsWith(src)) img.src = src;
+    });
+  }
+
+  function bindToggles() {
+    document.querySelectorAll<HTMLButtonElement>('[data-avatar-toggle]').forEach((btn) => {
+      if (btn.dataset.bound === 'true') return;
+      btn.dataset.bound = 'true';
+      btn.addEventListener('click', () => {
+        const next = sessionStorage.getItem(VARIANT_KEY) === 'original' ? 'default' : 'original';
+        sessionStorage.setItem(VARIANT_KEY, next);
+        syncAvatar();
+      });
+    });
+  }
+
+  syncAvatar();
+  bindToggles();
+
+  // Patch the incoming document BEFORE the browser snapshots it for the
+  // view transition. If we waited until astro:page-load the new img would
+  // briefly show the default src while the morph animates, then pop to the
+  // toggled variant — visible flicker. Doing it in before-swap means the
+  // "new" snapshot captures the correct src up front.
+  document.addEventListener('astro:before-swap', (event) => {
+    const src = currentSrc();
+    const detail = event as Event & { newDocument?: Document };
+    const doc = detail.newDocument;
+    if (!doc) return;
+    doc.querySelectorAll<HTMLImageElement>('[data-avatar-img]').forEach((img) => {
+      if (!img.getAttribute('src')?.endsWith(src)) img.setAttribute('src', src);
+    });
+  });
+
+  document.addEventListener('astro:page-load', () => {
+    syncAvatar();
+    bindToggles();
+  });
+</script>

@@ -3,11 +3,9 @@ title: Portfolio v1
 description: My first personal portfolio - built from scratch in vanilla HTML, CSS, and JavaScript with Firebase as backend, GSAP-powered animations, and a custom design projects gallery.
 shortDescription: First personal portfolio - HTML/CSS/JS + Firebase
 date: 2023-12-01
-tags: [Personal]
 tech: [HTML, CSS, JavaScript, Firebase, GSAP]
 featured: false
 type: web
-folder: Projects
 coverImage: /ProjectMedia/Portfolio/Website-Homepage.webp
 images:
   - /ProjectMedia/Portfolio/Website-Homepage.webp
@@ -38,8 +36,6 @@ images:
   - /ProjectMedia/Portfolio/designprojects_8.webp
   - /ProjectMedia/Portfolio/designprojects_9.webp
 video: /ProjectMedia/Personal_Portfolio/portfolio-demo.mp4
-status: archived
-order: 35
 ---
 
 The first version of my personal portfolio, built from scratch in vanilla HTML, CSS, and JavaScript over about three months in late 2023. No frameworks, no build tools - just hand-written markup and stylesheets, with everything wired together by raw DOM APIs and a few targeted libraries. Animations and scroll-driven transitions ran through GSAP, which gave me the control to fine-tune timing and easing curves until the experience felt smooth on every section.

@@ -3,11 +3,9 @@ title: RezRek
 description: Social commerce platform for Indian streetwear and fashion - discover brands, browse curated feeds, save inspo boards, and shop.
 shortDescription: Social commerce for Indian streetwear
 date: 2024-01-20
-tags: [Social]
 tech: [Next.js, Python, Supabase]
 featured: true
 type: mobile
-folder: Client
 coverImage: /ProjectMedia/Rezrek/image (1).webp
 images:
   - /ProjectMedia/Rezrek/team.jpeg
@@ -24,8 +22,6 @@ images:
   - /ProjectMedia/Rezrek/9.webp
   - /ProjectMedia/Rezrek/10.webp
   - /ProjectMedia/Rezrek/11.webp
-status: completed
-order: 3
 url: https://rezrek.com
 ---
 

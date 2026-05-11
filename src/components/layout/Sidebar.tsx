@@ -181,7 +181,6 @@ export default function Sidebar({
 	const [typography, setTypography] = useState<Typography>('helvetica');
 	const [shuffleOpen, setShuffleOpen] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
-	const [avatarSrc, setAvatarSrc] = useState('/avatar.webp');
 	const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
 	const isDark = theme === 'dark';
@@ -299,27 +298,11 @@ export default function Sidebar({
 					animate={ready ? 'show' : 'hidden'}
 					className="flex h-full flex-col gap-0.5"
 				>
-					{/* Profile photo */}
-					<m.div variants={sidebarItem} className="mb-4">
-						<button
-							type="button"
-							className="cursor-pointer border-0 bg-transparent p-0"
-							onClick={() =>
-								setAvatarSrc((s) =>
-									s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp'
-								)
-							}
-							aria-label="Toggle avatar"
-						>
-							<img
-								src={avatarSrc}
-								alt="Aryan Randeriya"
-								width={32}
-								height={32}
-								className="block h-8 w-8 shrink-0 rounded-full opacity-90"
-							/>
-						</button>
-					</m.div>
+					{/* Profile photo slot — the actual avatar is rendered by <Avatar />
+					    outside this persisted island so it can participate in view
+					    transitions. This spacer reserves the same vertical space (h-8
+					    + mb-4) so the nav groups don't shift when the avatar morphs. */}
+					<m.div variants={sidebarItem} className="mb-4 h-8" aria-hidden="true" />
 
 					{/* Nav groups */}
 					{NAV_GROUPS.map((group, gi) => (
@@ -635,24 +618,10 @@ export default function Sidebar({
 
 			{/* ── Mobile top bar ── */}
 			<div className="fixed top-0 right-0 left-0 z-50 flex h-[52px] items-center justify-between bg-[var(--glass-bg)] px-5 backdrop-blur-[12px] min-[960px]:hidden">
-				<button
-					type="button"
-					className="cursor-pointer border-0 bg-transparent p-0"
-					onClick={() =>
-						setAvatarSrc((s) =>
-							s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp'
-						)
-					}
-					aria-label="Toggle avatar"
-				>
-					<img
-						src={avatarSrc}
-						alt="Aryan Randeriya"
-						width={28}
-						height={28}
-						className="block h-7 w-7 shrink-0 rounded-full opacity-90"
-					/>
-				</button>
+				{/* Avatar slot — rendered by <Avatar /> outside this persisted island
+				    so it can participate in view transitions. Spacer keeps the right
+				    controls aligned via justify-between. */}
+				<div className="h-7 w-7" aria-hidden="true" />
 				<div className="flex items-center gap-3">
 					<Popover open={shuffleOpen} onOpenChange={setShuffleOpen}>
 						<PopoverAnchor asChild>
@@ -779,24 +748,8 @@ export default function Sidebar({
 					>
 						{/* Menu top bar */}
 						<div className="flex h-[52px] items-center justify-between px-5">
-							<button
-								type="button"
-								className="cursor-pointer border-0 bg-transparent p-0"
-								onClick={() =>
-									setAvatarSrc((s) =>
-										s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp'
-									)
-								}
-								aria-label="Toggle avatar"
-							>
-								<img
-									src={avatarSrc}
-									alt="Aryan Randeriya"
-									width={28}
-									height={28}
-									className="block h-7 w-7 shrink-0 rounded-full opacity-90"
-								/>
-							</button>
+							{/* Avatar slot — see note above. */}
+							<div className="h-7 w-7" aria-hidden="true" />
 							<button
 								type="button"
 								onClick={() => setMobileOpen(false)}

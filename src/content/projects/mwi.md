@@ -3,11 +3,9 @@ title: MWI
 description: Brand identity and web platform for Move With Intention - a fitness and wellness company. Built with Next.js and TypeScript.
 shortDescription: Brand & web platform for a fitness company
 date: 2025-3-25
-tags: [Branding]
 tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: web
-folder: Client
 coverImage: /ProjectMedia/MWI/1.webp
 images:
   - /ProjectMedia/MWI/2025-02-04_19-02.webp
@@ -25,8 +23,6 @@ images:
   - /ProjectMedia/MWI/12.webp
   - /ProjectMedia/MWI/13.webp
   - /ProjectMedia/MWI/14.webp
-status: completed
-order: 31
 url: https://mwi.gg
 ---
 

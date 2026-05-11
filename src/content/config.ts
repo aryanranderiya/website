@@ -24,7 +24,6 @@ const projects = defineCollection({
 		description: z.string(),
 		shortDescription: z.string().optional(),
 		date: z.coerce.date(),
-		tags: z.array(z.string()).default([]),
 		tech: z.array(z.string()).default([]),
 		images: z.array(z.string()).default([]),
 		video: z.string().optional(),
@@ -34,10 +33,7 @@ const projects = defineCollection({
 		type: z
 			.enum(['mobile', 'web', 'os', 'design', 'other', 'cli', 'game', 'desktop'])
 			.default('web'),
-		folder: z.string().default('Projects'),
 		coverImage: z.string().optional(),
-		status: z.enum(['completed', 'in-progress', 'archived']).default('completed'),
-		order: z.number().default(99),
 	}),
 });
 

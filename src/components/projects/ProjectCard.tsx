@@ -11,24 +11,14 @@ interface Project {
 	title: string;
 	description: string;
 	shortDescription?: string;
-	tags: string[];
 	tech: string[];
 	type: string;
-	status: string;
 	featured: boolean;
 	images: string[];
-	folder: string;
 	url?: string;
 	github?: string;
 	coverImage?: string;
-	featuredImage?: string;
 }
-
-const FOLDER_CHIP: Record<string, { bg: string; color: string; label: string }> = {
-	Featured: { bg: 'rgba(251,191,36,0.12)', color: '#f59e0b', label: 'Featured' },
-	Client: { bg: 'rgba(52,211,153,0.12)', color: '#10b981', label: 'Freelance' },
-	Hackathon: { bg: 'rgba(167,139,250,0.12)', color: '#a78bfa', label: 'Hackathon' },
-};
 
 const TYPE_LABELS: Record<string, string> = {
 	web: 'Web',
@@ -53,7 +43,6 @@ export default function ProjectCard({
 }) {
 	const [hovered, setHovered] = useState(false);
 	const ref = useRef<HTMLDivElement>(null);
-	const chip = FOLDER_CHIP[project.folder];
 	const typeLabel = TYPE_LABELS[project.type] ?? project.type;
 
 	return (
@@ -81,26 +70,18 @@ export default function ProjectCard({
 				}}
 				className={`dim-list-row flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 			>
-				{/* Left: title + single chip — folder chip takes priority over type */}
+				{/* Left: title + type chip */}
 				<div className="flex min-w-0 shrink items-center gap-1.5">
 					<span
+						// biome-ignore lint/nursery/noInlineStyles: view-transition-name must be unique per slug
+						style={{ viewTransitionName: `project-title-${project.slug}` }}
 						className={`truncate font-medium text-[13px] tracking-[-0.02em] transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
 					>
 						{project.title}
 					</span>
-					{chip ? (
-						<span
-							className="shrink-0 rounded-full px-2 py-[2px] font-medium text-[10px] tracking-[0.01em]"
-							// biome-ignore lint/nursery/noInlineStyles: dynamic chip background and color from data
-							style={{ background: chip.bg, color: chip.color }}
-						>
-							{chip.label}
-						</span>
-					) : (
-						<span className="shrink-0 rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-ghost)] tracking-[0.01em]">
-							{typeLabel}
-						</span>
-					)}
+					<span className="shrink-0 rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-ghost)] tracking-[0.01em]">
+						{typeLabel}
+					</span>
 				</div>
 
 				{/* Right: short description */}

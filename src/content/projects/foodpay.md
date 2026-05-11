@@ -3,13 +3,9 @@ title: FoodPay
 description: Mobile-first food ordering platform with real-time cart management, product search, and OTP-verified order completion. React frontend backed by a Deno REST API and MongoDB.
 shortDescription: Mobile food ordering app
 date: 2024-10-23
-tags: [Consumer]
 tech: [React, TypeScript, Vite, Deno, MongoDB, TailwindCSS]
 featured: false
 type: web
-folder: Client
-status: completed
-order: 36
 coverImage: /ProjectMedia/FoodPay/1.jpeg
 images:
   - /ProjectMedia/FoodPay/1.jpeg

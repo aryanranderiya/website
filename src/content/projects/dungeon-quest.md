@@ -3,11 +3,9 @@ title: Dungeon Quest
 description: Retro-style platformer with pixel art graphics, collectible items, and classic dungeon exploration - built for a frontend hackathon.
 shortDescription: Retro dungeon platformer hackathon game
 date: 2025-04-01
-tags: [Canvas, Game]
 tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: game
-folder: Hackathon
 coverImage: /ProjectMedia/DungeonQuest/banner.webp
 images:
   - /ProjectMedia/DungeonQuest/banner.webp
@@ -16,8 +14,6 @@ images:
   - /ProjectMedia/DungeonQuest/screenshot-2.webp
   - /ProjectMedia/DungeonQuest/screenshot-3.webp
   - /ProjectMedia/DungeonQuest/screenshot-4.webp
-status: completed
-order: 20
 url: https://pixel-quest.vercel.app/
 github: https://github.com/aryanranderiya/dungeon-quest
 ---

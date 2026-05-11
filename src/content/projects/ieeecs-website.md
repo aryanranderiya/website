@@ -3,14 +3,10 @@ title: IEEE CS Club Website
 description: Official website for the IEEE Computer Society chapter at PDEU, with events showcase, committee profiles, photo gallery, membership info, and FAQ, built with Astro and TypeScript.
 shortDescription: IEEE CS Club PDEU official website in Astro
 date: 2025-04-16
-tags: [Community, Education]
 tech: [Astro, TypeScript, TailwindCSS]
 featured: false
 type: web
-folder: Projects
 images: []
-status: completed
-order: 37
 github: https://github.com/aryanranderiya/ieeecs-website
 ---
 

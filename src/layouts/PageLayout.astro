@@ -1,4 +1,5 @@
 ---
+import Avatar from '@/components/Avatar.astro';
 import Footer from '@/components/layout/Footer.astro';
 import Sidebar from '@/components/layout/Sidebar';
 import Layout from './Layout.astro';
@@ -25,6 +26,12 @@ const {
 	section,
 	...layoutProps
 } = Astro.props;
+
+// On `/` the avatar is rendered inline inside <Hero>. On every other page
+// it's rendered here as a fixed-positioned overlay at the sidebar profile
+// slot — both share `transition:name="profile-avatar"`, so Astro's view
+// transitions FLIP-morph the avatar between positions on navigation.
+const isHome = Astro.url.pathname === '/';
 ---
 
 <Layout
@@ -48,6 +55,7 @@ const {
 		transition:persist="sidebar"
 		transition:persist-props
 	/>
+	{!isHome && <Avatar />}
 	<main id="page-content" class="flex-1 pt-[72px] min-[960px]:pt-[60px]">
 		{fullWidth ? (
 			<slot />

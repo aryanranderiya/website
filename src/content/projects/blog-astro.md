@@ -3,17 +3,13 @@ title: Personal Blog Astro
 description: Feature-rich personal blog built with Astro, React, and TailwindCSS - WYSIWYG editor, Giscus comments, RSS, sitemap, automated releases, and a near-perfect Lighthouse score.
 shortDescription: Astro-powered blog with WYSIWYG editor and SEO
 date: 2025-09-16
-tags: [Open Source]
 tech: [Astro, React, TypeScript, TailwindCSS]
 featured: false
 type: web
-folder: Projects
 coverImage: /ProjectMedia/Personal_Blog_Astro/screenshot.webp
 images:
   - /ProjectMedia/Personal_Blog_Astro/screenshot.webp
   - /ProjectMedia/Personal_Blog_Astro/pagespeed.webp
-status: completed
-order: 34
 url: https://blog.aryanranderiya.com
 github: https://github.com/aryanranderiya/blog
 ---
