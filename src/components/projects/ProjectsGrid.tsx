@@ -39,6 +39,7 @@ interface Project {
 	url?: string;
 	github?: string;
 	coverImage?: string;
+	date?: string;
 }
 
 interface HoveredState {

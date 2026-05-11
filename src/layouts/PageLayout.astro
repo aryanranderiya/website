@@ -27,10 +27,11 @@ const {
 	...layoutProps
 } = Astro.props;
 
-// On `/` the avatar is rendered inline inside <Hero>. On every other page
-// it's rendered here as a fixed-positioned overlay at the sidebar profile
-// slot — both share `transition:name="profile-avatar"`, so Astro's view
-// transitions FLIP-morph the avatar between positions on navigation.
+// The fixed-position <Avatar /> is rendered on every page. On `/` the
+// inline copy lives in <Hero> too; the scroll observer in Avatar.astro
+// swaps which one is visible. The body class `has-sidebar-avatar` is
+// the single source of truth and is set immediately via an inline
+// script below to avoid a flash of the wrong state before hydration.
 const isHome = Astro.url.pathname === '/';
 ---
 
@@ -42,6 +43,30 @@ const isHome = Astro.url.pathname === '/';
 	articleModified={articleModified}
 	section={section}
 >
+	{/* Set the sidebar-avatar body class synchronously so the sidebar and
+	    avatar render in the correct state on first paint, and patched on
+	    `astro:before-swap` so the *new* document's snapshot for view
+	    transitions captures the correct avatar visibility — otherwise
+	    the fixed avatar would be display:none during the snapshot and the
+	    profile-avatar morph would have no target. */}
+	<script is:inline define:vars={{ isHome }}>
+		(function () {
+			const apply = (body, home) => {
+				if (!body) return;
+				if (home) body.classList.remove('has-sidebar-avatar');
+				else body.classList.add('has-sidebar-avatar');
+			};
+			apply(document.body, isHome);
+			document.addEventListener('astro:before-swap', (e) => {
+				const newDoc = e.newDocument;
+				const dest = e.to;
+				const home = (dest && dest.pathname) === '/';
+				apply(document.body, home);
+				if (newDoc) apply(newDoc.body, home);
+			});
+		})();
+	</script>
+
 	{/* Explicit `transition:persist="sidebar"` name — auto-generated keys are
 	    position-based and shift when adjacent islands change between pages
 	    (e.g. /projects → /projects/[slug]), which would silently remount the
@@ -55,7 +80,7 @@ const isHome = Astro.url.pathname === '/';
 		transition:persist="sidebar"
 		transition:persist-props
 	/>
-	{!isHome && <Avatar />}
+	<Avatar />
 	<main id="page-content" class="flex-1 pt-[72px] min-[960px]:pt-[60px]">
 		{fullWidth ? (
 			<slot />

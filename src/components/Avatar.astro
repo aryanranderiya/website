@@ -2,14 +2,20 @@
 /**
  * Single avatar component used in two positions:
  *  - inline={true}  → rendered inline in <Hero> on the homepage
- *  - inline={false} → fixed-positioned at the sidebar profile slot on every other page
+ *  - inline={false} → fixed-positioned above the sidebar, on every page
  *
  * Both variants share `transition:name="profile-avatar"`, so Astro's view
  * transitions FLIP-morph the avatar between the inline position and the
- * sidebar position on navigation. The Avatar is intentionally rendered
- * *outside* the persisted <Sidebar> island — persisted elements have
+ * fixed position on navigation. The Avatar is rendered *outside* the
+ * persisted <Sidebar> island — persisted elements have
  * `view-transition-name: none !important` (see global.css) and cannot
  * participate in the morph.
+ *
+ * Visibility is driven by `body.has-sidebar-avatar`:
+ *  - class absent → inline avatar visible, fixed hidden (homepage, scroll near top)
+ *  - class present → inline hidden, fixed visible (every other page, or home scrolled past hero)
+ * The body class is toggled by the scroll observer in this file and the
+ * inline init script in PageLayout.astro.
  *
  * Toggle behaviour (avatar.webp ↔ avatar-original.webp) is preserved via
  * a small script that stores the current variant in sessionStorage and
@@ -26,8 +32,9 @@ const { inline = false } = Astro.props;
   <button
     type="button"
     data-avatar-toggle
+    data-avatar-inline
     aria-label="Toggle avatar"
-    class="avatar-trigger inline-flex cursor-pointer border-0 bg-transparent p-0 align-middle"
+    class="avatar-trigger avatar-inline inline-flex cursor-pointer border-0 bg-transparent p-0 align-middle"
   >
     <img
       data-avatar-img
@@ -44,8 +51,9 @@ const { inline = false } = Astro.props;
   <button
     type="button"
     data-avatar-toggle
+    data-avatar-fixed
     aria-label="Toggle avatar"
-    class="avatar-trigger fixed top-[12px] left-[20px] z-[60] cursor-pointer border-0 bg-transparent p-0 min-[960px]:top-[60px] min-[960px]:left-[calc(50%-472px)]"
+    class="avatar-trigger avatar-fixed fixed top-[12px] left-[20px] z-[60] cursor-pointer border-0 bg-transparent p-0 min-[960px]:top-[60px] min-[960px]:left-[calc(50%-472px)]"
   >
     <img
       data-avatar-img
@@ -61,10 +69,23 @@ const { inline = false } = Astro.props;
 )}
 
 <style is:global>
-  /* The avatar morphs position+size between pages. The default VT animation
-     would crossfade old/new, which flickers because the two snapshots are
-     pixel-identical. We disable old/new animations and let the FLIP group
-     transform do all the work — pure position/size morph, no opacity churn. */
+  /* Sidebar nav top, driven by whether the avatar is in the sidebar slot.
+     Animated so reflow on scroll is smooth even outside startViewTransition. */
+  :root { --sidebar-top: 60px; }
+  body.has-sidebar-avatar { --sidebar-top: 112px; }
+  .sidebar-nav { top: var(--sidebar-top); transition: top 0.4s cubic-bezier(0.19, 1, 0.22, 1); }
+
+  /* Avatar visibility by mode. Display: none excludes the element from the
+     view-transition snapshot, so the two `profile-avatar` names never
+     conflict — exactly one is active at a time. */
+  .avatar-fixed { display: none; }
+  body.has-sidebar-avatar .avatar-fixed { display: inline-flex; }
+  body.has-sidebar-avatar .avatar-inline { display: none; }
+
+  /* The avatar morphs position+size between pages and on scroll. The default
+     VT animation would crossfade old/new, which flickers because the two
+     snapshots are pixel-identical. We disable old/new animations and let
+     the FLIP group transform do all the work — pure position/size morph. */
   ::view-transition-group(profile-avatar) {
     animation-duration: 420ms;
     animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
@@ -74,8 +95,29 @@ const { inline = false } = Astro.props;
     animation: none;
     mix-blend-mode: normal;
   }
+
+  /* Hero name block morphs left when the avatar moves to the sidebar.
+     The view-transition-name is attached dynamically by the scroll handler
+     so it only participates in the scroll transition, never in cross-page
+     navigation. */
+  ::view-transition-group(hero-name-block) {
+    animation-duration: 420ms;
+    animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+  }
+
+  /* Scroll-morph in-page view transition: the page content is unchanged,
+     so disable the global page-hide / page-appear that fire on every VT
+     — we only want the named participants (avatar, name block) to animate. */
+  html.scroll-morphing::view-transition-old(page-content),
+  html.scroll-morphing::view-transition-new(page-content) {
+    animation: none;
+    opacity: 1;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    ::view-transition-group(profile-avatar) {
+    .sidebar-nav { transition: none; }
+    ::view-transition-group(profile-avatar),
+    ::view-transition-group(hero-name-block) {
       animation-duration: 0.001ms;
     }
   }
@@ -109,8 +151,95 @@ const { inline = false } = Astro.props;
     });
   }
 
+  // ─── Scroll-driven inline ↔ fixed morph on the homepage ──────────────
+  //
+  // The inline avatar lives in <Hero>; the fixed avatar is rendered in
+  // <PageLayout> on every page (hidden via CSS when the body lacks the
+  // `has-sidebar-avatar` class). When the inline avatar scrolls out of
+  // view, we add the class wrapped in `document.startViewTransition()`
+  // so the avatar morphs from inline → fixed and the name/title block
+  // slides left to fill the gap.
+
+  type CleanupFn = () => void;
+  let cleanup: CleanupFn | null = null;
+
+  function setupScrollMorph() {
+    cleanup?.();
+    cleanup = null;
+
+    const inline = document.querySelector<HTMLElement>('[data-avatar-inline]');
+    if (!inline) {
+      // Non-home page — no inline avatar. The body class is set by the
+      // inline init script in PageLayout for SSR.
+      return;
+    }
+
+    // Home page initial state: avatar inline, fixed hidden. Force-clear
+    // the class in case it carried over from a previous navigation.
+    document.body.classList.remove('has-sidebar-avatar');
+
+    const nameBlock = document.querySelector<HTMLElement>('[data-hero-name-block]');
+
+    let isFixed = false;
+    let didInit = false;
+
+    const apply = (fixed: boolean) => {
+      if (fixed) document.body.classList.add('has-sidebar-avatar');
+      else document.body.classList.remove('has-sidebar-avatar');
+    };
+
+    const transitionTo = (fixed: boolean) => {
+      if (fixed === isFixed) return;
+      isFixed = fixed;
+
+      // Attach the name-block view-transition-name only for the duration
+      // of this morph so cross-page nav never sees it.
+      if (nameBlock) nameBlock.style.viewTransitionName = 'hero-name-block';
+      // Suppress the global page-content fade for the scroll case — the
+      // page hasn't changed, only the avatar and name block move.
+      document.documentElement.classList.add('scroll-morphing');
+
+      const finalize = () => {
+        if (nameBlock) nameBlock.style.viewTransitionName = '';
+        document.documentElement.classList.remove('scroll-morphing');
+      };
+
+      const startVT = (document as Document & {
+        startViewTransition?: (cb: () => void) => { finished: Promise<void> };
+      }).startViewTransition?.bind(document);
+
+      if (startVT) {
+        const t = startVT(() => apply(fixed));
+        t.finished.then(finalize, finalize);
+      } else {
+        apply(fixed);
+        finalize();
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[entries.length - 1];
+        const fixed = !entry.isIntersecting;
+        if (!didInit) {
+          // First fire on observe — set state without a view transition so
+          // the page doesn't snapshot/animate on initial load.
+          didInit = true;
+          isFixed = fixed;
+          apply(fixed);
+          return;
+        }
+        transitionTo(fixed);
+      },
+      { threshold: 0, rootMargin: '0px' }
+    );
+    observer.observe(inline);
+    cleanup = () => observer.disconnect();
+  }
+
   syncAvatar();
   bindToggles();
+  setupScrollMorph();
 
   // Patch the incoming document BEFORE the browser snapshots it for the
   // view transition. If we waited until astro:page-load the new img would
@@ -130,5 +259,6 @@ const { inline = false } = Astro.props;
   document.addEventListener('astro:page-load', () => {
     syncAvatar();
     bindToggles();
+    setupScrollMorph();
   });
 </script>

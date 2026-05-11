@@ -18,6 +18,7 @@ interface Project {
 	url?: string;
 	github?: string;
 	coverImage?: string;
+	date?: string;
 }
 
 const TYPE_LABELS: Record<string, string> = {
@@ -84,12 +85,19 @@ export default function ProjectCard({
 					</span>
 				</div>
 
-				{/* Right: short description */}
-				{project.shortDescription && (
-					<span className="ml-auto max-w-[42%] shrink-0 truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
-						{project.shortDescription}
-					</span>
-				)}
+				{/* Right: short description + date */}
+				<div className="ml-auto flex shrink-0 items-center gap-2">
+					{project.shortDescription && (
+						<span className="max-w-[42%] truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
+							{project.shortDescription}
+						</span>
+					)}
+					{project.date && (
+						<span className="shrink-0 text-[11px] text-[var(--text-ghost)] tabular-nums">
+							{new Date(project.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+						</span>
+					)}
+				</div>
 			</m.div>
 		</LazyMotion>
 	);

@@ -291,10 +291,11 @@ export default function Sidebar({
 	return (
 		<LazyMotion features={loadFeatures}>
 			{/* ── Desktop sidebar ──
-			    The avatar floats at top-[60px] outside this island (see <Avatar />)
-			    so it can participate in view transitions. The nav starts below it
-			    to avoid a hollow slot where the avatar would have been. */}
-			<nav className="fixed top-[112px] bottom-[128px] left-[calc(50%-472px)] z-40 hidden w-[100px] flex-col gap-0.5 overflow-visible bg-transparent min-[960px]:flex">
+			    Top is driven by --sidebar-top: 60px by default. When the avatar
+			    is in the sidebar slot (`body.has-sidebar-avatar`), the var bumps
+			    to 112px so the nav lands below it. CSS transition on `top` makes
+			    the reflow smooth when the avatar scrolls in/out on the homepage. */}
+			<nav className="sidebar-nav fixed bottom-[128px] left-[calc(50%-472px)] z-40 hidden w-[100px] flex-col gap-0.5 overflow-visible bg-transparent min-[960px]:flex">
 				<m.div
 					variants={sidebarContainer}
 					initial="hidden"
