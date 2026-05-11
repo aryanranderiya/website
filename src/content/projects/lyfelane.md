@@ -6,6 +6,7 @@ date: 2024-11-01
 tech: [React, Node.js, Express, MongoDB, JavaScript]
 featured: false
 type: web
+folder: Client
 coverImage: /ProjectMedia/LyfeLane/2024-11-22_22-18.webp
 images:
   - /ProjectMedia/LyfeLane/2024-11-22_22-18.webp
@@ -19,6 +20,7 @@ images:
   - /ProjectMedia/LyfeLane/2024-11-22_22-24_1.webp
   - /ProjectMedia/LyfeLane/2024-11-22_22-24_2.webp
   - /ProjectMedia/LyfeLane/2024-11-22_22-24_3.webp
+order: 32
 url: https://lyfelane.com
 ---
 

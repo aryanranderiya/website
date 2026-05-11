@@ -6,10 +6,12 @@ date: 2023-08-01
 tech: [Python, Spotify API]
 featured: false
 type: desktop
+folder: Projects
 coverImage: /ProjectMedia/Spotify_Tools/spotify_tools_project_banner.png
 images:
   - /ProjectMedia/Spotify_Tools/spotify_tools_project_banner.png
 video: /ProjectMedia/Spotify_Tools/SpotifyTools_demo.mp4
+order: 19
 github: https://github.com/aryanranderiya/SpotifyTools
 ---
 

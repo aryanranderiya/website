@@ -6,10 +6,12 @@ date: 2025-09-16
 tech: [Astro, React, TypeScript, TailwindCSS]
 featured: false
 type: web
+folder: Projects
 coverImage: /ProjectMedia/Personal_Blog_Astro/screenshot.webp
 images:
   - /ProjectMedia/Personal_Blog_Astro/screenshot.webp
   - /ProjectMedia/Personal_Blog_Astro/pagespeed.webp
+order: 34
 url: https://blog.aryanranderiya.com
 github: https://github.com/aryanranderiya/blog
 ---

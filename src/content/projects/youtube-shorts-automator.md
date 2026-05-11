@@ -6,10 +6,12 @@ date: 2024-03-01
 tech: [Python, Flask, MongoDB, HTML, CSS]
 featured: false
 type: web
+folder: Projects
 coverImage: /ProjectMedia/YouTube_Shorts Automator/project_banner (2).png
 images:
   - /ProjectMedia/YouTube_Shorts Automator/project_banner (2).png
   - /ProjectMedia/YouTube_Shorts Automator/2024-04-04_02-07.png
+order: 12
 ---
 
 An end-to-end pipeline that takes a text prompt and turns it into a ready-to-upload YouTube Short. It generates the script, creates a voice-over, adds subtitles, finds or generates background media, and assembles the final video with metadata - all automated.

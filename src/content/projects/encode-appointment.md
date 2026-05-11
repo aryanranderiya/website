@@ -6,7 +6,9 @@ date: 2024-07-17
 tech: [React, TypeScript, Vite, Express, MongoDB, Node.js]
 featured: false
 type: web
+folder: Projects
 images: []
+order: 35
 url: https://encode-aryan.vercel.app
 github: https://github.com/aryanranderiya/encode-assignment
 ---

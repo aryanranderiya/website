@@ -6,9 +6,11 @@ date: 2024-11-01
 tech: [Node.js, TypeScript, React, Docker]
 featured: false
 type: cli
+folder: Projects
 coverImage: /ProjectMedia/GAIA/cli.webp
 images:
   - /ProjectMedia/GAIA/cli.webp
+order: 2
 url: https://heygaia.io/cli
 github: https://github.com/theexperiencecompany/gaia
 ---

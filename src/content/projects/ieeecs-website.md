@@ -6,7 +6,9 @@ date: 2025-04-16
 tech: [Astro, TypeScript, TailwindCSS]
 featured: false
 type: web
+folder: Projects
 images: []
+order: 37
 github: https://github.com/aryanranderiya/ieeecs-website
 ---
 

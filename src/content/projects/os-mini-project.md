@@ -6,12 +6,14 @@ date: 2024-01-01
 tech: [Python, Flask, HTML, CSS, JavaScript]
 featured: false
 type: web
+folder: Projects
 coverImage: /ProjectMedia/OS_Mini_Project/srtn.png
 images:
   - /ProjectMedia/OS_Mini_Project/srtn.png
   - /ProjectMedia/OS_Mini_Project/srtn-2.png
   - /ProjectMedia/OS_Mini_Project/producer-consumer.png
   - /ProjectMedia/OS_Mini_Project/sstf.png
+order: 19
 url: https://osproject.vercel.app
 github: https://github.com/aryanranderiya/OSMiniProject
 ---

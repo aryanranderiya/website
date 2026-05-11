@@ -6,7 +6,9 @@ date: 2023-03-01
 tech: [PHP, MySQL, HTML, CSS, JavaScript]
 featured: false
 type: web
+folder: Projects
 images: []
+order: 19
 github: https://github.com/aryanranderiya/Student-Management-System
 ---
 

@@ -6,11 +6,13 @@ date: 2023-12-01
 tech: [Python, Google API]
 featured: false
 type: cli
+folder: Projects
 coverImage: /ProjectMedia/Google_Contacts Email Scraper/project_banner_google_contacts.png
 images:
   - /ProjectMedia/Google_Contacts Email Scraper/project_banner_google_contacts.png
   - /ProjectMedia/Google_Contacts Email Scraper/2024-03-30_22-39.webp
   - /ProjectMedia/Google_Contacts Email Scraper/2024-03-30_22-41.png
+order: 19
 github: https://github.com/aryanranderiya/GoogleContactsEmailScraper
 ---
 

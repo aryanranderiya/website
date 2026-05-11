@@ -6,10 +6,12 @@ date: 2025-02-01
 tech: [Go]
 featured: false
 type: cli
+folder: Projects
 coverImage: /ProjectMedia/GoSpider/screenshot-1.png
 images:
   - /ProjectMedia/GoSpider/screenshot-1.png
   - /ProjectMedia/GoSpider/screenshot-2.webp
+order: 18
 github: https://github.com/aryanranderiya/GoSpider
 ---
 

@@ -6,10 +6,12 @@ date: 2024-05-01
 tech: [Objective-C]
 featured: false
 type: desktop
+folder: Projects
 coverImage: /ProjectMedia/Bauhaus_Screensaver/screenshot-1.webp
 images:
   - /ProjectMedia/Bauhaus_Screensaver/screenshot-1.webp
   - /ProjectMedia/Bauhaus_Screensaver/screenshot-2.webp
+order: 17
 github: https://github.com/aryanranderiya/BauhausScreensaver
 ---
 

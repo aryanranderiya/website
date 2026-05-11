@@ -6,7 +6,9 @@ date: 2024-09-01
 tech: [React, Node.js, Express, MongoDB, TailwindCSS, TypeScript]
 featured: false
 type: web
+folder: Projects
 images: []
+order: 14
 github: https://github.com/aryanranderiya/Automatic-License-Plate-Recognition
 ---
 

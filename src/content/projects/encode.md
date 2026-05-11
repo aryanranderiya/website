@@ -6,6 +6,7 @@ date: 2024-08-01
 tech: [React, Node.js, Express, MongoDB, TailwindCSS, JavaScript]
 featured: false
 type: web
+folder: Projects
 coverImage: /ProjectMedia/Encode_Official Website/encode.webp
 images:
   - /ProjectMedia/Encode_Official Website/encode.webp
@@ -18,6 +19,7 @@ images:
   - /ProjectMedia/Encode_Official Website/6.webp
   - /ProjectMedia/Encode_Official Website/7.webp
   - /ProjectMedia/Encode_Official Website/8.webp
+order: 10
 url: https://encodepdeu.vercel.app
 github: https://github.com/aryanranderiya/EncodeWebsite2024Fork
 ---

@@ -6,10 +6,12 @@ date: 2025-03-01
 tech: [Python, FastAPI, SQLite, MCP]
 featured: false
 type: other
+folder: Projects
 coverImage: /ProjectMedia/Itinerary_MCP/screenshot-1.png
 images:
   - /ProjectMedia/Itinerary_MCP/screenshot-1.png
   - /ProjectMedia/Itinerary_MCP/screenshot-2.png
+order: 18
 github: https://github.com/aryanranderiya/itinerary-mcp-server
 ---
 

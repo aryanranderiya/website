@@ -6,6 +6,7 @@ date: 2023-06-01
 tech: [Java, Android, Firebase]
 featured: true
 type: mobile
+folder: Featured
 coverImage: /ProjectMedia/TicketBus/TicketBus_project_banner.webp
 images:
   - /ProjectMedia/TicketBus/TicketBus_project_banner.webp
@@ -23,6 +24,7 @@ images:
   - /ProjectMedia/TicketBus/AdminPanel_Location.webp
   - /ProjectMedia/TicketBus/AdminPanel_Users.webp
 video: /ProjectMedia/TicketBus/Ticketbus.mp4
+order: 5
 github: https://github.com/aryanranderiya/TicketBus
 ---
 

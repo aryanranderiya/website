@@ -6,12 +6,14 @@ date: 2023-09-01
 tech: [HTML, CSS, JavaScript, Firebase]
 featured: false
 type: web
+folder: Hackathon
 coverImage: /ProjectMedia/Smart_Student Projects/SSPBanner.webp
 images:
   - /ProjectMedia/Smart_Student Projects/SSPBanner.webp
   - /ProjectMedia/Smart_Student Projects/screenshot-1.webp
   - /ProjectMedia/Smart_Student Projects/screenshot-2.webp
   - /ProjectMedia/Smart_Student Projects/screenshot-3.webp
+order: 26
 url: http://projects.aryanranderiya.com/SmartStudentProjects/
 github: https://github.com/aryanranderiya/SmartStudentProjects
 ---

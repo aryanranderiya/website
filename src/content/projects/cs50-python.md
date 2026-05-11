@@ -6,7 +6,9 @@ date: 2023-08-10
 tech: [Python]
 featured: false
 type: other
+folder: Projects
 images: []
+order: 33
 github: https://github.com/aryanranderiya/cs50-python
 ---
 

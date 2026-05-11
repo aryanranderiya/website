@@ -6,11 +6,13 @@ date: 2024-06-01
 tech: [React, TypeScript, Python, FastAPI]
 featured: true
 type: web
+folder: Featured
 coverImage: /ProjectMedia/GAIA/IntroducingGAIABanner.webp
 images:
   - /ProjectMedia/GAIA/IntroducingGAIABanner.webp
   - /ProjectMedia/GAIA/homepage_image.webp
   - /ProjectMedia/GAIA/WhatsApp Image 2024-06-22 at 20.09.10.jpeg
+order: 1
 url: https://heygaia.io
 github: https://github.com/theexperiencecompany/gaia
 ---

@@ -6,6 +6,7 @@ date: 2025-02-01
 tech: [React, TypeScript, TailwindCSS]
 featured: false
 type: web
+folder: Client
 coverImage: /ProjectMedia/BlinkAnalytics/1.webp
 images:
   - /ProjectMedia/BlinkAnalytics/1.webp
@@ -17,6 +18,7 @@ images:
   - /ProjectMedia/BlinkAnalytics/7.webp
   - /ProjectMedia/BlinkAnalytics/8.webp
   - /ProjectMedia/BlinkAnalytics/9.webp
+order: 30
 url: https://blinkanalytics.in
 github: https://github.com/aryanranderiya/blink-analytics
 ---

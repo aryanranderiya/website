@@ -6,6 +6,7 @@ date: 2024-01-20
 tech: [Next.js, Python, Supabase]
 featured: true
 type: mobile
+folder: Client
 coverImage: /ProjectMedia/Rezrek/image (1).webp
 images:
   - /ProjectMedia/Rezrek/team.jpeg
@@ -22,6 +23,7 @@ images:
   - /ProjectMedia/Rezrek/9.webp
   - /ProjectMedia/Rezrek/10.webp
   - /ProjectMedia/Rezrek/11.webp
+order: 3
 url: https://rezrek.com
 ---
 

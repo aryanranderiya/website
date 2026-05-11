@@ -6,6 +6,7 @@ date: 2024-04-01
 tech: [React, Node.js, Express, Supabase]
 featured: false
 type: web
+folder: Projects
 coverImage: /ProjectMedia/University_Research Portal/UniversityPortalBanner.webp
 images:
   - /ProjectMedia/University_Research Portal/UniversityPortalBanner.webp
@@ -20,6 +21,7 @@ images:
   - /ProjectMedia/University_Research Portal/8.webp
   - /ProjectMedia/University_Research Portal/9.webp
   - /ProjectMedia/University_Research Portal/10.webp
+order: 13
 ---
 
 Built this for the Computer Science department at PDEU. Professors needed a centralized place to upload and manage their research papers, conference publications, patents, and projects. The portal generates analytics on top of all that data - publication trends, department-level metrics, that kind of thing.

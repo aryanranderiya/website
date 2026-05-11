@@ -6,7 +6,9 @@ date: 2025-01-01
 tech: [Python, FastAPI, Next.js, TypeScript]
 featured: false
 type: web
+folder: Projects
 images: []
+order: 15
 github: https://github.com/aryanranderiya/browser-automation
 ---
 

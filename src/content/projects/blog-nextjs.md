@@ -6,6 +6,7 @@ date: 2024-02-01
 tech: [Next.js, TypeScript, TailwindCSS, SQLite]
 featured: false
 type: web
+folder: Projects
 coverImage: /ProjectMedia/Pesronal_Blog/blog_project_banner.webp
 images:
   - /ProjectMedia/Pesronal_Blog/blog_project_banner.webp
@@ -13,6 +14,7 @@ images:
   - /ProjectMedia/Pesronal_Blog/screenshot-2.webp
   - /ProjectMedia/Pesronal_Blog/screenshot-3.webp
   - /ProjectMedia/Pesronal_Blog/screenshot-4.webp
+order: 19
 url: https://blog.aryanranderiya.com
 github: https://github.com/aryanranderiya/Blog-Next.js
 ---

@@ -6,6 +6,8 @@ date: 2025-03-01
 tech: [Go]
 featured: false
 type: cli
+folder: Projects
+order: 18
 github: https://github.com/aryanranderiya/stargazer
 images:
   - /ProjectMedia/Stargazer/screenshot.webp

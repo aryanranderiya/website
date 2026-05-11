@@ -6,7 +6,9 @@ date: 2024-06-01
 tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: web
+folder: Projects
 images: []
+order: 16
 github: https://github.com/aryanranderiya/Generate-PDF-from-Practical
 ---
 

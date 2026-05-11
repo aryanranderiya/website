@@ -6,6 +6,8 @@ date: 2024-10-23
 tech: [React, TypeScript, Vite, Deno, MongoDB, TailwindCSS]
 featured: false
 type: web
+folder: Client
+order: 36
 coverImage: /ProjectMedia/FoodPay/1.jpeg
 images:
   - /ProjectMedia/FoodPay/1.jpeg

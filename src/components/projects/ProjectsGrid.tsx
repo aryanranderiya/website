@@ -36,6 +36,7 @@ interface Project {
 	type: string;
 	featured: boolean;
 	images: string[];
+	folder: string;
 	url?: string;
 	github?: string;
 	coverImage?: string;

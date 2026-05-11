@@ -6,7 +6,9 @@ date: 2024-09-01
 tech: [TypeScript, Python, Next.js]
 featured: false
 type: web
+folder: Hackathon
 images: []
+order: 24
 github: https://github.com/aryanranderiya/Few-Shot-Language-Agnostic-Keyword-Spotting
 ---
 

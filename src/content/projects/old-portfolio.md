@@ -6,6 +6,7 @@ date: 2023-12-01
 tech: [HTML, CSS, JavaScript, Firebase, GSAP]
 featured: false
 type: web
+folder: Projects
 coverImage: /ProjectMedia/Portfolio/Website-Homepage.webp
 images:
   - /ProjectMedia/Portfolio/Website-Homepage.webp
@@ -36,6 +37,7 @@ images:
   - /ProjectMedia/Portfolio/designprojects_8.webp
   - /ProjectMedia/Portfolio/designprojects_9.webp
 video: /ProjectMedia/Personal_Portfolio/portfolio-demo.mp4
+order: 35
 ---
 
 The first version of my personal portfolio, built from scratch in vanilla HTML, CSS, and JavaScript over about three months in late 2023. No frameworks, no build tools - just hand-written markup and stylesheets, with everything wired together by raw DOM APIs and a few targeted libraries. Animations and scroll-driven transitions ran through GSAP, which gave me the control to fine-tune timing and easing curves until the experience felt smooth on every section.

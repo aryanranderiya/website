@@ -23,6 +23,13 @@ const { entry } = Astro.props;
 const { Content } = await entry.render();
 const p = entry.data;
 
+const FOLDER_CHIP: Record<string, { color: string; label: string }> = {
+  Featured: { color: "#f59e0b", label: "Featured" },
+  Client: { color: "#10b981", label: "Freelance" },
+  Hackathon: { color: "#a78bfa", label: "Hackathon" },
+};
+
+const chip = p.folder ? FOLDER_CHIP[p.folder] : undefined;
 const formattedDate = new Date(p.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 const allImages = p.images ?? [];
 const canonicalURL = new URL(Astro.url.pathname, SITE.url).toString();
@@ -103,8 +110,21 @@ const galleryImages = allImages;
 
   <!-- Header -->
   <header class="mb-8">
-    <!-- Meta row: type · year -->
+    <!-- Meta row: folder · type · date -->
     <div class="mb-3 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+      {
+        chip && (
+          <>
+            <span
+              class="text-[11px] px-2 rounded-full"
+              style={`background-color: ${chip.color}20; color: ${chip.color};`}
+            >
+              {chip.label}
+            </span>
+            <span class="text-(--text-ghost) text-[11px] opacity-40">·</span>
+          </>
+        )
+      }
       <span class="text-[11px] text-(--text-ghost)">{p.type}</span>
       <span class="text-(--text-ghost) text-[11px] opacity-40">·</span>
       <span class="text-[11px] text-(--text-ghost)">{formattedDate}</span>

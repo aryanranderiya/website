@@ -33,7 +33,9 @@ const projects = defineCollection({
 		type: z
 			.enum(['mobile', 'web', 'os', 'design', 'other', 'cli', 'game', 'desktop'])
 			.default('web'),
+		folder: z.string().default('Projects'),
 		coverImage: z.string().optional(),
+		order: z.number().default(99),
 	}),
 });
 

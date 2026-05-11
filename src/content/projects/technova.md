@@ -6,6 +6,7 @@ date: 2024-12-01
 tech: [Next.js, TypeScript, FastAPI, Python]
 featured: false
 type: web
+folder: Hackathon
 coverImage: /ProjectMedia/TechNova/screenshot-1.webp
 images:
   - /ProjectMedia/TechNova/screenshot-1.webp
@@ -13,6 +14,7 @@ images:
   - /ProjectMedia/TechNova/screenshot-3.webp
   - /ProjectMedia/TechNova/screenshot-4.webp
   - /ProjectMedia/TechNova/screenshot-5.webp
+order: 25
 url: https://tech-nova-hackathon.vercel.app
 github: https://github.com/aryanranderiya/TechNovaHackathon
 ---
