@@ -50,14 +50,15 @@ export default function ProjectCard({
 	onHoverChange?: (data: { project: Project; index: number; el: HTMLElement } | null) => void;
 }) {
 	const [hovered, setHovered] = useState(false);
-	const ref = useRef<HTMLDivElement>(null);
+	const ref = useRef<HTMLAnchorElement>(null);
 	const chip = FOLDER_CHIP[project.folder];
 	const typeLabel = TYPE_LABELS[project.type] ?? project.type;
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			<m.div
+			<m.a
 				ref={ref}
+				href={`/projects/${project.slug}`}
 				variants={{
 					hidden: { opacity: 0, y: 4 },
 					show: {
@@ -74,10 +75,7 @@ export default function ProjectCard({
 					setHovered(false);
 					onHoverChange?.(null);
 				}}
-				onClick={() => {
-					window.location.href = `/projects/${project.slug}`;
-				}}
-				className={`dim-list-row flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+				className={`dim-list-row flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] no-underline transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 			>
 				{/* Left: title + single chip — folder chip takes priority over type */}
 				<div className="flex min-w-0 shrink-0 items-center gap-1.5">
@@ -111,7 +109,7 @@ export default function ProjectCard({
 						</span>
 					</div>
 				)}
-			</m.div>
+			</m.a>
 		</LazyMotion>
 	);
 }

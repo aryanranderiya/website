@@ -17,6 +17,7 @@ import {
 } from '@icons';
 import * as Dialog from '@radix-ui/react-dialog';
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
+import { navigate } from 'astro:transitions/client';
 import { Command } from 'cmdk';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
@@ -145,13 +146,13 @@ export default function CommandK() {
 		setQuery('');
 	}, []);
 
-	const navigate = useCallback((href: string, external?: boolean) => {
+	const go = useCallback((href: string, external?: boolean) => {
 		setOpen(false);
 		setQuery('');
 		if (external) {
 			window.open(href, '_blank', 'noopener');
 		} else {
-			window.location.href = href;
+			void navigate(href);
 		}
 	}, []);
 
@@ -226,7 +227,7 @@ export default function CommandK() {
 														<Command.Item
 															key={page.href}
 															value={`${page.label} ${page.description}`}
-															onSelect={() => navigate(page.href)}
+															onSelect={() => go(page.href)}
 														>
 															<span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
 																<HugeiconsIcon icon={IconComp} size={ITEM_ICON_SIZE} />
@@ -258,7 +259,7 @@ export default function CommandK() {
 														<Command.Item
 															key={link.href}
 															value={`${link.label} social`}
-															onSelect={() => navigate(link.href, true)}
+															onSelect={() => go(link.href, true)}
 														>
 															<span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
 																<HugeiconsIcon icon={IconComp} size={ITEM_ICON_SIZE} />
@@ -288,7 +289,7 @@ export default function CommandK() {
 														value={`${action.label} ${action.description} ${action.keywords ?? ''}`}
 														onSelect={() => {
 															if (action.href)
-																navigate(action.href, action.href.startsWith('http'));
+																go(action.href, action.href.startsWith('http'));
 															else runAction(action.id);
 														}}
 													>
