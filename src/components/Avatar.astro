@@ -167,8 +167,13 @@ const { inline = false } = Astro.props;
     cleanup?.();
     cleanup = null;
 
-    const inline = document.querySelector<HTMLElement>('[data-avatar-inline]');
-    if (!inline) {
+    // Observe the name row, not the inline avatar — once the avatar goes
+    // display:none the IntersectionObserver can't see it scroll back into
+    // view, so the morph-back never fires. The row stays laid out either
+    // way (text block keeps it sized), so its visibility tracks scroll
+    // position regardless of which avatar copy is showing.
+    const row = document.querySelector<HTMLElement>('[data-hero-name-row]');
+    if (!row) {
       // Non-home page — no inline avatar. The body class is set by the
       // inline init script in PageLayout for SSR.
       return;
@@ -233,7 +238,7 @@ const { inline = false } = Astro.props;
       },
       { threshold: 0, rootMargin: '0px' }
     );
-    observer.observe(inline);
+    observer.observe(row);
     cleanup = () => observer.disconnect();
   }
 
