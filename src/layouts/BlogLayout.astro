@@ -23,6 +23,7 @@ interface Props {
   cover?: string;
   headings?: Heading[];
   readingTime?: number;
+  slug?: string;
 }
 
 const {
@@ -35,6 +36,7 @@ const {
   cover,
   headings = [],
   readingTime,
+  slug,
 } = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
@@ -181,7 +183,12 @@ const breadcrumbJsonLd = JSON.stringify({
 
       <!-- Header -->
       <header class="mb-6">
-        <h1 class="text-heading-1 mb-4">{title}</h1>
+        <h1
+          class="text-heading-1 mb-4"
+          transition:name={slug ? `blog-title-${slug}` : undefined}
+        >
+          {title}
+        </h1>
         <div
           class="flex flex-wrap items-center text-[12px] text-(--text-ghost) tracking-[-0.01em] gap-x-3 gap-y-1.5 mb-4"
         >

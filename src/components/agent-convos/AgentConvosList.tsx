@@ -298,10 +298,11 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 										<a
 											href={`/agent-convos/${convo.slug}`}
 											className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[13px] text-[var(--text-primary)] no-underline"
-											// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
+											// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent; view-transition-name must be unique per slug
 											style={{
 												fontVariationSettings: '"wght" 480',
 												letterSpacing: '-0.012em',
+												viewTransitionName: `convo-title-${convo.slug}`,
 											}}
 											onClick={(e) => e.stopPropagation()}
 										>

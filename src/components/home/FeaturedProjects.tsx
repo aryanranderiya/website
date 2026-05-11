@@ -11,18 +11,14 @@ interface Project {
 	slug: string;
 	title: string;
 	description: string;
-	tags: string[];
 	tech: string[];
 	type: string;
-	status: string;
 	featured: boolean;
 	images: string[];
-	folder: string;
 	url?: string;
 	github?: string;
 	coverImage?: string;
 	date?: string;
-	featuredImage?: string;
 }
 
 const EASE = [0.19, 1, 0.22, 1] as const;

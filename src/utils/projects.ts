@@ -22,10 +22,8 @@ export function mapProject(entry: CollectionEntry<'projects'>) {
 		title: entry.data.title,
 		description: entry.data.description,
 		shortDescription: entry.data.shortDescription,
-		tags: entry.data.tags,
 		tech: entry.data.tech,
 		type: entry.data.type,
-		status: entry.data.status,
 		featured: entry.data.featured,
 		images: entry.data.images,
 		folder: entry.data.folder,
@@ -33,6 +31,5 @@ export function mapProject(entry: CollectionEntry<'projects'>) {
 		github: entry.data.github,
 		coverImage: entry.data.coverImage,
 		date: entry.data.date?.toISOString(),
-		featuredImage: entry.data.featuredImage,
 	};
 }

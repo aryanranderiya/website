@@ -3,13 +3,11 @@ title: Automatic License Plate Recognition
 description: AI-powered license plate detection and recognition system with a web dashboard for real-time monitoring and record search.
 shortDescription: AI license plate detection & web dashboard
 date: 2024-09-01
-tags: [AI / ML, Computer Vision]
 tech: [React, Node.js, Express, MongoDB, TailwindCSS, TypeScript]
 featured: false
 type: web
 folder: Projects
 images: []
-status: completed
 order: 14
 github: https://github.com/aryanranderiya/Automatic-License-Plate-Recognition
 ---

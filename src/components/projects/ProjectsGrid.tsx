@@ -21,7 +21,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CheckboxGroup, CheckboxItem } from '@/components/ui/checkbox-group';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { TabItem, Tabs, TabsList } from '@/components/ui/tabs';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 import { getTechIconUrl } from '../../utils/techIcons';
 import ProjectCard from './ProjectCard';
@@ -33,16 +32,15 @@ interface Project {
 	title: string;
 	description: string;
 	shortDescription?: string;
-	tags: string[];
 	tech: string[];
 	type: string;
-	status: string;
 	featured: boolean;
 	images: string[];
 	folder: string;
 	url?: string;
 	github?: string;
 	coverImage?: string;
+	date?: string;
 }
 
 interface HoveredState {
@@ -63,19 +61,15 @@ const TYPE_CHIPS: { value: string; label: string; icon: ComponentType<IconProps>
 	{ value: 'os', label: 'OS', icon: Apple01Icon },
 ];
 
-type FilterTab = 'topics' | 'tech';
-
 export default function ProjectsGrid({ projects: rawProjects }: { projects: Project[] }) {
 	const projects = useMemo(() => rawProjects.filter((p) => p.type !== 'other'), [rawProjects]);
 
 	const [search, setSearch] = useState('');
 	const [searchFocused, setSearchFocused] = useState(false);
 	const [hovered, setHovered] = useState<HoveredState | null>(null);
-	const [activeTagFilters, setActiveTagFilters] = useState<string[]>([]);
 	const [activeTechFilters, setActiveTechFilters] = useState<string[]>([]);
 	const [activeTypeFilter, setActiveTypeFilter] = useState<string | null>(null);
 	const [tagPopoverOpen, setTagPopoverOpen] = useState(false);
-	const [filterTab, setFilterTab] = useState<FilterTab>('tech');
 	const [tagSearch, setTagSearch] = useState('');
 	const ready = useAfterPreloader();
 	const searchRef = useRef<HTMLInputElement>(null);
@@ -93,16 +87,6 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 		return () => window.removeEventListener('keydown', handler);
 	}, []);
 
-	const tagCounts = useMemo(() => {
-		const counts: Record<string, number> = {};
-		projects.forEach((p) => {
-			p.tags.forEach((t) => {
-				counts[t] = (counts[t] || 0) + 1;
-			});
-		});
-		return counts;
-	}, [projects]);
-
 	const techCounts = useMemo(() => {
 		const counts: Record<string, number> = {};
 		projects.forEach((p) => {
@@ -112,11 +96,6 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 		});
 		return counts;
 	}, [projects]);
-
-	const sortedTags = useMemo(
-		() => Object.entries(tagCounts).sort((a, b) => b[1] - a[1]),
-		[tagCounts]
-	);
 
 	const sortedTech = useMemo(
 		() => Object.entries(techCounts).sort((a, b) => b[1] - a[1]),
@@ -130,10 +109,6 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 			list = list.filter((p) => p.type === activeTypeFilter);
 		}
 
-		if (activeTagFilters.length > 0) {
-			list = list.filter((p) => activeTagFilters.every((t) => p.tags.includes(t)));
-		}
-
 		if (activeTechFilters.length > 0) {
 			list = list.filter((p) => activeTechFilters.every((t) => p.tech?.includes(t)));
 		}
@@ -141,30 +116,25 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 		if (search.trim()) {
 			const q = search.toLowerCase();
 			list = list.filter(
-				(p) =>
-					p.title.toLowerCase().includes(q) ||
-					p.description.toLowerCase().includes(q) ||
-					p.tags.some((t) => t.toLowerCase().includes(q))
+				(p) => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
 			);
 		}
 
 		return list;
-	}, [projects, activeTypeFilter, activeTagFilters, activeTechFilters, search]);
+	}, [projects, activeTypeFilter, activeTechFilters, search]);
 
-	const activeListForTab = filterTab === 'topics' ? sortedTags : sortedTech;
 	const visibleEntries = useMemo(() => {
-		if (!tagSearch.trim()) return activeListForTab;
+		if (!tagSearch.trim()) return sortedTech;
 		const q = tagSearch.toLowerCase();
-		return activeListForTab.filter(([t]) => t.toLowerCase().includes(q));
-	}, [activeListForTab, tagSearch]);
+		return sortedTech.filter(([t]) => t.toLowerCase().includes(q));
+	}, [sortedTech, tagSearch]);
 
-	const totalActiveFacets = activeTagFilters.length + activeTechFilters.length;
+	const totalActiveFacets = activeTechFilters.length;
 
 	const hasAnyFilter = !!activeTypeFilter || totalActiveFacets > 0 || !!search.trim();
 
 	const clearAllFilters = () => {
 		setActiveTypeFilter(null);
-		setActiveTagFilters([]);
 		setActiveTechFilters([]);
 		setSearch('');
 	};
@@ -174,7 +144,6 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 			requestAnimationFrame(() => tagSearchRef.current?.focus());
 		} else {
 			setTagSearch('');
-			setFilterTab('tech');
 		}
 	}, [tagPopoverOpen]);
 
@@ -198,25 +167,13 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 	const rotation = hovered ? ROTATIONS[hovered.index % 2] : 0;
 	const previewTop = hovered ? hovered.rect.top + hovered.rect.height / 2 : 0;
 
-	const toggleTagFilter = (tag: string) => {
-		setActiveTagFilters((prev) =>
-			prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-		);
-	};
-
 	const toggleTechFilter = (tech: string) => {
 		setActiveTechFilters((prev) =>
 			prev.includes(tech) ? prev.filter((t) => t !== tech) : [...prev, tech]
 		);
 	};
 
-	const toggleEntry = (value: string) => {
-		if (filterTab === 'topics') toggleTagFilter(value);
-		else toggleTechFilter(value);
-	};
-
-	const isEntryActive = (value: string) =>
-		filterTab === 'topics' ? activeTagFilters.includes(value) : activeTechFilters.includes(value);
+	const isEntryActive = (value: string) => activeTechFilters.includes(value);
 
 	return (
 		<LazyMotion features={loadFeatures}>
@@ -270,23 +227,6 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 							}}
 							className="flex max-h-[360px] min-w-[240px] flex-col"
 						>
-							{/* Tabs */}
-							<div className="px-1 pt-1 pb-0.5">
-								<Tabs
-									value={filterTab}
-									onValueChange={(v) => {
-										setFilterTab(v as FilterTab);
-										setTagSearch('');
-										requestAnimationFrame(() => tagSearchRef.current?.focus());
-									}}
-								>
-									<TabsList className="w-full">
-										<TabItem value="tech" label="Tech" className="flex-1 justify-center" />
-										<TabItem value="topics" label="Topic" className="flex-1 justify-center" />
-									</TabsList>
-								</Tabs>
-							</div>
-
 							{/* Popover search */}
 							<div className="relative px-1 pt-1.5 pb-1">
 								<span className="pointer-events-none absolute top-1/2 left-3 flex -translate-y-1/2 items-center text-[var(--text-ghost)]">
@@ -297,7 +237,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 									type="text"
 									value={tagSearch}
 									onChange={(e) => setTagSearch(e.target.value)}
-									placeholder={filterTab === 'topics' ? 'Search topics…' : 'Search tech…'}
+									placeholder="Search tech…"
 									className="w-full rounded-lg bg-[var(--muted-bg)] py-[5px] pr-2 pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none placeholder:text-[var(--text-ghost)]"
 								/>
 							</div>
@@ -306,10 +246,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 							<div className="flex h-[22px] items-center justify-end px-2">
 								<button
 									type="button"
-									onClick={() => {
-										setActiveTagFilters([]);
-										setActiveTechFilters([]);
-									}}
+									onClick={() => setActiveTechFilters([])}
 									disabled={totalActiveFacets === 0}
 									className={`inline-flex items-center gap-1 rounded-[6px] bg-transparent px-1.5 py-[2px] text-[10px] tracking-[0.01em] transition-opacity duration-100 ${totalActiveFacets > 0 ? 'cursor-pointer text-[var(--text-ghost)] opacity-100 hover:text-[var(--text-secondary)]' : 'pointer-events-none opacity-0'}`}
 									aria-hidden={totalActiveFacets === 0}
@@ -322,11 +259,10 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 							<div className="min-h-0 flex-1 overflow-y-auto px-1 pb-1">
 								{visibleEntries.length === 0 ? (
 									<p className="px-2 py-3 text-center text-[11px] text-[var(--text-ghost)]">
-										{filterTab === 'topics' ? 'No topics match.' : 'No tech matches.'}
+										No tech matches.
 									</p>
 								) : (
 									<CheckboxGroup
-										key={filterTab}
 										checkedIndices={
 											new Set(
 												visibleEntries
@@ -342,7 +278,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 													key={entry}
 													index={i}
 													checked={isEntryActive(entry)}
-													onToggle={() => toggleEntry(entry)}
+													onToggle={() => toggleTechFilter(entry)}
 													ariaLabel={entry}
 													label={
 														<>
@@ -372,36 +308,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 						</PopoverContent>
 					</Popover>
 
-					{/* Active filter chips (tags + tech, removable) */}
-					{activeTagFilters.map((tag) => {
-						const iconUrl = getTechIconUrl(tag);
-						return (
-							<button
-								type="button"
-								key={`tag-${tag}`}
-								onClick={() => toggleTagFilter(tag)}
-								className="group/chip inline-flex shrink-0 cursor-pointer items-center gap-[5px] rounded-full border-none bg-[var(--muted-bg-strong,var(--muted-bg))] px-[8px] py-[3px] text-[11px] text-[var(--text-primary)] tracking-[-0.01em] transition-colors duration-100 hover:bg-[var(--muted-bg)]"
-								aria-label={`Remove filter ${tag}`}
-							>
-								{iconUrl && (
-									<img
-										src={iconUrl}
-										alt=""
-										width={11}
-										height={11}
-										className="shrink-0 object-contain"
-									/>
-								)}
-								<span>{tag}</span>
-								<HugeiconsIcon
-									icon={Cancel01Icon}
-									size={10}
-									color="currentColor"
-									className="text-[var(--text-ghost)] transition-colors duration-100 group-hover/chip:text-[var(--text-primary)]"
-								/>
-							</button>
-						);
-					})}
+					{/* Active filter chips (tech, removable) */}
 					{activeTechFilters.map((tech) => {
 						const iconUrl = getTechIconUrl(tech);
 						return (
@@ -435,10 +342,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 					{totalActiveFacets > 0 && (
 						<button
 							type="button"
-							onClick={() => {
-								setActiveTagFilters([]);
-								setActiveTechFilters([]);
-							}}
+							onClick={() => setActiveTechFilters([])}
 							className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border-none bg-transparent px-[8px] py-[3px] text-[11px] text-[var(--text-ghost)] tracking-[-0.01em] transition-colors duration-100 hover:text-[var(--text-secondary)]"
 						>
 							<HugeiconsIcon icon={Delete02Icon} size={11} color="currentColor" />
@@ -474,12 +378,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 				<AnimatePresence mode="sync" initial={false}>
 					{filtered.length > 0 ? (
 						<m.div
-							key={
-								search +
-								activeTagFilters.join(',') +
-								activeTechFilters.join(',') +
-								(activeTypeFilter ?? '')
-							}
+							key={search + activeTechFilters.join(',') + (activeTypeFilter ?? '')}
 							initial="hidden"
 							animate={ready ? 'show' : 'hidden'}
 							exit={{ opacity: 0 }}
@@ -536,7 +435,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 								animate={{ opacity: 1, scale: 1, rotate: rotation }}
 								exit={{ opacity: 0, scale: 0.84 }}
 								transition={{ duration: 0.22, ease: [0.19, 1, 0.22, 1] }}
-								className="pointer-events-none fixed z-[9999] w-[200px] overflow-hidden rounded-xl"
+								className="pointer-events-none fixed z-[9999] w-[200px] overflow-hidden rounded-xl ring-1 ring-[var(--border)]"
 								style={{
 									left: hovered.rect.right + 24,
 									top: previewTop,

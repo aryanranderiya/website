@@ -3,7 +3,6 @@ title: Blog (Next.js)
 description: Full-featured blogging platform with static generation, Markdown support, comments, and SEO - my old blog before switching to Astro.
 shortDescription: Markdown blog with SSG, comments & SEO
 date: 2024-02-01
-tags: [Blog]
 tech: [Next.js, TypeScript, TailwindCSS, SQLite]
 featured: false
 type: web
@@ -15,7 +14,6 @@ images:
   - /ProjectMedia/Pesronal_Blog/screenshot-2.webp
   - /ProjectMedia/Pesronal_Blog/screenshot-3.webp
   - /ProjectMedia/Pesronal_Blog/screenshot-4.webp
-status: completed
 order: 19
 url: https://blog.aryanranderiya.com
 github: https://github.com/aryanranderiya/Blog-Next.js

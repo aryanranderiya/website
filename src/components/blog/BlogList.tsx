@@ -1,6 +1,5 @@
 'use client';
 
-import { ChevronRight } from '@icons';
 import { LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 
@@ -54,7 +53,11 @@ export default function BlogList({
 							className="dim-list-row group/item -mx-2 flex items-center gap-[14px] border-[var(--border)] border-b px-2 py-[10px] no-underline"
 						>
 							<div className="flex min-w-0 flex-1 items-center gap-2">
-								<span className="truncate font-medium text-[13px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover/item:text-[var(--text-primary)]">
+								<span
+									// biome-ignore lint/nursery/noInlineStyles: view-transition-name must be unique per slug
+									style={{ viewTransitionName: `blog-title-${post.slug}` }}
+									className="truncate font-medium text-[13px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover/item:text-[var(--text-primary)]"
+								>
 									{post.title}
 								</span>
 								{post.featured && (

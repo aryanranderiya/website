@@ -78,45 +78,65 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 </style>
 
 <script>
-  const indicator = document.getElementById('toc-indicator') as HTMLElement | null;
-  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('#toc .toc-link'));
+  let tocObserver: IntersectionObserver | null = null;
 
-  function moveIndicator(link: HTMLAnchorElement) {
-    if (!indicator) return;
-    indicator.style.opacity = '1';
-    indicator.style.transform = `translateY(${link.offsetTop}px)`;
-    indicator.style.height = `${link.offsetHeight}px`;
-  }
-
-  function setActive(id: string) {
-    let found: HTMLAnchorElement | null = null;
-    for (const link of links) {
-      if (link.dataset.heading === id) {
-        link.classList.add('active');
-        found = link;
-      } else {
-        link.classList.remove('active');
-      }
+  function initToc() {
+    if (tocObserver) {
+      tocObserver.disconnect();
+      tocObserver = null;
     }
-    if (found) moveIndicator(found);
-  }
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      for (const entry of entries) {
-        if (entry.isIntersecting) {
-          setActive(entry.target.id);
+    const indicator = document.getElementById('toc-indicator') as HTMLElement | null;
+    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('#toc .toc-link'));
+
+    if (!links.length) return;
+
+    function moveIndicator(link: HTMLAnchorElement) {
+      if (!indicator) return;
+      indicator.style.opacity = '1';
+      indicator.style.transform = `translateY(${link.offsetTop}px)`;
+      indicator.style.height = `${link.offsetHeight}px`;
+    }
+
+    function setActive(id: string) {
+      let found: HTMLAnchorElement | null = null;
+      for (const link of links) {
+        if (link.dataset.heading === id) {
+          link.classList.add('active');
+          found = link;
+        } else {
+          link.classList.remove('active');
         }
       }
-    },
-    { rootMargin: '0px 0px -70% 0px', threshold: 0 },
-  );
-
-  links.forEach((link) => {
-    const id = link.dataset.heading;
-    if (id) {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
+      if (found) moveIndicator(found);
     }
-  });
+
+    // Set first heading active immediately; rAF ensures layout is settled
+    const firstLink = links[0];
+    if (firstLink) {
+      firstLink.classList.add('active');
+      requestAnimationFrame(() => moveIndicator(firstLink));
+    }
+
+    tocObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+          }
+        }
+      },
+      { rootMargin: '0px 0px -70% 0px', threshold: 0 },
+    );
+
+    links.forEach((link) => {
+      const id = link.dataset.heading;
+      if (id) {
+        const el = document.getElementById(id);
+        if (el) tocObserver!.observe(el);
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', initToc);
 </script>

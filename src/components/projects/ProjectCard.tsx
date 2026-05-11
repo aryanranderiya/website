@@ -11,17 +11,15 @@ interface Project {
 	title: string;
 	description: string;
 	shortDescription?: string;
-	tags: string[];
 	tech: string[];
 	type: string;
-	status: string;
 	featured: boolean;
 	images: string[];
 	folder: string;
 	url?: string;
 	github?: string;
 	coverImage?: string;
-	featuredImage?: string;
+	date?: string;
 }
 
 const FOLDER_CHIP: Record<string, { bg: string; color: string; label: string }> = {
@@ -82,8 +80,10 @@ export default function ProjectCard({
 				className={`dim-list-row flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 			>
 				{/* Left: title + single chip — folder chip takes priority over type */}
-				<div className="flex min-w-0 shrink items-center gap-1.5">
+				<div className="flex min-w-0 shrink-0 items-center gap-1.5">
 					<span
+						// biome-ignore lint/nursery/noInlineStyles: view-transition-name must be unique per slug
+						style={{ viewTransitionName: `project-title-${project.slug}` }}
 						className={`truncate font-medium text-[13px] tracking-[-0.02em] transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
 					>
 						{project.title}
@@ -105,9 +105,11 @@ export default function ProjectCard({
 
 				{/* Right: short description */}
 				{project.shortDescription && (
-					<span className="ml-auto max-w-[42%] shrink-0 truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
-						{project.shortDescription}
-					</span>
+					<div className="flex min-w-0 flex-1 items-center justify-end">
+						<span className="truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
+							{project.shortDescription}
+						</span>
+					</div>
 				)}
 			</m.div>
 		</LazyMotion>

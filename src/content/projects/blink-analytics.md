@@ -3,7 +3,6 @@ title: Blink Analytics
 description: A comprehensive analytics dashboard for real-time client reporting with custom charts, metrics, and data export. Built with React and TypeScript.
 shortDescription: Real-time analytics dashboard for clients
 date: 2025-02-01
-tags: [SaaS, Analytics]
 tech: [React, TypeScript, TailwindCSS]
 featured: false
 type: web
@@ -19,7 +18,6 @@ images:
   - /ProjectMedia/BlinkAnalytics/7.webp
   - /ProjectMedia/BlinkAnalytics/8.webp
   - /ProjectMedia/BlinkAnalytics/9.webp
-status: completed
 order: 30
 url: https://blinkanalytics.in
 github: https://github.com/aryanranderiya/blink-analytics

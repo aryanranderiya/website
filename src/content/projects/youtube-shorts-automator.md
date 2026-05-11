@@ -3,7 +3,6 @@ title: YouTube Shorts Automator
 description: An AI pipeline for automated creation and uploading of YouTube Shorts - generating script, voice-over, subtitles, background media, and metadata from a prompt.
 shortDescription: AI pipeline to auto-generate YouTube Shorts
 date: 2024-03-01
-tags: [Automation, AI / ML]
 tech: [Python, Flask, MongoDB, HTML, CSS]
 featured: false
 type: web
@@ -12,7 +11,6 @@ coverImage: /ProjectMedia/YouTube_Shorts Automator/project_banner (2).png
 images:
   - /ProjectMedia/YouTube_Shorts Automator/project_banner (2).png
   - /ProjectMedia/YouTube_Shorts Automator/2024-04-04_02-07.png
-status: completed
 order: 12
 ---
 

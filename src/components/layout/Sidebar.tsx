@@ -181,7 +181,6 @@ export default function Sidebar({
 	const [typography, setTypography] = useState<Typography>('helvetica');
 	const [shuffleOpen, setShuffleOpen] = useState(false);
 	const [mobileOpen, setMobileOpen] = useState(false);
-	const [avatarSrc, setAvatarSrc] = useState('/avatar.webp');
 	const [hoveredAction, setHoveredAction] = useState<string | null>(null);
 
 	const isDark = theme === 'dark';
@@ -291,36 +290,18 @@ export default function Sidebar({
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			{/* ── Desktop sidebar ── */}
-			<nav className="fixed top-[60px] bottom-[128px] left-[calc(50%-472px)] z-40 hidden w-[100px] flex-col gap-0.5 overflow-visible bg-transparent min-[960px]:flex">
+			{/* ── Desktop sidebar ──
+			    Top is driven by --sidebar-top: 60px by default. When the avatar
+			    is in the sidebar slot (`body.has-sidebar-avatar`), the var bumps
+			    to 112px so the nav lands below it. CSS transition on `top` makes
+			    the reflow smooth when the avatar scrolls in/out on the homepage. */}
+			<nav className="sidebar-nav fixed bottom-[128px] left-[calc(50%-472px)] z-40 hidden w-[100px] flex-col gap-0.5 overflow-visible bg-transparent min-[960px]:flex">
 				<m.div
 					variants={sidebarContainer}
 					initial="hidden"
 					animate={ready ? 'show' : 'hidden'}
 					className="flex h-full flex-col gap-0.5"
 				>
-					{/* Profile photo */}
-					<m.div variants={sidebarItem} className="mb-4">
-						<button
-							type="button"
-							className="cursor-pointer border-0 bg-transparent p-0"
-							onClick={() =>
-								setAvatarSrc((s) =>
-									s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp'
-								)
-							}
-							aria-label="Toggle avatar"
-						>
-							<img
-								src={avatarSrc}
-								alt="Aryan Randeriya"
-								width={32}
-								height={32}
-								className="block h-8 w-8 shrink-0 rounded-full opacity-90"
-							/>
-						</button>
-					</m.div>
-
 					{/* Nav groups */}
 					{NAV_GROUPS.map((group, gi) => (
 						<m.div
@@ -500,6 +481,7 @@ export default function Sidebar({
 								align="end"
 								sideOffset={14}
 								onOpenAutoFocus={(e) => e.preventDefault()}
+								onInteractOutside={(e) => { if (window.innerWidth < 960) e.preventDefault(); }}
 								className="hidden w-[164px] rounded-xl p-3 min-[960px]:block"
 							>
 								<div className="mb-2.5 flex items-center justify-between">
@@ -635,24 +617,10 @@ export default function Sidebar({
 
 			{/* ── Mobile top bar ── */}
 			<div className="fixed top-0 right-0 left-0 z-50 flex h-[52px] items-center justify-between bg-[var(--glass-bg)] px-5 backdrop-blur-[12px] min-[960px]:hidden">
-				<button
-					type="button"
-					className="cursor-pointer border-0 bg-transparent p-0"
-					onClick={() =>
-						setAvatarSrc((s) =>
-							s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp'
-						)
-					}
-					aria-label="Toggle avatar"
-				>
-					<img
-						src={avatarSrc}
-						alt="Aryan Randeriya"
-						width={28}
-						height={28}
-						className="block h-7 w-7 shrink-0 rounded-full opacity-90"
-					/>
-				</button>
+				{/* Avatar slot — rendered by <Avatar /> outside this persisted island
+				    so it can participate in view transitions. Spacer keeps the right
+				    controls aligned via justify-between. */}
+				<div className="h-7 w-7" aria-hidden="true" />
 				<div className="flex items-center gap-3">
 					<Popover open={shuffleOpen} onOpenChange={setShuffleOpen}>
 						<PopoverAnchor asChild>
@@ -670,6 +638,7 @@ export default function Sidebar({
 							align="end"
 							sideOffset={8}
 							onOpenAutoFocus={(e) => e.preventDefault()}
+							onInteractOutside={(e) => { if (window.innerWidth >= 960) e.preventDefault(); }}
 							className="w-[calc(100vw-32px)] rounded-xl p-3.5 min-[960px]:hidden"
 						>
 							<div className="mb-2.5 flex items-center justify-between">
@@ -779,24 +748,8 @@ export default function Sidebar({
 					>
 						{/* Menu top bar */}
 						<div className="flex h-[52px] items-center justify-between px-5">
-							<button
-								type="button"
-								className="cursor-pointer border-0 bg-transparent p-0"
-								onClick={() =>
-									setAvatarSrc((s) =>
-										s === '/avatar-original.webp' ? '/avatar.webp' : '/avatar-original.webp'
-									)
-								}
-								aria-label="Toggle avatar"
-							>
-								<img
-									src={avatarSrc}
-									alt="Aryan Randeriya"
-									width={28}
-									height={28}
-									className="block h-7 w-7 shrink-0 rounded-full opacity-90"
-								/>
-							</button>
+							{/* Avatar slot — see note above. */}
+							<div className="h-7 w-7" aria-hidden="true" />
 							<button
 								type="button"
 								onClick={() => setMobileOpen(false)}

@@ -3,7 +3,6 @@ title: Encode
 description: The official website of Encode - the Computer Science Club at PDEU. Full MERN stack with event management, member profiles, and resource sharing.
 shortDescription: CS Club website with events & resources
 date: 2024-08-01
-tags: [Community]
 tech: [React, Node.js, Express, MongoDB, TailwindCSS, JavaScript]
 featured: false
 type: web
@@ -20,7 +19,6 @@ images:
   - /ProjectMedia/Encode_Official Website/6.webp
   - /ProjectMedia/Encode_Official Website/7.webp
   - /ProjectMedia/Encode_Official Website/8.webp
-status: completed
 order: 10
 url: https://encodepdeu.vercel.app
 github: https://github.com/aryanranderiya/EncodeWebsite2024Fork

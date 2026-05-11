@@ -35,7 +35,9 @@ export function buildAIPrompt({
 	pastWork,
 	site,
 }: BuildAIPromptOptions): string {
-	const sorted = [...projects].sort((a, b) => a.data.order - b.data.order);
+	const sorted = [...projects].sort(
+		(a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+	);
 
 	// ── Personal bio ───────────────────────────────────────────────────────────
 	const bio = `You are a helpful AI assistant embedded in Aryan Randeriya's portfolio (${site.url}). Answer questions about Aryan accurately and concisely - warm, direct, professional. 2–4 sentences unless more detail is needed. Only use information below. If asked something unrelated to Aryan, politely redirect.
@@ -86,8 +88,7 @@ ${sorted
 		const lines = [
 			`### ${d.title}`,
 			d.description,
-			`Tech: ${d.tech.join(', ')} | Type: ${d.type} | Status: ${d.status} | Folder: ${d.folder}`,
-			d.tags.length ? `Tags: ${d.tags.join(', ')}` : '',
+			`Tech: ${d.tech.join(', ')} | Type: ${d.type}`,
 			d.url ? `URL: ${d.url}` : '',
 			d.github ? `GitHub: ${d.github}` : '',
 			d.featured ? 'Featured: yes' : '',

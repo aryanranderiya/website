@@ -3,7 +3,6 @@ title: OS Concepts Visualizer
 description: Interactive web app visualizing operating system algorithms - page replacement, producer-consumer, and disk scheduling.
 shortDescription: Visual simulator for OS scheduling algorithms
 date: 2024-01-01
-tags: [Education, Visualization]
 tech: [Python, Flask, HTML, CSS, JavaScript]
 featured: false
 type: web
@@ -14,7 +13,6 @@ images:
   - /ProjectMedia/OS_Mini_Project/srtn-2.png
   - /ProjectMedia/OS_Mini_Project/producer-consumer.png
   - /ProjectMedia/OS_Mini_Project/sstf.png
-status: completed
 order: 19
 url: https://osproject.vercel.app
 github: https://github.com/aryanranderiya/OSMiniProject

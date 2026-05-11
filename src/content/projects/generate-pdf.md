@@ -3,13 +3,11 @@ title: Generate PDF from Practical
 description: Web app for students to create professional PDFs from practical assignments with a code editor, AI generation, and Python execution.
 shortDescription: AI-powered PDF generator for practicals
 date: 2024-06-01
-tags: [Automation, AI / ML]
 tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: web
 folder: Projects
 images: []
-status: completed
 order: 16
 github: https://github.com/aryanranderiya/Generate-PDF-from-Practical
 ---
