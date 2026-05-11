@@ -290,20 +290,17 @@ export default function Sidebar({
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			{/* ── Desktop sidebar ── */}
-			<nav className="fixed top-[60px] bottom-[128px] left-[calc(50%-472px)] z-40 hidden w-[100px] flex-col gap-0.5 overflow-visible bg-transparent min-[960px]:flex">
+			{/* ── Desktop sidebar ──
+			    The avatar floats at top-[60px] outside this island (see <Avatar />)
+			    so it can participate in view transitions. The nav starts below it
+			    to avoid a hollow slot where the avatar would have been. */}
+			<nav className="fixed top-[112px] bottom-[128px] left-[calc(50%-472px)] z-40 hidden w-[100px] flex-col gap-0.5 overflow-visible bg-transparent min-[960px]:flex">
 				<m.div
 					variants={sidebarContainer}
 					initial="hidden"
 					animate={ready ? 'show' : 'hidden'}
 					className="flex h-full flex-col gap-0.5"
 				>
-					{/* Profile photo slot — the actual avatar is rendered by <Avatar />
-					    outside this persisted island so it can participate in view
-					    transitions. This spacer reserves the same vertical space (h-8
-					    + mb-4) so the nav groups don't shift when the avatar morphs. */}
-					<m.div variants={sidebarItem} className="mb-4 h-8" aria-hidden="true" />
-
 					{/* Nav groups */}
 					{NAV_GROUPS.map((group, gi) => (
 						<m.div

@@ -81,7 +81,12 @@ const tokensDisplay = formatTokensExact(convo.data.tokenCount, convo.data.tokens
 
     {/* Header */}
     <header class="mb-10">
-      <h1 class="text-heading-1 mb-4">{convo.data.title}</h1>
+      <h1
+        transition:name={`convo-title-${convo.slug}`}
+        class="text-heading-1 mb-4"
+      >
+        {convo.data.title}
+      </h1>
       <p class="text-body mb-6" style="color: var(--text-muted);">{convo.data.description}</p>
 
       {/* Meta chips */}
