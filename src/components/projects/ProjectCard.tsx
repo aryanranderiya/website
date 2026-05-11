@@ -72,7 +72,7 @@ export default function ProjectCard({
 				className={`dim-list-row flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 			>
 				{/* Left: title + type chip */}
-				<div className="flex min-w-0 shrink items-center gap-1.5">
+				<div className="flex min-w-0 shrink-0 items-center gap-1.5">
 					<span
 						// biome-ignore lint/nursery/noInlineStyles: view-transition-name must be unique per slug
 						style={{ viewTransitionName: `project-title-${project.slug}` }}
@@ -85,19 +85,14 @@ export default function ProjectCard({
 					</span>
 				</div>
 
-				{/* Right: short description + date */}
-				<div className="ml-auto flex shrink-0 items-center gap-2">
-					{project.shortDescription && (
-						<span className="max-w-[42%] truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
+				{/* Right: short description */}
+				{project.shortDescription && (
+					<div className="flex min-w-0 flex-1 items-center justify-end">
+						<span className="truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
 							{project.shortDescription}
 						</span>
-					)}
-					{project.date && (
-						<span className="shrink-0 text-[11px] text-[var(--text-ghost)] tabular-nums">
-							{new Date(project.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-						</span>
-					)}
-				</div>
+					</div>
+				)}
 			</m.div>
 		</LazyMotion>
 	);

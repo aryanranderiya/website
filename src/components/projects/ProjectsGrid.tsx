@@ -434,7 +434,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 								animate={{ opacity: 1, scale: 1, rotate: rotation }}
 								exit={{ opacity: 0, scale: 0.84 }}
 								transition={{ duration: 0.22, ease: [0.19, 1, 0.22, 1] }}
-								className="pointer-events-none fixed z-[9999] w-[200px] overflow-hidden rounded-xl"
+								className="pointer-events-none fixed z-[9999] w-[200px] overflow-hidden rounded-xl ring-1 ring-[var(--border)]"
 								style={{
 									left: hovered.rect.right + 24,
 									top: previewTop,

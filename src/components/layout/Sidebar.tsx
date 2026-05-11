@@ -481,6 +481,7 @@ export default function Sidebar({
 								align="end"
 								sideOffset={14}
 								onOpenAutoFocus={(e) => e.preventDefault()}
+								onInteractOutside={(e) => { if (window.innerWidth < 960) e.preventDefault(); }}
 								className="hidden w-[164px] rounded-xl p-3 min-[960px]:block"
 							>
 								<div className="mb-2.5 flex items-center justify-between">
@@ -637,6 +638,7 @@ export default function Sidebar({
 							align="end"
 							sideOffset={8}
 							onOpenAutoFocus={(e) => e.preventDefault()}
+							onInteractOutside={(e) => { if (window.innerWidth >= 960) e.preventDefault(); }}
 							className="w-[calc(100vw-32px)] rounded-xl p-3.5 min-[960px]:hidden"
 						>
 							<div className="mb-2.5 flex items-center justify-between">

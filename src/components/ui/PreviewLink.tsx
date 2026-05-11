@@ -224,19 +224,39 @@ export default function PreviewLink({
 						</span>
 						{isMailto && (
 							<span
-								className="ml-1 inline-block align-middle text-[var(--text-muted)] leading-none"
-								// biome-ignore lint/nursery/noInlineStyles: dynamic slide-in animation driven by hovered state
+								className="relative ml-1 inline-block align-middle leading-none"
+								// biome-ignore lint/nursery/noInlineStyles: dynamic opacity driven by hovered/copied state
 								style={{
-									opacity: hovered ? 1 : 0,
-									transform: hovered ? 'translateX(0)' : 'translateX(-5px)',
-									transition: 'opacity 0.2s ease, transform 0.2s cubic-bezier(0.19,1,0.22,1)',
+									width: 14,
+									height: 14,
+									opacity: copied ? 1 : hovered ? 0.7 : 0.3,
+									transition: 'opacity 0.2s ease',
 								}}
 							>
-								<HugeiconsIcon
-									icon={copied ? CheckmarkCircle02Icon : Copy01Icon}
-									size={copied ? 17 : 14}
-									className={copied ? 'text-[#00bbff]' : undefined}
-								/>
+								<span
+									className="absolute inset-0 flex items-center justify-center text-[var(--text-muted)]"
+									// biome-ignore lint/nursery/noInlineStyles: blur/scale cross-fade on copy→tick transition
+									style={{
+										opacity: copied ? 0 : 1,
+										filter: copied ? 'blur(4px)' : 'blur(0px)',
+										transform: copied ? 'scale(0.65)' : 'scale(1)',
+										transition: 'opacity 0.22s ease, filter 0.22s ease, transform 0.28s cubic-bezier(0.19,1,0.22,1)',
+									}}
+								>
+									<HugeiconsIcon icon={Copy01Icon} size={14} />
+								</span>
+								<span
+									className="absolute inset-0 flex items-center justify-center text-[#00bbff]"
+									// biome-ignore lint/nursery/noInlineStyles: blur/scale cross-fade on copy→tick transition
+									style={{
+										opacity: copied ? 1 : 0,
+										filter: copied ? 'blur(0px)' : 'blur(4px)',
+										transform: copied ? 'scale(1)' : 'scale(0.65)',
+										transition: 'opacity 0.22s ease, filter 0.22s ease, transform 0.28s cubic-bezier(0.19,1,0.22,1)',
+									}}
+								>
+									<HugeiconsIcon icon={CheckmarkCircle02Icon} size={14} />
+								</span>
 							</span>
 						)}
 					</>
