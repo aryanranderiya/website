@@ -2,7 +2,7 @@
 title: GAIA
 description: An AI-powered personal companion platform exploring the future of human-AI interaction.
 shortDescription: Proactive personal AI assistant platform
-date: 2024-06-01
+date: 2025-02-24
 tech: [React, TypeScript, Python, FastAPI]
 featured: true
 type: web
