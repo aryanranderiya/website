@@ -14,86 +14,110 @@ const { target, dimTarget = '#page-content' } = Astro.props;
 ---
 
 <script is:inline define:vars={{ TARGET: target, DIM_TARGET: dimTarget }}>
-	// One lightbox instance per page, shared across all `target` images.
+	// The overlay is appended to <body>. Astro's <ClientRouter /> swaps the
+	// body on every client-side navigation, which DESTROYS the appended
+	// overlay. So initialization must be idempotent and re-run on every page
+	// load (initial + each view transition) — a one-time guard would leave a
+	// dangling reference and only the backdrop-blur would fire on later pages.
 	(function () {
-		if (window.__lbMounted) return;
-		window.__lbMounted = true;
-
-		const overlay = document.createElement('div');
-		overlay.id = 'lb-overlay';
-		overlay.innerHTML = `
-			<div id="lb-backdrop"></div>
-			<button id="lb-close" type="button" aria-label="Close"></button>
-			<button id="lb-prev" type="button" aria-label="Previous"></button>
-			<button id="lb-next" type="button" aria-label="Next"></button>
-			<div id="lb-img-wrap">
-				<div id="lb-shimmer" aria-hidden="true"></div>
-				<img id="lb-img" src="" alt="" />
-			</div>
-			<div id="lb-counter"></div>
-		`;
-		document.body.appendChild(overlay);
-
 		const DURATION = 180;
-		const lbImg = document.getElementById('lb-img');
-		const lbShimmer = document.getElementById('lb-shimmer');
-		const lbWrap = document.getElementById('lb-img-wrap');
-		const lbCounter = document.getElementById('lb-counter');
-		const lbPrev = document.getElementById('lb-prev');
-		const lbNext = document.getElementById('lb-next');
-		const lbClose = document.getElementById('lb-close');
-		const lbBackdrop = document.getElementById('lb-backdrop');
 
+		// Mutable refs — refreshed every time the overlay is (re)built.
+		const els = {};
 		let srcs = [];
 		let alts = [];
 		let index = 0;
+
+		function buildOverlay() {
+			let overlay = document.getElementById('lb-overlay');
+			if (overlay) {
+				cacheEls(overlay);
+				return;
+			}
+			overlay = document.createElement('div');
+			overlay.id = 'lb-overlay';
+			overlay.innerHTML = `
+				<div id="lb-backdrop"></div>
+				<button id="lb-close" type="button" aria-label="Close"></button>
+				<button id="lb-prev" type="button" aria-label="Previous"></button>
+				<button id="lb-next" type="button" aria-label="Next"></button>
+				<div id="lb-img-wrap">
+					<div id="lb-shimmer" aria-hidden="true"></div>
+					<img id="lb-img" src="" alt="" />
+				</div>
+				<div id="lb-counter"></div>
+			`;
+			document.body.appendChild(overlay);
+			cacheEls(overlay);
+
+			// Per-overlay listeners — attached once at creation. When the
+			// overlay is destroyed by a body swap its listeners go with it,
+			// and the freshly built one gets its own.
+			els.close.addEventListener('click', close);
+			els.backdrop.addEventListener('click', close);
+			els.prev.addEventListener('click', () => showImage(index - 1));
+			els.next.addEventListener('click', () => showImage(index + 1));
+		}
+
+		function cacheEls(overlay) {
+			els.overlay = overlay;
+			els.img = overlay.querySelector('#lb-img');
+			els.shimmer = overlay.querySelector('#lb-shimmer');
+			els.wrap = overlay.querySelector('#lb-img-wrap');
+			els.counter = overlay.querySelector('#lb-counter');
+			els.prev = overlay.querySelector('#lb-prev');
+			els.next = overlay.querySelector('#lb-next');
+			els.close = overlay.querySelector('#lb-close');
+			els.backdrop = overlay.querySelector('#lb-backdrop');
+		}
 
 		function showImage(i) {
 			index = (i + srcs.length) % srcs.length;
 			const nextSrc = srcs[index];
 
-			// Reset image + shimmer state. The source image (before lightbox
-			// opens) gives us a rough aspect ratio to size the shimmer so it
-			// doesn't flash as a weird square before the full asset arrives.
+			// Use the on-page thumbnail's aspect ratio to size the shimmer so
+			// it doesn't flash as a square before the full asset arrives.
 			const sourceImg = document.querySelectorAll(TARGET)[index];
 			const ratio =
 				sourceImg && sourceImg.naturalWidth && sourceImg.naturalHeight
 					? sourceImg.naturalWidth / sourceImg.naturalHeight
 					: 16 / 9;
-			lbWrap.style.aspectRatio = String(ratio);
+			els.wrap.style.aspectRatio = String(ratio);
 
-			lbImg.style.opacity = '0';
-			lbShimmer.style.display = 'block';
+			els.img.style.opacity = '0';
+			els.shimmer.style.display = 'block';
+
+			const settle = () => {
+				els.shimmer.style.display = 'none';
+				els.wrap.style.aspectRatio = '';
+				els.img.style.opacity = '1';
+			};
 
 			// Skip shimmer entirely if the new source is already cached.
 			const probe = new Image();
 			probe.src = nextSrc;
+			els.img.src = nextSrc;
+			els.img.alt = alts[index] ?? '';
 			if (probe.complete && probe.naturalWidth > 0) {
-				lbImg.src = nextSrc;
-				lbImg.alt = alts[index] ?? '';
-				lbShimmer.style.display = 'none';
-				lbWrap.style.aspectRatio = '';
-				lbImg.style.opacity = '1';
+				settle();
 			} else {
-				lbImg.src = nextSrc;
-				lbImg.alt = alts[index] ?? '';
-				lbImg.onload = () => {
-					lbShimmer.style.display = 'none';
-					lbWrap.style.aspectRatio = '';
-					lbImg.style.opacity = '1';
-				};
+				els.img.onload = settle;
+				els.img.onerror = settle;
 			}
 
-			lbCounter.textContent = srcs.length > 1 ? `${index + 1} / ${srcs.length}` : '';
-			lbPrev.hidden = srcs.length < 2;
-			lbNext.hidden = srcs.length < 2;
+			els.counter.textContent = srcs.length > 1 ? `${index + 1} / ${srcs.length}` : '';
+			els.prev.hidden = srcs.length < 2;
+			els.next.hidden = srcs.length < 2;
 		}
 
 		function open(i) {
+			buildOverlay();
 			const dim = document.querySelector(DIM_TARGET);
 			showImage(i);
-			overlay.style.display = 'flex';
-			requestAnimationFrame(() => { overlay.style.opacity = '1'; });
+			els.overlay.style.display = 'flex';
+			requestAnimationFrame(() => {
+				els.overlay.style.opacity = '1';
+			});
 			document.body.style.overflow = 'hidden';
 			if (dim) {
 				dim.style.transition = `filter ${DURATION}ms ease`;
@@ -105,8 +129,10 @@ const { target, dimTarget = '#page-content' } = Astro.props;
 
 		function close() {
 			const dim = document.querySelector(DIM_TARGET);
-			overlay.style.opacity = '0';
-			setTimeout(() => { overlay.style.display = 'none'; }, DURATION);
+			els.overlay.style.opacity = '0';
+			setTimeout(() => {
+				els.overlay.style.display = 'none';
+			}, DURATION);
 			document.body.style.overflow = '';
 			if (dim) {
 				dim.style.transition = `filter ${DURATION}ms ease`;
@@ -128,7 +154,6 @@ const { target, dimTarget = '#page-content' } = Astro.props;
 				img.style.cursor = 'zoom-in';
 				img.addEventListener('click', (e) => {
 					e.preventDefault();
-					// Refresh srcs in case the DOM changed between renders
 					const fresh = Array.from(document.querySelectorAll(TARGET));
 					srcs = fresh.map((el) => el.currentSrc || el.src);
 					alts = fresh.map((el) => el.alt || '');
@@ -137,28 +162,38 @@ const { target, dimTarget = '#page-content' } = Astro.props;
 			});
 		}
 
-		collect();
-
-		lbClose.addEventListener('click', close);
-		lbBackdrop.addEventListener('click', close);
-		lbPrev.addEventListener('click', () => showImage(index - 1));
-		lbNext.addEventListener('click', () => showImage(index + 1));
-
-		window.addEventListener('keydown', (e) => {
-			if (overlay.style.display !== 'flex') return;
-			if (e.key === 'Escape') close();
-			if (e.key === 'ArrowLeft') showImage(index - 1);
-			if (e.key === 'ArrowRight') showImage(index + 1);
-		});
-
-		// Re-bind after Astro view transitions
-		document.addEventListener('astro:after-swap', () => {
-			srcs = [];
-			document.querySelectorAll(`${TARGET}[data-lb-bound]`).forEach((el) => {
-				delete el.dataset.lbBound;
-			});
+		function init() {
+			buildOverlay();
 			collect();
-		});
+		}
+
+		// Global keydown — registered once on window; reads live state so it
+		// keeps working across rebuilt overlays.
+		if (!window.__lbKeyBound) {
+			window.__lbKeyBound = true;
+			window.addEventListener('keydown', (e) => {
+				const o = document.getElementById('lb-overlay');
+				if (!o || o.style.display !== 'flex') return;
+				if (e.key === 'Escape') close();
+				if (e.key === 'ArrowLeft') showImage(index - 1);
+				if (e.key === 'ArrowRight') showImage(index + 1);
+			});
+		}
+
+		// Re-init on every navigation. astro:page-load fires on the initial
+		// load AND after every <ClientRouter /> view transition, so the
+		// overlay is rebuilt whenever the body swap removed it. Registered
+		// once to avoid stacking listeners when multiple pages embed this.
+		if (!window.__lbPageBound) {
+			window.__lbPageBound = true;
+			document.addEventListener('astro:page-load', init);
+		}
+
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', init, { once: true });
+		} else {
+			init();
+		}
 	})();
 </script>
 

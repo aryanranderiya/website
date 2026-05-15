@@ -36,7 +36,7 @@ images:
   - /ProjectMedia/Portfolio/designprojects_7.webp
   - /ProjectMedia/Portfolio/designprojects_8.webp
   - /ProjectMedia/Portfolio/designprojects_9.webp
-video: /ProjectMedia/Personal_Portfolio/portfolio-demo.mp4
+video: /blog/building-my-portfolio/portfolio.mp4
 order: 35
 ---
 

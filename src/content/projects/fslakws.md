@@ -7,7 +7,11 @@ tech: [TypeScript, Python, Next.js]
 featured: false
 type: web
 folder: Hackathon
-images: []
+coverImage: /ProjectMedia/Few_Shot_KWS/fskws-1.webp
+images:
+  - /ProjectMedia/Few_Shot_KWS/fskws-1.webp
+  - /ProjectMedia/Few_Shot_KWS/fskws-2.webp
+  - /ProjectMedia/Few_Shot_KWS/fskws-3.webp
 order: 24
 github: https://github.com/aryanranderiya/Few-Shot-Language-Agnostic-Keyword-Spotting
 ---

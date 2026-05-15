@@ -7,7 +7,12 @@ tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: web
 folder: Projects
-images: []
+coverImage: /ProjectMedia/Generate_PDF/genpdf-1.webp
+images:
+  - /ProjectMedia/Generate_PDF/genpdf-1.webp
+  - /ProjectMedia/Generate_PDF/genpdf-2.webp
+  - /ProjectMedia/Generate_PDF/genpdf-3.webp
+  - /ProjectMedia/Generate_PDF/genpdf-4.webp
 order: 16
 github: https://github.com/aryanranderiya/Generate-PDF-from-Practical
 ---
