@@ -22,7 +22,9 @@ order: 18
 github: https://github.com/aryanranderiya/itinerary-mcp-server
 ---
 
-I built this as an exploration into what it would look like to give AI assistants genuine control over a structured travel planning backend. The Model Context Protocol is a standardized way for language models to discover and invoke tools exposed by a server, and I wanted to see how naturally it could map onto something as nested as travel itineraries - where a single trip contains accommodations, day-by-day activities, and transfer logistics all at once.
+This was a take-home test challenge for an internship. What made it clever was the choice of topic: the Model Context Protocol had just been released and wasn't in any LLM's training data yet, so the company deliberately picked it precisely because no model knew what MCP was. You couldn't just paste the prompt into ChatGPT and get a working answer - you had to actually read the spec, understand how it worked, and write the code yourself. It was their way of filtering for people who can genuinely build rather than just prompt their way through, and honestly it was a refreshing way to be evaluated.
+
+So I went and read the MCP spec from scratch and built this. The Model Context Protocol is a standardized way for language models to discover and invoke tools exposed by a server, and the challenge was to map it onto something as nested as travel itineraries - where a single trip contains accommodations, day-by-day activities, and transfer logistics all at once.
 
 The backend is a FastAPI application with SQLAlchemy models covering the full hierarchy of a travel plan: itineraries as the top-level container, then accommodations and transfers tied to specific date ranges, and individual activities slotted into each day. MCP is integrated using the fastapi_mcp library, and the endpoint runs over Server-Sent Events at /mcp. Any compliant MCP client - Claude Desktop, GitHub Copilot, or a custom integration - can connect via a simple SSE URL with no additional glue code required.
 

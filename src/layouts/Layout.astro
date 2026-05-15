@@ -1,6 +1,8 @@
 ---
+import { getCollection } from 'astro:content';
 import { ClientRouter } from 'astro:transitions';
 import { SEO, SITE } from '@/constants/site';
+import { sortProjects } from '@/utils/projects';
 import '@/styles/global.css';
 import interLatinFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import AgentationOverlay from '@/components/layout/AgentationOverlay';
@@ -40,6 +42,11 @@ const canonicalURL = new URL(canonical, Astro.site ?? Astro.url.origin);
 const ogImageURL = ogImage.startsWith('http')
 	? ogImage
 	: new URL(ogImage, Astro.site ?? Astro.url.origin).toString();
+
+const commandKProjects = sortProjects(await getCollection('projects')).map((p) => ({
+	slug: p.slug,
+	title: p.data.title,
+}));
 ---
 
 <!doctype html>
@@ -242,7 +249,12 @@ const ogImageURL = ogImage.startsWith('http')
       transition:persist="blurstack"
       className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none"
     />
-    <CommandK client:idle transition:persist="commandk" transition:persist-props />
+    <CommandK
+      client:idle
+      projects={commandKProjects}
+      transition:persist="commandk"
+      transition:persist-props
+    />
     <PetLauncher client:idle transition:persist="petlauncher" transition:persist-props />
     <AgentationOverlay client:idle transition:persist="agentation" transition:persist-props />
     <div id="ai-chat-mount" transition:persist="ai-chat"></div>

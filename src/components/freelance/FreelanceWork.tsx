@@ -236,7 +236,7 @@ function ProjectDetail({
 								exit={{ opacity: 0 }}
 								transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
 								onClick={() => setLightboxOpen(false)}
-								className="fixed inset-0 z-[9999] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_60%,transparent)]"
+								className="fixed inset-0 z-[9999] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_55%,transparent)] backdrop-blur-[16px]"
 							>
 								<m.img
 									key={activeImage}

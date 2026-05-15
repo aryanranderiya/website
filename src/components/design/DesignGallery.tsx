@@ -79,36 +79,14 @@ export default function DesignGallery({
 		return () => window.removeEventListener('keydown', handler);
 	}, [lightboxOpen, goPrev, goNext, closeLightbox]);
 
-	// Lock scroll + blur page content when lightbox is open
+	// Lock scroll while the lightbox is open. The blur itself is a real
+	// backdrop-filter on the overlay, so it covers the whole viewport
+	// (sidebar included) instead of filtering page-content.
 	useEffect(() => {
-		const content = document.getElementById('page-content') as HTMLElement | null;
-		const DURATION = 180;
-		if (lightboxOpen) {
-			document.body.style.overflow = 'hidden';
-			if (content) {
-				content.style.transition = `filter ${DURATION}ms ease`;
-				requestAnimationFrame(() => {
-					content.style.filter = 'blur(12px) brightness(0.6)';
-				});
-			}
-		} else {
-			document.body.style.overflow = '';
-			if (content) {
-				content.style.transition = `filter ${DURATION}ms ease`;
-				content.style.filter = 'blur(0px) brightness(1)';
-				const t = setTimeout(() => {
-					content.style.filter = '';
-					content.style.transition = '';
-				}, DURATION + 20);
-				return () => clearTimeout(t);
-			}
-		}
+		if (!lightboxOpen) return;
+		document.body.style.overflow = 'hidden';
 		return () => {
 			document.body.style.overflow = '';
-			if (content) {
-				content.style.filter = '';
-				content.style.transition = '';
-			}
 		};
 	}, [lightboxOpen]);
 
@@ -254,7 +232,7 @@ function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxP
 			exit={{ opacity: 0 }}
 			transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
 			onClick={onClose}
-			className="fixed inset-0 z-[100] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_60%,transparent)]"
+			className="fixed inset-0 z-[100] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_55%,transparent)] backdrop-blur-[16px]"
 		>
 			{/* Image -- entry animation on src change only; close fades with the parent */}
 			<m.img

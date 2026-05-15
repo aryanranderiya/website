@@ -91,9 +91,11 @@ const ACTIONS: Action[] = [
 	},
 ];
 
-const ITEM_ICON_SIZE = 14;
+const ITEM_ICON_SIZE = 13;
 
-export default function CommandK() {
+type ProjectLink = { slug: string; title: string };
+
+export default function CommandK({ projects = [] }: { projects?: ProjectLink[] }) {
 	const [open, setOpen] = useState(false);
 	const [query, setQuery] = useState('');
 
@@ -212,7 +214,7 @@ export default function CommandK() {
 										</div>
 
 										{/* Results list */}
-										<Command.List className="max-h-80 overflow-y-auto py-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-[0.7rem] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.08em] [&_[cmdk-item]:hover]:bg-[var(--muted)] [&_[cmdk-item][aria-selected='true']]:bg-[var(--muted)] [&_[cmdk-item]]:flex [&_[cmdk-item]]:cursor-pointer [&_[cmdk-item]]:items-center [&_[cmdk-item]]:gap-3 [&_[cmdk-item]]:rounded-lg [&_[cmdk-item]]:px-3 [&_[cmdk-item]]:py-2 [&_[cmdk-item]]:text-[var(--foreground)] [&_[cmdk-item]]:text-sm [&_[cmdk-item]]:outline-none [&_[cmdk-item]]:transition-colors">
+										<Command.List className="max-h-80 overflow-y-auto py-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-[0.7rem] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.08em] [&_[cmdk-item]:hover]:bg-[var(--muted)] [&_[cmdk-item][aria-selected='true']]:bg-[var(--muted)] [&_[cmdk-item]]:flex [&_[cmdk-item]]:cursor-pointer [&_[cmdk-item]]:items-center [&_[cmdk-item]]:gap-2.5 [&_[cmdk-item]]:rounded-lg [&_[cmdk-item]]:px-3 [&_[cmdk-item]]:py-[7px] [&_[cmdk-item]]:text-[13px] [&_[cmdk-item]]:text-[var(--foreground)] [&_[cmdk-item]]:outline-none [&_[cmdk-item]]:transition-colors">
 											<Command.Empty className="py-8 text-center text-muted-foreground text-sm">
 												No results found.
 											</Command.Empty>
@@ -229,17 +231,12 @@ export default function CommandK() {
 															value={`${page.label} ${page.description}`}
 															onSelect={() => go(page.href)}
 														>
-															<span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
+															<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
 																<HugeiconsIcon icon={IconComp} size={ITEM_ICON_SIZE} />
 															</span>
-															<div className="min-w-0 flex-1">
-																<div className="font-medium tracking-[-0.01em]">{page.label}</div>
-																{page.description && (
-																	<div className="mt-0.5 truncate text-muted-foreground text-xs">
-																		{page.description}
-																	</div>
-																)}
-															</div>
+															<span className="min-w-0 flex-1 truncate font-medium tracking-[-0.01em]">
+																{page.label}
+															</span>
 															<ChevronRight
 																size={12}
 																className="hidden flex-shrink-0 text-[var(--muted-foreground)] opacity-30 sm:block"
@@ -248,6 +245,30 @@ export default function CommandK() {
 													);
 												})}
 											</Command.Group>
+
+											{/* Projects */}
+											{projects.length > 0 && (
+												<Command.Group heading="Projects" className="px-2">
+													{projects.map((project) => (
+														<Command.Item
+															key={project.slug}
+															value={`project ${project.title}`}
+															onSelect={() => go(`/projects/${project.slug}`)}
+														>
+															<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
+																<HugeiconsIcon icon={CodeIcon} size={ITEM_ICON_SIZE} />
+															</span>
+															<span className="min-w-0 flex-1 truncate font-medium tracking-[-0.01em]">
+																{project.title}
+															</span>
+															<ChevronRight
+																size={12}
+																className="hidden flex-shrink-0 text-[var(--muted-foreground)] opacity-30 sm:block"
+															/>
+														</Command.Item>
+													))}
+												</Command.Group>
+											)}
 
 											{/* Social links */}
 											<Command.Group heading="Social" className="px-2">
@@ -261,17 +282,12 @@ export default function CommandK() {
 															value={`${link.label} social`}
 															onSelect={() => go(link.href, true)}
 														>
-															<span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
+															<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
 																<HugeiconsIcon icon={IconComp} size={ITEM_ICON_SIZE} />
 															</span>
-															<div className="min-w-0 flex-1">
-																<div className="font-medium tracking-[-0.01em]">{link.label}</div>
-																{link.description && (
-																	<div className="mt-0.5 truncate text-muted-foreground text-xs">
-																		{link.description}
-																	</div>
-																)}
-															</div>
+															<span className="min-w-0 flex-1 truncate font-medium tracking-[-0.01em]">
+																{link.label}
+															</span>
 															<ChevronRight
 																size={12}
 																className="hidden flex-shrink-0 text-[var(--muted-foreground)] opacity-30 sm:block"
@@ -293,17 +309,12 @@ export default function CommandK() {
 															else runAction(action.id);
 														}}
 													>
-														<span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
+														<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
 															<HugeiconsIcon icon={action.iconComp} size={ITEM_ICON_SIZE} />
 														</span>
-														<div className="min-w-0 flex-1">
-															<div className="font-medium tracking-[-0.01em]">{action.label}</div>
-															{action.description && (
-																<div className="mt-0.5 truncate text-muted-foreground text-xs">
-																	{action.description}
-																</div>
-															)}
-														</div>
+														<span className="min-w-0 flex-1 truncate font-medium tracking-[-0.01em]">
+															{action.label}
+														</span>
 													</Command.Item>
 												))}
 											</Command.Group>

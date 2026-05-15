@@ -6,14 +6,12 @@
 interface Props {
 	/** CSS selector for images that should open the modal on click. */
 	target: string;
-	/** Selector for the element that blurs/dims behind the modal. */
-	dimTarget?: string;
 }
 
-const { target, dimTarget = '#page-content' } = Astro.props;
+const { target } = Astro.props;
 ---
 
-<script is:inline define:vars={{ TARGET: target, DIM_TARGET: dimTarget }}>
+<script is:inline define:vars={{ TARGET: target }}>
 	// The overlay is appended to <body>. Astro's <ClientRouter /> swaps the
 	// body on every client-side navigation, which DESTROYS the appended
 	// overlay. So initialization must be idempotent and re-run on every page
@@ -112,36 +110,20 @@ const { target, dimTarget = '#page-content' } = Astro.props;
 
 		function open(i) {
 			buildOverlay();
-			const dim = document.querySelector(DIM_TARGET);
 			showImage(i);
 			els.overlay.style.display = 'flex';
 			requestAnimationFrame(() => {
 				els.overlay.style.opacity = '1';
 			});
 			document.body.style.overflow = 'hidden';
-			if (dim) {
-				dim.style.transition = `filter ${DURATION}ms ease`;
-				requestAnimationFrame(() => {
-					dim.style.filter = 'blur(12px) brightness(0.6)';
-				});
-			}
 		}
 
 		function close() {
-			const dim = document.querySelector(DIM_TARGET);
 			els.overlay.style.opacity = '0';
 			setTimeout(() => {
 				els.overlay.style.display = 'none';
 			}, DURATION);
 			document.body.style.overflow = '';
-			if (dim) {
-				dim.style.transition = `filter ${DURATION}ms ease`;
-				dim.style.filter = 'blur(0px) brightness(1)';
-				setTimeout(() => {
-					dim.style.filter = '';
-					dim.style.transition = '';
-				}, DURATION + 20);
-			}
 		}
 
 		function collect() {
@@ -212,7 +194,9 @@ const { target, dimTarget = '#page-content' } = Astro.props;
 	#lb-backdrop {
 		position: absolute;
 		inset: 0;
-		background: rgba(0, 0, 0, 0.85);
+		background: rgba(0, 0, 0, 0.55);
+		backdrop-filter: blur(16px) brightness(0.7);
+		-webkit-backdrop-filter: blur(16px) brightness(0.7);
 	}
 
 	#lb-img-wrap {

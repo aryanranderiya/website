@@ -7,8 +7,9 @@ tech: [Next.js, React, TypeScript, TailwindCSS, Framer Motion]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/GAIA_UI/gaia-ui-7.webp
+coverImage: /ProjectMedia/GAIA_UI/gaia-ui-1.webp
 images:
+  - /ProjectMedia/GAIA_UI/gaia-ui-1.webp
   - /ProjectMedia/GAIA_UI/gaia-ui-7.webp
   - /ProjectMedia/GAIA_UI/gaia-ui-2.webp
   - /ProjectMedia/GAIA_UI/gaia-ui-3.webp
