@@ -32,33 +32,69 @@ export default function Preloader() {
 			return;
 		}
 
-		// Show first greeting immediately, then cycle through the rest at 50ms each
+		// Cycle greetings while the page becomes ready, then fade out as soon
+		// as it is — instead of a fixed ~800ms run. MIN keeps the morph from
+		// flashing on instant loads; MAX caps a slow network so the intro
+		// never hangs. This is what was inflating LCP/SI/TTI on first visit.
+		const MIN_VISIBLE = 350;
+		const MAX_VISIBLE = 1200;
+		const STEP = 60;
+
 		let cancelled = false;
+		let finished = false;
 		let i = 0;
-		const tick = () => {
+		const start = performance.now();
+		let cycleTimer: ReturnType<typeof setTimeout>;
+		let doneTimer: ReturnType<typeof setTimeout>;
+
+		const cycle = () => {
 			if (cancelled) return;
-			i++;
-			if (i >= greetings.length) {
-				const overlay = overlayRef.current;
-				if (overlay) {
-					overlay.style.opacity = '0';
-					window.dispatchEvent(new CustomEvent('preloader:done'));
-					setTimeout(() => {
-						if (!cancelled) {
-							setShow(false);
-							sessionStorage.setItem('preloader_shown', '1');
-						}
-					}, 400);
-				}
-				return;
-			}
+			i = (i + 1) % greetings.length;
 			setIndex(i);
-			setTimeout(tick, 50);
+			cycleTimer = setTimeout(cycle, STEP);
 		};
-		setTimeout(tick, 50);
+		cycleTimer = setTimeout(cycle, STEP);
+
+		const finish = () => {
+			if (cancelled || finished) return;
+			finished = true;
+			clearTimeout(cycleTimer);
+			const overlay = overlayRef.current;
+			if (overlay) overlay.style.opacity = '0';
+			window.dispatchEvent(new CustomEvent('preloader:done'));
+			doneTimer = setTimeout(() => {
+				if (!cancelled) {
+					setShow(false);
+					sessionStorage.setItem('preloader_shown', '1');
+				}
+			}, 400);
+		};
+
+		// Ready = DOM parsed. We deliberately do NOT wait for `window.load`
+		// (blocks on below-the-fold images/maps) nor `document.fonts.ready`
+		// (the variable woff2 is slow on throttled networks and was the main
+		// thing pinning LCP — the greeting briefly swaps from the fallback,
+		// which is a far better trade than a ~1.5s delay).
+		const domReady =
+			document.readyState === 'loading'
+				? new Promise<void>((r) =>
+						document.addEventListener('DOMContentLoaded', () => r(), { once: true })
+					)
+				: Promise.resolve();
+
+		domReady.then(() => {
+			if (cancelled) return;
+			const wait = Math.max(0, MIN_VISIBLE - (performance.now() - start));
+			setTimeout(finish, wait);
+		});
+
+		const capTimer = setTimeout(finish, MAX_VISIBLE);
 
 		return () => {
 			cancelled = true;
+			clearTimeout(cycleTimer);
+			clearTimeout(doneTimer);
+			clearTimeout(capTimer);
 		};
 	}, []);
 
