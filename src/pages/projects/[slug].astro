@@ -178,17 +178,11 @@ const galleryImages = allImages;
   </header>
 
   <!-- Body content (rendered markdown) -->
-  {
-    allImages.length === 0 ? (
-      <div class="mb-11 text-sm text-[var(--text-muted)] leading-[1.75] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[var(--text-primary)] [&_h2]:tracking-[-0.025em] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[var(--text-secondary)] [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-2">
-        <Content />
-      </div>
-    ) : (
-      <div class="mb-11 text-sm text-[var(--text-muted)] leading-[1.75] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[var(--text-primary)] [&_h2]:tracking-[-0.025em] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[var(--text-secondary)] [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-2">
-        <Content />
-      </div>
-    )
-  }
+  <div
+    class="project-body mb-11 text-sm text-[var(--text-muted)] leading-[1.75] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[var(--text-primary)] [&_h2]:tracking-[-0.025em] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[var(--text-secondary)] [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-2"
+  >
+    <Content />
+  </div>
 
   <!-- Gallery (remaining images after hero) -->
   {

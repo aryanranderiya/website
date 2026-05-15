@@ -561,6 +561,21 @@ a {
 	text-decoration-color: var(--text-muted);
 }
 
+/* Markdown links inside project bodies — same treatment as .prose a.
+   Needed as a real selector because the global `a` reset is unlayered
+   and would otherwise beat Tailwind's layered utilities. */
+.project-body a {
+	color: var(--text-primary);
+	text-decoration: underline;
+	text-decoration-color: var(--border-strong);
+	text-underline-offset: 3px;
+	transition: text-decoration-color var(--transition-fast);
+}
+
+.project-body a:hover {
+	text-decoration-color: var(--text-muted);
+}
+
 .prose a img.blog-link-favicon {
 	display: inline-block;
 	width: 1em;
