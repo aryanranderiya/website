@@ -17,7 +17,7 @@ import type { IconProps } from '@theexperiencecompany/gaia-icons';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 import type { ComponentType } from 'react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CheckboxGroup, CheckboxItem } from '@/components/ui/checkbox-group';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -35,7 +35,7 @@ interface Project {
 	tech: string[];
 	type: string;
 	featured: boolean;
-	images: string[];
+	images: { src: string; caption?: string }[];
 	folder: string;
 	url?: string;
 	github?: string;
@@ -61,10 +61,38 @@ const TYPE_CHIPS: { value: string; label: string; icon: ComponentType<IconProps>
 	{ value: 'os', label: 'OS', icon: Apple01Icon },
 ];
 
+// Lightweight fuzzy matcher: returns -1 when `query` is not an in-order
+// subsequence of `text`, otherwise a score where consecutive characters and
+// word-boundary hits are rewarded and tighter (shorter) matches rank higher.
+// `text` and `query` must already be lowercased.
+function fuzzyScore(query: string, text: string): number {
+	if (!query) return 0;
+	let qi = 0;
+	let score = 0;
+	let streak = 0;
+	let prev = -2;
+	for (let i = 0; i < text.length && qi < query.length; i++) {
+		if (text[i] === query[qi]) {
+			streak = prev === i - 1 ? streak + 1 : 0;
+			let bonus = 1 + streak * 3;
+			const before = text[i - 1];
+			if (i === 0 || before === ' ' || before === '-' || before === '/') bonus += 4;
+			score += bonus;
+			prev = i;
+			qi++;
+		}
+	}
+	if (qi < query.length) return -1;
+	return score + Math.max(0, 16 - text.length / 12);
+}
+
 export default function ProjectsGrid({ projects: rawProjects }: { projects: Project[] }) {
 	const projects = useMemo(() => rawProjects.filter((p) => p.type !== 'other'), [rawProjects]);
 
 	const [search, setSearch] = useState('');
+	// Keep the input snappy: the heavy fuzzy pass runs against the deferred
+	// value so keystrokes never block on filtering/sorting.
+	const deferredSearch = useDeferredValue(search);
 	const [searchFocused, setSearchFocused] = useState(false);
 	const [hovered, setHovered] = useState<HoveredState | null>(null);
 	const [activeTechFilters, setActiveTechFilters] = useState<string[]>([]);
@@ -86,6 +114,19 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 		window.addEventListener('keydown', handler);
 		return () => window.removeEventListener('keydown', handler);
 	}, []);
+
+	// Precompute the lowercased haystack once per project so the fuzzy pass
+	// never re-lowercases on every keystroke.
+	const searchIndex = useMemo(() => {
+		const map = new Map<string, { title: string; desc: string }>();
+		projects.forEach((p) => {
+			map.set(p.slug, {
+				title: p.title.toLowerCase(),
+				desc: p.description.toLowerCase(),
+			});
+		});
+		return map;
+	}, [projects]);
 
 	const techCounts = useMemo(() => {
 		const counts: Record<string, number> = {};
@@ -113,15 +154,36 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 			list = list.filter((p) => activeTechFilters.every((t) => p.tech?.includes(t)));
 		}
 
-		if (search.trim()) {
-			const q = search.toLowerCase();
-			list = list.filter(
-				(p) => p.title.toLowerCase().includes(q) || p.description.toLowerCase().includes(q)
-			);
+		const q = deferredSearch.trim().toLowerCase();
+		if (q) {
+			const scored: { p: Project; score: number }[] = [];
+			const wordRe = new RegExp(`\\b${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`);
+			for (const p of list) {
+				const idx = searchIndex.get(p.slug);
+				if (!idx) continue;
+				// Real substring hits are the strongest signal; a whole-word
+				// hit beats a loose subsequence so a genuine keyword in the
+				// description outranks an incidental title match. Fuzzy
+				// subsequence fills in the rest. Title outweighs description.
+				let score = 0;
+				if (idx.title.includes(q)) score += wordRe.test(idx.title) ? 1200 : 1000;
+				else {
+					const ts = fuzzyScore(q, idx.title);
+					if (ts >= 0) score += 180 + ts * 5;
+				}
+				if (idx.desc.includes(q)) score += wordRe.test(idx.desc) ? 600 : 420;
+				else {
+					const ds = fuzzyScore(q, idx.desc);
+					if (ds >= 0) score += ds;
+				}
+				if (score > 0) scored.push({ p, score });
+			}
+			scored.sort((a, b) => b.score - a.score);
+			list = scored.map((s) => s.p);
 		}
 
 		return list;
-	}, [projects, activeTypeFilter, activeTechFilters, search]);
+	}, [projects, activeTypeFilter, activeTechFilters, deferredSearch, searchIndex]);
 
 	const visibleEntries = useMemo(() => {
 		if (!tagSearch.trim()) return sortedTech;
@@ -378,7 +440,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 				<AnimatePresence mode="sync" initial={false}>
 					{filtered.length > 0 ? (
 						<m.div
-							key={search + activeTechFilters.join(',') + (activeTypeFilter ?? '')}
+							key={deferredSearch + activeTechFilters.join(',') + (activeTypeFilter ?? '')}
 							initial="hidden"
 							animate={ready ? 'show' : 'hidden'}
 							exit={{ opacity: 0 }}
@@ -424,7 +486,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 			{typeof document !== 'undefined' &&
 				createPortal(
 					<AnimatePresence>
-						{hovered?.project.coverImage && (
+						{hovered && (hovered.project.coverImage ?? hovered.project.images?.[0]?.src) && (
 							<m.div
 								key={hovered.project.slug}
 								initial={{
@@ -443,9 +505,9 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 								}}
 							>
 								<img
-									src={hovered.project.coverImage}
+									src={hovered.project.coverImage ?? hovered.project.images?.[0]?.src}
 									alt={hovered.project.title}
-									className="block h-auto w-full aspect-video object-cover"
+									className="block aspect-video h-auto w-full object-cover"
 								/>
 								<div className="bg-[var(--background)] px-[10px] pt-[8px] pb-[10px]">
 									<p className="m-0 text-[10px] text-[var(--text-muted)] leading-[1.5] tracking-[-0.01em]">

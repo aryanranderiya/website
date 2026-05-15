@@ -2,7 +2,7 @@
 title: SUSTAIN
 description: A tool to help farmers analyze soil moisture and water data, optimizing water usage and improving crop yields - built for NASA Space Apps Hackathon 2024.
 shortDescription: Soil & water analysis tool for farmers
-date: 2024-11-01
+date: 2024-10-04
 tech: [React, TypeScript, TailwindCSS]
 featured: false
 type: web
@@ -10,6 +10,11 @@ folder: Hackathon
 coverImage: /ProjectMedia/Nasa_Space Apps Hackathon 2024/2024-12-04_02-54.webp
 images:
   - /ProjectMedia/Nasa_Space Apps Hackathon 2024/2024-12-04_02-54.webp
+  - /ProjectMedia/SUSTAIN/sustain-1.webp
+  - /ProjectMedia/SUSTAIN/sustain-2.webp
+  - /ProjectMedia/SUSTAIN/sustain-3.webp
+  - /ProjectMedia/SUSTAIN/sustain-4.webp
+  - /ProjectMedia/SUSTAIN/sustain-5.webp
 order: 22
 github: https://github.com/Devarsh-42/SUSTAIN
 ---

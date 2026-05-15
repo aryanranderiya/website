@@ -25,7 +25,11 @@ const projects = defineCollection({
 		shortDescription: z.string().optional(),
 		date: z.coerce.date(),
 		tech: z.array(z.string()).default([]),
-		images: z.array(z.string()).default([]),
+		// Either a bare path or `{ src, caption }`. Captions render under the
+		// image on the project page using the blog figcaption style.
+		images: z
+			.array(z.union([z.string(), z.object({ src: z.string(), caption: z.string().optional() })]))
+			.default([]),
 		video: z.string().optional(),
 		url: z.string().url().optional(),
 		github: z.string().url().optional(),

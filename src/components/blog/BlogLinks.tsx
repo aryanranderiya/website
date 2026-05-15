@@ -60,7 +60,11 @@ export default function BlogLinks() {
 		};
 
 		const scan = () => {
-			document.querySelectorAll<HTMLAnchorElement>('.prose a[data-preview]').forEach(bindAnchor);
+			document
+				.querySelectorAll<HTMLAnchorElement>(
+					'.prose a[data-preview], .project-body a[data-preview]'
+				)
+				.forEach(bindAnchor);
 		};
 
 		scan();

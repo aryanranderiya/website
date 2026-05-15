@@ -65,7 +65,7 @@ export const experience: Experience[] = [
 			'Mentored junior developers in React and modern web practices',
 			'Organized coding events and hackathons for 200+ students',
 		],
-		logo: '/ProjectMedia/Encode_Official Website/encode_main.jpg',
+		logo: '/ProjectMedia/Encode_Official Website/encode_org_logo.webp',
 		website: 'https://encodepdeu.vercel.app',
 		skills: ['React', 'Node.js', 'MongoDB'],
 		featured: false,

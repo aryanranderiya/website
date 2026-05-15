@@ -1,6 +1,8 @@
 ---
+import { getCollection } from 'astro:content';
 import { ClientRouter } from 'astro:transitions';
 import { SEO, SITE } from '@/constants/site';
+import { sortProjects } from '@/utils/projects';
 import '@/styles/global.css';
 import interLatinFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 import AgentationOverlay from '@/components/layout/AgentationOverlay';
@@ -40,6 +42,11 @@ const canonicalURL = new URL(canonical, Astro.site ?? Astro.url.origin);
 const ogImageURL = ogImage.startsWith('http')
 	? ogImage
 	: new URL(ogImage, Astro.site ?? Astro.url.origin).toString();
+
+const commandKProjects = sortProjects(await getCollection('projects')).map((p) => ({
+	slug: p.slug,
+	title: p.data.title,
+}));
 ---
 
 <!doctype html>
@@ -100,8 +107,9 @@ const ogImageURL = ogImage.startsWith('http')
     <link rel="preconnect" href="https://www.googletagmanager.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
-    <!-- Google Analytics -->
-    <script async is:inline src="https://www.googletagmanager.com/gtag/js?id=G-S3XP36W3P9"></script>
+    <!-- Google Analytics — gtag.js (~145KiB) is deferred until the first
+         user interaction or idle, so it never blocks the initial render.
+         Calls before it loads queue safely in dataLayer. -->
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
@@ -113,6 +121,33 @@ const ogImageURL = ogImage.startsWith('http')
           page_location: location.href,
         });
       });
+      (function () {
+        var loaded = false;
+        function loadGA() {
+          if (loaded) return;
+          loaded = true;
+          cleanup();
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-S3XP36W3P9';
+          document.head.appendChild(s);
+        }
+        var evts = ['pointerdown', 'keydown', 'touchstart', 'scroll', 'mousemove'];
+        function cleanup() {
+          evts.forEach(function (e) {
+            window.removeEventListener(e, loadGA, { passive: true });
+          });
+        }
+        evts.forEach(function (e) {
+          window.addEventListener(e, loadGA, { passive: true, once: true });
+        });
+        // Fallback so analytics still fire for bounce/no-interaction visits.
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadGA, { timeout: 6000 });
+        } else {
+          setTimeout(loadGA, 5000);
+        }
+      })();
     </script>
 
     <!-- Structured Data: Person -->
@@ -242,7 +277,12 @@ const ogImageURL = ogImage.startsWith('http')
       transition:persist="blurstack"
       className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none"
     />
-    <CommandK client:idle transition:persist="commandk" transition:persist-props />
+    <CommandK
+      client:idle
+      projects={commandKProjects}
+      transition:persist="commandk"
+      transition:persist-props
+    />
     <PetLauncher client:idle transition:persist="petlauncher" transition:persist-props />
     <AgentationOverlay client:idle transition:persist="agentation" transition:persist-props />
     <div id="ai-chat-mount" transition:persist="ai-chat"></div>

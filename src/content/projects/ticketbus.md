@@ -2,7 +2,7 @@
 title: TicketBus
 description: Public transportation mobile app with QR-based ticket booking, bus passes, e-wallets, user profiles, and a comprehensive map module.
 shortDescription: QR-based bus ticket booking mobile app
-date: 2023-06-01
+date: 2023-08-03
 tech: [Java, Android, Firebase]
 featured: true
 type: mobile

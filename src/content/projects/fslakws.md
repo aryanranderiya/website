@@ -2,12 +2,16 @@
 title: Few-Shot Keyword Spotting
 description: Multilingual keyword detection in audio using minimal training data - built for Smart India Hackathon 2024.
 shortDescription: Multilingual keyword detection in audio
-date: 2024-09-01
+date: 2024-09-03
 tech: [TypeScript, Python, Next.js]
 featured: false
 type: web
 folder: Hackathon
-images: []
+coverImage: /ProjectMedia/Few_Shot_KWS/fskws-1.webp
+images:
+  - /ProjectMedia/Few_Shot_KWS/fskws-1.webp
+  - /ProjectMedia/Few_Shot_KWS/fskws-2.webp
+  - /ProjectMedia/Few_Shot_KWS/fskws-3.webp
 order: 24
 github: https://github.com/aryanranderiya/Few-Shot-Language-Agnostic-Keyword-Spotting
 ---

@@ -2,7 +2,7 @@
 title: Blog (Next.js)
 description: Full-featured blogging platform with static generation, Markdown support, comments, and SEO - my old blog before switching to Astro.
 shortDescription: Markdown blog with SSG, comments & SEO
-date: 2024-02-01
+date: 2024-08-29
 tech: [Next.js, TypeScript, TailwindCSS, SQLite]
 featured: false
 type: web

@@ -45,14 +45,14 @@ function shouldSkipAnchor(node: HastNode): boolean {
 
 /**
  * Rehype plugin: scrapes OG metadata at build time for every external `<a>` in
- * blog posts, prepends a favicon `<img>` inside the anchor, and stamps the
- * preview JSON onto a `data-preview` attribute. The client-side `<BlogLinks>`
- * island reads that attribute to render the hover popover.
+ * blog posts and project bodies, prepends a favicon `<img>` inside the anchor,
+ * and stamps the preview JSON onto a `data-preview` attribute. The client-side
+ * `<BlogLinks>` island reads that attribute to render the hover popover.
  */
 export function rehypeOgPreview() {
 	return async function transformer(tree: HastNode, file: { path?: string }) {
 		const path = file?.path ?? '';
-		if (!path.includes('/content/blog/')) return;
+		if (!path.includes('/content/blog/') && !path.includes('/content/projects/')) return;
 
 		const anchors: HastNode[] = [];
 		(function walk(node: HastNode) {

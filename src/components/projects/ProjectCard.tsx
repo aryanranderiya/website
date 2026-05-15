@@ -14,7 +14,7 @@ interface Project {
 	tech: string[];
 	type: string;
 	featured: boolean;
-	images: string[];
+	images: { src: string; caption?: string }[];
 	folder: string;
 	url?: string;
 	github?: string;

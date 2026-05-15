@@ -2,7 +2,7 @@
 title: GoSpider
 description: High-performance concurrent web crawler in Go that converts thousands of web pages to Markdown in minutes.
 shortDescription: Concurrent web-to-Markdown crawler in Go
-date: 2025-02-01
+date: 2025-06-25
 tech: [Go]
 featured: false
 type: cli
