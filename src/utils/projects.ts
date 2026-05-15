@@ -1,5 +1,13 @@
 import type { CollectionEntry } from 'astro:content';
 
+export type ProjectImage = { src: string; caption?: string };
+
+export function normalizeImages(
+	images: CollectionEntry<'projects'>['data']['images'] | undefined
+): ProjectImage[] {
+	return (images ?? []).map((img) => (typeof img === 'string' ? { src: img } : img));
+}
+
 export const FOLDER_PRIORITY: Record<string, number> = {
 	Featured: 0,
 	Client: 1,
@@ -25,7 +33,7 @@ export function mapProject(entry: CollectionEntry<'projects'>) {
 		tech: entry.data.tech,
 		type: entry.data.type,
 		featured: entry.data.featured,
-		images: entry.data.images,
+		images: normalizeImages(entry.data.images),
 		folder: entry.data.folder,
 		url: entry.data.url,
 		github: entry.data.github,

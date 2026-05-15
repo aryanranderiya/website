@@ -9,9 +9,30 @@ type: web
 folder: Featured
 coverImage: /ProjectMedia/GAIA/IntroducingGAIABanner.webp
 images:
-  - /ProjectMedia/GAIA/IntroducingGAIABanner.webp
-  - /ProjectMedia/GAIA/homepage_image.webp
-  - /ProjectMedia/GAIA/WhatsApp Image 2024-06-22 at 20.09.10.jpeg
+  - src: /ProjectMedia/GAIA/gaia-dashboard.webp
+    caption: The dashboard — your whole day at a glance, with GAIA surfacing what needs attention.
+  - src: /ProjectMedia/GAIA/gaia-todos.webp
+    caption: Todos, with AI-assisted breakdown and prioritisation.
+  - src: /ProjectMedia/GAIA/gaia-calendar.webp
+    caption: Calendar — GAIA reads, schedules, and reshuffles events for you.
+  - src: /ProjectMedia/GAIA/gaia-workflows.webp
+    caption: Workflows — chain steps into automations GAIA runs end to end.
+  - src: /ProjectMedia/GAIA/gaia-goals.webp
+    caption: Goals and community workflows.
+  - src: /ProjectMedia/GAIA/gaia-cli.webp
+    caption: The GAIA CLI — the same assistant, in your terminal.
+  - src: /ProjectMedia/GAIA/gaia-desktop_dock.webp
+    caption: A native desktop app for macOS.
+  - src: /ProjectMedia/GAIA/gaia-phone_dock.webp
+    caption: And on mobile — GAIA goes where you do.
+  - src: /ProjectMedia/GAIA/gaia-website_tab.webp
+    caption: heygaia.io
+  - src: /ProjectMedia/GAIA/homepage_image.webp
+    caption: A screenshot of v0 — the first working version.
+  - src: /ProjectMedia/GAIA/IntroducingGAIABanner.webp
+    caption: This was the old branding.
+  - src: /ProjectMedia/GAIA/WhatsApp Image 2024-06-22 at 20.09.10.jpeg
+    caption: Our launch wallpaper, generated for buildspace Nights & Weekends S5.
 order: 1
 url: https://heygaia.io
 github: https://github.com/theexperiencecompany/gaia

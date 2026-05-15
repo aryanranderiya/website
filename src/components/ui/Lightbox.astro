@@ -112,9 +112,12 @@ const { target } = Astro.props;
 			buildOverlay();
 			showImage(i);
 			els.overlay.style.display = 'flex';
-			requestAnimationFrame(() => {
-				els.overlay.style.opacity = '1';
-			});
+			// Force a reflow so the opacity:0 start state is committed before
+			// flipping to 1 — otherwise the transition can be skipped and the
+			// image snaps in a frame before the (expensive) backdrop-filter
+			// composites, which reads as "image first, blur after".
+			void els.overlay.offsetWidth;
+			els.overlay.style.opacity = '1';
 			document.body.style.overflow = 'hidden';
 		}
 

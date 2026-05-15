@@ -5,6 +5,7 @@ import ProjectCTAs from "@/components/projects/ProjectCTAs";
 import Lightbox from "@/components/ui/Lightbox.astro";
 import { SITE } from "@/constants/site";
 import PageLayout from "@/layouts/PageLayout.astro";
+import { normalizeImages } from "@/utils/projects";
 import { getTechIconUrl } from "@/utils/techIcons";
 
 export async function getStaticPaths() {
@@ -34,7 +35,7 @@ const formattedDate = new Date(p.date).toLocaleDateString("en-US", {
   month: "long",
   year: "numeric",
 });
-const allImages = p.images ?? [];
+const allImages = normalizeImages(p.images);
 const canonicalURL = new URL(Astro.url.pathname, SITE.url).toString();
 
 const breadcrumbJsonLd = JSON.stringify({
@@ -67,14 +68,14 @@ const projectJsonLd = JSON.stringify({
   ...(p.tech && p.tech.length > 0 ? { keywords: p.tech.join(", ") } : {}),
   ...(allImages[0]
     ? {
-        image: allImages[0].startsWith("http")
-          ? allImages[0]
-          : new URL(allImages[0], SITE.url).toString(),
+        image: allImages[0].src.startsWith("http")
+          ? allImages[0].src
+          : new URL(allImages[0].src, SITE.url).toString(),
       }
     : {}),
 });
 
-const heroImage = p.coverImage || allImages[0];
+const heroImage = p.coverImage || allImages[0]?.src;
 const galleryImages = allImages;
 ---
 
@@ -191,37 +192,59 @@ const galleryImages = allImages;
 
   <!-- Gallery (remaining images after hero) -->
   {
-    galleryImages.length > 0 && (
-      <section id="gallery-grid-section" class="mb-11">
-        {galleryImages.length === 1 && (
-          <div class="gallery-target group relative cursor-pointer rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
-            <img
-              src={galleryImages[0]}
-              alt={`${p.title} screenshot 2`}
-              class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
-              loading="lazy"
-            />
-          </div>
-        )}
-        {galleryImages.length >= 2 && (
-          <div
-            class="grid grid-cols-2 max-[600px]:grid-cols-1 gap-2"
-            id="gallery-grid"
-          >
-            {galleryImages.map((img: string, i: number) => (
-              <div class="gallery-item gallery-target group relative cursor-pointer [&.landscape]:col-span-2 rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
+    galleryImages.length > 0 &&
+      (galleryImages.some((img) => img.caption) ? (
+        /* Captioned: stacked full-width figures, blog-style captions */
+        <section class="mb-11 flex flex-col gap-7">
+          {galleryImages.map((img, i) => (
+            <figure class="m-0">
+              <div class="gallery-target group relative cursor-pointer overflow-hidden rounded-[10px] bg-[var(--muted-bg)]">
                 <img
-                  src={img}
-                  alt={`${p.title} screenshot ${i + 2}`}
-                  class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
+                  src={img.src}
+                  alt={img.caption ?? `${p.title} screenshot ${i + 1}`}
+                  class="block h-auto w-full transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
                   loading="lazy"
                 />
               </div>
-            ))}
-          </div>
-        )}
-      </section>
-    )
+              {img.caption && (
+                <figcaption class="mt-2 text-center text-[0.85em] text-[var(--text-ghost)]">
+                  {img.caption}
+                </figcaption>
+              )}
+            </figure>
+          ))}
+        </section>
+      ) : (
+        <section id="gallery-grid-section" class="mb-11">
+          {galleryImages.length === 1 && (
+            <div class="gallery-target group relative cursor-pointer rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
+              <img
+                src={galleryImages[0].src}
+                alt={`${p.title} screenshot 2`}
+                class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
+                loading="lazy"
+              />
+            </div>
+          )}
+          {galleryImages.length >= 2 && (
+            <div
+              class="grid grid-cols-2 max-[600px]:grid-cols-1 gap-2"
+              id="gallery-grid"
+            >
+              {galleryImages.map((img, i: number) => (
+                <div class="gallery-item gallery-target group relative cursor-pointer [&.landscape]:col-span-2 rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
+                  <img
+                    src={img.src}
+                    alt={`${p.title} screenshot ${i + 2}`}
+                    class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      ))
   }
 
   <Lightbox target=".gallery-target img" />

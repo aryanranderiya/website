@@ -35,7 +35,7 @@ interface Project {
 	tech: string[];
 	type: string;
 	featured: boolean;
-	images: string[];
+	images: { src: string; caption?: string }[];
 	folder: string;
 	url?: string;
 	github?: string;
@@ -486,7 +486,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 			{typeof document !== 'undefined' &&
 				createPortal(
 					<AnimatePresence>
-						{hovered && (hovered.project.coverImage ?? hovered.project.images?.[0]) && (
+						{hovered && (hovered.project.coverImage ?? hovered.project.images?.[0]?.src) && (
 							<m.div
 								key={hovered.project.slug}
 								initial={{
@@ -505,7 +505,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 								}}
 							>
 								<img
-									src={hovered.project.coverImage ?? hovered.project.images?.[0]}
+									src={hovered.project.coverImage ?? hovered.project.images?.[0]?.src}
 									alt={hovered.project.title}
 									className="block aspect-video h-auto w-full object-cover"
 								/>

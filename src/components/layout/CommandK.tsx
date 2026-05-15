@@ -231,7 +231,7 @@ export default function CommandK({ projects = [] }: { projects?: ProjectLink[] }
 															value={`${page.label} ${page.description}`}
 															onSelect={() => go(page.href)}
 														>
-															<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
+															<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--muted)] text-[var(--muted-foreground)]">
 																<HugeiconsIcon icon={IconComp} size={ITEM_ICON_SIZE} />
 															</span>
 															<span className="min-w-0 flex-1 truncate font-medium tracking-[-0.01em]">
@@ -255,7 +255,7 @@ export default function CommandK({ projects = [] }: { projects?: ProjectLink[] }
 															value={`project ${project.title}`}
 															onSelect={() => go(`/projects/${project.slug}`)}
 														>
-															<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
+															<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--muted)] text-[var(--muted-foreground)]">
 																<HugeiconsIcon icon={CodeIcon} size={ITEM_ICON_SIZE} />
 															</span>
 															<span className="min-w-0 flex-1 truncate font-medium tracking-[-0.01em]">
@@ -282,7 +282,7 @@ export default function CommandK({ projects = [] }: { projects?: ProjectLink[] }
 															value={`${link.label} social`}
 															onSelect={() => go(link.href, true)}
 														>
-															<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
+															<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--muted)] text-[var(--muted-foreground)]">
 																<HugeiconsIcon icon={IconComp} size={ITEM_ICON_SIZE} />
 															</span>
 															<span className="min-w-0 flex-1 truncate font-medium tracking-[-0.01em]">
@@ -309,7 +309,7 @@ export default function CommandK({ projects = [] }: { projects?: ProjectLink[] }
 															else runAction(action.id);
 														}}
 													>
-														<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md bg-[var(--muted)] text-[var(--muted-foreground)]">
+														<span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-[var(--muted)] text-[var(--muted-foreground)]">
 															<HugeiconsIcon icon={action.iconComp} size={ITEM_ICON_SIZE} />
 														</span>
 														<span className="min-w-0 flex-1 truncate font-medium tracking-[-0.01em]">
