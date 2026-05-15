@@ -80,7 +80,7 @@ async function fetchOnce(url: string): Promise<LinkPreview | null> {
 			const attrs = parseTagAttrs(m[0]);
 			const rel = attrs.rel?.toLowerCase() ?? '';
 			if (rel.includes('icon') && attrs.href) {
-				favicon = absolutize(attrs.href, finalUrl);
+				favicon = absolutize(decode(attrs.href), finalUrl);
 				if (rel.includes('apple-touch') || rel.includes('shortcut')) break;
 			}
 		}
@@ -92,7 +92,7 @@ async function fetchOnce(url: string): Promise<LinkPreview | null> {
 		const docTitle = titleMatch ? titleMatch[1] : undefined;
 
 		return {
-			image: absolutize(meta['og:image'] ?? meta['twitter:image'], finalUrl),
+			image: absolutize(decode(meta['og:image'] ?? meta['twitter:image']), finalUrl),
 			name: decode(meta['og:site_name'] ?? new URL(finalUrl).hostname),
 			favicon,
 			title: decode(meta['og:title'] ?? meta['twitter:title'] ?? docTitle),

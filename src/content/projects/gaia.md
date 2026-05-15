@@ -7,7 +7,7 @@ tech: [React, TypeScript, Python, FastAPI]
 featured: true
 type: web
 folder: Featured
-coverImage: /ProjectMedia/GAIA/IntroducingGAIABanner.webp
+coverImage: /ProjectMedia/GAIA/gaia-og.webp
 images:
   - src: /ProjectMedia/GAIA/gaia-dashboard.webp
     caption: The dashboard — your whole day at a glance, with GAIA surfacing what needs attention.
