@@ -1,6 +1,7 @@
 ---
 import { type CollectionEntry, getCollection } from "astro:content";
 import { CircleArrowLeft02Icon, HugeiconsIcon } from "@icons";
+import BlogLinks from "@/components/blog/BlogLinks";
 import ProjectCTAs from "@/components/projects/ProjectCTAs";
 import Lightbox from "@/components/ui/Lightbox.astro";
 import { SITE } from "@/constants/site";
@@ -242,6 +243,9 @@ const galleryImages = allImages;
   }
 
   <Lightbox target=".gallery-target img" />
+
+  <!-- Hover link previews for markdown links in the project body -->
+  <BlogLinks client:idle />
 
   <!-- Video (if present) -->
   {

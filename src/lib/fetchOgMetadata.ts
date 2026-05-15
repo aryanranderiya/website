@@ -54,6 +54,7 @@ async function fetchOnce(url: string): Promise<LinkPreview | null> {
 				accept: 'text/html,application/xhtml+xml',
 			},
 			redirect: 'follow',
+			signal: AbortSignal.timeout(5000),
 		});
 		if (!res.ok) return null;
 		// Only the head is needed; bail out at </head> if we can.
