@@ -87,6 +87,13 @@ export default defineConfig({
       exclude: ['@mlc-ai/web-llm'],
       include: ['thumbhash'],
     },
+    build: {
+      // Two chunks are intentionally large and lazy-loaded off the critical
+      // path: maplibre (MapWidgetInner, ~1MB) and the on-device web-llm
+      // runtime for AIChat (~5.7MB). Both are dynamically imported, so the
+      // advisory is expected — raise it past them to keep CI logs clean.
+      chunkSizeWarningLimit: 7000,
+    },
   },
   markdown: {
     shikiConfig: {

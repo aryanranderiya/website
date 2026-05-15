@@ -113,11 +113,30 @@ async function fetchOnce(url: string): Promise<LinkPreview | null> {
  * Falls back to `null` for non-fetchable schemes (mailto:) or network errors;
  * callers should provide their own `preview` prop in that case.
  */
+// Belt-and-suspenders hard cap. `AbortSignal.timeout` inside fetchOnce
+// should be enough, but on constrained CI build networks (Cloudflare Pages)
+// a stalled connection or hung body read can leave the promise pending —
+// and a single never-resolving call makes the rehype `Promise.all` (and
+// therefore the whole MDX rollup transform) hang until the build is killed.
+// This race guarantees every call settles, so the build can never stall.
+function hardTimeout(ms: number): { promise: Promise<null>; cancel: () => void } {
+	let timer: ReturnType<typeof setTimeout>;
+	const promise = new Promise<null>((resolve) => {
+		timer = setTimeout(() => resolve(null), ms);
+		(timer as { unref?: () => void }).unref?.();
+	});
+	return { promise, cancel: () => clearTimeout(timer) };
+}
+
 export function fetchOgMetadata(url: string): Promise<LinkPreview | null> {
 	if (!/^https?:/i.test(url)) return Promise.resolve(null);
 	const existing = cache.get(url);
 	if (existing) return existing;
-	const promise = fetchOnce(url);
+	const { promise: timeout, cancel } = hardTimeout(6000);
+	const promise = Promise.race([fetchOnce(url), timeout]).then((result) => {
+		cancel();
+		return result;
+	});
 	cache.set(url, promise);
 	return promise;
 }

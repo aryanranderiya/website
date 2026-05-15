@@ -589,7 +589,7 @@ This was the last piece. After this, the TBT on desktop dropped to **0 ms**.
 One thing I've learned from performance work: without guardrails, the gains evaporate. Someone adds a new component, imports `motion/react` at the top level without thinking, and suddenly the motion feature bundle is back on the critical path. So I wrote two GritQL rules that run as part of the normal lint pass and fail the build if they're violated.
 
 **`no-motion-full-import.grit`**  --  catches `import { ... } from "motion/react"` when a lazy `m` import should be used instead:
-```grit
+```text
 language js
 
 `import $imports from "motion/react"` where {
