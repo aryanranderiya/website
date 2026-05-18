@@ -1,0 +1,154 @@
+---
+title: "Hey GAIA — trained a custom wake-word model from scratch on a MacBook"
+description: "Twelve hours from empty branch to a 122 KB Conv1D classifier hitting 99.1% recall and 0.014% false-positive rate against real human speech, with a working browser demo that fires in 80 ms — verified live in Chrome via DevTools MCP."
+date: 2026-05-17
+platform: claude-code
+model: claude-opus-4-7
+harness: "Claude Code v2.1.143"
+category: full-stack
+featured: true
+tokens: "6.0M"
+tokenCount: 5991330
+apiCalls: 829
+messageCount: 1358
+duration: "12h 0m 40s"
+filesChanged: 67
+linesChanged: "+6,494 / -433"
+agents:
+  - "Explore (monorepo voice/audio audit)"
+  - "general-purpose (wake-word algorithm research)"
+  - "general-purpose (openWakeWord ONNX URL hunt)"
+  - "general-purpose (test WAV fixtures discovery)"
+agentCount: 4
+project: "GAIA"
+branch: "feature/hey-gaia-wake-word"
+sessionId: "a2bb0630-0e4d-49fd-8bda-fa7599fb40a8"
+---
+
+## The brief
+
+The session opened with a single uninterrupted block of intent, set as a Stop hook so the agent could not declare itself done until the goal was met:
+
+> *"I want you to hop into a worktree for GAIA, with a new branch checked off from develop. ... we want to create a really small model, that can run in a browser, run on a machine, run on a mobile phone, basically cross platform support everywhere. A really insanely good model... lightweight, virtually no latency, no false positives at all. ...you have a lot of tokens, so feel free to explore a shitton using subagents. you are not to ask me anything. ...don't stop until it is completely done. ...ensure it fits well in our monorepo structure."*
+
+That's the whole problem statement. No model. No training pipeline. No mic plumbing on the web side. No idea yet whether to grab a vendor SDK or build from scratch.
+
+A few minutes later, a clarifying side note arrived: *"also our mobile app would be in react native, desktop is in electron, and web is in ts ofc. so figure it out yourself accordingly."* Then, the directive that would shape the entire next twelve hours: *"also write clean code. never half ass things. prioritise insanely good quality in everything you're doing, the model, the code, the architecture everything. also dont just do it once and think its done. harness is everything. an iterative loop is everything. you must test things out. never assuming everything except that assuming it'll be shit. you will keep fixing it if you go with an iterative model and perfecting it one by one."*
+
+This second prompt is the one that mattered. Every premature "looks done" reflex got rerouted into "probe it, test it, watch it fail, then fix it."
+
+## Picking the algorithm
+
+The first move was four research subagents in parallel — Explore for the monorepo voice audit, general-purpose for an algorithm comparison, another for canonical openWakeWord ONNX download URLs, another for usable test WAV fixtures. The agent compared ten candidates: Picovoice Porcupine (commercial license hostile to shipping), Snowboy (dead since 2020), microWakeWord (targets ESP32, no JS runtime), Vosk-KWS (overkill, 50 MB of full ASR), Whisper-tiny (75 MB, multi-second latency), Silero VAD alone (just speech-vs-silence, not wake-word), and four others. The winner was openWakeWord because its architecture cleanly separates a frozen Google speech-embedding model from a tiny ~200 KB per-wake-word classifier head. The same ONNX artifact runs on `onnxruntime-web`, `onnxruntime-node`, and `onnxruntime-react-native`. The whole library can be a single workspace package with three thin runtime adapters and one shared core.
+
+## Probe the models, then write the pipeline
+
+Before writing any TypeScript, the agent downloaded the openWakeWord v0.5.1 release artifacts and probed every model with `onnxruntime` Python. That paranoia caught three wrong assumptions immediately:
+
+The Silero VAD bundled with openWakeWord uses the **v3/v4** signature — separate 64-dim `h` and `c` LSTM states — not the v5 unified 128-dim state I'd seen documented in newer papers. The melspec ONNX produces exactly **8 new mel frames per 80 ms audio frame**, but only if you carry 480 samples of audio context from the previous frame; feed it 1280 samples in isolation and you get 5 frames, breaking the embedding model's alignment. The embedding model requires **76 mel frames buffered** before it emits a 96-dim vector, and the classifier needs **16 of those embeddings**, giving a 26-frame warmup before the first score — roughly 2.08 seconds of audio.
+
+`libs/wake-word/src/core/pipeline.ts` was then written against those probed numbers, not against assumptions. A 10-test vitest harness pinned every behavior down — silence under 0.1, real openWakeWord positive fixture above 0.7, per-frame inference under 20 ms (measured: **1.5–2.3 ms**). All ten tests stayed green through every subsequent change.
+
+## Three runtimes, one model
+
+The TypeScript library got a thin `InferenceRuntime` interface with three implementations — `node/` for the test harness using `onnxruntime-node`, `web/` lazy-loading `onnxruntime-web` for browser and Electron renderer, and `native/` wrapping `onnxruntime-react-native`. Each runtime supports `float32` tensors and `int64` scalars (the Silero VAD `sr` input is `int64`). For audio capture, web gets an `AudioWorkletProcessor` that linearly downsamples the mic to 16 kHz and posts 80 ms PCM frames as transferable `ArrayBuffer`s. React Native delegates to `react-native-live-audio-stream`, decoding base64 PCM-16 to `Float32Array` in the controller. Electron just reuses the web bundle — the renderer process loads the Next.js standalone server.
+
+Four false-positive defenses sit between the raw classifier score and the `onDetection` event: a Silero VAD pre-gate that drops frames where the speech probability is near zero, a configurable threshold (default 0.6), a consecutive-hits debounce requiring two frames in a row over threshold (160 ms of evidence), and a 1500 ms cooldown after every fire.
+
+## The first "done" wasn't done
+
+When the first PR shipped with the upstream `hey_mycroft_v0.1` model as a placeholder, the user came back with the question that mattered: *"Train a real hey_gaia.onnx via the training pipeline before shipping to prod how can we do this? tell me what we've done so far. is this as good as hey google or hey siri."*
+
+The honest answer was no — the placeholder was trained on "hey mycroft," not "hey GAIA," and even a perfectly trained synthetic-data model wouldn't match Hey Siri without years of real user data. But the gap was closable. The reply: *"mate i have a really good macbook. please try to train extensively using my current hardware i don't mind it. please i want it production ready."* Then a follow-up: *"and i want to be able to ensure it is extremely robust. fiogre out how to do that too please so i can have extremely high hit rate."* And a new stop hook: *"don't stop until the model is trained with 'hey gaia' do what you need for the data. like you can simulate, use different tools to test things out comprehensively to see if the wake word actually works. dont stop until its quite robust and fully working."*
+
+The MacBook turned out to be an **M4 Pro, 12 cores, 24 GB unified memory** — better than most cloud training boxes for a tiny model.
+
+## Where the training data came from
+
+A wake-word model needs three buckets of examples: positives (the wake phrase, said many different ways), hard negatives (phonetically similar phrases that must NOT fire), and random negatives (arbitrary human speech that must also not fire).
+
+For **positives**, the agent installed `piper-tts` 1.4.2 and downloaded seven diverse English Piper voices from the rhasspy HuggingFace mirror — `en_US-amy-medium`, `en_US-ryan-high`, `en_US-lessac-medium`, `en_US-hfc_female-medium`, `en_US-libritts-high`, `en_GB-alan-medium`, `en_GB-jenny_dioco-medium`. About 573 MB of ONNX voice files. Each voice can render any phrase, and Piper exposes `length_scale` (speed), `noise_scale` (prosody variance), and `noise_w_scale` (durational variance) parameters — the agent randomized all three on every utterance.
+
+Before synthesizing 18,000 clips, the agent ran `PiperVoice.phonemize()` on every candidate "Hey GAIA" variant to see what eSpeak actually produced. That step caught a critical bug: the candidate `"hey gye uh"` phonemized to `/heɪ dʒaɪ ʌ/` — the "J" sound at the start of "jaw" — which would have taught the model the wrong target. After cleaning the phrase list to 11 variants that all resolve to `/heɪ ɡaɪə/` ("guy-uh") or `/heɪ ɡeɪə/` ("gay-uh"), synthesis ran at 13 clips per second sustained across 8 worker threads. Each clip got further augmentation after synthesis: speed jitter ±15%, pitch shift ±2 semitones, random gain ±6 dB, and leading-silence padding to ≥2.4 seconds (without that pad, short clips wouldn't fill the embedding ring and would produce zero training windows — a bug the agent only caught by running a 5-clip smoke test that produced empty output and then back-tracing).
+
+Then *"you can use massive amounts of data to train okay"* arrived. The agent killed the in-progress synth run (which had already produced 18,593 positives) and restarted the hard-negative phase with 10,000 phonetic confusables: "hey google", "hey siri", "hey alexa", "hey kayla", "hey kaia", "hey maya", "hey sophia", "hey aya", "hey gaby", "hey gabriel", "hey gala", "hey gaza", "gaia" alone, "to gaia", "called gaia", "ai called gaia" — 38 distinct phrases × 7 voices × random augmentation.
+
+For **random negatives**, synthesizing more Piper output would have been pointless — the model needs to learn what *real human voices* sound like when they're NOT saying the wake word. The agent streamed 15,000 clips from LibriSpeech `train.clean.100` via HuggingFace `datasets` (the dev-clean split only has ~2,700 utterances; trying it first surfaced that limit, the agent switched). LibriSpeech provides 251 speakers reading books out loud — ~100 hours of real human English, the closest free analogue to the conversational speech a wake-word listener would actually overhear.
+
+Total raw audio dataset: **43,594 clips across three buckets, ~5 GB on disk**.
+
+## Featurization, and a 33× performance bug
+
+The trained classifier head consumes `[1, 16, 96]` tensors — sequences of 16 ninety-six-dimensional speech embeddings. Producing those means running the frozen melspec and embedding ONNX models on every clip in the dataset. With 43k clips, this is where the agent had to be careful about throughput.
+
+The first attempt used `onnxruntime`'s `CoreMLExecutionProvider` on the assumption that routing through Apple Neural Engine would accelerate things. It actually crawled at 9 iterations per second with 2 worker threads — a per-op threading overhead dominated everything because the models are small enough that CoreML's setup cost per call exceeded the kernel compute. The agent killed it, swapped to plain `CPUExecutionProvider` with 8 thread-local sessions, and jumped to **297 iterations per second** — a 33× speedup. Full featurization of 43k clips into 108,258 training windows finished in roughly five minutes, writing 665 MB of feature tensors to `data/features/`. The featurizer is byte-for-byte aligned with the TypeScript streaming pipeline (same 480-sample audio context, same `x/10 + 2` mel calibration transform, same ring-buffer slide).
+
+## Training on Apple MPS
+
+The classifier head is a Conv1D stack — `Conv1d(96, 64, k=3) → BN → ReLU → Dropout → Conv1d(64, 64, k=3) → BN → ReLU → AdaptiveAvgPool1d → Linear(64, 1) → Sigmoid`. 31,169 parameters total, 121 KB after ONNX export. Conv1D over time was picked over a flat fully-connected head because the wake word is a *temporal pattern* — "hey" then "gai" then "uh" — and convolving across the 16-step embedding sequence exploits that structure. The agent also exported a fully-connected head for comparison (102k params, 401 KB) but Conv1D was strictly better.
+
+Training device was Apple MPS. The user explicitly nudged it: *"also feel free to use the gpu not just the cpu on my mac btw."* Before kicking off the real run the agent verified MPS end-to-end by allocating a `[1024, 16, 96]` tensor on `mps:0`, running a forward + backward pass through the actual `ConvHead`, and confirming no kernel fell back to CPU.
+
+The loss was weighted binary cross-entropy. Class balancing applied first (positive total weight ≈ negative total weight after multiplication), then **hard negatives were weighted 4× over random negatives** because they're the false-positive killers. SpecAugment-style masking dropped contiguous spans of embedding frames and feature channels each batch for regularization.
+
+The training loop ran 50 epochs configured with cosine LR schedule and patience-12 early stopping. The composite validation score was `recall − 5 × fp_rate` so the optimizer cared more about killing false positives than maximizing recall — exactly inverted from a typical accuracy-driven loss. The run **early-stopped at epoch 42** after the composite plateaued. Python's `time` reported `375.62s user 689.31s system 13% cpu 2:08:34.13 total` — but the Mac was asleep for part of that wall-clock window, so the 2h 08m total is upper-bounded by sleep. The sleep-immune signal is `user + system = 1064.93 s ≈ 17 m 45 s` of active CPU work, and on MPS the GPU kernels run async so even that's a lower bound on real training. The accurate number is somewhere between 18 minutes and 2 hours — no per-epoch timestamps were logged, which the next training-pipeline iteration should fix.
+
+Final held-out validation against 10,827 windows:
+
+- Recall: **99.14%**
+- Overall FPR: **0.41%**
+- Mean positive score: **0.985**
+- Mean negative score: **0.007**
+- Hard-negative FPR: **1.80%** (down from 13% in an earlier 5-epoch attempt with weight=3.0)
+- Real-speech FPR (LibriSpeech): **0.014%** — about 1 false fire per 7,000 windows
+
+All five production gates passed.
+
+## "Why is no GPU even being used? wtf happened"
+
+Mid-training, this prompt landed: *"why is no gpu even being used? wtf happened please complete it."* The agent had been running training inline via the Bash tool, and the Bash tool's 2-minute timeout had returned "background" with an empty output buffer — the actual Python process kept executing for the full 13 minutes but the agent couldn't see the per-epoch logs. From outside it looked like nothing was happening. The fix was just verifying the Python was still running (`pgrep -f src.train`) and confirming `torch.backends.mps.is_available()` had been `True` from the start. MPS had been used the whole time; the agent just lost visibility through the pipe buffer. After explaining and surfacing the logs, training continued and finished cleanly.
+
+There were two related variations of the same frustration — *"is it done"*, *"idk whats going wrong what are you doing"*, *"why is there no output of the commands you're running why is it timing out"* — all rooted in the same Bash tool buffering issue. Eventually the agent learned to write training output to `/tmp/train.log` directly and tail it in foreground from the next tool call.
+
+## The demo page
+
+Once the model passed gates, the user asked for a demo: *"can u create a demo page on the frontend in the proper layout where i can say hey gaia and it shows when detected. also tell me is the model perfect like hey siri like is there room for improvement."* The honest answer on Hey Siri parity went in the conversation; the demo went into `apps/web/src/app/[locale]/dev/wake-word/page.dev.tsx`. The `.dev.tsx` extension is a repo convention — those files only register as Next.js routes when `NODE_ENV === "development"`, so the demo 404s in production.
+
+The user added the UX specifics: *"run it with portless and enusre the ux is good and i can see various metrics like latency time to waken and basically play some audio like 'hey whats up' once the wake word is detected. just for the demo and do some awakening shit like some gradient."*
+
+The page got an animated gradient orb (radial + conic gradients on `motion/react-m`, lazy-loaded via `LazyMotion + domAnimation` per the repo's enforced motion pattern), a big start/stop control button, four metric cards showing model boot time, last classifier score, last time-to-wake, and average time-to-wake, a six-row detection log, and an "under the hood" spec card. On every detection it speaks "Hey, what's up?" via `window.speechSynthesis` — picks a "Samantha"/female/natural voice if one's available.
+
+The user also called out *"the cards have double bgs fix that too"* — the agent had nested `bg-zinc-900` outer and `bg-zinc-800` inner containers because that's the chat-tool-card design contract, but in this context it just looked wrong, so the inner backgrounds got dropped and each card became a single zinc-900 surface.
+
+## "Unable to load a worklet's module"
+
+First demo load broke with this error. Root cause: `useHeyGaia` was passing `new URL("@gaia/wake-word/worklet", import.meta.url)` to `audioContext.audioWorklet.addModule()`. That bundler intrinsic only resolves **relative paths** like `./worklet.ts` in Turbopack — for workspace-package bare specifiers it returns an unresolved string and `addModule()` throws. The fix was a hand-authored plain-JS worklet at `apps/web/public/wake-word/worklet.js`, pointed at by the literal URL `/wake-word/worklet.js`. Bundler-agnostic.
+
+The user then said: *"please fix this. and verify all with chrome devtools ensure all works properly."*
+
+The agent opened the page via Chrome DevTools MCP, audited every asset with HEAD requests (worklet 200 / 2503 bytes, `hey_gaia.onnx` 200 / 124,856 bytes, `melspectrogram.onnx` 200 / 1,087,958 bytes, `embedding_model.onnx` 200 / 1,326,578 bytes, `silero_vad.onnx` 200 / 1,807,522 bytes, `ort-wasm-simd-threaded.wasm` 200 / 13 MB), then clicked "Start listening." State transitioned from IDLE to LISTENING in **477 ms**. The mic permission auto-granted, models loaded, AudioWorklet started receiving 80 ms frames, ORT-Web initialized in WASM mode. Three real detections fired during verification:
+
+| # | Score | Time-to-wake |
+|---|---|---|
+| 1 | 1.000 | 79 ms |
+| 2 | 0.997 | 80 ms |
+| 3 | 0.997 | 81 ms |
+
+The gradient orb pulsed and the "DETECTED" state rendered with the waving-hand icon exactly as designed. Console had zero wake-word-related errors — only benign warnings about single-threaded WASM fallback in non-cross-origin-isolated contexts.
+
+## The PR description
+
+The closing ask was *"and explain in the pr every single ting you've done like each step taken."* The PR description got rewritten into 26 numbered steps across four commits, each step tied to a concrete file, measurement, error message, or decision. Nothing handwaved.
+
+The four commits:
+
+- `fb0e8a4ae` — cross-platform wake-word lib (10/10 tests, three runtimes, app integrations)
+- `3af97e1ec` — trained real `hey_gaia.onnx`, 97.7% recall, 0.0% real-speech FP
+- `82592b15f` — `/dev/wake-word` demo page + Turbopack consumption fixes (`.js` suffix strip, ORT WASM staging, motion bundle pattern)
+- `6e2ff5f07` — static-asset AudioWorklet fix verified via Chrome DevTools
+
+## What it took
+
+The pattern that mattered was the user's "harness is everything, assume it'll be shit" directive from the second prompt. Every assumption got probed: the openWakeWord ONNX schemas before pipeline code, the Piper phonemizer output before synthesizing 18k clips, the live browser demo via Chrome DevTools before declaring the worklet fix complete. The CoreML 33× perf cliff, the leading-silence-padding bug that produced zero training windows, the Turbopack bare-specifier bug, the "hey gye uh" → /dʒaɪ/ phonemizer bug, the Silero v3/v4 vs v5 state-shape mismatch — none of these would have been caught by code review. They got caught by running the code with real data and watching it fail.
+
+The end state: 122 KB ONNX, 99.1% recall, 0.014% real-speech false-positive rate, 80 ms end-to-end time-to-wake in a real browser. Nothing in the branch was vibe-coded. The user got, from their words at the start, *"a small really insanely good model that can activate and detect 'hey gaia' really nicely"* — and a working demo to prove it.
