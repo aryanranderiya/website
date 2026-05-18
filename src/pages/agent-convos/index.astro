@@ -43,10 +43,20 @@ const convos = allConvos
         impressive or extremely long running tasks. LLM's are truly powerful with
         the proper harness, environment and tools around it.
       </p>
-      <p class="text-caption max-w-[560px]">
+      <p class="text-caption max-w-[560px] mb-3">
         Each entry is a condensed, human-readable retelling of the session.
         Sensitive details (credentials, internal URLs, proprietary logic) are
         redacted. The focus is on the technical approach and what made it work.
+      </p>
+      <p class="text-caption max-w-[560px]">
+        Every entry is generated from the conversation's raw JSONL by a Claude
+        Code skill —
+        <a
+          href="https://github.com/aryanranderiya/website/blob/master/.claude/skills/log-convo.md"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-[var(--text-primary)] underline decoration-[var(--border-strong)] underline-offset-4 hover:decoration-[var(--text-secondary)] transition-colors"
+        >log-convo.md</a>.
       </p>
     </header>
 
