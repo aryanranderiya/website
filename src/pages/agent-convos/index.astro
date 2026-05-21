@@ -50,16 +50,31 @@ const convos = allConvos
       </p>
       <p class="text-caption max-w-[560px]">
         Every entry is generated from the conversation's raw JSONL by a Claude
-        Code skill —
-        <a
+        Code skill (<a
           href="https://github.com/aryanranderiya/website/blob/master/.claude/skills/log-convo.md"
           target="_blank"
           rel="noopener noreferrer"
-          class="text-[var(--text-primary)] underline decoration-[var(--border-strong)] underline-offset-4 hover:decoration-[var(--text-secondary)] transition-colors"
-        >log-convo.md</a>.
+          class="inline-link"
+        >you can read it here</a>).
       </p>
     </header>
 
     <AgentConvosList convos={convos} client:visible />
   </div>
 </PageLayout>
+
+<style>
+  /* Needed as a real selector because the global `a` reset in
+     global.css is unlayered and would otherwise beat Tailwind's
+     layered utilities (so `hover:decoration-*` silently no-ops). */
+  .inline-link {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-decoration-color: var(--border-strong);
+    text-underline-offset: 3px;
+    transition: text-decoration-color 0.15s ease;
+  }
+  .inline-link:hover {
+    text-decoration-color: var(--text-muted);
+  }
+</style>
