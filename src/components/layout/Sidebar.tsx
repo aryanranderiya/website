@@ -411,10 +411,10 @@ export default function Sidebar({
 
 						{/* Old portfolio */}
 						<a
-							href="https://aryanranderiya.com"
+							href="https://old.aryanranderiya.com"
 							target="_blank"
 							rel="noopener noreferrer"
-							aria-label="Old portfolio (aryanranderiya.com)"
+							aria-label="Old portfolio (old.aryanranderiya.com)"
 							className="nav-link -mx-2 flex items-center gap-1.5 rounded-md px-2 py-[3px] text-[12px] no-underline"
 							onMouseEnter={() => setHoveredAction('old-portfolio')}
 							onMouseLeave={() => setHoveredAction(null)}
@@ -855,10 +855,10 @@ export default function Sidebar({
 
 							{/* Old portfolio */}
 							<a
-								href="https://aryanranderiya.com"
+								href="https://old.aryanranderiya.com"
 								target="_blank"
 								rel="noopener noreferrer"
-								aria-label="Old portfolio (aryanranderiya.com)"
+								aria-label="Old portfolio (old.aryanranderiya.com)"
 								className="nav-link -mx-2 flex items-center gap-1.5 rounded-md px-2 py-[3px] text-[12px] no-underline"
 							>
 								<img
