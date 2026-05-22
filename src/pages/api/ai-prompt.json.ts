@@ -2,7 +2,6 @@ import { getCollection } from 'astro:content';
 import type { APIRoute } from 'astro';
 import { SITE } from '@/constants/site';
 import { certifications, education, experience } from '@/data/experience';
-import { pastWork } from '@/data/freelance';
 import { buildAIPrompt } from '@/lib/build-ai-prompt';
 
 export const GET: APIRoute = async () => {
@@ -17,7 +16,6 @@ export const GET: APIRoute = async () => {
 		experience,
 		education,
 		certifications,
-		pastWork,
 		site: SITE,
 	});
 

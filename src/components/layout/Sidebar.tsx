@@ -2,7 +2,6 @@
 
 import {
 	Book01Icon,
-	Briefcase01Icon,
 	BrushIcon,
 	Cancel01Icon,
 	Clock01Icon,
@@ -67,7 +66,6 @@ const NAV_GROUPS: {
 		label: null,
 		items: [
 			{ href: '/resume', label: 'Experience', icon: NoteIcon },
-			{ href: '/freelance', label: 'Freelance', icon: Briefcase01Icon },
 			{ href: '/agent-convos', label: 'Agent Convos', icon: RoboticIcon },
 			{ href: '/books', label: 'Bookshelf', icon: Book01Icon },
 			{ href: '/experiments', label: 'Experiments', icon: TestTube01Icon },

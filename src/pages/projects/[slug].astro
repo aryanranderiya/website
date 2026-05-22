@@ -26,13 +26,6 @@ const { entry } = Astro.props;
 const { Content } = await entry.render();
 const p = entry.data;
 
-const FOLDER_CHIP: Record<string, { color: string; label: string }> = {
-  Featured: { color: "#f59e0b", label: "Featured" },
-  Client: { color: "#10b981", label: "Freelance" },
-  Hackathon: { color: "#a78bfa", label: "Hackathon" },
-};
-
-const chip = p.folder ? FOLDER_CHIP[p.folder] : undefined;
 const formattedDate = new Date(p.date).toLocaleDateString("en-US", {
   month: "long",
   year: "numeric",
@@ -97,7 +90,7 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
   <!-- Hero image: visual-first, full width -->
   {
     heroImage && (
-      <div class="gallery-target mb-8 overflow-hidden rounded-3xl bg-[var(--muted-bg)] cursor-pointer">
+      <div class="gallery-target mb-8 overflow-hidden rounded-xl bg-[var(--muted-bg)] cursor-pointer">
         <img
           src={heroImage}
           alt={p.title}
@@ -110,73 +103,61 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
 
   <!-- Header -->
   <header class="mb-8">
-    <!-- Meta row: folder · type · date -->
-    <div class="mb-3 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-      {
-        chip && (
-          <>
-            <span
-              class="text-[11px] px-2 rounded-full"
-              style={`background-color: ${chip.color}20; color: ${chip.color};`}
-            >
-              {chip.label}
-            </span>
-            <span class="text-(--text-ghost) text-[11px] opacity-40">·</span>
-          </>
-        )
-      }
-      <span class="text-[11px] text-(--text-ghost)">{p.type}</span>
-      <span class="text-(--text-ghost) text-[11px] opacity-40">·</span>
-      <span class="text-[11px] text-(--text-ghost)">{formattedDate}</span>
+    <!-- Title + actions: title left, Visit/GitHub right (stacks on mobile) -->
+    <div
+      class="flex flex-col gap-3 min-[480px]:flex-row min-[480px]:items-start min-[480px]:justify-between min-[480px]:gap-4"
+    >
+      <h1
+        transition:name={`project-title-${entry.slug}`}
+        class="m-0 text-2xl font-medium leading-tight tracking-[-0.03em] text-[var(--text-primary)]"
+      >
+        {p.title}
+      </h1>
+      <ProjectCTAs url={p.url} github={p.github} />
     </div>
 
-    <h1
-      transition:name={`project-title-${entry.slug}`}
-      class="m-0 mb-3 text-[32px] font-semibold leading-[1.1] tracking-[-0.04em] text-[var(--text-primary)]"
+    <!-- Date (below title, same size/pattern as blog/slug) -->
+    <time
+      datetime={new Date(p.date).toISOString()}
+      class="mt-1 mb-3 block text-[17px] text-(--text-ghost) tracking-[-0.01em]"
     >
-      {p.title}
-    </h1>
+      {formattedDate}
+    </time>
 
     <!-- Tech stack -->
     {
       p.tech && p.tech.length > 0 && (
-        <div class="mb-2 flex flex-col gap-3">
-          <div class="flex flex-wrap items-center gap-1.5">
-            {p.tech.map((t: string) => {
-              const iconUrl = getTechIconUrl(t);
-              return (
-                <span class="inline-flex items-center gap-[5px] text-[11px] px-2.5 py-1 rounded-full bg-[var(--muted-bg)] text-[var(--text-secondary)]">
-                  {iconUrl && (
-                    <img
-                      src={iconUrl}
-                      alt=""
-                      width="12"
-                      height="12"
-                      class="shrink-0 object-contain"
-                    />
-                  )}
-                  {t}
-                </span>
-              );
-            })}
-          </div>
+        <div class="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+          {p.tech.map((t: string) => {
+            const iconUrl = getTechIconUrl(t);
+            return (
+              <span class="inline-flex items-center gap-[6px] text-[12px] text-(--text-ghost)">
+                {iconUrl && (
+                  <img
+                    src={iconUrl}
+                    alt=""
+                    width="14"
+                    height="14"
+                    class="shrink-0 object-contain"
+                  />
+                )}
+                {t}
+              </span>
+            );
+          })}
         </div>
       )
     }
 
     <p
-      class="m-0 mb-6 max-w-[520px] text-sm leading-[1.75] tracking-[-0.01em] text-[var(--text-muted)]"
+      class="m-0 max-w-[520px] text-sm leading-[1.75] tracking-[-0.01em] text-[var(--text-muted)]"
     >
       {p.description}
     </p>
-
-    <ProjectCTAs url={p.url} github={p.github} />
   </header>
 
   <!-- Body content (rendered markdown) -->
-  <div
-    class="project-body mb-11 text-sm text-[var(--text-muted)] leading-[1.75] tracking-[-0.01em] [&_p]:mb-[1em] [&_p:last-child]:mb-0 [&_h2]:text-base [&_h2]:font-semibold [&_h2]:text-[var(--text-primary)] [&_h2]:tracking-[-0.025em] [&_h2]:mt-8 [&_h2]:mb-3 [&_h3]:text-[var(--text-secondary)] [&_h3]:font-medium [&_h3]:mt-6 [&_h3]:mb-2"
-  >
+  <div class="prose mb-11">
     <Content />
   </div>
 
@@ -188,11 +169,11 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
         <section class="mb-11 flex flex-col gap-7">
           {galleryImages.map((img, i) => (
             <figure class="m-0">
-              <div class="gallery-target group relative cursor-pointer overflow-hidden rounded-[10px] bg-[var(--muted-bg)]">
+              <div class="gallery-target group relative cursor-pointer overflow-hidden rounded-xl bg-[var(--muted-bg)]">
                 <img
                   src={img.src}
                   alt={img.caption ?? `${p.title} screenshot ${i + 1}`}
-                  class="block h-auto w-full transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
+                  class="block h-auto w-full"
                   loading="lazy"
                 />
               </div>
@@ -207,11 +188,11 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
       ) : (
         <section id="gallery-grid-section" class="mb-11">
           {galleryImages.length === 1 && (
-            <div class="gallery-target group relative cursor-pointer rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
+            <div class="gallery-target group relative cursor-pointer rounded-xl overflow-hidden bg-[var(--muted-bg)]">
               <img
                 src={galleryImages[0].src}
                 alt={`${p.title} screenshot 2`}
-                class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
+                class="w-full h-auto block"
                 loading="lazy"
               />
             </div>
@@ -222,11 +203,11 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
               id="gallery-grid"
             >
               {galleryImages.map((img, i: number) => (
-                <div class="gallery-item gallery-target group relative cursor-pointer [&.landscape]:col-span-2 rounded-[10px] overflow-hidden bg-[var(--muted-bg)]">
+                <div class="gallery-item gallery-target group relative cursor-pointer [&.landscape]:col-span-2 rounded-xl overflow-hidden bg-[var(--muted-bg)]">
                   <img
                     src={img.src}
                     alt={`${p.title} screenshot ${i + 2}`}
-                    class="w-full h-auto block transition-[scale,filter] duration-300 ease-out group-hover:scale-[1.03] group-hover:brightness-[1.04]"
+                    class="w-full h-auto block"
                     loading="lazy"
                   />
                 </div>
@@ -246,7 +227,7 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
   {
     p.video && (
       <section class="mb-11">
-        <div class="rounded-[14px] overflow-hidden bg-[var(--muted-bg)] aspect-video">
+        <div class="rounded-xl overflow-hidden bg-[var(--muted-bg)] aspect-video">
           <video
             src={p.video}
             controls

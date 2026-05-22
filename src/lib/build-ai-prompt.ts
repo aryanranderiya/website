@@ -6,7 +6,6 @@
 import type { CollectionEntry } from 'astro:content';
 import type { SITE } from '@/constants/site';
 import type { Experience } from '@/data/experience';
-import type { FreelanceProject } from '@/data/freelance';
 
 interface BuildAIPromptOptions {
 	projects: CollectionEntry<'projects'>[];
@@ -22,7 +21,6 @@ interface BuildAIPromptOptions {
 		location: string;
 	}[];
 	certifications: { name: string; issuer: string; date: string; url: string }[];
-	pastWork: FreelanceProject[];
 	site: typeof SITE;
 }
 
@@ -32,7 +30,6 @@ export function buildAIPrompt({
 	experience,
 	education,
 	certifications,
-	pastWork,
 	site,
 }: BuildAIPromptOptions): string {
 	const sorted = [...projects].sort(
@@ -98,23 +95,6 @@ ${sorted
 	})
 	.join('\n\n---\n\n')}`;
 
-	// ── Freelance work ─────────────────────────────────────────────────────────
-	const freelanceSection = `## Freelance Client Work (${pastWork.length} projects)
-${pastWork
-	.map((w) => {
-		const lines = [
-			`### ${w.name} - ${w.type}`,
-			w.description,
-			`Tech: ${w.tech.join(', ')}`,
-			w.url ? `URL: ${w.url}` : '',
-			w.testimonial
-				? `Testimonial: "${w.testimonial.quote}" -- ${w.testimonial.author}, ${w.testimonial.role}`
-				: '',
-		].filter(Boolean);
-		return lines.join('\n');
-	})
-	.join('\n\n')}`;
-
 	// ── Blog ───────────────────────────────────────────────────────────────────
 	const publishedPosts = blogPosts.filter((p) => !p.data.draft);
 	const blogSection =
@@ -125,8 +105,7 @@ ${publishedPosts.map((p) => `- "${p.data.title}" (${p.data.category}) - ${p.data
 
 	// ── Pages ──────────────────────────────────────────────────────────────────
 	const pagesSection = `## Portfolio Pages
-- /projects: All ${sorted.length} personal and freelance projects
-- /freelance: ${pastWork.length} client work projects
+- /projects: All ${sorted.length} personal and client projects
 - /design: Graphic design, branding, apparel work
 - /tools: Curated tools Aryan uses daily
 - /bookshelf: Books Aryan has read
@@ -140,7 +119,6 @@ ${publishedPosts.map((p) => `- "${p.data.title}" (${p.data.category}) - ${p.data
 		educationSection,
 		experienceSection,
 		projectSection,
-		freelanceSection,
 		blogSection,
 		pagesSection,
 	]

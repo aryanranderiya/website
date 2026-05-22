@@ -20,7 +20,7 @@ export default function BlogPreview({ posts }: { posts: Post[] }) {
 
 	return (
 		<section className="mt-2 mb-8 pb-6">
-			<h2 className="mb-1 font-normal text-[14px] text-[var(--text-secondary)] tracking-[-0.02em]">
+			<h2 className="mb-1 font-medium text-[14px] text-[var(--text-secondary)] tracking-[-0.02em]">
 				Blog
 			</h2>
 

@@ -24,6 +24,14 @@ const FOLDER_CHIP: Record<string, { bg: string; color: string; label: string }> 
 	Hackathon: { bg: 'rgba(167,139,250,0.12)', color: '#a78bfa', label: 'Hackathon' },
 };
 
+// "2025-08-01" → "Aug 2025"
+function formatMonthShort(date: string): string {
+	const d = new Date(date);
+	if (Number.isNaN(d.getTime())) return '';
+	const month = d.toLocaleDateString('en-US', { month: 'short' });
+	return `${month} ${d.getFullYear()}`;
+}
+
 const TYPE_LABELS: Record<string, string> = {
 	web: 'Web',
 	mobile: 'Mobile',
@@ -92,12 +100,19 @@ export default function ProjectCard({
 				)}
 			</div>
 
-			{/* Right: short description */}
-			{project.shortDescription && (
-				<div className="flex min-w-0 flex-1 items-center justify-end">
-					<span className="truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
-						{project.shortDescription}
-					</span>
+			{/* Right: short description + date */}
+			{(project.shortDescription || project.date) && (
+				<div className="flex min-w-0 flex-1 items-center justify-end gap-3">
+					{project.shortDescription && (
+						<span className="truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
+							{project.shortDescription}
+						</span>
+					)}
+					{project.date && (
+						<span className="shrink-0 text-[12px] text-[var(--text-ghost)] tracking-[-0.01em] tabular-nums">
+							{formatMonthShort(project.date)}
+						</span>
+					)}
 				</div>
 			)}
 		</a>

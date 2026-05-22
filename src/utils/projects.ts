@@ -20,6 +20,10 @@ export function sortProjects(entries: CollectionEntry<'projects'>[]) {
 		const fa = FOLDER_PRIORITY[a.data.folder] ?? 9;
 		const fb = FOLDER_PRIORITY[b.data.folder] ?? 9;
 		if (fa !== fb) return fa - fb;
+		// Within a folder (Featured, Freelance, …): newest first by date.
+		const da = a.data.date ? new Date(a.data.date).getTime() : 0;
+		const db = b.data.date ? new Date(b.data.date).getTime() : 0;
+		if (da !== db) return db - da;
 		return (a.data.order ?? 99) - (b.data.order ?? 99);
 	});
 }
