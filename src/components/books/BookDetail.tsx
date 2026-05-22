@@ -13,6 +13,9 @@ interface Book {
 	title: string;
 	author: string;
 	cover?: string;
+	coverHash?: string;
+	coverW?: number;
+	coverH?: number;
 	status: string;
 	rating?: number;
 	review?: string;
@@ -54,7 +57,7 @@ export default function BookDetail({
 	onClose: () => void;
 }) {
 	// called before the early return so hook order stays stable
-	const aspect = useCoverAspect(book?.cover);
+	const aspect = useCoverAspect(book?.cover, book?.coverW, book?.coverH);
 	if (!book) return null;
 
 	const meta = [
@@ -100,6 +103,7 @@ export default function BookDetail({
 												title={book.title}
 												author={book.author}
 												cover={book.cover}
+												hash={book.coverHash}
 												className="relative"
 												style={{ width: 168, height: Math.round(168 * aspect) }}
 											/>

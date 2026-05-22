@@ -10,17 +10,31 @@ interface BookProps {
 	title: string;
 	author: string;
 	cover?: string;
+	/** base64 thumbhash for the instant blur placeholder */
+	hash?: string;
+	/** real cover dimensions (from the build-time manifest) so the box never shifts */
+	coverW?: number;
+	coverH?: number;
 	onClick?: () => void;
 	index?: number;
 	/** Cover width in px; height + reflection scale from it. */
 	width?: number;
 }
 
-export default function Book3D({ title, author, cover, onClick, index = 0, width = 90 }: BookProps) {
-	// Height comes from the cover's REAL aspect ratio (measured on load) so the full
-	// cover shows with no cropping — and because covers differ, heights vary naturally
-	// like a real shelf.
-	const aspect = useCoverAspect(cover);
+export default function Book3D({
+	title,
+	author,
+	cover,
+	hash,
+	coverW,
+	coverH,
+	onClick,
+	index = 0,
+	width = 90,
+}: BookProps) {
+	// Height comes from the cover's REAL aspect ratio (baked into the manifest, so no
+	// layout shift) — and because covers differ, heights vary naturally like a real shelf.
+	const aspect = useCoverAspect(cover, coverW, coverH);
 	const bookH = Math.round(width * aspect);
 	const reflectionH = Math.round(width * 0.18); // 90 → 16
 
@@ -41,7 +55,13 @@ export default function Book3D({ title, author, cover, onClick, index = 0, width
 					style={{ height: bookH }}
 					aria-label={`${title} by ${author}`}
 				>
-					<BookCover title={title} author={author} cover={cover} className="absolute inset-0" />
+					<BookCover
+						title={title}
+						author={author}
+						cover={cover}
+						hash={hash}
+						className="absolute inset-0"
+					/>
 				</button>
 				{/* reflection — flipped cover, absolutely placed BELOW the book so it overlaps the
 				    shelf's lit top surface (the book itself stays put). Fades out smoothly. */}
@@ -51,7 +71,13 @@ export default function Book3D({ title, author, cover, onClick, index = 0, width
 					aria-hidden="true"
 				>
 					<div className="absolute inset-x-0 top-0 -scale-y-100" style={{ height: bookH }}>
-						<BookCover title={title} author={author} cover={cover} className="absolute inset-0" />
+						<BookCover
+							title={title}
+							author={author}
+							cover={cover}
+							hash={hash}
+							className="absolute inset-0"
+						/>
 					</div>
 				</div>
 			</m.div>

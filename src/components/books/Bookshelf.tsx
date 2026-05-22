@@ -9,6 +9,9 @@ interface Book {
 	title: string;
 	author: string;
 	cover?: string;
+	coverHash?: string;
+	coverW?: number;
+	coverH?: number;
 	status: string;
 	rating?: number;
 	review?: string;
@@ -105,6 +108,9 @@ function Shelf({
 								title={book.title}
 								author={book.author}
 								cover={book.cover}
+								hash={book.coverHash}
+								coverW={book.coverW}
+								coverH={book.coverH}
 								width={BOOK_WIDTH}
 								index={i}
 								onClick={() => onSelect(book)}

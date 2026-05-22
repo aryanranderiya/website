@@ -1,3 +1,4 @@
+import { glob } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
 
 // Blog posts
@@ -43,9 +44,10 @@ const projects = defineCollection({
 	}),
 });
 
-// Books
+// Books — glob loader (not legacy `type: 'content'`) so the folder's README.md can be
+// excluded; otherwise Astro would try to parse it as a book and fail schema validation.
 const books = defineCollection({
-	type: 'content',
+	loader: glob({ pattern: ['**/*.md', '!**/README.md'], base: './src/content/books' }),
 	schema: z.object({
 		title: z.string(),
 		author: z.string(),
