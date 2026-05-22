@@ -15,12 +15,15 @@ import PageLayout from '@/layouts/PageLayout.astro';
       experiments.map((exp, i) => (
         <a
           href={`/experiments/${exp.slug}`}
-          class="group flex items-center justify-center rounded-2xl bg-[var(--muted-bg)] py-10 animate-fade-in"
+          class="group flex items-center justify-center rounded-2xl bg-[var(--muted-bg)] py-10 animate-fade-in transition-[transform,background-color,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:bg-[var(--muted-bg-strong)] hover:shadow-[0_14px_34px_-12px_rgba(0,0,0,0.22)]"
           style={`animation-delay:${0.15 + i * 0.07}s`}
           aria-label={exp.title}
         >
           {/* static preview - scaled full-size card so all proportions hold; clicks open the detail */}
-          <div class="pointer-events-none h-[312px] w-[224px]" transition:name={`holo-${exp.slug}`}>
+          <div
+            class="pointer-events-none h-[312px] w-[224px] transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+            transition:name={`holo-${exp.slug}`}
+          >
             <div class="origin-top-left scale-[0.7]">
               {exp.slug === "holo-card" && (
                 <HoloCardIsland
