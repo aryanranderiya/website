@@ -104,12 +104,12 @@ export default function ProjectCard({
 			{(project.shortDescription || project.date) && (
 				<div className="flex min-w-0 flex-1 items-center justify-end gap-3">
 					{project.shortDescription && (
-						<span className="truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
+						<span className="truncate text-right text-[13px] text-[var(--text-ghost)] tracking-[-0.01em]">
 							{project.shortDescription}
 						</span>
 					)}
 					{project.date && (
-						<span className="shrink-0 text-[12px] text-[var(--text-ghost)] tracking-[-0.01em] tabular-nums">
+						<span className="shrink-0 text-[13px] text-[var(--text-ghost)] tracking-[-0.01em] tabular-nums">
 							{formatMonthShort(project.date)}
 						</span>
 					)}

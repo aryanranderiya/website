@@ -240,8 +240,38 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 			    slow to hydrate or the preloader 'done' signal is missed — CSS always
 			    resolves to opacity:1, so it can never get stranded invisible. */}
 			<div className="animate-fade-in">
-				{/* Type filter chips — softened active state, no "All" */}
-				<div className="mb-[10px] flex flex-wrap items-center gap-[6px]">
+				{/* Header row: title left, search right — same pattern as the blog page */}
+				<div className="mb-3 flex items-center justify-between gap-3">
+					<h1 className="m-0 text-heading-1">Projects</h1>
+
+					{/* Pill search */}
+					<div className="relative shrink-0">
+						<span className="pointer-events-none absolute top-1/2 left-2.5 flex -translate-y-1/2 items-center text-[var(--text-ghost)]">
+							<HugeiconsIcon icon={Search01Icon} size={12} />
+						</span>
+						<input
+							ref={searchRef}
+							type="text"
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
+							onFocus={() => setSearchFocused(true)}
+							onBlur={() => setSearchFocused(false)}
+							placeholder="Search..."
+							className={`w-[160px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none transition-shadow duration-150 focus:ring-1 focus:ring-[var(--text-ghost)]/40 focus:ring-offset-0 focus-visible:outline-none ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
+						/>
+						{!searchFocused && !search && (
+							<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
+								⌘F
+							</kbd>
+						)}
+					</div>
+				</div>
+
+				{/* Subtitle */}
+				<p className="m-0 mb-6 text-body">A collection of things I have built!</p>
+
+				{/* Type filter chips + tag filter — one row */}
+				<div className="mb-7 flex flex-wrap items-center gap-[6px]">
 					{availableTypes.map((chip) => {
 						const isOn = activeTypeFilter === chip.value;
 						return (
@@ -256,10 +286,6 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 							</button>
 						);
 					})}
-				</div>
-
-				{/* Filter row: filter button + popular tags + active chips + search */}
-				<div className="mb-7 flex w-full flex-wrap items-center gap-1.5">
 					{/* Tag filter popover */}
 					<Popover open={tagPopoverOpen} onOpenChange={setTagPopoverOpen}>
 						<PopoverTrigger asChild>
@@ -407,29 +433,6 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 							Clear all
 						</button>
 					)}
-
-					<div className="flex-1" />
-
-					<div className="relative shrink-0">
-						<span className="pointer-events-none absolute top-1/2 left-2.5 flex -translate-y-1/2 items-center text-[var(--text-ghost)]">
-							<HugeiconsIcon icon={Search01Icon} size={12} />
-						</span>
-						<input
-							ref={searchRef}
-							type="text"
-							value={search}
-							onChange={(e) => setSearch(e.target.value)}
-							onFocus={() => setSearchFocused(true)}
-							onBlur={() => setSearchFocused(false)}
-							placeholder="Search..."
-							className={`w-[160px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none transition-shadow duration-150 focus:ring-1 focus:ring-[var(--text-ghost)]/40 focus:ring-offset-0 focus-visible:outline-none ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
-						/>
-						{!searchFocused && !search && (
-							<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
-								⌘F
-							</kbd>
-						)}
-					</div>
 				</div>
 
 				{/* Project list — plain DOM so it renders visible from SSR and never

@@ -109,7 +109,7 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
     >
       <h1
         transition:name={`project-title-${entry.slug}`}
-        class="m-0 text-2xl font-medium leading-tight tracking-[-0.03em] text-[var(--text-primary)]"
+        class="m-0 text-2xl font-medium leading-[1.1] tracking-[-0.03em] text-[var(--text-primary)]"
       >
         {p.title}
       </h1>
@@ -119,7 +119,7 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
     <!-- Date (below title, same size/pattern as blog/slug) -->
     <time
       datetime={new Date(p.date).toISOString()}
-      class="mt-1 mb-3 block text-[17px] text-(--text-ghost) tracking-[-0.01em]"
+      class="mt-0 mb-3 block text-[17px] text-(--text-ghost) tracking-[-0.01em]"
     >
       {formattedDate}
     </time>
