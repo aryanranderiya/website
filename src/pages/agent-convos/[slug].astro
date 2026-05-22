@@ -10,6 +10,7 @@ import {
 	RoboticIcon,
 } from '@/components/icons';
 import BackLink from '@/components/ui/BackLink.astro';
+import PostNav from '@/components/ui/PostNav.astro';
 import TableOfContents from '@/components/ui/TableOfContents.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { formatDate } from '@/lib/utils';
@@ -29,6 +30,15 @@ interface Props {
 const { convo } = Astro.props;
 const { Content, headings } = await convo.render();
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+// Cycling prev/next through all conversations (newest first).
+const allConvos = await getCollection('agent-convos');
+const orderedConvos = [...allConvos].sort(
+	(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const ci = orderedConvos.findIndex((c) => c.slug === convo.slug);
+const prevConvo = orderedConvos[(ci - 1 + orderedConvos.length) % orderedConvos.length];
+const nextConvo = orderedConvos[(ci + 1) % orderedConvos.length];
 
 const platformLabels: Record<string, string> = {
 	'claude-code': 'Claude Code',
@@ -191,7 +201,14 @@ const metaIconColor = 'var(--text-ghost)';
 
     {/* Footer */}
     <div class="mt-16 pt-10" style="border-top: 1px solid var(--border);">
-      <BackLink href="/agent-convos" label="Back to Agent Conversations" />
+      <PostNav
+        backHref="/agent-convos"
+        backLabel="Back to Agent Conversations"
+        prevHref={`/agent-convos/${prevConvo.slug}`}
+        nextHref={`/agent-convos/${nextConvo.slug}`}
+        prevLabel={prevConvo.data.title}
+        nextLabel={nextConvo.data.title}
+      />
     </div>
   </article>
 

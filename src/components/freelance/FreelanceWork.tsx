@@ -432,8 +432,8 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			{/* Project list -- always full width of its container */}
-			<div>
+			{/* Project list -- clean & minimal like the blog list (title left, meta right) */}
+			<div className="dim-list">
 				{pastWork.map((work) => {
 					const isActive = selected?.name === work.name;
 					return (
@@ -441,24 +441,16 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 							key={work.name}
 							type="button"
 							onClick={() => handleSelect(work)}
-							className={`-mx-[6px] flex w-[calc(100%+12px)] cursor-pointer items-center justify-between border-none px-[6px] py-[10px] text-left font-[inherit] transition-[background] duration-150 [border-block-end:1px_solid_var(--border)] hover:bg-[var(--muted-bg)] ${isActive ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+							className={`dim-list-row group/item -mx-2 flex w-[calc(100%+16px)] cursor-pointer items-center gap-[14px] border-[var(--border)] border-b px-2 py-[10px] text-left font-[inherit] transition-[background] duration-150 last:border-b-0 ${isActive ? 'bg-[var(--muted-bg)]' : 'bg-transparent hover:bg-[var(--muted-bg)]'}`}
 						>
-							<div className="flex min-w-0 items-center gap-3">
-								<span className="truncate whitespace-nowrap font-semibold text-[13px] text-[var(--text-primary)]">
-									{work.name}
-								</span>
-								<span className="shrink-0 whitespace-nowrap text-[12px] text-[var(--text-ghost)]">
-									{work.type}
-								</span>
-							</div>
-							<div className="ml-2 flex shrink-0 items-center gap-[5px]">
-								<HugeiconsIcon
-									icon={ArrowRight02Icon}
-									size={11}
-									color={isActive ? 'var(--text-secondary)' : 'var(--text-ghost)'}
-									className={`ml-[2px] shrink-0 transition-transform duration-200 ${isActive ? 'rotate-90' : ''}`}
-								/>
-							</div>
+							<span
+								className={`min-w-0 flex-1 truncate font-medium text-[13px] tracking-[-0.01em] transition-colors duration-150 ${isActive ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)] group-hover/item:text-[var(--text-primary)]'}`}
+							>
+								{work.name}
+							</span>
+							<span className="shrink-0 whitespace-nowrap text-[13px] text-[var(--text-ghost)]">
+								{work.type}
+							</span>
 						</button>
 					);
 				})}

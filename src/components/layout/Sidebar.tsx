@@ -61,7 +61,12 @@ const NAV_GROUPS: {
 			{ href: '/projects', label: 'Projects', icon: Folder03Icon },
 			{ href: '/graphic-design', label: 'Design', icon: BrushIcon },
 			{ href: '/blog', label: 'Blog', icon: QuillWrite01Icon },
-			{ href: '/resume', label: 'Resume', icon: NoteIcon },
+		],
+	},
+	{
+		label: null,
+		items: [
+			{ href: '/resume', label: 'Experience', icon: NoteIcon },
 			{ href: '/freelance', label: 'Freelance', icon: Briefcase01Icon },
 			{ href: '/agent-convos', label: 'Agent Convos', icon: RoboticIcon },
 			{ href: '/books', label: 'Bookshelf', icon: Book01Icon },

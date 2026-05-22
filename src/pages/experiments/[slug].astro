@@ -1,5 +1,5 @@
 ---
-import { CircleArrowLeft01Icon, HugeiconsIcon } from '@icons';
+import BackLink from '@/components/ui/BackLink.astro';
 import HoloCardIsland from '@/components/experiments/HoloCardIsland';
 import { DEMO_CARD } from '@/components/experiments/holo-card/demo';
 import { type Experiment, experiments } from '@/data/experiments';
@@ -16,13 +16,7 @@ const fmtDate = (d: string) =>
 ---
 
 <PageLayout title={`${exp.title} - Experiments`} description={exp.description}>
-  <a
-    href="/experiments"
-    class="mb-8 inline-flex items-center gap-1.5 text-[13px] text-[var(--text-muted)] no-underline transition-colors duration-150 hover:text-[var(--text-primary)]"
-  >
-    <HugeiconsIcon icon={CircleArrowLeft01Icon} size={15} color="currentColor" />
-    back to experiments
-  </a>
+  <BackLink href="/experiments" label="Back to Experiments" class="mb-8" />
 
   <div class="mb-8">
     <h1 class="text-heading-1 mb-2 animate-fade-in stagger-1">{exp.title}</h1>

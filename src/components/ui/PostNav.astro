@@ -20,17 +20,17 @@ const { backHref, backLabel, prevHref, nextHref, prevLabel, nextLabel, class: cl
 	Astro.props;
 
 const btn =
-	'inline-flex h-9 w-9 items-center justify-center rounded-[10px] bg-[var(--muted-bg)] text-[var(--text-secondary)]! no-underline! transition-[background-color,color,transform] duration-150 hover:bg-[var(--muted-bg-strong)] hover:text-[var(--text-primary)]! active:scale-90 active:bg-[var(--muted-bg-strong)]';
+	'inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--muted-bg)] text-[var(--text-secondary)]! no-underline! transition-[background-color,color,transform] duration-150 hover:bg-[var(--muted-bg-strong)] hover:text-[var(--text-primary)]! active:scale-90 active:bg-[var(--muted-bg-strong)]';
 ---
 
 <div class:list={['flex items-center justify-between gap-4', className]}>
-  <BackLink href={backHref} label={backLabel} />
+  <BackLink href={backHref} label={backLabel} tone="muted" />
   <div class="flex items-center gap-2">
     <a href={prevHref} class={btn} aria-label={prevLabel ?? 'Previous'} title={prevLabel}>
-      <ArrowLeft02Icon width={16} height={16} />
+      <ArrowLeft02Icon width={15} height={15} />
     </a>
     <a href={nextHref} class={btn} aria-label={nextLabel ?? 'Next'} title={nextLabel}>
-      <ArrowRight02Icon width={16} height={16} />
+      <ArrowRight02Icon width={15} height={15} />
     </a>
   </div>
 </div>

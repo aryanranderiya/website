@@ -31,13 +31,13 @@ export default function Book3D({ title, author, cover, onClick, index = 0, width
 				whileInView={{ opacity: 1, y: 0 }}
 				viewport={{ once: true }}
 				transition={{ delay: Math.min(index, 8) * 0.04, duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
-				className="relative flex shrink-0 flex-col"
+				className="group relative flex shrink-0 flex-col"
 				style={{ width }}
 			>
 				<button
 					type="button"
 					onClick={onClick}
-					className="relative block cursor-pointer rounded-[3px] border-none bg-transparent p-0 transition-transform duration-200 ease-out hover:-translate-y-1"
+					className="relative block cursor-pointer rounded-[3px] border-none bg-transparent p-0 transition-transform duration-200 ease-out group-hover:-translate-y-1"
 					style={{ height: bookH }}
 					aria-label={`${title} by ${author}`}
 				>
@@ -46,7 +46,7 @@ export default function Book3D({ title, author, cover, onClick, index = 0, width
 				{/* reflection — flipped cover, absolutely placed BELOW the book so it overlaps the
 				    shelf's lit top surface (the book itself stays put). Fades out smoothly. */}
 				<div
-					className="absolute inset-x-0 top-full overflow-hidden opacity-50 [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)]"
+					className="absolute inset-x-0 top-full overflow-hidden opacity-50 transition-transform duration-200 ease-out group-hover:translate-y-1 [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)]"
 					style={{ height: reflectionH }}
 					aria-hidden="true"
 				>
