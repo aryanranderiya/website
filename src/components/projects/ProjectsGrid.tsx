@@ -6,7 +6,6 @@ import {
 	ComputerTerminalIcon,
 	Delete02Icon,
 	FilterIcon,
-	GameController03Icon,
 	HugeiconsIcon,
 	LaptopIcon,
 	MobileProgramming02Icon,
@@ -21,7 +20,6 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CheckboxGroup, CheckboxItem } from '@/components/ui/checkbox-group';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 import { getTechIconUrl } from '../../utils/techIcons';
 import ProjectCard from './ProjectCard';
 
@@ -57,7 +55,6 @@ const TYPE_CHIPS: { value: string; label: string; icon: ComponentType<IconProps>
 	{ value: 'mobile', label: 'Mobile', icon: MobileProgramming02Icon },
 	{ value: 'cli', label: 'CLI', icon: ComputerTerminalIcon },
 	{ value: 'desktop', label: 'Desktop', icon: LaptopIcon },
-	{ value: 'game', label: 'Game', icon: GameController03Icon },
 	{ value: 'os', label: 'OS', icon: Apple01Icon },
 ];
 
@@ -99,7 +96,6 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 	const [activeTypeFilter, setActiveTypeFilter] = useState<string | null>(null);
 	const [tagPopoverOpen, setTagPopoverOpen] = useState(false);
 	const [tagSearch, setTagSearch] = useState('');
-	const ready = useAfterPreloader();
 	const searchRef = useRef<HTMLInputElement>(null);
 	const tagSearchRef = useRef<HTMLInputElement>(null);
 
@@ -239,11 +235,11 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			<m.div
-				initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-				animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
-				transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
-			>
+			{/* CSS-driven entrance (animate-fade-in) instead of a JS-gated Framer
+			    initial:opacity-0. The list must stay visible even if the island is
+			    slow to hydrate or the preloader 'done' signal is missed — CSS always
+			    resolves to opacity:1, so it can never get stranded invisible. */}
+			<div className="animate-fade-in">
 				{/* Type filter chips — softened active state, no "All" */}
 				<div className="mb-[10px] flex flex-wrap items-center gap-[6px]">
 					{availableTypes.map((chip) => {
@@ -436,51 +432,34 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 					</div>
 				</div>
 
-				{/* Project list */}
-				<AnimatePresence mode="sync" initial={false}>
-					{filtered.length > 0 ? (
-						<m.div
-							key={deferredSearch + activeTechFilters.join(',') + (activeTypeFilter ?? '')}
-							initial="hidden"
-							animate={ready ? 'show' : 'hidden'}
-							exit={{ opacity: 0 }}
-							variants={{
-								hidden: {},
-								show: { transition: { staggerChildren: 0.04, delayChildren: 0.15 } },
-							}}
-							className="dim-list flex flex-col gap-0.5"
-						>
-							{filtered.map((project: Project, i: number) => (
-								<ProjectCard
-									key={project.slug}
-									project={project}
-									index={i}
-									onHoverChange={handleHoverChange}
-								/>
-							))}
-						</m.div>
-					) : (
-						<m.div
-							key="empty"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							className="flex flex-col items-center gap-3 py-16 text-center text-[13px] text-[var(--text-ghost)]"
-						>
-							<span>No projects found.</span>
-							{hasAnyFilter && (
-								<button
-									type="button"
-									onClick={clearAllFilters}
-									className="inline-flex cursor-pointer items-center rounded-full border-none bg-[var(--muted-bg)] px-3 py-[5px] text-[11px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-100 hover:text-[var(--text-primary)]"
-								>
-									Clear all filters
-								</button>
-							)}
-						</m.div>
-					)}
-				</AnimatePresence>
-			</m.div>
+				{/* Project list — plain DOM so it renders visible from SSR and never
+				    depends on hydration/preloader timing to be seen. */}
+				{filtered.length > 0 ? (
+					<div className="dim-list flex flex-col gap-0.5">
+						{filtered.map((project: Project, i: number) => (
+							<ProjectCard
+								key={project.slug}
+								project={project}
+								index={i}
+								onHoverChange={handleHoverChange}
+							/>
+						))}
+					</div>
+				) : (
+					<div className="flex flex-col items-center gap-3 py-16 text-center text-[13px] text-[var(--text-ghost)]">
+						<span>No projects found.</span>
+						{hasAnyFilter && (
+							<button
+								type="button"
+								onClick={clearAllFilters}
+								className="inline-flex cursor-pointer items-center rounded-full border-none bg-[var(--muted-bg)] px-3 py-[5px] text-[11px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-100 hover:text-[var(--text-primary)]"
+							>
+								Clear all filters
+							</button>
+						)}
+					</div>
+				)}
+			</div>
 
 			{/* Preview image portal -- rendered at body to avoid filter/transform containing block */}
 			{typeof document !== 'undefined' &&

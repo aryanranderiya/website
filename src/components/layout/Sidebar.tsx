@@ -1,6 +1,7 @@
 'use client';
 
 import {
+	Book01Icon,
 	Briefcase01Icon,
 	BrushIcon,
 	Cancel01Icon,
@@ -17,6 +18,7 @@ import {
 	SidebarRightIcon,
 	Stamp02Icon,
 	Sun01Icon,
+	TestTube01Icon,
 } from '@icons';
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
 import { AnimatePresence, LazyMotion } from 'motion/react';
@@ -62,6 +64,8 @@ const NAV_GROUPS: {
 			{ href: '/resume', label: 'Resume', icon: NoteIcon },
 			{ href: '/freelance', label: 'Freelance', icon: Briefcase01Icon },
 			{ href: '/agent-convos', label: 'Agent Convos', icon: RoboticIcon },
+			{ href: '/books', label: 'Bookshelf', icon: Book01Icon },
+			{ href: '/experiments', label: 'Experiments', icon: TestTube01Icon },
 			{ href: '/now', label: 'Now', icon: Clock01Icon },
 			{ href: '/colophon', label: 'Colophon', icon: Stamp02Icon },
 		],
@@ -481,7 +485,9 @@ export default function Sidebar({
 								align="end"
 								sideOffset={14}
 								onOpenAutoFocus={(e) => e.preventDefault()}
-								onInteractOutside={(e) => { if (window.innerWidth < 960) e.preventDefault(); }}
+								onInteractOutside={(e) => {
+									if (window.innerWidth < 960) e.preventDefault();
+								}}
 								className="hidden w-[164px] rounded-xl p-3 min-[960px]:block"
 							>
 								<div className="mb-2.5 flex items-center justify-between">
@@ -638,7 +644,9 @@ export default function Sidebar({
 							align="end"
 							sideOffset={8}
 							onOpenAutoFocus={(e) => e.preventDefault()}
-							onInteractOutside={(e) => { if (window.innerWidth >= 960) e.preventDefault(); }}
+							onInteractOutside={(e) => {
+								if (window.innerWidth >= 960) e.preventDefault();
+							}}
 							className="w-[calc(100vw-32px)] rounded-xl p-3.5 min-[960px]:hidden"
 						>
 							<div className="mb-2.5 flex items-center justify-between">

@@ -166,7 +166,7 @@ There was one mid-debug surprise that took an embarrassing amount of time to tra
 
 Accessibility got the same pass at the same time. Final scores landed at 100 / 100 / 100 / 100 across performance, accessibility, best practices, and SEO. The accessibility wins were mostly contrast: `--text-muted` was at `rgba(0,0,0,0.35)` which fails WCAG against the warm off-white background. Bumped it to `0.54` and did the same for sidebar nav links and section labels. A couple of ARIA fixes (a `role="img"` on the signature SVG container, a few missing favicons that 404'd in the manifest), and that was it.
 
-I wrote a much longer version of this exercise for the [GAIA landing page](/blog/gaia-landing-page-performance), which started at 34 and ended at 100. Different stack (Next.js, not Astro), different bottlenecks (forced reflows, Sentry on the critical path), but the same general shape: profile honestly, fix the worst thing first, refuse to ship visual regressions to make the score look better.
+I ran the same exercise on the GAIA landing page, which started at 34 and ended at 100. Different stack (Next.js, not Astro), different bottlenecks (forced reflows, Sentry on the critical path), but the same general shape: profile honestly, fix the worst thing first, refuse to ship visual regressions to make the score look better.
 
 ---
 

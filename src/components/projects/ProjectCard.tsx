@@ -1,10 +1,6 @@
 'use client';
 
-import { LazyMotion } from 'motion/react';
-import * as m from 'motion/react-m';
 import { useRef, useState } from 'react';
-
-const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 interface Project {
 	slug: string;
@@ -40,6 +36,10 @@ const TYPE_LABELS: Record<string, string> = {
 	api: 'API',
 };
 
+// Plain anchor (no Framer entrance): the projects list must render visible
+// straight from SSR and never depend on hydration to be seen. Hover state is
+// driven by React + CSS; the entrance fade lives on the grid wrapper as a CSS
+// animation that always resolves to opacity:1.
 export default function ProjectCard({
 	project,
 	index,
@@ -55,61 +55,51 @@ export default function ProjectCard({
 	const typeLabel = TYPE_LABELS[project.type] ?? project.type;
 
 	return (
-		<LazyMotion features={loadFeatures}>
-			<m.a
-				ref={ref}
-				href={`/projects/${project.slug}`}
-				variants={{
-					hidden: { opacity: 0, y: 4 },
-					show: {
-						opacity: 1,
-						y: 0,
-						transition: { duration: 0.3, ease: [0.19, 1, 0.22, 1] as const },
-					},
-				}}
-				onHoverStart={() => {
-					setHovered(true);
-					if (ref.current) onHoverChange?.({ project, index, el: ref.current });
-				}}
-				onHoverEnd={() => {
-					setHovered(false);
-					onHoverChange?.(null);
-				}}
-				className={`dim-list-row flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] no-underline transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
-			>
-				{/* Left: title + single chip — folder chip takes priority over type */}
-				<div className="flex min-w-0 shrink-0 items-center gap-1.5">
+		<a
+			ref={ref}
+			href={`/projects/${project.slug}`}
+			onMouseEnter={() => {
+				setHovered(true);
+				if (ref.current) onHoverChange?.({ project, index, el: ref.current });
+			}}
+			onMouseLeave={() => {
+				setHovered(false);
+				onHoverChange?.(null);
+			}}
+			className={`dim-list-row flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] no-underline transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+		>
+			{/* Left: title + single chip — folder chip takes priority over type */}
+			<div className="flex min-w-0 shrink-0 items-center gap-1.5">
+				<span
+					// biome-ignore lint/nursery/noInlineStyles: view-transition-name must be unique per slug
+					style={{ viewTransitionName: `project-title-${project.slug}` }}
+					className={`truncate font-medium text-[13px] tracking-[-0.02em] transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+				>
+					{project.title}
+				</span>
+				{chip ? (
 					<span
-						// biome-ignore lint/nursery/noInlineStyles: view-transition-name must be unique per slug
-						style={{ viewTransitionName: `project-title-${project.slug}` }}
-						className={`truncate font-medium text-[13px] tracking-[-0.02em] transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+						className="shrink-0 rounded-full px-2 py-[2px] font-medium text-[10px] tracking-[0.01em]"
+						// biome-ignore lint/nursery/noInlineStyles: dynamic chip background and color from data
+						style={{ background: chip.bg, color: chip.color }}
 					>
-						{project.title}
+						{chip.label}
 					</span>
-					{chip ? (
-						<span
-							className="shrink-0 rounded-full px-2 py-[2px] font-medium text-[10px] tracking-[0.01em]"
-							// biome-ignore lint/nursery/noInlineStyles: dynamic chip background and color from data
-							style={{ background: chip.bg, color: chip.color }}
-						>
-							{chip.label}
-						</span>
-					) : (
-						<span className="shrink-0 rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-ghost)] tracking-[0.01em]">
-							{typeLabel}
-						</span>
-					)}
-				</div>
-
-				{/* Right: short description */}
-				{project.shortDescription && (
-					<div className="flex min-w-0 flex-1 items-center justify-end">
-						<span className="truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
-							{project.shortDescription}
-						</span>
-					</div>
+				) : (
+					<span className="shrink-0 rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-ghost)] tracking-[0.01em]">
+						{typeLabel}
+					</span>
 				)}
-			</m.a>
-		</LazyMotion>
+			</div>
+
+			{/* Right: short description */}
+			{project.shortDescription && (
+				<div className="flex min-w-0 flex-1 items-center justify-end">
+					<span className="truncate text-right text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
+						{project.shortDescription}
+					</span>
+				</div>
+			)}
+		</a>
 	);
 }

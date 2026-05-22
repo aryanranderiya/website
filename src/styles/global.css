@@ -38,6 +38,7 @@
   --radius-lg: 10px;
   --radius-xl: 14px;
   --radius-2xl: 20px;
+  --radius-3xl: 28px;
   --radius-full: 9999px;
 
   --color-background: var(--background);
@@ -73,6 +74,7 @@
 	--text-secondary: rgba(0, 0, 0, 0.55);
 	--text-muted: rgba(0, 0, 0, 0.54);
 	--text-ghost: rgba(0, 0, 0, 0.32);
+--text-faint: rgba(0, 0, 0, 0.2);
 
 	/* Sidebar nav text — lighter than body hierarchy */
 	--nav-text: rgba(0, 0, 0, 0.28);
@@ -118,6 +120,22 @@
 	--glass-bg: rgba(253, 253, 252, 0.82);
 	--glass-border: rgba(0, 0, 0, 0.07);
 	--glass-blur: 12px;
+
+	/* Photo folders (camera) — frosted glass: milky body + a white top sheen (miskov.ee
+	   uses a white→transparent gradient overlay), photos read as soft hints behind */
+	--folder-sheen: rgba(255, 255, 255, 0.55); /* keep LOW — too much white hides the photos' backdrop-filter blur */
+	--folder-fill-top: rgba(255, 255, 255, 0.4);
+	--folder-fill-bot: rgba(255, 255, 255, 0.3);
+	--folder-edge: rgba(0, 0, 0, 0.13);
+	--folder-line: rgba(0, 0, 0, 0.06);
+
+	/* Bookshelf — 3D plank: greyish TOP surface + WHITE front face, each outlined,
+	   so the two layers read as distinct planes. */
+	--shelf-top-a: #d8d8d8; /* top surface, back edge (greyish) */
+	--shelf-top-b: #e6e6e6; /* top surface, front edge */
+	--shelf-front-a: #ffffff; /* front face, top (white) */
+	--shelf-front-b: #f1f1f1; /* front face, bottom */
+	--shelf-line: rgba(0, 0, 0, 0.1); /* outline of both layers */
 
 	/* Typography scale — editorial (13px body, NOT 16px) */
 	--text-2xs: 0.625rem;
@@ -193,6 +211,7 @@
 	--text-secondary: rgba(255, 255, 255, 0.55);
 	--text-muted: rgba(255, 255, 255, 0.54);
 	--text-ghost: rgba(255, 255, 255, 0.32);
+--text-faint: rgba(255, 255, 255, 0.24);
 
 	--nav-text: rgba(255, 255, 255, 0.28);
 	--nav-text-hover: rgba(255, 255, 255, 0.48);
@@ -231,9 +250,32 @@
 	--glass-bg: rgba(17, 17, 17, 0.82);
 	--glass-border: rgba(255, 255, 255, 0.07);
 
+	/* Photo folders — frosted glass on dark: milky body + a soft top sheen */
+	--folder-sheen: rgba(92, 92, 100, 0.5);
+	--folder-fill-top: rgba(60, 60, 66, 0.42);
+	--folder-fill-bot: rgba(48, 48, 54, 0.32);
+	--folder-edge: rgba(255, 255, 255, 0.16);
+	--folder-line: rgba(255, 255, 255, 0.06);
+
+	/* Bookshelf — plank on dark (greyish top + lighter front face) */
+	--shelf-top-a: #2a2a2f;
+	--shelf-top-b: #313137;
+	--shelf-front-a: #4a4a50;
+	--shelf-front-b: #3c3c42;
+	--shelf-line: rgba(255, 255, 255, 0.1);
+
 	--shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
 	--shadow-md: 0 4px 8px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3);
 	--shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Emoji stickers (camera folders) — die-cut white outline + soft drop shadow.
+   Author supplies a bare emoji; the outline is produced automatically here. */
+.emoji-sticker {
+	font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+	line-height: 1;
+	/* Uniform die-cut white outline via SVG feMorphology dilate (smooth, not jagged). */
+	filter: url(#sticker-outline);
 }
 
 /* ============================================
@@ -246,6 +288,9 @@
 }
 
 html {
+	/* Match the theme background so no white flashes through during view-transition
+	   cross-fades (the body bg alone leaves the root transparent mid-transition). */
+	background-color: var(--background);
 	font-family: "Inter Variable", "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
@@ -518,7 +563,7 @@ a {
 }
 
 .prose h2 {
-	font-size: 1.1rem;
+	font-size: 0.9375rem;
 	font-weight: var(--font-semibold);
 	letter-spacing: var(--tracking-snug);
 	color: var(--text-primary);
@@ -535,7 +580,7 @@ a {
 }
 
 .prose h3 {
-	font-size: var(--text-base);
+	font-size: 0.9375rem;
 	font-weight: var(--font-semibold);
 	letter-spacing: -0.01em;
 	color: var(--text-primary);
@@ -751,7 +796,7 @@ opacity: 30%;
 
 /* H4–H6 rarely appear in posts but must not fall back to the browser default */
 .prose h4 {
-	font-size: 0.95rem;
+	font-size: 0.9375rem;
 	font-weight: var(--font-semibold);
 	color: var(--text-primary);
 	margin-top: 1.75em;
@@ -1098,6 +1143,24 @@ opacity: 30%;
 	animation: scale-in 0.25s var(--ease-expo) both;
 }
 
+/* Preloader failsafe: the overlay is normally faded + unmounted by JS once the
+   page is ready. But it's a full-screen z-9999 blocker, so if the island ever
+   fails or is slow to hydrate it would trap the whole site behind it. This
+   pure-CSS animation guarantees the overlay fades out and stops blocking input
+   after a hard ceiling — no JS required. On a healthy load JS unmounts the
+   overlay well before this fires, so it's invisible in the happy path. */
+@keyframes preloader-failsafe {
+	to {
+		opacity: 0;
+		visibility: hidden;
+		pointer-events: none;
+	}
+}
+
+.preloader-overlay {
+	animation: preloader-failsafe 0.5s var(--ease-expo) 2s forwards;
+}
+
 .github-cell {
 	animation: github-cell-in 0.18s var(--ease-expo) both;
 }
@@ -1317,4 +1380,13 @@ html,
   .maplibregl-popup-tip {
     @apply hidden!;
 	}
+}
+
+/* Experiments: holo card morphs from its grid preview to the larger detail
+   preview (shared element via transition:name="holo-<slug>"). Matches the
+   site's avatar/hero view-transition timing. A named rule (not a wildcard) so
+   it survives lightningcss. Add a matching selector per future experiment slug. */
+::view-transition-group(holo-holo-card) {
+	animation-duration: 450ms;
+	animation-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
 }

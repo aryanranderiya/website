@@ -1,12 +1,13 @@
 ---
 import { type CollectionEntry, getCollection } from "astro:content";
-import { CircleArrowLeft02Icon, HugeiconsIcon } from "@icons";
+import BackLink from "@/components/ui/BackLink.astro";
 import BlogLinks from "@/components/blog/BlogLinks";
 import ProjectCTAs from "@/components/projects/ProjectCTAs";
 import Lightbox from "@/components/ui/Lightbox.astro";
+import PostNav from "@/components/ui/PostNav.astro";
 import { SITE } from "@/constants/site";
 import PageLayout from "@/layouts/PageLayout.astro";
-import { normalizeImages } from "@/utils/projects";
+import { normalizeImages, sortProjects } from "@/utils/projects";
 import { getTechIconUrl } from "@/utils/techIcons";
 
 export async function getStaticPaths() {
@@ -78,6 +79,12 @@ const projectJsonLd = JSON.stringify({
 
 const heroImage = p.coverImage || allImages[0]?.src;
 const galleryImages = allImages;
+
+// Cycling prev/next through all projects in their sorted order.
+const allProjects = sortProjects(await getCollection("projects"));
+const projIndex = allProjects.findIndex((e) => e.slug === entry.slug);
+const prevProject = allProjects[(projIndex - 1 + allProjects.length) % allProjects.length];
+const nextProject = allProjects[(projIndex + 1) % allProjects.length];
 ---
 
 <PageLayout title={p.title} description={p.description} ogImage={heroImage}>
@@ -85,24 +92,12 @@ const galleryImages = allImages;
   <script is:inline type="application/ld+json" set:html={projectJsonLd} />
 
   <!-- Back nav -->
-  <nav class="mb-8">
-    <a
-      href="/projects"
-      class="inline-flex items-center gap-1.5 text-[11px] text-[var(--text-ghost)] no-underline transition-colors duration-150 hover:text-[var(--text-secondary)]"
-    >
-      <HugeiconsIcon
-        icon={CircleArrowLeft02Icon}
-        size={13}
-        color="currentColor"
-      />
-      Back to Projects
-    </a>
-  </nav>
+  <BackLink href="/projects" label="Back to Projects" class="mb-8" />
 
   <!-- Hero image: visual-first, full width -->
   {
     heroImage && (
-      <div class="gallery-target mb-8 overflow-hidden rounded-2xl bg-[var(--muted-bg)] cursor-pointer">
+      <div class="gallery-target mb-8 overflow-hidden rounded-3xl bg-[var(--muted-bg)] cursor-pointer">
         <img
           src={heroImage}
           alt={p.title}
@@ -261,6 +256,16 @@ const galleryImages = allImages;
       </section>
     )
   }
+
+  <PostNav
+    class="mt-16 pt-10 border-t border-[var(--border)]"
+    backHref="/projects"
+    backLabel="Back to Projects"
+    prevHref={`/projects/${prevProject.slug}`}
+    nextHref={`/projects/${nextProject.slug}`}
+    prevLabel={prevProject.data.title}
+    nextLabel={nextProject.data.title}
+  />
 </PageLayout>
 
 <script>

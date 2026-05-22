@@ -1,0 +1,36 @@
+---
+// Bottom-of-post navigation: a "Back to X" link on the left, and flat rounded
+// prev/next icon buttons on the right that cycle through the collection.
+// Shared by blog posts and project detail pages.
+import { ArrowLeft02Icon, ArrowRight02Icon } from '@/components/icons';
+import BackLink from '@/components/ui/BackLink.astro';
+
+interface Props {
+	backHref: string;
+	backLabel: string;
+	prevHref: string;
+	nextHref: string;
+	prevLabel?: string;
+	nextLabel?: string;
+	/** Extra classes (e.g. spacing) merged onto the row. */
+	class?: string;
+}
+
+const { backHref, backLabel, prevHref, nextHref, prevLabel, nextLabel, class: className } =
+	Astro.props;
+
+const btn =
+	'inline-flex h-9 w-9 items-center justify-center rounded-[10px] bg-[var(--muted-bg)] text-[var(--text-secondary)]! no-underline! transition-[background-color,color,transform] duration-150 hover:bg-[var(--muted-bg-strong)] hover:text-[var(--text-primary)]! active:scale-90 active:bg-[var(--muted-bg-strong)]';
+---
+
+<div class:list={['flex items-center justify-between gap-4', className]}>
+  <BackLink href={backHref} label={backLabel} />
+  <div class="flex items-center gap-2">
+    <a href={prevHref} class={btn} aria-label={prevLabel ?? 'Previous'} title={prevLabel}>
+      <ArrowLeft02Icon width={16} height={16} />
+    </a>
+    <a href={nextHref} class={btn} aria-label={nextLabel ?? 'Next'} title={nextLabel}>
+      <ArrowRight02Icon width={16} height={16} />
+    </a>
+  </div>
+</div>

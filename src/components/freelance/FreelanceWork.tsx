@@ -10,14 +10,20 @@ import {
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { buttonVariants } from '@/components/ui/raised-button';
 import { type FreelanceProject, pastWork } from '@/data/freelance';
 
-const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
+// domMax (not the shared domAnimation bundle) — the layoutId zoom from the
+// in-sheet image to the fullscreen lightbox needs the layout feature.
+const loadFeatures = () => import('motion/react').then((mod) => mod.domMax);
 
 const PANEL_WIDTH = 580;
+
+// Shared layout id + timing for the seamless image → lightbox morph.
+const IMG_LAYOUT_ID = 'freelance-detail-image';
+const IMG_MORPH = { duration: 0.42, ease: [0.19, 1, 0.22, 1] as const };
 
 const DEVICON_MAP: Record<string, string> = {
 	React: 'react',
@@ -66,45 +72,45 @@ function ProjectDetail({
 }) {
 	const [activeImage, setActiveImage] = useState(0);
 	const [lightboxOpen, setLightboxOpen] = useState(false);
-	const wheelAccumRef = useRef(0);
-	const wheelTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [hovering, setHovering] = useState(false);
+	// Which half of the lightbox image the cursor is over → which arrow shows.
+	const [side, setSide] = useState<'left' | 'right'>('right');
 
 	const total = project.images.length;
-	const prevImg = () => setActiveImage((i) => Math.max(0, i - 1));
-	const nextImg = () => setActiveImage((i) => Math.min(total - 1, i + 1));
+	const go = useCallback(
+		(dir: 1 | -1) => setActiveImage((i) => (i + dir + total) % total),
+		[total]
+	);
 
-	// Reset image index and close lightbox when project changes
+	// Reset to the first shot (and close the lightbox) whenever the project changes.
 	useEffect(() => {
 		setActiveImage(0);
 		setLightboxOpen(false);
-	}, []);
+		setSide('right');
+	}, [project.slug]);
 
-	// Keyboard nav for lightbox
+	// Auto-cycle the project's shots — paused while hovering or in the lightbox.
+	useEffect(() => {
+		if (hovering || lightboxOpen || total <= 1) return;
+		const id = setInterval(() => setActiveImage((i) => (i + 1) % total), 3200);
+		return () => clearInterval(id);
+	}, [hovering, lightboxOpen, total]);
+
+	// Keyboard nav while the lightbox is open.
 	useEffect(() => {
 		if (!lightboxOpen) return;
 		const handler = (e: KeyboardEvent) => {
 			if (e.key === 'Escape') setLightboxOpen(false);
-			if (e.key === 'ArrowLeft') setActiveImage((i) => Math.max(0, i - 1));
-			if (e.key === 'ArrowRight') setActiveImage((i) => Math.min(total - 1, i + 1));
+			else if (e.key === 'ArrowLeft') go(-1);
+			else if (e.key === 'ArrowRight') go(1);
 		};
 		window.addEventListener('keydown', handler);
 		return () => window.removeEventListener('keydown', handler);
-	}, [lightboxOpen, total]);
+	}, [lightboxOpen, go]);
 
-	const handleWheel = (e: React.WheelEvent) => {
-		const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-		wheelAccumRef.current += delta;
-		if (wheelTimerRef.current) clearTimeout(wheelTimerRef.current);
-		wheelTimerRef.current = setTimeout(() => {
-			wheelAccumRef.current = 0;
-		}, 200);
-		if (wheelAccumRef.current > 60) {
-			wheelAccumRef.current = 0;
-			nextImg();
-		} else if (wheelAccumRef.current < -60) {
-			wheelAccumRef.current = 0;
-			prevImg();
-		}
+	const handleLightboxMove = (e: React.MouseEvent<HTMLDivElement>) => {
+		const rect = e.currentTarget.getBoundingClientRect();
+		setSide(e.clientX - rect.left < rect.width / 2 ? 'left' : 'right');
 	};
 
 	const NavBtn = ({
@@ -158,27 +164,8 @@ function ProjectDetail({
 						label="Next project"
 					/>
 				</div>
-				{/* Right: image nav + visit + close */}
+				{/* Right: visit + close */}
 				<div className="flex shrink-0 items-center gap-1.5">
-					{total > 1 && (
-						<>
-							<NavBtn
-								onClick={prevImg}
-								disabled={activeImage === 0}
-								icon={ArrowLeft02Icon}
-								label="Previous image"
-							/>
-							<span className="w-[28px] text-center text-[10px] text-[var(--text-ghost)] tabular-nums">
-								{activeImage + 1}/{total}
-							</span>
-							<NavBtn
-								onClick={nextImg}
-								disabled={activeImage === total - 1}
-								icon={ArrowRight02Icon}
-								label="Next image"
-							/>
-						</>
-					)}
 					{project.url && (
 						<a
 							href={project.url}
@@ -201,30 +188,46 @@ function ProjectDetail({
 				</div>
 			</div>
 
-			{/* Image carousel -- no overlaid buttons, just dots */}
+			{/* Image — auto-cycles; click to open the lightbox. No buttons. */}
 			{total > 0 && (
 				<button
 					type="button"
-					className="relative mx-5 aspect-video shrink-0 cursor-pointer select-none overflow-hidden rounded-xl bg-[var(--muted-bg)]"
-					onWheel={handleWheel}
+					onMouseEnter={() => setHovering(true)}
+					onMouseLeave={() => setHovering(false)}
 					onClick={() => setLightboxOpen(true)}
+					aria-label="Open image fullscreen"
+					className="mx-5 block shrink-0 cursor-zoom-in select-none border-none bg-transparent p-0"
 				>
-					<AnimatePresence mode="wait" initial={false}>
-						<m.img
-							key={activeImage}
-							src={project.images[activeImage]}
-							alt={project.name}
-							className="absolute inset-0 block h-full w-full object-cover"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							transition={{ duration: 0.15 }}
-						/>
-					</AnimatePresence>
+					<m.div
+						layoutId={IMG_LAYOUT_ID}
+						transition={IMG_MORPH}
+						className="relative aspect-video w-full overflow-hidden rounded-xl bg-[var(--muted-bg)]"
+					>
+						<AnimatePresence initial={false}>
+							<m.img
+								key={activeImage}
+								src={project.images[activeImage]}
+								alt={project.name}
+								className="absolute inset-0 block h-full w-full object-cover"
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								exit={{ opacity: 0 }}
+								transition={{ duration: 0.5, ease: 'easeInOut' }}
+								draggable={false}
+							/>
+						</AnimatePresence>
+						{total > 1 && (
+							<div className="pointer-events-none absolute right-3 bottom-2.5 rounded-full bg-black/35 px-2 py-0.5 text-[10px] text-white/85 tabular-nums backdrop-blur-sm">
+								{activeImage + 1} / {total}
+							</div>
+						)}
+					</m.div>
 				</button>
 			)}
 
-			{/* Lightbox */}
+			{/* Lightbox — same layoutId so the sheet image zooms seamlessly to full.
+			    Hover a half to reveal its arrow, click that half to move. Click the
+			    backdrop (or Esc) to close. No buttons. */}
 			{typeof document !== 'undefined' &&
 				createPortal(
 					<AnimatePresence>
@@ -234,64 +237,55 @@ function ProjectDetail({
 								initial={{ opacity: 0 }}
 								animate={{ opacity: 1 }}
 								exit={{ opacity: 0 }}
-								transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
+								transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
 								onClick={() => setLightboxOpen(false)}
-								className="fixed inset-0 z-[9999] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_55%,transparent)] backdrop-blur-[16px]"
+								className="fixed inset-0 z-[9999] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_55%,transparent)] p-6 backdrop-blur-[16px]"
 							>
-								<m.img
-									key={activeImage}
-									src={project.images[activeImage]}
-									alt={project.name}
-									initial={{ scale: 0.94, opacity: 0 }}
-									animate={{ scale: 1, opacity: 1 }}
-									exit={{ scale: 0.94, opacity: 0 }}
-									transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
-									onClick={(e) => e.stopPropagation()}
-									className="block max-h-[90vh] max-w-[90vw] rounded-[6px] object-contain"
-									draggable={false}
-								/>
-								<button
-									type="button"
+								<m.div
+									layoutId={IMG_LAYOUT_ID}
+									transition={IMG_MORPH}
+									onMouseMove={handleLightboxMove}
 									onClick={(e) => {
 										e.stopPropagation();
-										setLightboxOpen(false);
+										go(side === 'left' ? -1 : 1);
 									}}
-									aria-label="Close"
-									className="absolute top-4 right-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
+									className={`relative aspect-video max-h-[88vh] w-[min(92vw,1280px)] overflow-hidden rounded-xl bg-[var(--muted-bg)] shadow-2xl ${
+										side === 'left' ? 'cursor-w-resize' : 'cursor-e-resize'
+									}`}
 								>
-									<HugeiconsIcon icon={Cancel01Icon} size={16} color="currentColor" />
-								</button>
-								{total > 1 && (
-									<>
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation();
-												setActiveImage((i) => Math.max(0, i - 1));
-											}}
-											disabled={activeImage === 0}
-											aria-label="Previous"
-											className="absolute top-1/2 left-4 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)] disabled:opacity-25"
-										>
-											<HugeiconsIcon icon={ArrowLeft02Icon} size={16} color="currentColor" />
-										</button>
-										<button
-											type="button"
-											onClick={(e) => {
-												e.stopPropagation();
-												setActiveImage((i) => Math.min(total - 1, i + 1));
-											}}
-											disabled={activeImage === total - 1}
-											aria-label="Next"
-											className="absolute top-1/2 right-4 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)] disabled:opacity-25"
-										>
-											<HugeiconsIcon icon={ArrowRight02Icon} size={16} color="currentColor" />
-										</button>
-										<div className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 text-[12px] text-[color-mix(in_srgb,var(--foreground)_45%,transparent)] tracking-[0.04em]">
-											{activeImage + 1} / {total}
-										</div>
-									</>
-								)}
+									<img
+										src={project.images[activeImage]}
+										alt={project.name}
+										className="absolute inset-0 block h-full w-full object-cover"
+										draggable={false}
+									/>
+
+									{total > 1 && (
+										<>
+											<div
+												className={`pointer-events-none absolute inset-y-0 left-0 flex w-1/2 items-center justify-start pl-4 transition-opacity duration-200 ${
+													side === 'left' ? 'opacity-100' : 'opacity-0'
+												}`}
+											>
+												<span className="flex h-11 w-11 items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--background)_70%,transparent)] text-[var(--text-primary)] backdrop-blur-sm">
+													<HugeiconsIcon icon={ArrowLeft02Icon} size={18} color="currentColor" />
+												</span>
+											</div>
+											<div
+												className={`pointer-events-none absolute inset-y-0 right-0 flex w-1/2 items-center justify-end pr-4 transition-opacity duration-200 ${
+													side === 'right' ? 'opacity-100' : 'opacity-0'
+												}`}
+											>
+												<span className="flex h-11 w-11 items-center justify-center rounded-full bg-[color-mix(in_srgb,var(--background)_70%,transparent)] text-[var(--text-primary)] backdrop-blur-sm">
+													<HugeiconsIcon icon={ArrowRight02Icon} size={18} color="currentColor" />
+												</span>
+											</div>
+											<div className="pointer-events-none absolute right-5 bottom-4 text-[11px] text-white/75 tabular-nums drop-shadow">
+												{activeImage + 1} / {total}
+											</div>
+										</>
+									)}
+								</m.div>
 							</m.div>
 						)}
 					</AnimatePresence>,
@@ -458,14 +452,6 @@ export default function FreelanceWork({ initialSlug }: { initialSlug?: string })
 								</span>
 							</div>
 							<div className="ml-2 flex shrink-0 items-center gap-[5px]">
-								{work.tech.slice(0, 2).map((tag) => (
-									<span
-										key={tag}
-										className="whitespace-nowrap rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-muted)]"
-									>
-										{tag}
-									</span>
-								))}
 								<HugeiconsIcon
 									icon={ArrowRight02Icon}
 									size={11}

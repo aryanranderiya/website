@@ -1,0 +1,46 @@
+---
+import { CircleArrowLeft01Icon, HugeiconsIcon } from '@icons';
+import HoloCardIsland from '@/components/experiments/HoloCardIsland';
+import { DEMO_CARD } from '@/components/experiments/holo-card/demo';
+import { type Experiment, experiments } from '@/data/experiments';
+import PageLayout from '@/layouts/PageLayout.astro';
+
+export function getStaticPaths() {
+	return experiments.map((exp) => ({ params: { slug: exp.slug }, props: { exp } }));
+}
+
+const { exp } = Astro.props as { exp: Experiment };
+
+const fmtDate = (d: string) =>
+	new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+---
+
+<PageLayout title={`${exp.title} - Experiments`} description={exp.description}>
+  <a
+    href="/experiments"
+    class="mb-8 inline-flex items-center gap-1.5 text-[13px] text-[var(--text-muted)] no-underline transition-colors duration-150 hover:text-[var(--text-primary)]"
+  >
+    <HugeiconsIcon icon={CircleArrowLeft01Icon} size={15} color="currentColor" />
+    back to experiments
+  </a>
+
+  <div class="mb-8">
+    <h1 class="text-heading-1 mb-2 animate-fade-in stagger-1">{exp.title}</h1>
+    <span class="text-[12px] text-[var(--text-ghost)]">{fmtDate(exp.date)}</span>
+  </div>
+
+  {/* live, interactive component */}
+  <div class="mb-10 flex justify-center rounded-2xl bg-[var(--muted-bg)] py-14 animate-fade-in stagger-2">
+    <div style="width:320px;height:448px" transition:name={`holo-${exp.slug}`}>
+      {exp.slug === "holo-card" && (
+        <HoloCardIsland data={DEMO_CARD} width={320} height={448} client:only="react" />
+      )}
+    </div>
+  </div>
+
+  {/* writeup */}
+  <div class="animate-fade-in stagger-3">
+    <p class="mb-4 text-[15px] text-[var(--text-primary)] leading-relaxed">{exp.description}</p>
+    <p class="text-[13.5px] text-[var(--text-secondary)] leading-relaxed">{exp.bio}</p>
+  </div>
+</PageLayout>

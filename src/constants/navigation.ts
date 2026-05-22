@@ -76,7 +76,7 @@ export const PAGES: NavPage[] = [
 		icon: 'Film01Icon',
 	},
 	{
-		href: '/camera-roll',
+		href: '/camera',
 		label: 'Gallery',
 		description: 'Photos I have taken',
 		icon: 'Image01Icon',
