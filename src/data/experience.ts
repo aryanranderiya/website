@@ -118,6 +118,7 @@ export const experience: Experience[] = [
 		website: 'https://rezrek.vercel.app',
 		skills: ['React', 'Node.js', 'Redis', 'MongoDB'],
 		featured: false,
+		logo: '/icons/favicons/rezrek.jpg',
 	},
 	{
 		company: 'Govardhan Infotech',
