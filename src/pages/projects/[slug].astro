@@ -2,6 +2,7 @@
 import { type CollectionEntry, getCollection } from "astro:content";
 import BackLink from "@/components/ui/BackLink.astro";
 import BlogLinks from "@/components/blog/BlogLinks";
+import { mdxComponents } from "@/components/blog/mdx";
 import ProjectCTAs from "@/components/projects/ProjectCTAs";
 import Lightbox from "@/components/ui/Lightbox.astro";
 import PostNav from "@/components/ui/PostNav.astro";
@@ -158,7 +159,7 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
 
   <!-- Body content (rendered markdown) -->
   <div class="prose mb-11">
-    <Content />
+    <Content components={mdxComponents} />
   </div>
 
   <!-- Gallery (remaining images after hero) -->

@@ -46,8 +46,9 @@ const TYPE_LABELS: Record<string, string> = {
 
 // Plain anchor (no Framer entrance): the projects list must render visible
 // straight from SSR and never depend on hydration to be seen. Hover state is
-// driven by React + CSS; the entrance fade lives on the grid wrapper as a CSS
-// animation that always resolves to opacity:1.
+// driven by React + CSS. The entrance is a pure-CSS staggered fade-up (per-row
+// animation-delay from the index) — it runs without JS and always resolves to
+// opacity:1, and replays whenever the grid remounts the list on a filter toggle.
 export default function ProjectCard({
 	project,
 	index,
@@ -61,6 +62,10 @@ export default function ProjectCard({
 	const ref = useRef<HTMLAnchorElement>(null);
 	const chip = FOLDER_CHIP[project.folder];
 	const typeLabel = TYPE_LABELS[project.type] ?? project.type;
+	// Staggered entrance: each row fades up slightly after the previous one. The
+	// delay is capped so long lists don't trail off, and replays whenever the list
+	// is remounted (the grid re-keys it on every filter toggle).
+	const enterDelay = `${Math.min(index, 16) * 35}ms`;
 
 	return (
 		<a
@@ -74,7 +79,9 @@ export default function ProjectCard({
 				setHovered(false);
 				onHoverChange?.(null);
 			}}
-			className={`dim-list-row flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] no-underline transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+			// biome-ignore lint/nursery/noInlineStyles: per-row stagger delay is computed from the list index
+			style={{ animationDelay: enterDelay }}
+			className={`dim-list-row animate-fade-in-up flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] no-underline transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 		>
 			{/* Left: title + single chip — folder chip takes priority over type */}
 			<div className="flex min-w-0 shrink-0 items-center gap-1.5">

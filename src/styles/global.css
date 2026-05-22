@@ -588,13 +588,13 @@ a {
 	margin-bottom: 0.5em;
 }
 
-.prose p {
+.prose p:not(.not-prose *) {
 	color: var(--text-secondary);
 	line-height: var(--leading-relaxed);
 	margin-bottom: 1.25em;
 }
 
-.prose a {
+.prose a:not(.not-prose *) {
 	color: var(--text-primary);
 	text-decoration: underline;
 	text-decoration-color: var(--border-strong);
@@ -691,7 +691,7 @@ a {
 	line-height: var(--leading-relaxed);
 }
 
-.prose img {
+.prose img:not(.not-prose *) {
 	border-radius: var(--radius-lg);
 	border: 1px solid var(--border);
 	width: 100%;
@@ -707,6 +707,10 @@ a {
 .prose img.fit {
 	width: auto;
 }
+
+/* `.not-prose` escape hatch: the .prose p/a/img rules above each append
+   :not(.not-prose *) so build-time embeds (e.g. the Tweet card) can render
+   their own internal markup without inheriting prose link/image styling. */
 
 .prose hr {
 	border: none;

@@ -9,7 +9,10 @@ import {
 	File01Icon,
 	RoboticIcon,
 } from '@/components/icons';
+import BlogLinks from '@/components/blog/BlogLinks';
+import { mdxComponents } from '@/components/blog/mdx';
 import BackLink from '@/components/ui/BackLink.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
 import PostNav from '@/components/ui/PostNav.astro';
 import TableOfContents from '@/components/ui/TableOfContents.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
@@ -196,8 +199,12 @@ const metaIconColor = 'var(--text-ghost)';
 
     {/* Content */}
     <div class="prose">
-      <Content />
+      <Content components={mdxComponents} />
     </div>
+
+    {/* Hover link previews + click-to-zoom images (shared with blog/projects) */}
+    <BlogLinks client:idle />
+    <Lightbox target=".prose img:not(.blog-link-favicon):not(.not-prose *)" />
 
     {/* Footer */}
     <div class="mt-16 pt-10" style="border-top: 1px solid var(--border);">

@@ -233,6 +233,12 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 
 	const isEntryActive = (value: string) => activeTechFilters.includes(value);
 
+	// Re-trigger the list entrance whenever the chip / tech filters change. CSS
+	// animations only run on mount, so we remount the list subtree via a key that
+	// reflects the active filters — the entrance replays on every toggle. Search
+	// is deliberately excluded so the list doesn't re-animate on each keystroke.
+	const listAnimKey = `${activeTypeFilter ?? 'all'}|${[...activeTechFilters].sort().join(',')}`;
+
 	return (
 		<LazyMotion features={loadFeatures}>
 			{/* CSS-driven entrance (animate-fade-in) instead of a JS-gated Framer
@@ -438,7 +444,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 				{/* Project list — plain DOM so it renders visible from SSR and never
 				    depends on hydration/preloader timing to be seen. */}
 				{filtered.length > 0 ? (
-					<div className="dim-list flex flex-col gap-0.5">
+					<div key={listAnimKey} className="dim-list flex flex-col gap-0.5">
 						{filtered.map((project: Project, i: number) => (
 							<ProjectCard
 								key={project.slug}

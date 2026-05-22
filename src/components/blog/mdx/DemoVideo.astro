@@ -1,0 +1,396 @@
+---
+// A custom Apple-style HTML5 video player for blog posts: frosted controls, a
+// smooth scrub slider, a mute toggle with a vertical volume pop-up, and
+// click-to-expand that zooms the clip into a blurred lightbox — the same FLIP
+// motion the photos use. All behaviour lives in src/lib/demo-video.ts.
+//
+// The control glyphs are bespoke SVGs (not @icons) by design — they're a custom
+// set chosen for this player. Rendered server-side and toggled with CSS by
+// state. `currentColor` lets them inherit the control colour.
+interface Props {
+	/** Path or URL to the video file (mp4/webm). Local public/ paths work. */
+	src: string;
+	/** Optional poster image shown before playback. */
+	poster?: string;
+	/** Optional caption shown beneath the player. */
+	caption?: string;
+	/** Start muted (default true — lets the clip read as ambient). */
+	muted?: boolean;
+	/** Loop playback (default true). */
+	loop?: boolean;
+}
+
+const { src, poster, caption, muted = true, loop = true } = Astro.props;
+const ic = 18;
+const big = 30;
+
+// Custom media-control icon paths (24×24 viewBox, stroke style).
+const PATHS = {
+	play: '<path d="M5 4.98951C5 4.01835 5 3.53277 5.20249 3.2651C5.37889 3.03191 5.64852 2.88761 5.9404 2.87018C6.27544 2.85017 6.67946 3.11953 7.48752 3.65823L18.0031 10.6686C18.6708 11.1137 19.0046 11.3363 19.1209 11.6168C19.2227 11.8621 19.2227 12.1377 19.1209 12.383C19.0046 12.6635 18.6708 12.886 18.0031 13.3312L7.48752 20.3415C6.67946 20.8802 6.27544 21.1496 5.9404 21.1296C5.64852 21.1122 5.37889 20.9679 5.20249 20.7347C5 20.467 5 19.9814 5 19.0103V4.98951Z" fill="currentColor" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>',
+	pause: '<path d="M7.5 4H8.5A1.5 1.5 0 0 1 10 5.5V18.5A1.5 1.5 0 0 1 8.5 20H7.5A1.5 1.5 0 0 1 6 18.5V5.5A1.5 1.5 0 0 1 7.5 4ZM15.5 4H16.5A1.5 1.5 0 0 1 18 5.5V18.5A1.5 1.5 0 0 1 16.5 20H15.5A1.5 1.5 0 0 1 14 18.5V5.5A1.5 1.5 0 0 1 15.5 4Z" fill="currentColor"/>',
+	volHigh:
+		'<path d="M19.7479 4.99993C21.1652 6.97016 22 9.38756 22 11.9999C22 14.6123 21.1652 17.0297 19.7479 18.9999M15.7453 7.99993C16.5362 9.13376 17 10.5127 17 11.9999C17 13.4872 16.5362 14.8661 15.7453 15.9999M9.63432 4.36561L6.46863 7.5313C6.29568 7.70425 6.2092 7.79073 6.10828 7.85257C6.01881 7.9074 5.92127 7.9478 5.81923 7.9723C5.70414 7.99993 5.58185 7.99993 5.33726 7.99993H3.6C3.03995 7.99993 2.75992 7.99993 2.54601 8.10892C2.35785 8.20479 2.20487 8.35777 2.10899 8.54594C2 8.75985 2 9.03987 2 9.59993V14.3999C2 14.96 2 15.24 2.10899 15.4539C2.20487 15.6421 2.35785 15.7951 2.54601 15.8909C2.75992 15.9999 3.03995 15.9999 3.6 15.9999H5.33726C5.58185 15.9999 5.70414 15.9999 5.81923 16.0276C5.92127 16.0521 6.01881 16.0925 6.10828 16.1473C6.2092 16.2091 6.29568 16.2956 6.46863 16.4686L9.63431 19.6342C10.0627 20.0626 10.2769 20.2768 10.4608 20.2913C10.6203 20.3038 10.7763 20.2392 10.8802 20.1175C11 19.9773 11 19.6744 11 19.0686V4.9313C11 4.32548 11 4.02257 10.8802 3.88231C10.7763 3.76061 10.6203 3.69602 10.4608 3.70858C10.2769 3.72305 10.0627 3.93724 9.63432 4.36561Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+	volLow:
+		'<path d="M18.2451 7.99993C19.036 9.13376 19.4998 10.5127 19.4998 11.9999C19.4998 13.4872 19.036 14.8661 18.2451 15.9999M12.1343 4.36561L8.96863 7.5313C8.79568 7.70425 8.7092 7.79073 8.60828 7.85257C8.51881 7.9074 8.42127 7.9478 8.31923 7.9723C8.20414 7.99993 8.08185 7.99993 7.83726 7.99993H6.1C5.53995 7.99993 5.25992 7.99993 5.04601 8.10892C4.85785 8.20479 4.70487 8.35777 4.60899 8.54594C4.5 8.75985 4.5 9.03987 4.5 9.59993V14.3999C4.5 14.96 4.5 15.24 4.60899 15.4539C4.70487 15.6421 4.85785 15.7951 5.04601 15.8909C5.25992 15.9999 5.53995 15.9999 6.1 15.9999H7.83726C8.08185 15.9999 8.20414 15.9999 8.31923 16.0276C8.42127 16.0521 8.51881 16.0925 8.60828 16.1473C8.7092 16.2091 8.79568 16.2956 8.96863 16.4686L12.1343 19.6342C12.5627 20.0626 12.7769 20.2768 12.9608 20.2913C13.1203 20.3038 13.2763 20.2392 13.3802 20.1175C13.5 19.9773 13.5 19.6744 13.5 19.0686V4.9313C13.5 4.32548 13.5 4.02257 13.3802 3.88231C13.2763 3.76061 13.1203 3.69602 12.9608 3.70858C12.7769 3.72305 12.5627 3.93724 12.1343 4.36561Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+	volMute:
+		'<path d="M22 8.99993L16 14.9999M16 8.99993L22 14.9999M9.63432 4.36561L6.46863 7.5313C6.29568 7.70425 6.2092 7.79073 6.10828 7.85257C6.01881 7.9074 5.92127 7.9478 5.81923 7.9723C5.70414 7.99993 5.58185 7.99993 5.33726 7.99993H3.6C3.03995 7.99993 2.75992 7.99993 2.54601 8.10892C2.35785 8.20479 2.20487 8.35777 2.10899 8.54594C2 8.75985 2 9.03987 2 9.59993V14.3999C2 14.96 2 15.24 2.10899 15.4539C2.20487 15.6421 2.35785 15.7951 2.54601 15.8909C2.75992 15.9999 3.03995 15.9999 3.6 15.9999H5.33726C5.58185 15.9999 5.70414 15.9999 5.81923 16.0276C5.92127 16.0521 6.01881 16.0925 6.10828 16.1473C6.2092 16.2091 6.29568 16.2956 6.46863 16.4686L9.63431 19.6342C10.0627 20.0626 10.2769 20.2768 10.4608 20.2913C10.6203 20.3038 10.7763 20.2392 10.8802 20.1175C11 19.9773 11 19.6744 11 19.0686V4.9313C11 4.32548 11 4.02257 10.8802 3.88231C10.7763 3.76061 10.6203 3.69602 10.4608 3.70858C10.2769 3.72305 10.0627 3.93724 9.63432 4.36561Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>',
+} as const;
+
+const svg = (name: keyof typeof PATHS, size: number) =>
+	`<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" aria-hidden="true">${PATHS[name]}</svg>`;
+---
+
+<figure class="my-6 dv-figure">
+	<div class="demo-video" data-demo-video>
+		<div class="dv-stage" data-dv-stage data-state="paused" data-vol={muted ? 'mute' : 'high'}>
+			<video
+				class="dv-video"
+				data-dv-video
+				src={src}
+				poster={poster}
+				muted={muted}
+				loop={loop}
+				playsinline
+				preload="metadata"></video>
+
+			<!-- Center play affordance (shown while paused) -->
+			<button class="dv-bigplay" data-dv-bigplay type="button" aria-label="Play">
+				<span class="dv-bigplay-circle" set:html={svg('play', big)} />
+			</button>
+
+			<!-- Frosted control bar -->
+			<div class="dv-controls" data-dv-controls>
+				<button class="dv-btn" data-dv-playpause type="button" aria-label="Play">
+					<span class="dv-ic-play" set:html={svg('play', ic)} />
+					<span class="dv-ic-pause" set:html={svg('pause', ic)} />
+				</button>
+
+				<div class="dv-volume" data-dv-volume>
+					<button class="dv-btn" data-dv-mute type="button" aria-label="Mute">
+						<span class="dv-ic-vol-high" set:html={svg('volHigh', ic)} />
+						<span class="dv-ic-vol-low" set:html={svg('volLow', ic)} />
+						<span class="dv-ic-vol-mute" set:html={svg('volMute', ic)} />
+					</button>
+					<div class="dv-vol-pop">
+						<div
+							class="dv-vol-slider"
+							data-dv-vol
+							role="slider"
+							aria-label="Volume"
+							aria-orientation="vertical"
+							tabindex="0"
+						>
+							<div class="dv-vol-track"><div class="dv-vol-fill" data-dv-vol-fill></div></div>
+						</div>
+					</div>
+				</div>
+
+				<div
+					class="dv-scrubber"
+					data-dv-scrubber
+					role="slider"
+					aria-label="Seek"
+					tabindex="0"
+				>
+					<div class="dv-track">
+						<div class="dv-buffered" data-dv-buffered></div>
+						<div class="dv-progress" data-dv-progress></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+	import { initDemoVideos } from '@/lib/demo-video';
+
+	if (!(window as unknown as { __dvBound?: boolean }).__dvBound) {
+		(window as unknown as { __dvBound?: boolean }).__dvBound = true;
+		document.addEventListener('astro:page-load', () => initDemoVideos());
+	}
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', () => initDemoVideos(), { once: true });
+	} else {
+		initDemoVideos();
+	}
+</script>
+
+<style>
+	.demo-video {
+		position: relative;
+		width: 100%;
+	}
+
+	.dv-stage {
+		position: relative;
+		width: 100%;
+		border-radius: var(--radius-lg);
+		overflow: hidden;
+		background: #0a0a0a;
+		line-height: 0;
+		cursor: zoom-in;
+		isolation: isolate;
+		will-change: transform;
+	}
+	.dv-stage.dv-expanded {
+		border-radius: 14px;
+		box-shadow: 0 30px 90px rgba(0, 0, 0, 0.5);
+		cursor: default;
+	}
+
+	.dv-video {
+		display: block;
+		width: 100%;
+		height: auto;
+	}
+	.dv-stage.dv-expanded .dv-video {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	/* ---- Center play ---- */
+	.dv-bigplay {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		display: flex;
+		padding: 0;
+		margin: 0;
+		border: 0;
+		background: transparent;
+		cursor: pointer;
+		z-index: 2;
+		transition: opacity 0.25s ease;
+	}
+	.dv-stage[data-state='playing'] .dv-bigplay {
+		opacity: 0;
+		pointer-events: none;
+	}
+	.dv-bigplay-circle {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 66px;
+		height: 66px;
+		padding-left: 4px; /* optical centering of the play triangle */
+		border-radius: 50%;
+		color: #fff;
+		background: rgba(18, 18, 18, 0.42);
+		backdrop-filter: blur(10px);
+		-webkit-backdrop-filter: blur(10px);
+		box-shadow: 0 6px 22px rgba(0, 0, 0, 0.4);
+		transition:
+			transform 0.2s cubic-bezier(0.19, 1, 0.22, 1),
+			background 0.2s ease;
+	}
+	.dv-bigplay:hover .dv-bigplay-circle {
+		transform: scale(1.07);
+		background: rgba(18, 18, 18, 0.6);
+	}
+	.dv-bigplay:active .dv-bigplay-circle {
+		transform: scale(0.95);
+	}
+
+	/* ---- Control bar ---- */
+	.dv-controls {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 3;
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 26px 12px 11px;
+		line-height: normal;
+		background: linear-gradient(to top, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0));
+		opacity: 0;
+		transform: translateY(4px);
+		transition:
+			opacity 0.22s ease,
+			transform 0.22s ease;
+		pointer-events: none;
+	}
+	.dv-stage:hover .dv-controls,
+	.dv-stage[data-state='paused'] .dv-controls,
+	.dv-stage.dv-show .dv-controls {
+		opacity: 1;
+		transform: translateY(0);
+		pointer-events: auto;
+	}
+	.dv-stage.dv-expanded .dv-controls {
+		gap: 8px;
+		padding: 34px 18px 16px;
+	}
+
+	.dv-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		flex: none;
+		width: 30px;
+		height: 30px;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background: transparent;
+		color: rgba(255, 255, 255, 0.92);
+		cursor: pointer;
+		transition:
+			background 0.15s ease,
+			transform 0.15s ease;
+	}
+	.dv-btn:hover {
+		background: rgba(255, 255, 255, 0.16);
+	}
+	.dv-btn:active {
+		transform: scale(0.88);
+	}
+
+	.dv-btn svg,
+	.dv-bigplay svg {
+		display: block;
+	}
+
+	/* Exactly one glyph per state is shown. These target the .dv-ic-* spans
+	   directly so no broader rule can out-specify the hidden state. */
+	.dv-ic-play,
+	.dv-ic-pause,
+	.dv-ic-vol-high,
+	.dv-ic-vol-low,
+	.dv-ic-vol-mute {
+		display: none;
+		line-height: 0;
+	}
+	.dv-stage[data-state='paused'] .dv-ic-play,
+	.dv-stage[data-state='playing'] .dv-ic-pause,
+	.dv-stage[data-vol='high'] .dv-ic-vol-high,
+	.dv-stage[data-vol='low'] .dv-ic-vol-low,
+	.dv-stage[data-vol='mute'] .dv-ic-vol-mute {
+		display: inline-flex;
+	}
+
+	/* ---- Scrubber (rounded-rect, no knob) ---- */
+	.dv-scrubber {
+		position: relative;
+		display: flex;
+		align-items: center;
+		flex: 1 1 auto;
+		height: 18px;
+		cursor: pointer;
+		touch-action: none;
+		outline: none;
+	}
+	.dv-track {
+		position: relative;
+		width: 100%;
+		height: 18px; /* same height as the control icons */
+		border-radius: 6px;
+		background: rgba(255, 255, 255, 0.22);
+		overflow: hidden;
+		transition: background 0.15s ease;
+	}
+	.dv-scrubber:hover .dv-track,
+	.dv-scrubber:focus-visible .dv-track {
+		background: rgba(255, 255, 255, 0.28);
+	}
+	.dv-buffered,
+	.dv-progress {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 100%;
+		/* Fluid catch-up while playing; disabled mid-scrub so the bar tracks the
+		   cursor exactly (see .dv-scrubbing below). */
+		transition: width 0.1s linear;
+	}
+	.dv-buffered {
+		width: 0;
+		background: rgba(255, 255, 255, 0.2);
+	}
+	.dv-progress {
+		width: 0;
+		background: #fff;
+	}
+	.dv-scrubber.dv-scrubbing .dv-progress {
+		transition: none;
+	}
+
+	/* ---- Volume (vertical pop-up, iOS-style) ---- */
+	.dv-volume {
+		position: relative;
+		display: flex;
+		align-items: center;
+		flex: none;
+	}
+	.dv-vol-pop {
+		position: absolute;
+		bottom: calc(100% + 8px);
+		left: 50%;
+		z-index: 5;
+		transform: translateX(-50%) translateY(4px);
+		padding: 12px 9px;
+		border-radius: 12px;
+		background: rgba(22, 22, 22, 0.72);
+		backdrop-filter: blur(14px);
+		-webkit-backdrop-filter: blur(14px);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.38);
+		opacity: 0;
+		pointer-events: none;
+		transition:
+			opacity 0.18s ease,
+			transform 0.18s ease;
+	}
+	/* Transparent bridge so the cursor can cross the gap without losing hover. */
+	.dv-vol-pop::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 100%;
+		height: 12px;
+	}
+	.dv-volume:hover .dv-vol-pop,
+	.dv-volume:focus-within .dv-vol-pop {
+		opacity: 1;
+		pointer-events: auto;
+		transform: translateX(-50%) translateY(0);
+	}
+	.dv-vol-slider {
+		position: relative;
+		width: 6px;
+		height: 84px;
+		cursor: pointer;
+		touch-action: none;
+		outline: none;
+	}
+	.dv-vol-track {
+		position: absolute;
+		inset: 0;
+		border-radius: 3px;
+		background: rgba(255, 255, 255, 0.26);
+		overflow: hidden;
+	}
+	.dv-vol-fill {
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		height: 100%;
+		background: #fff;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.dv-stage,
+		.dv-bigplay-circle,
+		.dv-controls,
+		.dv-thumb,
+		.dv-track {
+			transition: none;
+		}
+	}
+</style>

@@ -302,5 +302,33 @@ const commandKProjects = sortProjects(await getCollection('projects')).map((p) =
         });
       })();
     </script>
+    <script>
+      // The page's bottom blur is a body-level backdrop-filter. After a view
+      // transition, Chromium can leave it blank for a beat — it does not
+      // recomposite the filter the instant the transition overlay is torn down,
+      // so the blur lags behind the new page. Force the repaint the moment the
+      // transition finishes (the display flip is coalesced into one task, so
+      // there is no visible flash) — the blur snaps back in sync with the page.
+      const w = window as unknown as { __blurNavRepaint?: boolean };
+      if (!w.__blurNavRepaint) {
+        w.__blurNavRepaint = true;
+        document.addEventListener('astro:before-swap', (event) => {
+          const vt = (event as unknown as { viewTransition?: { finished?: Promise<void> } })
+            .viewTransition;
+          if (!vt?.finished) return;
+          vt.finished
+            .then(() =>
+              requestAnimationFrame(() => {
+                const bs = document.getElementById('blur-stack');
+                if (!bs) return;
+                bs.style.display = 'none';
+                void bs.offsetHeight;
+                bs.style.display = '';
+              }),
+            )
+            .catch(() => {});
+        });
+      }
+    </script>
   </body>
 </html>

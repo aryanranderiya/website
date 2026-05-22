@@ -1,0 +1,286 @@
+---
+// Embedded tweet — fetched at BUILD TIME via react-tweet's syndication API
+// (getTweet) and rendered as a faithful, flat-design tweet card. Zero client
+// JS, no runtime fetch. We render the markup ourselves rather than react-tweet's
+// <EmbeddedTweet> because that widget won't server-render under Astro (dual
+// React copy → invalid hook call) and crashes on tweets whose `entities` omit
+// the hashtags/mentions arrays. getTweet (data only) is rock-solid.
+//
+// Works in any collection's .mdx via the shared mdxComponents registry. The
+// `.not-prose` wrapper keeps .prose img/a/p rules from bleeding into the card.
+//
+// Interaction (zero JS): the whole card is a "stretched link" — an absolutely
+// positioned <a> overlay (z-10) opens the tweet in a new tab. Interactive bits
+// (profile link, body links, "Show more", video, "View on Twitter") sit at
+// z-20 so they capture their own clicks (video controls play, links navigate).
+import { getTweet } from 'react-tweet/api';
+import {
+	BubbleChatIcon,
+	CheckmarkBadge01Icon,
+	FavouriteIcon,
+	TwitterIcon,
+} from '@/components/icons';
+
+// gaia-icons render `fill="currentColor"` and ignore the `color` prop under
+// Astro SSR, so colors are applied via the CSS `color` of a wrapper element
+// (Tailwind text-[#hex]): #1da1f2 = Twitter blue, #f91880 = liked-heart red.
+
+interface Props {
+	/** Numeric status id, e.g. "2056325510431686836" (trailing part of the X URL). */
+	id: string;
+}
+
+const { id } = Astro.props;
+
+let tweet: Awaited<ReturnType<typeof getTweet>>;
+try {
+	tweet = await getTweet(id);
+} catch {
+	tweet = undefined;
+}
+
+const escapeHtml = (s: string) =>
+	s
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;');
+
+// Escape first, then linkify: t.co → real url (or drop the media short-link),
+// @mentions and #hashtags → Twitter links. Newlines preserved via pre-wrap.
+function buildTextHtml(t: NonNullable<Awaited<ReturnType<typeof getTweet>>>): string {
+	let s = escapeHtml(t.text ?? '');
+	const urlMap: Record<string, { expanded_url: string; display_url: string }> = {};
+	for (const u of t.entities?.urls ?? []) urlMap[u.url] = u;
+	s = s.replace(/https:\/\/t\.co\/\w+/g, (m) => {
+		const u = urlMap[m];
+		return u
+			? `<a href="${escapeHtml(u.expanded_url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(u.display_url)}</a>`
+			: '';
+	});
+	s = s.replace(
+		/(^|[^\w@/])@(\w{1,15})/g,
+		(_, p, h) =>
+			`${p}<a href="https://twitter.com/${h}" target="_blank" rel="noopener noreferrer">@${h}</a>`,
+	);
+	s = s.replace(
+		/(^|[^\w&/])#(\w+)/g,
+		(_, p, h) =>
+			`${p}<a href="https://twitter.com/hashtag/${h}" target="_blank" rel="noopener noreferrer">#${h}</a>`,
+	);
+	return s.trim();
+}
+
+// Pick a sensibly-sized mp4 (largest variant ≤ 1280px wide) for native playback.
+function pickMp4(t: NonNullable<Awaited<ReturnType<typeof getTweet>>>) {
+	const mp4s = (t.video?.variants ?? [])
+		.filter((v) => v.type === 'video/mp4' && v.src)
+		.map((v) => {
+			const m = v.src.match(/\/(\d+)x(\d+)\//);
+			return { src: v.src, w: m ? Number(m[1]) : 0, h: m ? Number(m[2]) : 0 };
+		})
+		.sort((a, b) => a.w - b.w);
+	if (!mp4s.length) return null;
+	const capped = mp4s.filter((v) => v.w <= 1280);
+	return capped.length ? capped[capped.length - 1] : mp4s[mp4s.length - 1];
+}
+
+function mediaAspect(t: NonNullable<Awaited<ReturnType<typeof getTweet>>>) {
+	const info = t.mediaDetails?.[0]?.original_info;
+	return info?.width && info?.height ? `${info.width} / ${info.height}` : '16 / 9';
+}
+
+const data = tweet
+	? {
+			name: tweet.user.name,
+			handle: tweet.user.screen_name,
+			avatar: tweet.user.profile_image_url_https.replace('_normal', '_bigger'),
+			verified: tweet.user.is_blue_verified || tweet.user.verified,
+			textHtml: buildTextHtml(tweet),
+			// Long-form ("note") tweets are truncated by the syndication API; the
+			// remainder only lives on Twitter, so offer a working "Show more".
+			isLongform: Boolean(tweet.note_tweet),
+			replies: tweet.conversation_count ?? 0,
+			likes: tweet.favorite_count ?? 0,
+			date: new Date(tweet.created_at).toLocaleDateString('en-US', {
+				month: 'long',
+				day: 'numeric',
+				year: 'numeric',
+			}),
+			tweetUrl: `https://twitter.com/${tweet.user.screen_name}/status/${id}`,
+			profileUrl: `https://twitter.com/${tweet.user.screen_name}`,
+			video: pickMp4(tweet),
+			videoPoster: tweet.video?.poster,
+			photos: tweet.photos ?? [],
+			aspect: mediaAspect(tweet),
+		}
+	: null;
+---
+
+{
+	data ? (
+		<div class="tweet-embed not-prose group relative my-6 cursor-pointer rounded-2xl bg-[var(--muted-bg)] p-4 transition-colors hover:bg-[var(--muted-bg-strong)] sm:p-5">
+			{/* Stretched link: whole-card click opens the tweet in a new tab. */}
+			<a
+				href={data.tweetUrl}
+				target="_blank"
+				rel="noopener noreferrer"
+				aria-label={`Open ${data.name}'s tweet on Twitter`}
+				class="absolute inset-0 z-10 rounded-2xl"
+			/>
+
+			{/* Header */}
+			<div class="flex items-start gap-3">
+				<a
+					href={data.profileUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="relative z-20 shrink-0"
+				>
+					<img
+						src={data.avatar}
+						alt={data.name}
+						width="44"
+						height="44"
+						loading="lazy"
+						class="h-11 w-11 rounded-full object-cover"
+					/>
+				</a>
+				<a
+					href={data.profileUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="relative z-20 min-w-0 leading-tight"
+				>
+					<span class="flex items-center gap-1 text-[14px] font-semibold text-[var(--text-primary)]">
+						<span class="truncate">{data.name}</span>
+						{data.verified && (
+							<span class="inline-flex shrink-0 text-[#1da1f2]">
+								<CheckmarkBadge01Icon width={15} height={15} />
+							</span>
+						)}
+					</span>
+					<span class="block truncate text-[13px] text-[var(--text-ghost)]">@{data.handle}</span>
+				</a>
+				<a
+					href={data.tweetUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					aria-label="View on Twitter"
+					class="relative z-20 ml-auto shrink-0"
+				>
+					<span class="inline-flex text-[#1da1f2]">
+						<TwitterIcon width={20} height={20} />
+					</span>
+				</a>
+			</div>
+
+			{/* Body */}
+			<p
+				class="tweet-text mt-3 whitespace-pre-wrap text-[14px] leading-[1.6] text-[var(--text-secondary)]"
+				set:html={data.textHtml}
+			/>
+			{data.isLongform && (
+				<a
+					href={data.tweetUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="tweet-link relative z-20 mt-1 inline-block text-[14px]"
+				>
+					Show more
+				</a>
+			)}
+
+			{/* Media: native video, or photo(s) */}
+			{data.video ? (
+				<div
+					class="relative z-20 mt-3 overflow-hidden rounded-xl bg-black/5"
+					style={`aspect-ratio:${data.aspect}`}
+				>
+					<video
+						controls
+						playsinline
+						preload="metadata"
+						poster={data.videoPoster}
+						class="h-full w-full object-contain"
+					>
+						<source src={data.video.src} type="video/mp4" />
+					</video>
+				</div>
+			) : (
+				data.photos.length > 0 && (
+					<div
+						class:list={[
+							'mt-3 grid gap-2 overflow-hidden rounded-xl',
+							data.photos.length > 1 ? 'grid-cols-2' : 'grid-cols-1',
+						]}
+					>
+						{data.photos.map((p) => (
+							<img
+								src={p.url}
+								alt=""
+								loading="lazy"
+								class="h-full w-full object-cover"
+								style={
+									data.photos.length === 1 && p.width && p.height
+										? `aspect-ratio:${p.width} / ${p.height}`
+										: undefined
+								}
+							/>
+						))}
+					</div>
+				)
+			)}
+
+			{/* Footer: likes, comments, date, view on Twitter */}
+			<div class="mt-3 flex items-center gap-4 text-[13px] text-[var(--text-ghost)]">
+				<span class="inline-flex items-center gap-1.5">
+					<span class="inline-flex text-[#f91880]">
+						<FavouriteIcon width={19} height={19} />
+					</span>
+					<span class="text-[14px]">{data.likes.toLocaleString()}</span>
+				</span>
+				<span class="inline-flex items-center gap-1.5">
+					<BubbleChatIcon width={19} height={19} />
+					<span class="text-[14px]">{data.replies.toLocaleString()}</span>
+				</span>
+				<span class="hidden sm:inline">{data.date}</span>
+				<a
+					href={data.tweetUrl}
+					target="_blank"
+					rel="noopener noreferrer"
+					class="tweet-link relative z-20 ml-auto inline-flex items-center gap-1.5"
+				>
+					View on Twitter
+					<TwitterIcon width={14} height={14} />
+				</a>
+			</div>
+		</div>
+	) : (
+		<p class="tweet-embed-fallback">
+			<a href={`https://twitter.com/i/status/${id}`} target="_blank" rel="noopener noreferrer">
+				View tweet on Twitter →
+			</a>
+		</p>
+	)
+}
+
+<style>
+	/* Body links + the "Show more"/"View on Twitter" links use Twitter blue
+	   (faithful to a real tweet) and sit above the stretched-link overlay so
+	   they navigate on their own. The .not-prose wrapper strips global .prose a
+	   styles, so re-state them here. */
+	.tweet-text a {
+		position: relative;
+		z-index: 20;
+		color: #1da1f2;
+	}
+	.tweet-text a:hover,
+	.tweet-link:hover {
+		text-decoration: underline;
+		text-underline-offset: 2px;
+	}
+	.tweet-link {
+		color: #1da1f2;
+	}
+</style>

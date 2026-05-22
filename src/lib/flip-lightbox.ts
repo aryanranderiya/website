@@ -292,18 +292,6 @@ function lockScroll(on: boolean) {
 	document.body.style.overflow = on ? 'hidden' : '';
 }
 
-// The page's progressive bottom blur is a stack of backdrop-filter layers.
-// Chromium does not recomposite a backdrop-filter smoothly when the
-// backdrop-filter overlay above it is torn down, so on close it snaps into
-// view. Drive its opacity directly: fade it out as the lightbox opens, fade it
-// back in over the clean page once the overlay is gone — a transition, not a pop.
-function fadeBlurStack(visible: boolean, dur: number) {
-	const bs = document.getElementById('blur-stack');
-	if (!bs) return;
-	bs.style.transition = `opacity ${dur}s ease`;
-	bs.style.opacity = visible ? '1' : '0';
-}
-
 function openAt(i: number) {
 	const s = S();
 	if (!s.group.length || !s.img || !s.overlay || !s.backdrop) return;
@@ -339,7 +327,6 @@ function openAt(i: number) {
 
 	thumb.style.visibility = 'hidden';
 	lockScroll(true);
-	fadeBlurStack(false, OPEN_DUR);
 	s.isOpen = true;
 	updateChrome();
 
@@ -370,7 +357,6 @@ function close() {
 		img.style.opacity = '1';
 		if (thumb) thumb.style.visibility = '';
 		lockScroll(false);
-		fadeBlurStack(true, 0.35);
 	};
 
 	animate(s.backdrop, { opacity: 0 }, { duration: CLOSE_DUR, ease: 'linear' });

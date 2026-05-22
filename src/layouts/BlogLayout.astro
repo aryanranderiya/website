@@ -218,7 +218,7 @@ const breadcrumbJsonLd = JSON.stringify({
     <BlogLinks client:idle />
 
     <Lightbox
-      target=".blog-cover, .prose img:not(.blog-link-favicon), .prose figure img:not(.blog-link-favicon)"
+      target=".blog-cover, .prose img:not(.blog-link-favicon):not(.not-prose *), .prose figure img:not(.blog-link-favicon):not(.not-prose *)"
     />
 
     <script is:inline>

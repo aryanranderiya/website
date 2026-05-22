@@ -156,8 +156,15 @@ rotating arrow:
 
 ## MDX-only components
 
-Switch the file extension from `.md` to `.mdx` and import what you
-need. Each component lives in `src/components/blog/mdx/`.
+Switch the file extension from `.md` to `.mdx`. Each component lives in
+`src/components/blog/mdx/` and is registered in the shared `mdxComponents`
+map (`src/components/blog/mdx/index.ts`), which every collection slug page
+(`blog`, `projects`, `agent-convos`) passes to `<Content components={…} />`.
+
+That means **you can use the tags below in any `.mdx` without importing
+them** — they're not blog-specific. A local `import` inside an `.mdx` still
+works and takes precedence over the registry, so the examples below (which
+import explicitly) remain valid.
 
 ### `<Callout>` — note / info / tip / warn / success
 
@@ -198,6 +205,28 @@ import Video from '@/components/blog/mdx/Video.astro';
 `autoplay` is supported (muted+loop are forced by the browser for
 autoplay to be allowed).
 
+### `<DemoVideo>` — custom Apple-style player
+
+```mdx
+import DemoVideo from '@/components/blog/mdx/DemoVideo.astro';
+
+<DemoVideo
+  src="/blog/my-post/clip.mp4"
+  poster="/blog/my-post/clip-cover.webp"
+  caption="A walkthrough of the build."
+/>
+```
+
+A polished player with a frosted control bar (play/pause, an iOS-style
+scrub slider, and a mute toggle with a vertical volume pop-up). Clicking
+the video surface zooms the clip into a blurred lightbox using the same
+FLIP motion the photos use — the same `<video>` is reparented so playback
+never resets; clicking the surface again (or the backdrop / close button
+/ `Esc`) exits. `space` toggles play, arrows seek ±5s, `m` mutes. Optional
+`muted` and `loop` props (both default `true`). Use this over `<Video>`
+for hero/walkthrough clips; keep `<Video>` for plain native-controls
+embeds. Behaviour lives in `src/lib/demo-video.ts`.
+
 ### `<Kbd>` — keyboard key
 
 ```mdx
@@ -209,6 +238,20 @@ Press <Kbd>⌘</Kbd> + <Kbd>K</Kbd> to open the command palette.
 The raw markdown `<kbd>...</kbd>` works too; the component is only
 worth the import if you want the styled key-pill in a lot of places.
 
+### `<Tweet>` — X / Twitter embed
+
+```mdx
+<Tweet id="2056325510431686836" />
+```
+
+Pass the numeric status id (the trailing part of the X URL). The tweet is
+fetched at **build time** via `react-tweet`'s `getTweet`, rendered to static
+HTML with `<EmbeddedTweet>` — zero client JS, no runtime fetch. Styling is
+remapped onto the site's flat tokens in `global.css` (`.tweet-embed
+.react-tweet-theme`): no border, `--muted-bg` surface, opacity-hierarchy
+text, auto dark mode. If the tweet can't be fetched it falls back to a plain
+"View tweet on X" link. Registered globally, so no import needed.
+
 ---
 
 ## Ideas that aren't built yet
@@ -216,7 +259,6 @@ worth the import if you want the styled key-pill in a lot of places.
 If a post needs one of these, it's a small add — grep this file, add the
 component under `src/components/blog/mdx/`, document it here, ship.
 
-- `<Tweet id="..." />` — Twitter / X embed via `react-tweet`.
 - `<Gist id="..." />` — GitHub gist embed.
 - `<Compare before="..." after="..." />` — before/after slider for
   design posts.
