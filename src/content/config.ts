@@ -32,6 +32,10 @@ const projects = defineCollection({
 			.array(z.union([z.string(), z.object({ src: z.string(), caption: z.string().optional() })]))
 			.default([]),
 		video: z.string().optional(),
+		// CSS aspect ratio for `video` (e.g. "16 / 9", "608 / 1312"). SimplePlayer
+		// fills its frame with object-fit: cover, so match the clip to avoid crop.
+		// Defaults to 16 / 9 when omitted.
+		videoAspectRatio: z.string().optional(),
 		url: z.string().url().optional(),
 		github: z.string().url().optional(),
 		featured: z.boolean().default(false),

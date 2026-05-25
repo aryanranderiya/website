@@ -190,42 +190,48 @@ import YouTube from '@/components/blog/mdx/YouTube.astro';
 Accepts either a bare ID or a full URL, and an optional `start={42}`
 in seconds. Uses the `youtube-nocookie` domain.
 
-### `<Video>` — native HTML5 video
+Both `<DemoVideo>` and `<Video>` render the
+[SimplePlayer](https://simpleplayer.grizz.fyi/) web component
+(`@grizzshutsdown/simpleplayer`): a clean framed clip with a play/pause +
+scrubber overlay, lazy-loading, and (with `controls`) volume, Picture-in-Picture,
+and fullscreen. The element is registered globally on the client by an
+`import '@grizzshutsdown/simpleplayer'` inside each component, so it survives
+Astro view transitions.
 
-```mdx
-import Video from '@/components/blog/mdx/Video.astro';
+> SimplePlayer fills its frame with `object-fit: cover`. If your clip isn't
+> 16:9, pass `aspectRatio` matching the source (e.g. `aspectRatio="1280 / 774"`)
+> or it will be cropped.
 
-<Video
-  src="/blog/my-post/clip.mp4"
-  poster="/blog/my-post/clip-cover.webp"
-  caption="Recording of the bug in action."
-/>
-```
-
-`autoplay` is supported (muted+loop are forced by the browser for
-autoplay to be allowed).
-
-### `<DemoVideo>` — custom Apple-style player
+### `<DemoVideo>` — autoplay walkthrough clip
 
 ```mdx
 import DemoVideo from '@/components/blog/mdx/DemoVideo.astro';
 
 <DemoVideo
   src="/blog/my-post/clip.mp4"
-  poster="/blog/my-post/clip-cover.webp"
+  aspectRatio="1280 / 774"
   caption="A walkthrough of the build."
 />
 ```
 
-A polished player with a frosted control bar (play/pause, an iOS-style
-scrub slider, and a mute toggle with a vertical volume pop-up). Clicking
-the video surface zooms the clip into a blurred lightbox using the same
-FLIP motion the photos use — the same `<video>` is reparented so playback
-never resets; clicking the surface again (or the backdrop / close button
-/ `Esc`) exits. `space` toggles play, arrows seek ±5s, `m` mutes. Optional
-`muted` and `loop` props (both default `true`). Use this over `<Video>`
-for hero/walkthrough clips; keep `<Video>` for plain native-controls
-embeds. Behaviour lives in `src/lib/demo-video.ts`.
+Muted **autoplay + loop** when scrolled into view — use for ambient
+hero/walkthrough clips. Props: `src`, `caption`, `aspectRatio` (default
+`16 / 9`), `autoplay` (default `true`), `controls` (default `false` — set it to
+add the volume/PiP/fullscreen tray).
+
+### `<Video>` — click-to-play embed
+
+```mdx
+import Video from '@/components/blog/mdx/Video.astro';
+
+<Video
+  src="/blog/my-post/clip.mp4"
+  caption="Recording of the bug in action."
+/>
+```
+
+Same player as `<DemoVideo>`, but defaults to **click-to-play** (`autoplay`
+default `false`) so the clip only loads when tapped. Same prop set.
 
 ### `<Kbd>` — keyboard key
 

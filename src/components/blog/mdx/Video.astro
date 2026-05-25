@@ -1,31 +1,34 @@
 ---
+// Plain video embed, backed by the SimplePlayer web component
+// (@grizzshutsdown/simpleplayer). Same player as <DemoVideo>, but defaults to
+// click-to-play (no autoplay) for clips you don't want running on their own.
+// Pass `autoplay` for the ambient muted-loop behaviour.
 interface Props {
 	/** Path or URL to the video file (mp4/webm). Local public/ paths work. */
 	src: string;
-	/** Optional poster image shown before the video plays. */
-	poster?: string;
 	/** Optional caption shown beneath the video. */
 	caption?: string;
-	/** Autoplay (muted + loop are forced when true, browser rules). */
+	/** CSS aspect ratio for the frame. Match the clip to avoid crop. Default 16 / 9. */
+	aspectRatio?: string;
+	/** Muted autoplay + loop when scrolled into view. Default false. */
 	autoplay?: boolean;
-	/** Show native browser controls. Defaults to true. */
+	/** Show the extra control tray (volume, Picture-in-Picture, fullscreen). Default false. */
 	controls?: boolean;
 }
 
-const { src, poster, caption, autoplay = false, controls = true } = Astro.props;
+const { src, caption, aspectRatio = '16 / 9', autoplay = false, controls = false } = Astro.props;
 ---
 
 <figure class="my-6">
-	<video
+	<simple-player
 		src={src}
-		poster={poster}
-		autoplay={autoplay}
-		muted={autoplay}
-		loop={autoplay}
-		playsinline
-		controls={controls}
-		preload="metadata"
-		class="w-full rounded-[10px] bg-[var(--muted-bg)] block"
-	></video>
+		aspect-ratio={aspectRatio}
+		controls={controls || undefined}
+		disable-autoplay={autoplay ? undefined : true}
+		style={`--simple-player-aspect-ratio: ${aspectRatio}`}></simple-player>
 	{caption && <figcaption>{caption}</figcaption>}
 </figure>
+
+<script>
+	import '@grizzshutsdown/simpleplayer';
+</script>

@@ -42,10 +42,6 @@ export default function BlurStack({
 								maskImage,
 								backdropFilter: `blur(${layer.blur}px)`,
 								WebkitBackdropFilter: `blur(${layer.blur}px)`,
-								// Keep each layer GPU-composited so Chromium doesn't drop it while the
-								// lightbox overlay occludes it and snap it back on close. Body-level only —
-								// inside a view-transition-isolated parent this changes how the stack reads.
-								transform: 'translateZ(0)',
 							}}
 						/>
 					);

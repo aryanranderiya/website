@@ -11,6 +11,7 @@ coverImage: /ProjectMedia/Spotify_Tools/spotify_tools_project_banner.png
 images:
   - /ProjectMedia/Spotify_Tools/spotify_tools_project_banner.png
 video: /ProjectMedia/Spotify_Tools/SpotifyTools_demo.mp4
+videoAspectRatio: "16 / 9"
 order: 19
 github: https://github.com/aryanranderiya/SpotifyTools
 ---

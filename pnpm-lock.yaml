@@ -23,6 +23,9 @@ importers:
       '@fontsource-variable/inter':
         specifier: ^5.2.8
         version: 5.2.8
+      '@grizzshutsdown/simpleplayer':
+        specifier: ^0.1.2
+        version: 0.1.2
       '@mlc-ai/web-llm':
         specifier: ^0.2.82
         version: 0.2.82
@@ -1009,6 +1012,10 @@ packages:
 
   '@formatjs/intl-localematcher@0.6.2':
     resolution: {integrity: sha512-XOMO2Hupl0wdd172Y06h6kLpBz6Dv+J4okPLl4LPtzbr8f66WbIoy4ev98EBuZ6ZK4h5ydTN6XneT4QVpD7cdA==}
+
+  '@grizzshutsdown/simpleplayer@0.1.2':
+    resolution: {integrity: sha512-EgF65h0guqWXc7/jcev1wttwXXAd39aIRz2g/rmN72K81+AhmYRE6m9+O6V8s7yAQAHseSZ6gSs8V54GEKFfxg==}
+    hasBin: true
 
   '@img/colour@1.0.0':
     resolution: {integrity: sha512-A5P/LfWGFSl6nsckYtjw9da+19jB8hkJ6ACTGcDfEJ0aE+l2n2El7dsVM7UVHZQ9s2lmYMWlrS21YLy2IR1LUw==}
@@ -6343,6 +6350,8 @@ snapshots:
   '@formatjs/intl-localematcher@0.6.2':
     dependencies:
       tslib: 2.8.1
+
+  '@grizzshutsdown/simpleplayer@0.1.2': {}
 
   '@img/colour@1.0.0': {}
 

@@ -27,7 +27,7 @@ const photoCount = folder.photos.length;
     <div class="columns-2 sm:columns-3 [column-gap:8px]">
       {
         folder.photos.map((photo) => (
-          <div class="mb-2 break-inside-avoid overflow-hidden rounded-lg bg-[var(--muted)]">
+          <div class="mb-2 break-inside-avoid overflow-hidden rounded-lg bg-[var(--muted)] cursor-zoom-in">
             <img
               src={photo.url}
               alt={photo.alt}

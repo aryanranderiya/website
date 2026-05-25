@@ -889,6 +889,19 @@ opacity: 30%;
 	margin-top: 0.5em;
 }
 
+/* SimplePlayer (@grizzshutsdown/simpleplayer) video embed. The host clips its
+   own shadow content, so rounding + overflow live here (flat — no border). The
+   aspect-ratio falls back to 16/9 before the element upgrades, then the
+   component writes `--simple-player-aspect-ratio` from its attribute, snapping
+   the reserved box to the real ratio with no layout shift. */
+simple-player {
+	display: block;
+	width: 100%;
+	aspect-ratio: var(--simple-player-aspect-ratio, 16 / 9);
+	border-radius: var(--radius-lg);
+	overflow: hidden;
+}
+
 /* Definition lists */
 .prose dl {
 	display: grid;
@@ -1223,9 +1236,12 @@ html.has-transitioned .animate-fade-in {
    starting at 80ms — the two animations overlap so there's no
    blank frame and the whole swap completes inside ~360ms.
    ============================================ */
-@view-transition {
-	navigation: auto;
-}
+/* Native cross-document view transitions are intentionally NOT enabled
+   (`@view-transition { navigation: auto }` removed). On reload / direct load
+   Chromium ran a cross-doc VT that left #page-content — a permanently promoted
+   snapshot layer — in a state where the mouse cursor stopped repainting over its
+   contents (the zoom-in image cursor would "stick" until a top-layer repaint such
+   as opening the lightbox). ClientRouter still crossfades in-app navigation. */
 
 /* The sidebar, footer, and any transition:persist'd element must NOT
    participate in the view transition. If they do, the browser hides
@@ -1249,10 +1265,18 @@ html,
 
 /* Only #page-content participates in the VT — it's the one region that
    actually changes between pages. Sidebar and footer render live
-   throughout, so hover/cursor state is uninterrupted. */
-#page-content {
+   throughout, so hover/cursor state is uninterrupted.
+
+   The name is applied ONLY while a ClientRouter swap is in flight (html.vt-nav,
+   toggled in Layout.astro). A PERMANENT view-transition-name keeps the element
+   promoted to a snapshot/compositing layer at rest, and Chromium then fails to
+   repaint the mouse cursor over its descendants — that was the root cause of the
+   flaky zoom-in cursor on blog/project images. Gating it to nav-time means the
+   crossfade still works but at rest #page-content is an ordinary layer. */
+html.vt-nav #page-content {
 	view-transition-name: page-content;
 }
+
 ::view-transition-group(page-content) {
 	animation: none;
 }
