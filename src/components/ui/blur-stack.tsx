@@ -16,14 +16,16 @@ const DEFAULT_BLUR_CONFIG: BlurLayer[] = [
 ];
 
 export default function BlurStack({
+	id,
 	className,
 	config = DEFAULT_BLUR_CONFIG,
 }: {
+	id?: string;
 	className?: string;
 	config?: BlurLayer[];
 }) {
 	return (
-		<div className={className}>
+		<div id={id} className={className}>
 			<div className="absolute inset-0 overflow-hidden">
 				{config.map((layer, index) => {
 					const [start, solidStart, solidEnd, end] = layer.maskStops;

@@ -1,3 +1,4 @@
+import { glob } from 'astro/loaders';
 import { defineCollection, z } from 'astro:content';
 
 // Blog posts
@@ -31,6 +32,10 @@ const projects = defineCollection({
 			.array(z.union([z.string(), z.object({ src: z.string(), caption: z.string().optional() })]))
 			.default([]),
 		video: z.string().optional(),
+		// CSS aspect ratio for `video` (e.g. "16 / 9", "608 / 1312"). SimplePlayer
+		// fills its frame with object-fit: cover, so match the clip to avoid crop.
+		// Defaults to 16 / 9 when omitted.
+		videoAspectRatio: z.string().optional(),
 		url: z.string().url().optional(),
 		github: z.string().url().optional(),
 		featured: z.boolean().default(false),
@@ -43,9 +48,10 @@ const projects = defineCollection({
 	}),
 });
 
-// Books
+// Books — glob loader (not legacy `type: 'content'`) so the folder's README.md can be
+// excluded; otherwise Astro would try to parse it as a book and fail schema validation.
 const books = defineCollection({
-	type: 'content',
+	loader: glob({ pattern: ['**/*.md', '!**/README.md'], base: './src/content/books' }),
 	schema: z.object({
 		title: z.string(),
 		author: z.string(),

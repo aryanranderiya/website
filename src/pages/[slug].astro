@@ -1,11 +1,11 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
+import { mdxComponents } from '@/components/blog/mdx';
 import NewsletterSignup from '@/components/blog/NewsletterSignup.astro';
 import RelatedPosts from '@/components/blog/RelatedPosts.astro';
 import ShareButtons from '@/components/blog/ShareButtons.astro';
-import { CircleArrowLeft02Icon } from '@/components/icons';
+import PostNav from '@/components/ui/PostNav.astro';
 import BlogLayout from '@/layouts/BlogLayout.astro';
-import { calculateReadingTime } from '@/lib/reading-time';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -21,8 +21,6 @@ interface Props {
 
 const { post } = Astro.props;
 const { Content, headings } = await post.render();
-
-const readingTime = calculateReadingTime(post.body);
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const currentTags = new Set(post.data.tags);
@@ -41,6 +39,12 @@ const related = allPosts
 		description: p.data.description,
 		tags: p.data.tags,
 	}));
+
+// Cycling prev/next through all posts (newest first, matching the list order).
+const ordered = [...allPosts].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const currentIndex = ordered.findIndex((p) => p.slug === post.slug);
+const prevPost = ordered[(currentIndex - 1 + ordered.length) % ordered.length];
+const nextPost = ordered[(currentIndex + 1) % ordered.length];
 ---
 
 <BlogLayout
@@ -49,27 +53,25 @@ const related = allPosts
   date={post.data.date}
   updated={post.data.updated}
   tags={post.data.tags}
-  category={post.data.category}
   cover={post.data.cover}
   headings={headings}
-  readingTime={readingTime}
   slug={post.slug}
 >
-  <Content />
+  <Content components={mdxComponents} />
 
   <div class="mt-16 pt-10 border-t border-[var(--border)]">
     <ShareButtons title={post.data.title} url={Astro.url.href} />
     <RelatedPosts posts={related} />
     <!-- <NewsletterSignup /> -->
 
-    <div class="mt-10">
-      <a
-        href="/blog"
-        class="inline-flex items-center gap-2 text-sm text-[var(--muted-foreground)] transition-opacity hover:opacity-60 no-underline!"
-      >
-        <CircleArrowLeft02Icon width={16} height={16} />
-        Back to Blog
-      </a>
-    </div>
+    <PostNav
+      class="mt-10"
+      backHref="/blog"
+      backLabel="Back to Writings"
+      prevHref={`/${prevPost.slug}`}
+      nextHref={`/${nextPost.slug}`}
+      prevLabel={prevPost.data.title}
+      nextLabel={nextPost.data.title}
+    />
   </div>
 </BlogLayout>

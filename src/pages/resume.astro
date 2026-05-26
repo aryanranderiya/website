@@ -7,28 +7,27 @@ import PageLayout from '@/layouts/PageLayout.astro';
 ---
 
 <PageLayout
-  title="Resume"
+  title="Experience"
   description="Aryan Randeriya, developer and designer with a focus on full-stack web and mobile development."
 >
   <div class="pb-16 print:pb-0">
 
     <!-- ── Header ───────────────────────────────────────────────── -->
     <div class="mb-10">
-      <h1 class="text-heading-1 tracking-[-0.03em] mb-1.5 animate-fade-in stagger-2">
-        Resume
-      </h1>
-      <p class="text-sm text-[var(--text-muted)] mb-5 animate-fade-in stagger-3">
-        Developer · Designer · Builder
-      </p>
-      <div class="print:hidden">
-        <ButtonLink
-          href="/resume.pdf"
-          label="Download PDF"
-          icon="download"
-          iconSize={13}
-          size="sm"
-          variant="default"
-        />
+      <div class="flex items-center justify-between gap-3">
+        <h1 class="text-heading-1 tracking-[-0.03em] animate-fade-in stagger-2">
+          Experience
+        </h1>
+        <div class="print:hidden shrink-0 animate-fade-in stagger-2">
+          <ButtonLink
+            href="/resume.pdf"
+            label="Download PDF"
+            icon="download"
+            iconSize={13}
+            size="sm"
+            variant="default"
+          />
+        </div>
       </div>
     </div>
 

@@ -1,0 +1,18 @@
+---
+import PhotoFolders from '@/components/photos/PhotoFolders';
+import PageLayout from '@/layouts/PageLayout.astro';
+---
+
+<PageLayout title="Camera Roll" description="Photos from my camera roll, sorted into folders.">
+  <div class="pb-16">
+    <!-- Header -->
+    <div class="mb-10">
+      <h1 class="text-heading-1 mb-3 animate-fade-in stagger-2">Camera Roll</h1>
+      <p class="text-body mb-4 animate-fade-in stagger-3">
+        Moments, sorted into folders. Click a folder to flip through.
+      </p>
+    </div>
+
+    <PhotoFolders client:visible />
+  </div>
+</PageLayout>

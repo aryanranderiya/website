@@ -1,6 +1,7 @@
 ---
 import BlogLinks from "@/components/blog/BlogLinks";
 import Giscus from "@/components/blog/Giscus.astro";
+import BackLink from "@/components/ui/BackLink.astro";
 import Lightbox from "@/components/ui/Lightbox.astro";
 import TableOfContents from "@/components/ui/TableOfContents.astro";
 import { SITE } from "@/constants/site";
@@ -22,7 +23,6 @@ interface Props {
   category?: string;
   cover?: string;
   headings?: Heading[];
-  readingTime?: number;
   slug?: string;
 }
 
@@ -32,10 +32,8 @@ const {
   date,
   updated,
   tags = [],
-  category,
   cover,
   headings = [],
-  readingTime,
   slug,
 } = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
@@ -157,26 +155,15 @@ const breadcrumbJsonLd = JSON.stringify({
     class="flex ml-[max(0px,calc((100%-var(--content-max-width))/2))] gap-14 items-start px-4 min-[960px]:px-0"
   >
     <article class="flex-1 min-w-0 max-w-[var(--content-max-width)]">
-      <!-- Breadcrumb -->
-      <nav
-        class="flex items-center gap-1.5 text-xs mb-4 text-[var(--text-ghost)]"
-        aria-label="Breadcrumb"
-      >
-        <a
-          href="/blog"
-          class="text-[var(--text-ghost)] transition-colors hover:text-[var(--text-muted)]"
-          >Blog</a
-        >
-        <span>/</span>
-        <span class="truncate text-[var(--text-muted)]">{title}</span>
-      </nav>
+      <!-- Back to Writings -->
+      <BackLink href="/blog" label="Back to Writings" class="mb-6" />
 
       {
         cover && (
           <img
             src={cover}
             alt={title}
-            class="w-full object-contain rounded-xl mb-10"
+            class="blog-cover w-full object-contain rounded-xl mb-10"
           />
         )
       }
@@ -184,29 +171,25 @@ const breadcrumbJsonLd = JSON.stringify({
       <!-- Header -->
       <header class="mb-6">
         <h1
-          class="text-heading-1 mb-4"
+          class="text-[1.125rem] font-medium leading-snug tracking-[-0.02em] mb-0"
           transition:name={slug ? `blog-title-${slug}` : undefined}
         >
           {title}
         </h1>
         <div
-          class="flex flex-wrap items-center text-[12px] text-(--text-ghost) tracking-[-0.01em] gap-x-3 gap-y-1.5 mb-4"
+          class="flex flex-wrap items-center text-[17px] text-(--text-ghost) tracking-[-0.01em] gap-x-3 gap-y-1.5 mb-5"
         >
-          {
-            category && (
-              <a
-                href={`/blog?tag=${encodeURIComponent(category.toLowerCase())}`}
-                class="no-underline! hover:text-(--text-primary) transition-colors duration-150"
-              >
-                {category.charAt(0).toUpperCase() + category.slice(1)}
-              </a>
-            )
-          }
-          <time datetime={date.toISOString()}>{formatDate(date)}</time>
-          {readingTime && <span>{readingTime} min read</span>}
+          <time
+            datetime={date.toISOString()}
+            transition:name={slug ? `blog-date-${slug}` : undefined}
+          >
+            {formatDate(date)}
+          </time>
           {updated && <span>Updated {formatDate(updated)}</span>}
         </div>
-        <p class="text-body mb-5 text-(--text-muted)">{description}</p>
+        <p class="text-[14px] leading-relaxed mb-5 text-(--text-secondary)">
+          {description}
+        </p>
 
         <!-- {
           tags.length > 0 && (
@@ -235,7 +218,7 @@ const breadcrumbJsonLd = JSON.stringify({
     <BlogLinks client:idle />
 
     <Lightbox
-      target=".prose img:not(.blog-link-favicon), .prose figure img:not(.blog-link-favicon)"
+      target=".blog-cover, .prose img:not(.blog-link-favicon):not(.not-prose *), .prose figure img:not(.blog-link-favicon):not(.not-prose *)"
     />
 
     <script is:inline>
@@ -293,12 +276,18 @@ const breadcrumbJsonLd = JSON.stringify({
     border-radius: var(--radius-lg);
     border: 1px solid var(--border);
     line-height: 0;
-    cursor: zoom-in;
+    cursor: zoom-in !important;
   }
 
-  /* Reset img styles — wrapper owns border + radius now */
-  .prose .prose-img-wrap img {
+  /* Reset img styles — wrapper owns border + radius now.
+     Force zoom-in on every clickable blog image (wrapped prose images +
+     the cover) regardless of any inherited cursor. */
+  .prose .prose-img-wrap img,
+  .blog-cover {
     border: none;
+    cursor: zoom-in !important;
+  }
+  .prose .prose-img-wrap img {
     border-radius: 0;
     display: block;
   }

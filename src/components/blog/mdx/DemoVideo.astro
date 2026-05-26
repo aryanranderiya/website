@@ -1,0 +1,38 @@
+---
+// Video player for blog/project posts, backed by the SimplePlayer web component
+// (@grizzshutsdown/simpleplayer): a clean framed clip with muted autoplay, loop,
+// lazy-loading, and a play/pause + scrubber overlay. The <simple-player> tag is
+// rendered server-side and upgraded on the client by the import in the <script>
+// below — registered once, globally, so it survives Astro view transitions.
+//
+// Note: SimplePlayer fills its frame with `object-fit: cover`, so pass an
+// `aspectRatio` that matches the clip (e.g. "1280 / 774") to avoid cropping.
+interface Props {
+	/** Path or URL to the video file (mp4/webm). Local public/ paths work. */
+	src: string;
+	/** Optional caption shown beneath the player. */
+	caption?: string;
+	/** CSS aspect ratio for the frame. Match the clip to avoid crop. Default 16 / 9. */
+	aspectRatio?: string;
+	/** Muted autoplay + loop when scrolled into view. Default true. */
+	autoplay?: boolean;
+	/** Show the extra control tray (volume, Picture-in-Picture, fullscreen). Default false. */
+	controls?: boolean;
+}
+
+const { src, caption, aspectRatio = '16 / 9', autoplay = true, controls = false } = Astro.props;
+---
+
+<figure class="my-6">
+	<simple-player
+		src={src}
+		aspect-ratio={aspectRatio}
+		controls={controls || undefined}
+		disable-autoplay={autoplay ? undefined : true}
+		style={`--simple-player-aspect-ratio: ${aspectRatio}`}></simple-player>
+	{caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<script>
+	import '@grizzshutsdown/simpleplayer';
+</script>

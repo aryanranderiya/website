@@ -52,7 +52,13 @@ function shouldSkipAnchor(node: HastNode): boolean {
 export function rehypeOgPreview() {
 	return async function transformer(tree: HastNode, file: { path?: string }) {
 		const path = file?.path ?? '';
-		if (!path.includes('/content/blog/') && !path.includes('/content/projects/')) return;
+		if (
+			!path.includes('/content/blog/') &&
+			!path.includes('/content/projects/') &&
+			!path.includes('/content/agent-convos/')
+		) {
+			return;
+		}
 
 		const anchors: HastNode[] = [];
 		(function walk(node: HastNode) {

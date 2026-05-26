@@ -1,33 +1,41 @@
 ---
 import { getCollection } from 'astro:content';
 import Bookshelf from '@/components/books/Bookshelf';
+import bookCovers from '@/data/book-covers.json';
 import PageLayout from '@/layouts/PageLayout.astro';
 
+// Covers are pre-fetched + optimized to local WebP at build time (scripts/fetch-book-covers.mjs),
+// with a thumbhash blur placeholder and real dimensions baked into book-covers.json — so the
+// page never hotlinks the slow Open Library URLs at runtime.
+const covers = bookCovers as Record<string, { hash: string; w: number; h: number }>;
+
 const bookEntries = await getCollection('books');
-const books = bookEntries.map((entry) => ({
-	slug: entry.slug,
-	title: entry.data.title,
-	author: entry.data.author,
-	cover: entry.data.cover,
-	status: entry.data.status,
-	rating: entry.data.rating,
-	review: entry.data.review,
-	genre: entry.data.genre,
-	year: entry.data.year,
-	pages: entry.data.pages,
-	dateRead: entry.data.dateRead?.toISOString(),
-	featured: entry.data.featured,
-}));
+const books = bookEntries.map((entry) => {
+	const local = covers[entry.id];
+	return {
+		slug: entry.id,
+		title: entry.data.title,
+		author: entry.data.author,
+		cover: local ? `/images/books/${entry.id}.webp` : entry.data.cover,
+		coverHash: local?.hash,
+		coverW: local?.w,
+		coverH: local?.h,
+		status: entry.data.status,
+		rating: entry.data.rating,
+		review: entry.data.review,
+		genre: entry.data.genre,
+		year: entry.data.year,
+		pages: entry.data.pages,
+		dateRead: entry.data.dateRead?.toISOString(),
+		featured: entry.data.featured,
+	};
+});
 ---
 
-<PageLayout title="Bookshelf" description="Books I have read, am reading, and want to read.">
-  <div class="pb-16">
+<PageLayout title="Bookshelf" description="Books I have read, am reading, and want to read." fullWidth>
+  <div class="mx-auto w-full max-w-[720px] px-4 pb-16 min-[960px]:px-0">
     <div class="mb-10">
-      <div class="text-label mb-3 text-[var(--muted-foreground)] animate-fade-in stagger-1">Reading</div>
-      <h1 class="text-heading-1 mb-4 animate-fade-in stagger-2">Bookshelf</h1>
-      <p class="text-body max-w-lg animate-fade-in stagger-3">
-        Books that have shaped how I think. Click any book to read my notes and thoughts.
-      </p>
+      <h1 class="text-heading-1 animate-fade-in stagger-2">Bookshelf</h1>
     </div>
 
     <Bookshelf books={books} client:visible />

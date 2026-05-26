@@ -1,14 +1,19 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
 import {
-	ArrowLeft01Icon,
 	BubbleChatIcon,
 	Calendar03Icon,
 	Clock01Icon,
+	CpuIcon,
 	Database01Icon,
 	File01Icon,
-	HugeiconsIcon,
-} from '@icons';
+	RoboticIcon,
+} from '@/components/icons';
+import BlogLinks from '@/components/blog/BlogLinks';
+import { mdxComponents } from '@/components/blog/mdx';
+import BackLink from '@/components/ui/BackLink.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
+import PostNav from '@/components/ui/PostNav.astro';
 import TableOfContents from '@/components/ui/TableOfContents.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
 import { formatDate } from '@/lib/utils';
@@ -29,16 +34,26 @@ const { convo } = Astro.props;
 const { Content, headings } = await convo.render();
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
+// Cycling prev/next through all conversations (newest first).
+const allConvos = await getCollection('agent-convos');
+const orderedConvos = [...allConvos].sort(
+	(a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const ci = orderedConvos.findIndex((c) => c.slug === convo.slug);
+const prevConvo = orderedConvos[(ci - 1 + orderedConvos.length) % orderedConvos.length];
+const nextConvo = orderedConvos[(ci + 1) % orderedConvos.length];
+
 const platformLabels: Record<string, string> = {
 	'claude-code': 'Claude Code',
 	opencode: 'OpenCode',
 	codex: 'Codex CLI',
 };
 
+// Favicon per platform — the little brand mark next to the platform name.
 const platformIcons: Record<string, string> = {
-	'claude-code': 'https://www.google.com/s2/favicons?domain=claude.ai&sz=32',
-	opencode: 'https://www.google.com/s2/favicons?domain=opencode.ai&sz=32',
-	codex: 'https://www.google.com/s2/favicons?domain=openai.com&sz=32',
+	'claude-code': 'https://www.google.com/s2/favicons?domain=claude.ai&sz=64',
+	opencode: 'https://www.google.com/s2/favicons?domain=opencode.ai&sz=64',
+	codex: 'https://www.google.com/s2/favicons?domain=openai.com&sz=64',
 };
 
 function formatTokensExact(tokenCount?: number, tokens?: string): string | null {
@@ -60,6 +75,16 @@ function formatTokensExact(tokenCount?: number, tokens?: string): string | null 
 }
 
 const tokensDisplay = formatTokensExact(convo.data.tokenCount, convo.data.tokens);
+
+// Clean two-column metadata table (replaces the old inline chip row).
+const metaRow =
+	'grid grid-cols-[110px_1fr] gap-4 py-[7px] [&:not(:last-child)]:[border-block-end:1px_solid_var(--border)]';
+const metaLabel = 'text-[12px] text-[var(--text-ghost)]';
+const metaValue =
+	'inline-flex items-center gap-1.5 text-[12px] text-[var(--text-secondary)] leading-relaxed';
+const metaValueMono =
+	'inline-flex items-center gap-1.5 text-[11px] text-[var(--text-secondary)] [font-family:var(--font-mono)] leading-relaxed';
+const metaIconColor = 'var(--text-ghost)';
 ---
 
 <PageLayout
@@ -72,100 +97,125 @@ const tokensDisplay = formatTokensExact(convo.data.tokenCount, convo.data.tokens
   <div class="flex ml-[max(0px,calc((100%-var(--content-max-width))/2))] gap-14 items-start px-4 min-[960px]:px-0">
   <article class="flex-1 min-w-0 max-w-[var(--content-max-width)]" style="padding-bottom: 64px;">
 
-    {/* Breadcrumb */}
-    <nav class="flex items-center gap-1.5 text-xs mb-8" style="color: var(--text-ghost);" aria-label="Breadcrumb">
-      <a href="/agent-convos" class="transition-colors hover:text-[var(--text-muted)]" style="color: var(--text-ghost);">Agent Conversations</a>
-      <span>/</span>
-      <span class="truncate" style="color: var(--text-muted);">{convo.data.title}</span>
-    </nav>
+    {/* Back to Agent Conversations */}
+    <BackLink href="/agent-convos" label="Back to Agent Conversations" class="mb-8" />
 
     {/* Header */}
     <header class="mb-10">
       <h1
         transition:name={`convo-title-${convo.slug}`}
-        class="text-heading-1 mb-4"
+        class="mb-4 text-[1.5rem] font-semibold leading-[1.2] tracking-[-0.03em]"
       >
         {convo.data.title}
       </h1>
       <p class="text-body mb-6" style="color: var(--text-muted);">{convo.data.description}</p>
 
-      {/* Meta row */}
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-1.5 mb-6" style="font-size: 12px; color: var(--text-ghost);">
+      {/* Metadata — clean two-column key/value table */}
+      <dl class="mb-8 max-w-[460px]">
+        <div class={metaRow}>
+          <dt class={metaLabel}>Date</dt>
+          <dd class={metaValue}>
+            <Calendar03Icon width={13} height={13} color={metaIconColor} />
+            <time datetime={convo.data.date.toISOString()}>{formatDate(convo.data.date)}</time>
+          </dd>
+        </div>
 
-        <span class="inline-flex items-center gap-1.5">
-          <HugeiconsIcon icon={Calendar03Icon} size={11} color="var(--text-ghost)" />
-          <time datetime={convo.data.date.toISOString()}>{formatDate(convo.data.date)}</time>
-        </span>
+        <div class={metaRow}>
+          <dt class={metaLabel}>Platform</dt>
+          <dd class={metaValue}>
+            {platformIcons[convo.data.platform] && (
+              <img
+                src={platformIcons[convo.data.platform]}
+                alt=""
+                width="14"
+                height="14"
+                class="shrink-0 rounded-[3px]"
+              />
+            )}
+            {platformLabels[convo.data.platform] ?? convo.data.platform}
+          </dd>
+        </div>
 
-        <span class="inline-flex items-center gap-1.5">
-          <img
-            src={platformIcons[convo.data.platform]}
-            alt={platformLabels[convo.data.platform] ?? convo.data.platform}
-            width="12"
-            height="12"
-            style="border-radius: 3px; opacity: 0.6; display: block; flex-shrink: 0;"
-          />
-          <span>{platformLabels[convo.data.platform] ?? convo.data.platform}</span>
-          <span style="opacity: 0.25; margin: 0 -1px;">/</span>
-          <span style="font-family: var(--font-mono); font-size: 10px;">{convo.data.model}</span>
-        </span>
+        <div class={metaRow}>
+          <dt class={metaLabel}>Model</dt>
+          <dd class={metaValueMono}>
+            <CpuIcon width={13} height={13} color={metaIconColor} />
+            {convo.data.model}
+          </dd>
+        </div>
 
         {tokensDisplay && (
-          <span class="inline-flex items-center gap-1.5">
-            <HugeiconsIcon icon={Database01Icon} size={11} color="var(--text-ghost)" />
-            {tokensDisplay} tokens
-          </span>
+          <div class={metaRow}>
+            <dt class={metaLabel}>Tokens</dt>
+            <dd class={metaValue}>
+              <Database01Icon width={13} height={13} color={metaIconColor} />
+              {tokensDisplay}
+            </dd>
+          </div>
         )}
 
         {(convo.data.messageCount ?? 0) > 0 && (
-          <span class="inline-flex items-center gap-1.5">
-            <HugeiconsIcon icon={BubbleChatIcon} size={11} color="var(--text-ghost)" />
-            {convo.data.messageCount} messages
-          </span>
+          <div class={metaRow}>
+            <dt class={metaLabel}>Messages</dt>
+            <dd class={metaValue}>
+              <BubbleChatIcon width={13} height={13} color={metaIconColor} />
+              {convo.data.messageCount}
+            </dd>
+          </div>
         )}
 
         {convo.data.duration && (
-          <span class="inline-flex items-center gap-1.5">
-            <HugeiconsIcon icon={Clock01Icon} size={11} color="var(--text-ghost)" />
-            {convo.data.duration}
-          </span>
+          <div class={metaRow}>
+            <dt class={metaLabel}>Duration</dt>
+            <dd class={metaValue}>
+              <Clock01Icon width={13} height={13} color={metaIconColor} />
+              {convo.data.duration}
+            </dd>
+          </div>
         )}
 
         {(convo.data.filesChanged ?? 0) > 0 && (
-          <span class="inline-flex items-center gap-1.5">
-            <HugeiconsIcon icon={File01Icon} size={11} color="var(--text-ghost)" />
-            {convo.data.filesChanged} files
-          </span>
+          <div class={metaRow}>
+            <dt class={metaLabel}>Files changed</dt>
+            <dd class={metaValue}>
+              <File01Icon width={13} height={13} color={metaIconColor} />
+              {convo.data.filesChanged}
+            </dd>
+          </div>
         )}
 
-      </div>
-
-      {/* Agent names */}
-      {convo.data.agents.length > 0 && (
-        <div class="flex flex-wrap gap-x-3 gap-y-1 mb-6">
-          {convo.data.agents.map((agent: string) => (
-            <span style="font-size: 10px; color: var(--text-ghost); font-family: var(--font-mono);">{agent}</span>
-          ))}
-        </div>
-      )}
+        {convo.data.agents.length > 0 && (
+          <div class={metaRow}>
+            <dt class={metaLabel}>{convo.data.agents.length > 1 ? 'Agents' : 'Agent'}</dt>
+            <dd class={metaValueMono}>
+              <RoboticIcon width={13} height={13} color={metaIconColor} />
+              {convo.data.agents.join(', ')}
+            </dd>
+          </div>
+        )}
+      </dl>
 
     </header>
 
     {/* Content */}
     <div class="prose">
-      <Content />
+      <Content components={mdxComponents} />
     </div>
+
+    {/* Hover link previews + click-to-zoom images (shared with blog/projects) */}
+    <BlogLinks client:idle />
+    <Lightbox target=".prose img:not(.blog-link-favicon):not(.not-prose *)" />
 
     {/* Footer */}
     <div class="mt-16 pt-10" style="border-top: 1px solid var(--border);">
-      <a
-        href="/agent-convos"
-        class="inline-flex items-center gap-2 transition-opacity hover:opacity-60"
-        style="font-size: 13px; color: var(--text-muted);"
-      >
-        <HugeiconsIcon icon={ArrowLeft01Icon} size={14} color="currentColor" />
-        All Conversations
-      </a>
+      <PostNav
+        backHref="/agent-convos"
+        backLabel="Back to Agent Conversations"
+        prevHref={`/agent-convos/${prevConvo.slug}`}
+        nextHref={`/agent-convos/${nextConvo.slug}`}
+        prevLabel={prevConvo.data.title}
+        nextLabel={nextConvo.data.title}
+      />
     </div>
   </article>
 

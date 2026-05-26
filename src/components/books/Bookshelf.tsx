@@ -9,6 +9,9 @@ interface Book {
 	title: string;
 	author: string;
 	cover?: string;
+	coverHash?: string;
+	coverW?: number;
+	coverH?: number;
 	status: string;
 	rating?: number;
 	review?: string;
@@ -18,181 +21,127 @@ interface Book {
 	dateRead?: string;
 }
 
-function Shelf({ books, label }: { books: Book[]; label: string }) {
-	const [selected, setSelected] = useState<Book | null>(null);
+// Plank silhouette (viewBox 576x42, stretched to width). Two distinct planes:
+//   • TOP surface — a trapezoid, narrow at the very top (inset by FLARE each side) and
+//     flaring to full width by y=22, so the plank has beveled ends. Greyish. Made tall
+//     enough (22px) that the book's reflection fits on it without touching the front face.
+//   • FRONT face  — full width below, white, rounded bottom corners.
+// Both are stroked, so the layers (and the line between them) read as crisp outlines.
+// Both planes have softly rounded corners (top surface all round; front face round too).
+const TOP_PLANE =
+	'M31 0 L545 0 Q548 0 550.4 1.85 L573.6 20.15 Q576 22 573 22 L3 22 Q0 22 2.4 20.15 L25.64 1.85 Q28 0 31 0 Z';
+const FRONT_PLANE =
+	'M3 22 L573 22 Q576 22 576 25 L576 39 Q576 42 573 42 L3 42 Q0 42 0 39 L0 25 Q0 22 3 22 Z';
 
+/** The 3D plank: greyish top surface + white front face, each outlined, with a real soft floor shadow. */
+function ShelfPlank() {
+	return (
+		<div className="pointer-events-none absolute right-8 bottom-0 left-8 z-0 h-[42px] [filter:drop-shadow(0_4px_4px_rgba(20,21,23,0.10))_drop-shadow(0_10px_13px_rgba(20,21,23,0.07))]">
+			<svg
+				viewBox="0 0 576 42"
+				preserveAspectRatio="none"
+				className="h-full w-full overflow-visible"
+				aria-hidden="true"
+			>
+				<title>shelf</title>
+				<defs>
+					<linearGradient id="shelf-top" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stopColor="var(--shelf-top-a)" />
+						<stop offset="1" stopColor="var(--shelf-top-b)" />
+					</linearGradient>
+					<linearGradient id="shelf-front" x1="0" y1="0" x2="0" y2="1">
+						<stop offset="0" stopColor="var(--shelf-front-a)" />
+						<stop offset="1" stopColor="var(--shelf-front-b)" />
+					</linearGradient>
+				</defs>
+				{/* white front face (bottom layer) */}
+				<path
+					d={FRONT_PLANE}
+					fill="url(#shelf-front)"
+					stroke="var(--shelf-line)"
+					strokeWidth="1"
+					vectorEffect="non-scaling-stroke"
+				/>
+				{/* greyish top surface with beveled ends (drawn on top) */}
+				<path
+					d={TOP_PLANE}
+					fill="url(#shelf-top)"
+					stroke="var(--shelf-line)"
+					strokeWidth="1"
+					vectorEffect="non-scaling-stroke"
+				/>
+			</svg>
+		</div>
+	);
+}
+
+// 5 books per shelf; long lists wrap into a stack of planks (a bookcase).
+const BOOK_WIDTH = 102;
+const PER_SHELF = 5;
+
+function Shelf({
+	books,
+	label,
+	onSelect,
+}: {
+	books: Book[];
+	label: string;
+	onSelect: (b: Book) => void;
+}) {
 	if (books.length === 0) return null;
 
+	const rows: Book[][] = [];
+	for (let i = 0; i < books.length; i += PER_SHELF) rows.push(books.slice(i, i + PER_SHELF));
+
 	return (
-		<div className="mb-10">
-			<div className="mb-4 text-[var(--muted-foreground)] text-label">{label}</div>
-
-			{/*
-        Key insight: the shelf casing border & outer styling must NOT use overflow:hidden
-        so books can pop out of the shelf on hover. We fake the casing with a border/outline trick.
-      */}
-			<div className="relative">
-				{/* ── SHELF CASING OUTLINE (drawn with box-shadow, not overflow:hidden) ── */}
-				<div
-					className="absolute inset-0 z-0 rounded-[10px]"
-					// biome-ignore lint/nursery/noInlineStyles: complex gradient background has no Tailwind equivalent
-					style={{
-						background: 'linear-gradient(180deg, #5c3a1e 0%, #3e2510 100%)',
-					}}
-				/>
-				{/* Casing top highlight strip */}
-				<div
-					className="absolute top-0 right-0 left-0 z-[1] h-[3px] rounded-t-[10px]"
-					// biome-ignore lint/nursery/noInlineStyles: complex gradient background has no Tailwind equivalent
-					style={{
-						background:
-							'linear-gradient(90deg, #8b6040 0%, #c09060 40%, #a07040 70%, #7a5030 100%)',
-					}}
-				/>
-
-				{/* ── BACK WALL (absolute, fills behind books) ── */}
-				<div
-					className="absolute z-[1] overflow-hidden rounded-[8px]"
-					// biome-ignore lint/nursery/noInlineStyles: complex multi-layer gradient background has no Tailwind equivalent
-					style={{
-						inset: 3,
-						background: [
-							'repeating-linear-gradient(180deg, transparent 0px, transparent 9px, rgba(0,0,0,0.055) 9px, rgba(0,0,0,0.055) 10px)',
-							'repeating-linear-gradient(182deg, transparent 0px, transparent 45px, rgba(255,255,255,0.01) 45px, rgba(255,255,255,0.01) 46px)',
-							'linear-gradient(180deg, #2c1c0e 0%, #1a1008 100%)',
-						].join(', '),
-					}}
-				>
-					{/* Overhead warm light cone */}
-					<div
-						className="pointer-events-none absolute inset-0"
-						// biome-ignore lint/nursery/noInlineStyles: complex radial-gradient has no Tailwind equivalent
-						style={{
-							background:
-								'radial-gradient(ellipse 65% 50% at 50% -5%, rgba(255,195,100,0.16) 0%, rgba(255,160,60,0.05) 55%, transparent 80%)',
-						}}
-					/>
-					{/* Left vignette */}
-					<div
-						className="pointer-events-none absolute top-0 bottom-0 left-0 w-[48px]"
-						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
-						style={{
-							background: 'linear-gradient(90deg, rgba(0,0,0,0.28) 0%, transparent 100%)',
-						}}
-					/>
-					{/* Right vignette */}
-					<div
-						className="pointer-events-none absolute top-0 right-0 bottom-0 w-[48px]"
-						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
-						style={{
-							background: 'linear-gradient(270deg, rgba(0,0,0,0.28) 0%, transparent 100%)',
-						}}
-					/>
-				</div>
-
-				{/* ── BOOKS ROW -- perspective set here, overflow VISIBLE so books can pop out ── */}
-				<div
-					className="relative z-[3] flex overflow-x-auto"
-					// biome-ignore lint/nursery/noInlineStyles: perspective/perspectiveOrigin/scrollbarColor have no Tailwind equivalent
-					style={{
-						padding: '20px 20px 0 20px',
-						alignItems: 'flex-end',
-						gap: 2,
-						// Perspective on the ROW so all books share the same 3D space
-						perspective: '1000px',
-						perspectiveOrigin: '50% 110%',
-						// MUST be visible -- this is what lets books tilt out of the shelf
-						overflow: 'visible',
-						scrollbarWidth: 'thin',
-						scrollbarColor: 'rgba(255,255,255,0.08) transparent',
-					}}
-				>
-					{books.map((book, i) => (
-						<Book3D
-							key={book.slug}
-							title={book.title}
-							author={book.author}
-							cover={book.cover}
-							pages={book.pages}
-							index={i}
-							onClick={() => setSelected(book)}
-						/>
-					))}
-				</div>
-
-				{/* ── SHELF PLANK (sits above books in z so shadow falls correctly) ── */}
-				<div className="relative z-[4]">
-					{/* Plank top -- catches overhead light */}
-					<div
-						className="relative mr-[3px] ml-[3px] h-[7px] overflow-hidden"
-						// biome-ignore lint/nursery/noInlineStyles: complex gradient has no Tailwind equivalent
-						style={{
-							background: 'linear-gradient(180deg, #a07540 0%, #7a5428 55%, #5c3c18 100%)',
-						}}
-					>
-						<div
-							className="absolute inset-0"
-							// biome-ignore lint/nursery/noInlineStyles: repeating gradient has no Tailwind equivalent
-							style={{
-								backgroundImage:
-									'repeating-linear-gradient(90deg, transparent 0px, transparent 16px, rgba(0,0,0,0.06) 16px, rgba(0,0,0,0.06) 17px)',
-							}}
-						/>
-						{/* Light glint */}
-						<div
-							className="absolute top-[1px] right-[15%] left-[15%] h-[1px]"
-							// biome-ignore lint/nursery/noInlineStyles: rgba background has no Tailwind equivalent
-							style={{ background: 'rgba(255,230,170,0.4)' }}
-						/>
-					</div>
-					{/* Plank front face */}
-					<div
-						className="relative mr-[3px] ml-[3px] h-[20px] overflow-hidden rounded-b-[7px]"
-						// biome-ignore lint/nursery/noInlineStyles: complex gradient has no Tailwind equivalent
-						style={{
-							background: 'linear-gradient(180deg, #6b4820 0%, #4e3210 55%, #3a2408 100%)',
-						}}
-					>
-						<div
-							className="absolute inset-0"
-							// biome-ignore lint/nursery/noInlineStyles: repeating gradient has no Tailwind equivalent
-							style={{
-								backgroundImage:
-									'repeating-linear-gradient(90deg, transparent 0px, transparent 22px, rgba(0,0,0,0.07) 22px, rgba(0,0,0,0.07) 23px)',
-							}}
-						/>
-						<div
-							className="absolute top-0 right-0 left-0 h-[1px]"
-							// biome-ignore lint/nursery/noInlineStyles: rgba background has no Tailwind equivalent
-							style={{ background: 'rgba(255,200,120,0.18)' }}
-						/>
-					</div>
-					{/* Underside shadow drip */}
-					<div
-						className="mr-[3px] ml-[3px] h-[10px]"
-						// biome-ignore lint/nursery/noInlineStyles: gradient has no Tailwind equivalent
-						style={{
-							background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0) 100%)',
-						}}
-					/>
-				</div>
+		<div className="pt-12 first:pt-1">
+			<div className="mb-3 px-1 text-center text-[13px] text-[var(--text-secondary)] tracking-[-0.01em]">
+				{label}
 			</div>
-
-			<BookDetail book={selected} open={!!selected} onClose={() => setSelected(null)} />
+			{rows.map((row, ri) => (
+				<div key={row[0].slug} className={ri > 0 ? 'relative mt-7' : 'relative'}>
+					{/* L/R padding sits the books on the inset TOP surface, not the wider front face */}
+					<div className="relative z-10 flex items-end justify-start gap-[16px] pr-[60px] pl-[60px]">
+						{row.map((book, i) => (
+							<Book3D
+								key={book.slug}
+								title={book.title}
+								author={book.author}
+								cover={book.cover}
+								hash={book.coverHash}
+								coverW={book.coverW}
+								coverH={book.coverH}
+								width={BOOK_WIDTH}
+								index={i}
+								onClick={() => onSelect(book)}
+							/>
+						))}
+					</div>
+					<div className="relative -mt-2 h-[42px]">
+						<ShelfPlank />
+					</div>
+				</div>
+			))}
 		</div>
 	);
 }
 
 export default function Bookshelf({ books }: { books: Book[] }) {
-	const readBooks = books.filter((b) => b.status === 'read');
+	const [selected, setSelected] = useState<Book | null>(null);
+
 	const readingBooks = books.filter((b) => b.status === 'reading');
+	const readBooks = books.filter((b) => b.status === 'read');
 	const toReadBooks = books.filter((b) => b.status === 'to-read');
 
 	return (
 		<div>
-			{readingBooks.length > 0 && <Shelf books={readingBooks} label="Currently Reading" />}
-			<Shelf books={readBooks} label="Have Read" />
-			<Shelf books={toReadBooks} label="Want to Read" />
+			<div>
+				<Shelf books={readingBooks} label="Currently Reading" onSelect={setSelected} />
+				<Shelf books={readBooks} label="Have Read" onSelect={setSelected} />
+				<Shelf books={toReadBooks} label="Want to Read" onSelect={setSelected} />
+			</div>
+
+			<BookDetail book={selected} open={!!selected} onClose={() => setSelected(null)} />
 		</div>
 	);
 }

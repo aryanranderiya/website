@@ -1,0 +1,36 @@
+---
+// Reusable "← Back to X" link. Used at the top (faint) and bottom (muted, a
+// touch darker) of post/detail pages. On hover the arrow nudges left and the
+// text darkens.
+import { CircleArrowLeft02Icon } from '@/components/icons';
+
+interface Props {
+	href: string;
+	label: string;
+	/** 'faint' (top, default) or 'muted' (bottom, slightly darker). */
+	tone?: 'faint' | 'muted';
+	/** Extra classes (e.g. spacing) merged onto the link. */
+	class?: string;
+}
+
+const { href, label, tone = 'faint', class: className } = Astro.props;
+
+const toneClass =
+	tone === 'muted'
+		? 'text-[var(--text-muted)]! hover:text-[var(--text-primary)]!'
+		: 'text-[var(--text-faint)]! hover:text-[var(--text-secondary)]!';
+---
+
+<a
+	href={href}
+	class:list={[
+		'group inline-flex items-center gap-1.5 text-xs no-underline! transition-colors duration-150',
+		toneClass,
+		className,
+	]}
+>
+	<span class="inline-flex transition-transform duration-200 ease-out group-hover:-translate-x-0.5">
+		<CircleArrowLeft02Icon width={15} height={15} />
+	</span>
+	{label}
+</a>

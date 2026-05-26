@@ -19,8 +19,10 @@ export default function BlogPreview({ posts }: { posts: Post[] }) {
 	}));
 
 	return (
-		<section className="mb-8 pb-6">
-			<div className="section-header !mb-2.5">Blog</div>
+		<section className="mt-10 mb-8 pb-6">
+			<h2 className="mb-1 font-semibold text-[13px] text-[var(--text-secondary)] tracking-[-0.02em]">
+				Blog
+			</h2>
 
 			<BlogList posts={latest} />
 

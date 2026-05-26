@@ -24,6 +24,7 @@ images:
   - /ProjectMedia/TicketBus/AdminPanel_Location.webp
   - /ProjectMedia/TicketBus/AdminPanel_Users.webp
 video: /ProjectMedia/TicketBus/Ticketbus.mp4
+videoAspectRatio: "608 / 1312"
 order: 5
 github: https://github.com/aryanranderiya/TicketBus
 ---

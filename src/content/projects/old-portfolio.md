@@ -37,6 +37,7 @@ images:
   - /ProjectMedia/Portfolio/designprojects_8.webp
   - /ProjectMedia/Portfolio/designprojects_9.webp
 video: /blog/building-my-portfolio/portfolio.mp4
+videoAspectRatio: "1280 / 774"
 order: 35
 ---
 

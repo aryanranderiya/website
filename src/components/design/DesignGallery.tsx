@@ -1,14 +1,13 @@
 'use client';
 
-import { ArrowLeft02Icon, ArrowRight02Icon, Cancel01Icon, HugeiconsIcon } from '@icons';
-import { AnimatePresence, LazyMotion } from 'motion/react';
+import { LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 
-import { useCallback, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useRef } from 'react';
 import ProgressiveImg from '@/components/ui/ProgressiveImg';
 import thumbhashes from '@/data/design-thumbhashes.json';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
+import { openGroup } from '@/lib/flip-lightbox';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
@@ -41,54 +40,27 @@ function altText(file: string) {
 	return file.replace(/\.[^.]+$/, '').replace(/[_-]/g, ' ');
 }
 
+// Open the shared FLIP lightbox with a whole section as the navigable group.
+// We pass the on-page wrappers (their box is the visible, clipped thumbnail —
+// stable even while the inner image is hover-scaled); the engine resolves the
+// real <img> inside each for the cached source.
+function openSection(grid: HTMLElement | null, index: number) {
+	if (!grid) return;
+	const items = Array.from(grid.children) as HTMLElement[];
+	if (items.length) openGroup(items, index);
+}
+
 export default function DesignGallery({
 	apparel,
 	headers,
 	thumbnails,
 	adMockups,
 }: DesignGalleryProps) {
-	const [lightboxOpen, setLightboxOpen] = useState(false);
 	const ready = useAfterPreloader();
-	const [lightboxImages, setLightboxImages] = useState<string[]>([]);
-	const [lightboxIndex, setLightboxIndex] = useState(0);
-
-	const openLightbox = (images: string[], index: number) => {
-		setLightboxImages(images);
-		setLightboxIndex(index);
-		setLightboxOpen(true);
-	};
-
-	const closeLightbox = useCallback(() => setLightboxOpen(false), []);
-
-	const goPrev = useCallback(() => {
-		setLightboxIndex((i) => (i - 1 + lightboxImages.length) % lightboxImages.length);
-	}, [lightboxImages.length]);
-
-	const goNext = useCallback(() => {
-		setLightboxIndex((i) => (i + 1) % lightboxImages.length);
-	}, [lightboxImages.length]);
-
-	useEffect(() => {
-		if (!lightboxOpen) return;
-		const handler = (e: KeyboardEvent) => {
-			if (e.key === 'Escape') closeLightbox();
-			if (e.key === 'ArrowLeft') goPrev();
-			if (e.key === 'ArrowRight') goNext();
-		};
-		window.addEventListener('keydown', handler);
-		return () => window.removeEventListener('keydown', handler);
-	}, [lightboxOpen, goPrev, goNext, closeLightbox]);
-
-	// Lock scroll while the lightbox is open. The blur itself is a real
-	// backdrop-filter on the overlay, so it covers the whole viewport
-	// (sidebar included) instead of filtering page-content.
-	useEffect(() => {
-		if (!lightboxOpen) return;
-		document.body.style.overflow = 'hidden';
-		return () => {
-			document.body.style.overflow = '';
-		};
-	}, [lightboxOpen]);
+	const apparelGrid = useRef<HTMLDivElement>(null);
+	const headersGrid = useRef<HTMLDivElement>(null);
+	const thumbnailsGrid = useRef<HTMLDivElement>(null);
+	const adMockupsGrid = useRef<HTMLDivElement>(null);
 
 	const apparelSrcs = apparel.map(apparelSrc);
 	const headerSrcs = headers.map(headerSrc);
@@ -105,13 +77,13 @@ export default function DesignGallery({
 				{/* Apparel & Streetwear */}
 				<section className="mb-14">
 					<div className="section-header">Apparel &amp; Streetwear</div>
-					<div className="grid grid-cols-3 gap-1.5 max-[480px]:grid-cols-2">
+					<div ref={apparelGrid} className="grid grid-cols-3 gap-1.5 max-[480px]:grid-cols-2">
 						{apparel.map((file, i) => (
 							<ApparelItem
 								key={file}
 								src={apparelSrcs[i]}
 								alt={altText(file)}
-								onClick={() => openLightbox(apparelSrcs, i)}
+								onClick={() => openSection(apparelGrid.current, i)}
 							/>
 						))}
 					</div>
@@ -120,13 +92,13 @@ export default function DesignGallery({
 				{/* Banners & Headers */}
 				<section className="mb-14">
 					<div className="section-header">Banners &amp; Headers</div>
-					<div className="columns-2 [column-gap:6px] max-[480px]:columns-1">
+					<div ref={headersGrid} className="columns-2 [column-gap:6px] max-[480px]:columns-1">
 						{headers.map((file, i) => (
 							<MasonryItem
 								key={file}
 								src={headerSrcs[i]}
 								alt={altText(file)}
-								onClick={() => openLightbox(headerSrcs, i)}
+								onClick={() => openSection(headersGrid.current, i)}
 							/>
 						))}
 					</div>
@@ -135,13 +107,13 @@ export default function DesignGallery({
 				{/* Thumbnails */}
 				<section className="mb-14">
 					<div className="section-header">Thumbnails</div>
-					<div className="columns-2 [column-gap:6px] max-[480px]:columns-1">
+					<div ref={thumbnailsGrid} className="columns-2 [column-gap:6px] max-[480px]:columns-1">
 						{thumbnails.map((file, i) => (
 							<MasonryItem
 								key={file}
 								src={thumbnailSrcs[i]}
 								alt={altText(file)}
-								onClick={() => openLightbox(thumbnailSrcs, i)}
+								onClick={() => openSection(thumbnailsGrid.current, i)}
 							/>
 						))}
 					</div>
@@ -150,36 +122,17 @@ export default function DesignGallery({
 				{/* Ad Mockups */}
 				<section className="mb-14">
 					<div className="section-header">Ad Mockups</div>
-					<div className="columns-2 [column-gap:6px] max-[480px]:columns-1">
+					<div ref={adMockupsGrid} className="columns-2 [column-gap:6px] max-[480px]:columns-1">
 						{adMockups.map((file, i) => (
 							<MasonryItem
 								key={file}
 								src={adMockupSrcs[i]}
 								alt={altText(file)}
-								onClick={() => openLightbox(adMockupSrcs, i)}
+								onClick={() => openSection(adMockupsGrid.current, i)}
 							/>
 						))}
 					</div>
 				</section>
-
-				{/* Lightbox -- portalled to document.body so CSS filter on #page-content doesn't affect it */}
-				{typeof document !== 'undefined' &&
-					createPortal(
-						<AnimatePresence>
-							{lightboxOpen && (
-								<Lightbox
-									src={lightboxImages[lightboxIndex]}
-									alt={altText(lightboxImages[lightboxIndex]?.split('/').pop() ?? '')}
-									index={lightboxIndex}
-									total={lightboxImages.length}
-									onClose={closeLightbox}
-									onPrev={goPrev}
-									onNext={goNext}
-								/>
-							)}
-						</AnimatePresence>,
-						document.body
-					)}
 			</m.div>
 		</LazyMotion>
 	);
@@ -193,8 +146,10 @@ function ApparelItem({ src, alt, onClick }: { src: string; alt: string; onClick:
 			src={src}
 			alt={alt}
 			hash={getHash(src)}
-			className="group relative aspect-square cursor-zoom-in overflow-hidden rounded-md"
-			imgClassName="w-full h-full object-cover block transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.6] group-hover:brightness-[1.04]"
+			// No hover zoom and the image itself is never touched — only the
+			// wrapper background colour changes on hover. Keeps the FLIP seamless.
+			className="relative aspect-square cursor-zoom-in overflow-hidden rounded-2xl bg-transparent transition-colors duration-300 hover:bg-[var(--muted-bg)]"
+			imgClassName="w-full h-full object-cover block"
 			onClick={onClick}
 		/>
 	);
@@ -206,95 +161,9 @@ function MasonryItem({ src, alt, onClick }: { src: string; alt: string; onClick:
 			src={src}
 			alt={alt}
 			hash={getHash(src)}
-			className="group mb-1.5 cursor-zoom-in break-inside-avoid overflow-hidden rounded-md"
-			imgClassName="w-full object-cover block transition-[scale,filter] duration-300 ease-in-out group-hover:scale-[1.12] group-hover:brightness-[1.04]"
+			className="mb-1.5 cursor-zoom-in break-inside-avoid overflow-hidden rounded-2xl bg-transparent transition-colors duration-300 hover:bg-[var(--muted-bg)]"
+			imgClassName="w-full object-cover block"
 			onClick={onClick}
 		/>
-	);
-}
-
-interface LightboxProps {
-	src: string;
-	alt: string;
-	index: number;
-	total: number;
-	onClose: () => void;
-	onPrev: () => void;
-	onNext: () => void;
-}
-
-function Lightbox({ src, alt, index, total, onClose, onPrev, onNext }: LightboxProps) {
-	return (
-		<m.div
-			key="lightbox-overlay"
-			initial={{ opacity: 0 }}
-			animate={{ opacity: 1 }}
-			exit={{ opacity: 0 }}
-			transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
-			onClick={onClose}
-			className="fixed inset-0 z-[100] flex items-center justify-center bg-[color-mix(in_srgb,var(--background)_55%,transparent)] backdrop-blur-[16px]"
-		>
-			{/* Image -- entry animation on src change only; close fades with the parent */}
-			<m.img
-				key={src}
-				src={src}
-				alt={alt}
-				initial={{ scale: 0.94, opacity: 0 }}
-				animate={{ scale: 1, opacity: 1 }}
-				exit={{ scale: 0.94, opacity: 0 }}
-				transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
-				onClick={(e) => e.stopPropagation()}
-				className="pointer-events-auto relative block max-h-[90vh] max-w-[90vw] rounded-[6px] object-contain"
-				draggable={false}
-			/>
-
-			{/* Close button */}
-			<button
-				type="button"
-				onClick={(e) => {
-					e.stopPropagation();
-					onClose();
-				}}
-				aria-label="Close"
-				className="absolute top-4 right-4 flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full border-none bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
-			>
-				<HugeiconsIcon icon={Cancel01Icon} size={16} color="currentColor" />
-			</button>
-
-			{/* Prev button */}
-			{total > 1 && (
-				<button
-					type="button"
-					onClick={(e) => {
-						e.stopPropagation();
-						onPrev();
-					}}
-					aria-label="Previous image"
-					className="absolute top-1/2 left-4 flex h-10 w-10 shrink-0 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-none bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
-				>
-					<HugeiconsIcon icon={ArrowLeft02Icon} size={16} color="currentColor" />
-				</button>
-			)}
-
-			{/* Next button */}
-			{total > 1 && (
-				<button
-					type="button"
-					onClick={(e) => {
-						e.stopPropagation();
-						onNext();
-					}}
-					aria-label="Next image"
-					className="absolute top-1/2 right-4 flex h-10 w-10 shrink-0 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border-none bg-[color-mix(in_srgb,var(--foreground)_10%,transparent)] text-[var(--foreground)]"
-				>
-					<HugeiconsIcon icon={ArrowRight02Icon} size={16} color="currentColor" />
-				</button>
-			)}
-
-			{/* Counter */}
-			<div className="pointer-events-none absolute bottom-5 left-1/2 -translate-x-1/2 select-none text-[12px] text-[color-mix(in_srgb,var(--foreground)_50%,transparent)] tabular-nums tracking-[0.04em]">
-				{index + 1} / {total}
-			</div>
-		</m.div>
 	);
 }

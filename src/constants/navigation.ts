@@ -4,7 +4,6 @@ import {
 	ArrowUpRight01Icon,
 	Book01Icon,
 	BookmarkIcon,
-	BriefcaseIcon,
 	Camera01Icon,
 	CodeIcon,
 	Film01Icon,
@@ -46,12 +45,6 @@ export const PAGES: NavPage[] = [
 		icon: 'CodeIcon',
 	},
 	{
-		href: '/freelance',
-		label: 'Freelance',
-		description: 'Client work and services',
-		icon: 'BriefcaseIcon',
-	},
-	{
 		href: '/graphic-design',
 		label: 'Graphic Design',
 		description: 'Visual design work',
@@ -76,7 +69,7 @@ export const PAGES: NavPage[] = [
 		icon: 'Film01Icon',
 	},
 	{
-		href: '/camera-roll',
+		href: '/camera',
 		label: 'Gallery',
 		description: 'Photos I have taken',
 		icon: 'Image01Icon',
@@ -139,7 +132,6 @@ export const ALL_PAGES_FLAT = PAGES.flatMap((page) => [page, ...(page.children ?
 export const NAV_ICON_MAP: Record<string, ComponentType<IconProps>> = {
 	Home01Icon,
 	CodeIcon,
-	BriefcaseIcon,
 	PenTool02Icon,
 	PenTool01Icon,
 	SparklesIcon,

@@ -1,9 +1,10 @@
 'use client';
 
-import { Cancel01Icon, HugeiconsIcon } from '@icons';
+import { HugeiconsIcon, StarIcon } from '@icons';
 import * as Dialog from '@radix-ui/react-dialog';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
+import BookCover, { useCoverAspect } from './BookCover';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
@@ -12,6 +13,9 @@ interface Book {
 	title: string;
 	author: string;
 	cover?: string;
+	coverHash?: string;
+	coverW?: number;
+	coverH?: number;
 	status: string;
 	rating?: number;
 	review?: string;
@@ -21,17 +25,23 @@ interface Book {
 	dateRead?: string;
 }
 
+const STATUS_LABEL: Record<string, string> = {
+	read: 'Read',
+	reading: 'Reading',
+	'to-read': 'Want to read',
+};
+
 function Stars({ rating, max = 5 }: { rating: number; max?: number }) {
 	return (
-		<div className="flex gap-0.5">
+		<div className="flex gap-[3px]" role="img" aria-label={`Rated ${rating} out of ${max}`}>
 			{Array.from({ length: max }).map((_, i) => (
-				<span
+				<HugeiconsIcon
 					// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
 					key={i}
-					className={`text-[16px] ${i < rating ? 'text-[#00bbff]' : 'text-[var(--muted-foreground)]'}`}
-				>
-					{i < rating ? '★' : '☆'}
-				</span>
+					icon={StarIcon}
+					size={14}
+					color={i < rating ? '#f4b740' : 'var(--text-ghost)'}
+				/>
 			))}
 		</div>
 	);
@@ -46,19 +56,15 @@ export default function BookDetail({
 	open: boolean;
 	onClose: () => void;
 }) {
+	// called before the early return so hook order stays stable
+	const aspect = useCoverAspect(book?.cover, book?.coverW, book?.coverH);
 	if (!book) return null;
 
-	const statusColors: Record<string, { bg: string; text: string; label: string }> = {
-		read: { bg: 'rgba(34,197,94,0.1)', text: '#16a34a', label: 'Read' },
-		reading: { bg: 'rgba(0,187,255,0.1)', text: '#00bbff', label: 'Reading' },
-		'to-read': {
-			bg: 'rgba(161,161,170,0.1)',
-			text: 'var(--muted-foreground)',
-			label: 'Want to Read',
-		},
-	};
-
-	const statusStyle = statusColors[book.status] ?? statusColors['to-read'];
+	const meta = [
+		book.year ? String(book.year) : null,
+		book.pages ? `${book.pages} pages` : null,
+		STATUS_LABEL[book.status] ?? null,
+	].filter(Boolean);
 
 	return (
 		<LazyMotion features={loadFeatures}>
@@ -68,7 +74,7 @@ export default function BookDetail({
 						<Dialog.Portal forceMount>
 							<Dialog.Overlay asChild>
 								<m.div
-									className="fixed inset-0 z-50 bg-black/60 backdrop-blur-[6px]"
+									className="fixed inset-0 z-50 bg-black/40 backdrop-blur-[3px]"
 									initial={{ opacity: 0 }}
 									animate={{ opacity: 1 }}
 									exit={{ opacity: 0 }}
@@ -77,87 +83,54 @@ export default function BookDetail({
 							</Dialog.Overlay>
 							<Dialog.Content asChild>
 								<m.div
-									className="fixed top-1/2 left-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl bg-[var(--card)]"
-									initial={{ opacity: 0, scale: 0.95, y: 12 }}
-									animate={{ opacity: 1, scale: 1, y: 0 }}
-									exit={{ opacity: 0, scale: 0.95, y: 12 }}
-									transition={{ duration: 0.25, ease: [0.25, 0.46, 0.45, 0.94] }}
+									className="fixed inset-x-0 bottom-0 z-50 mx-auto w-full max-w-[500px] rounded-t-2xl bg-[var(--card)] pb-[max(20px,env(safe-area-inset-bottom))]"
+									initial={{ y: '100%' }}
+									animate={{ y: 0 }}
+									exit={{ y: '100%' }}
+									transition={{ type: 'spring', stiffness: 360, damping: 36 }}
 								>
 									<Dialog.Title className="sr-only">{book.title}</Dialog.Title>
-									<Dialog.Close asChild>
-										<button
-											type="button"
-											className="absolute top-4 right-4 z-10 flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--muted-foreground)]"
-											aria-label="Close"
-										>
-											<HugeiconsIcon icon={Cancel01Icon} size={14} color="currentColor" />
-										</button>
-									</Dialog.Close>
 
-									<div className="p-6">
-										<div className="mb-5 flex gap-4">
-											{/* Book mini cover */}
-											<div className="h-24 w-16 shrink-0 overflow-hidden rounded-lg bg-[var(--muted)]">
-												{book.cover && (
-													<img
-														src={book.cover}
-														alt={book.title}
-														className="h-full w-full object-cover"
-													/>
-												)}
-											</div>
-											<div className="min-w-0 flex-1">
-												<h2 className="m-0 mb-1 font-bold text-[var(--foreground)] text-lg tracking-[-0.02em]">
-													{book.title}
-												</h2>
-												<div className="mb-2 text-[var(--muted-foreground)] text-sm">
-													{book.author}
-												</div>
-												<span
-													className="rounded-full px-2 py-0.5 text-xs"
-													// biome-ignore lint/nursery/noInlineStyles: dynamic status-based background and color
-													style={{ background: statusStyle.bg, color: statusStyle.text }}
-												>
-													{statusStyle.label}
-												</span>
-											</div>
+									{/* Drag handle */}
+									<div className="flex justify-center pt-2.5 pb-1">
+										<div className="h-1 w-9 rounded-full bg-[var(--border-strong)]" />
+									</div>
+
+									{/* Big prominent cover on the left; all info right-aligned on the right */}
+									<div className="flex items-start gap-5 px-6 pt-2 pb-1">
+										<div className="shrink-0 [filter:drop-shadow(0_12px_26px_rgba(0,0,0,0.38))]">
+											<BookCover
+												title={book.title}
+												author={book.author}
+												cover={book.cover}
+												hash={book.coverHash}
+												className="relative"
+												style={{ width: 168, height: Math.round(168 * aspect) }}
+											/>
 										</div>
-
-										{book.rating && (
-											<div className="mb-4">
-												<Stars rating={book.rating} />
+										<div className="flex min-w-0 flex-1 flex-col items-end pt-1 text-right">
+											<h2 className="m-0 font-semibold text-[19px] text-[var(--text-primary)] leading-snug tracking-[-0.02em]">
+												{book.title}
+											</h2>
+											<div className="mt-1 text-[13px] text-[var(--text-secondary)]">
+												{book.author}
 											</div>
-										)}
-
-										<div className="mb-4 flex gap-4 text-[var(--muted-foreground)] text-xs">
-											{book.year && <span>{book.year}</span>}
-											{book.pages && <span>{book.pages} pages</span>}
-											{book.dateRead && <span>Read {new Date(book.dateRead).getFullYear()}</span>}
-										</div>
-
-										{book.genre.length > 0 && (
-											<div className="mb-4 flex flex-wrap gap-1.5">
-												{book.genre.map((g) => (
-													<span
-														key={g}
-														className="rounded-full bg-[var(--muted-bg)] px-2 py-0.5 text-[var(--muted-foreground)] text-xs capitalize"
-													>
-														{g}
-													</span>
-												))}
-											</div>
-										)}
-
-										{book.review && (
-											<div className="rounded-xl bg-[var(--muted)] p-3">
-												<div className="mb-2 font-semibold text-[var(--muted-foreground)] text-xs uppercase tracking-widest">
-													My thoughts
+											{book.rating ? (
+												<div className="mt-3">
+													<Stars rating={book.rating} />
 												</div>
-												<p className="m-0 text-[var(--foreground)] text-sm leading-relaxed">
+											) : null}
+											{meta.length > 0 && (
+												<div className="mt-4 text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
+													{meta.join('  ·  ')}
+												</div>
+											)}
+											{book.review && (
+												<p className="mt-3 text-[13px] text-[var(--text-secondary)] leading-relaxed">
 													{book.review}
 												</p>
-											</div>
-										)}
+											)}
+										</div>
 									</div>
 								</m.div>
 							</Dialog.Content>

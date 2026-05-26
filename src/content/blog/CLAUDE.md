@@ -156,8 +156,15 @@ rotating arrow:
 
 ## MDX-only components
 
-Switch the file extension from `.md` to `.mdx` and import what you
-need. Each component lives in `src/components/blog/mdx/`.
+Switch the file extension from `.md` to `.mdx`. Each component lives in
+`src/components/blog/mdx/` and is registered in the shared `mdxComponents`
+map (`src/components/blog/mdx/index.ts`), which every collection slug page
+(`blog`, `projects`, `agent-convos`) passes to `<Content components={…} />`.
+
+That means **you can use the tags below in any `.mdx` without importing
+them** — they're not blog-specific. A local `import` inside an `.mdx` still
+works and takes precedence over the registry, so the examples below (which
+import explicitly) remain valid.
 
 ### `<Callout>` — note / info / tip / warn / success
 
@@ -183,20 +190,48 @@ import YouTube from '@/components/blog/mdx/YouTube.astro';
 Accepts either a bare ID or a full URL, and an optional `start={42}`
 in seconds. Uses the `youtube-nocookie` domain.
 
-### `<Video>` — native HTML5 video
+Both `<DemoVideo>` and `<Video>` render the
+[SimplePlayer](https://simpleplayer.grizz.fyi/) web component
+(`@grizzshutsdown/simpleplayer`): a clean framed clip with a play/pause +
+scrubber overlay, lazy-loading, and (with `controls`) volume, Picture-in-Picture,
+and fullscreen. The element is registered globally on the client by an
+`import '@grizzshutsdown/simpleplayer'` inside each component, so it survives
+Astro view transitions.
+
+> SimplePlayer fills its frame with `object-fit: cover`. If your clip isn't
+> 16:9, pass `aspectRatio` matching the source (e.g. `aspectRatio="1280 / 774"`)
+> or it will be cropped.
+
+### `<DemoVideo>` — autoplay walkthrough clip
+
+```mdx
+import DemoVideo from '@/components/blog/mdx/DemoVideo.astro';
+
+<DemoVideo
+  src="/blog/my-post/clip.mp4"
+  aspectRatio="1280 / 774"
+  caption="A walkthrough of the build."
+/>
+```
+
+Muted **autoplay + loop** when scrolled into view — use for ambient
+hero/walkthrough clips. Props: `src`, `caption`, `aspectRatio` (default
+`16 / 9`), `autoplay` (default `true`), `controls` (default `false` — set it to
+add the volume/PiP/fullscreen tray).
+
+### `<Video>` — click-to-play embed
 
 ```mdx
 import Video from '@/components/blog/mdx/Video.astro';
 
 <Video
   src="/blog/my-post/clip.mp4"
-  poster="/blog/my-post/clip-cover.webp"
   caption="Recording of the bug in action."
 />
 ```
 
-`autoplay` is supported (muted+loop are forced by the browser for
-autoplay to be allowed).
+Same player as `<DemoVideo>`, but defaults to **click-to-play** (`autoplay`
+default `false`) so the clip only loads when tapped. Same prop set.
 
 ### `<Kbd>` — keyboard key
 
@@ -209,6 +244,20 @@ Press <Kbd>⌘</Kbd> + <Kbd>K</Kbd> to open the command palette.
 The raw markdown `<kbd>...</kbd>` works too; the component is only
 worth the import if you want the styled key-pill in a lot of places.
 
+### `<Tweet>` — X / Twitter embed
+
+```mdx
+<Tweet id="2056325510431686836" />
+```
+
+Pass the numeric status id (the trailing part of the X URL). The tweet is
+fetched at **build time** via `react-tweet`'s `getTweet`, rendered to static
+HTML with `<EmbeddedTweet>` — zero client JS, no runtime fetch. Styling is
+remapped onto the site's flat tokens in `global.css` (`.tweet-embed
+.react-tweet-theme`): no border, `--muted-bg` surface, opacity-hierarchy
+text, auto dark mode. If the tweet can't be fetched it falls back to a plain
+"View tweet on X" link. Registered globally, so no import needed.
+
 ---
 
 ## Ideas that aren't built yet
@@ -216,7 +265,6 @@ worth the import if you want the styled key-pill in a lot of places.
 If a post needs one of these, it's a small add — grep this file, add the
 component under `src/components/blog/mdx/`, document it here, ship.
 
-- `<Tweet id="..." />` — Twitter / X embed via `react-tweet`.
 - `<Gist id="..." />` — GitHub gist embed.
 - `<Compare before="..." after="..." />` — before/after slider for
   design posts.

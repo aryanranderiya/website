@@ -8,7 +8,6 @@ import interLatinFont from '@fontsource-variable/inter/files/inter-latin-wght-no
 import AgentationOverlay from '@/components/layout/AgentationOverlay';
 import CommandK from '@/components/layout/CommandK';
 import Preloader from '@/components/layout/Preloader';
-import BlurStack from '@/components/ui/blur-stack';
 import { PetLauncher } from '@/components/ui/PetLauncher';
 
 interface Props {
@@ -272,11 +271,6 @@ const commandKProjects = sortProjects(await getCollection('projects')).map((p) =
         `transition:persist-props` freezes props at first mount so a persisted
         island doesn't re-render when Astro hands it new props from the new page. */}
     <Preloader client:load transition:persist="preloader" transition:persist-props />
-    <BlurStack
-      client:idle
-      transition:persist="blurstack"
-      className="fixed bottom-0 left-0 right-0 h-32 z-10 pointer-events-none"
-    />
     <CommandK
       client:idle
       projects={commandKProjects}
@@ -287,6 +281,43 @@ const commandKProjects = sortProjects(await getCollection('projects')).map((p) =
     <AgentationOverlay client:idle transition:persist="agentation" transition:persist-props />
     <div id="ai-chat-mount" transition:persist="ai-chat"></div>
     <script>import '@/bones/registry'</script>
+    <script>
+      // Apply #page-content's `view-transition-name` ONLY while a ClientRouter
+      // swap is in flight. Kept permanently in CSS, the name promotes
+      // #page-content to a snapshot/compositing layer at rest, and Chromium then
+      // stops repainting the mouse cursor over its descendants — the flaky
+      // zoom-in cursor on blog/project images. Gating it to nav-time (html.vt-nav,
+      // read by `html.vt-nav #page-content` in global.css) keeps the page
+      // crossfade but leaves #page-content an ordinary layer at rest.
+      (function () {
+        const w = window as unknown as { __vtNavBound?: boolean };
+        if (w.__vtNavBound) return;
+        w.__vtNavBound = true;
+        const root = document.documentElement;
+        // Set the gate before the transition starts → the OLD #page-content
+        // snapshot is captured with the view-transition-name.
+        document.addEventListener('astro:before-preparation', () => {
+          root.classList.add('vt-nav');
+        });
+        document.addEventListener('astro:before-swap', (e) => {
+          const ev = e as unknown as {
+            newDocument?: Document;
+            viewTransition?: { finished?: Promise<void> };
+          };
+          // Astro's swap copies the incoming <html> attributes over the live ones,
+          // which would drop `vt-nav` before the NEW #page-content snapshot is
+          // captured — so stamp the gate on the incoming document too.
+          ev.newDocument?.documentElement.classList.add('vt-nav');
+          // Drop the gate only once the transition has fully finished, so the live
+          // #page-content de-promotes (cursor repaints again) without disturbing
+          // the running crossfade (which animates the already-captured snapshots).
+          const vt = ev.viewTransition;
+          const clear = () => root.classList.remove('vt-nav');
+          if (vt && vt.finished) vt.finished.then(clear).catch(clear);
+          else clear();
+        });
+      })();
+    </script>
     <script>
       (function() {
         var mount = document.getElementById('ai-chat-mount');

@@ -67,7 +67,11 @@ export default function BlogList({
 								)}
 							</div>
 
-							<time className="shrink-0 text-[13px] text-[var(--text-ghost)]">
+							<time
+								// biome-ignore lint/nursery/noInlineStyles: view-transition-name must be unique per slug
+								style={{ viewTransitionName: `blog-date-${post.slug}` }}
+								className="shrink-0 text-[13px] text-[var(--text-ghost)]"
+							>
 								{formatDate(post.date)}
 							</time>
 						</a>

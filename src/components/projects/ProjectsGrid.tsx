@@ -6,7 +6,6 @@ import {
 	ComputerTerminalIcon,
 	Delete02Icon,
 	FilterIcon,
-	GameController03Icon,
 	HugeiconsIcon,
 	LaptopIcon,
 	MobileProgramming02Icon,
@@ -21,7 +20,6 @@ import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CheckboxGroup, CheckboxItem } from '@/components/ui/checkbox-group';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 import { getTechIconUrl } from '../../utils/techIcons';
 import ProjectCard from './ProjectCard';
 
@@ -57,7 +55,6 @@ const TYPE_CHIPS: { value: string; label: string; icon: ComponentType<IconProps>
 	{ value: 'mobile', label: 'Mobile', icon: MobileProgramming02Icon },
 	{ value: 'cli', label: 'CLI', icon: ComputerTerminalIcon },
 	{ value: 'desktop', label: 'Desktop', icon: LaptopIcon },
-	{ value: 'game', label: 'Game', icon: GameController03Icon },
 	{ value: 'os', label: 'OS', icon: Apple01Icon },
 ];
 
@@ -99,7 +96,6 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 	const [activeTypeFilter, setActiveTypeFilter] = useState<string | null>(null);
 	const [tagPopoverOpen, setTagPopoverOpen] = useState(false);
 	const [tagSearch, setTagSearch] = useState('');
-	const ready = useAfterPreloader();
 	const searchRef = useRef<HTMLInputElement>(null);
 	const tagSearchRef = useRef<HTMLInputElement>(null);
 
@@ -237,15 +233,51 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 
 	const isEntryActive = (value: string) => activeTechFilters.includes(value);
 
+	// Re-trigger the list entrance whenever the chip / tech filters change. CSS
+	// animations only run on mount, so we remount the list subtree via a key that
+	// reflects the active filters — the entrance replays on every toggle. Search
+	// is deliberately excluded so the list doesn't re-animate on each keystroke.
+	const listAnimKey = `${activeTypeFilter ?? 'all'}|${[...activeTechFilters].sort().join(',')}`;
+
 	return (
 		<LazyMotion features={loadFeatures}>
-			<m.div
-				initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
-				animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
-				transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] as const, delay: 0.12 }}
-			>
-				{/* Type filter chips — softened active state, no "All" */}
-				<div className="mb-[10px] flex flex-wrap items-center gap-[6px]">
+			{/* CSS-driven entrance (animate-fade-in) instead of a JS-gated Framer
+			    initial:opacity-0. The list must stay visible even if the island is
+			    slow to hydrate or the preloader 'done' signal is missed — CSS always
+			    resolves to opacity:1, so it can never get stranded invisible. */}
+			<div className="animate-fade-in">
+				{/* Header row: title left, search right — same pattern as the blog page */}
+				<div className="mb-3 flex items-center justify-between gap-3">
+					<h1 className="m-0 text-heading-1">Projects</h1>
+
+					{/* Pill search */}
+					<div className="relative shrink-0">
+						<span className="pointer-events-none absolute top-1/2 left-2.5 flex -translate-y-1/2 items-center text-[var(--text-ghost)]">
+							<HugeiconsIcon icon={Search01Icon} size={12} />
+						</span>
+						<input
+							ref={searchRef}
+							type="text"
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
+							onFocus={() => setSearchFocused(true)}
+							onBlur={() => setSearchFocused(false)}
+							placeholder="Search..."
+							className={`w-[160px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none transition-shadow duration-150 focus:ring-1 focus:ring-[var(--text-ghost)]/40 focus:ring-offset-0 focus-visible:outline-none ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
+						/>
+						{!searchFocused && !search && (
+							<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
+								⌘F
+							</kbd>
+						)}
+					</div>
+				</div>
+
+				{/* Subtitle */}
+				<p className="m-0 mb-6 text-body">A collection of things I have built!</p>
+
+				{/* Type filter chips + tag filter — one row */}
+				<div className="mb-7 flex flex-wrap items-center gap-[6px]">
 					{availableTypes.map((chip) => {
 						const isOn = activeTypeFilter === chip.value;
 						return (
@@ -260,10 +292,6 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 							</button>
 						);
 					})}
-				</div>
-
-				{/* Filter row: filter button + popular tags + active chips + search */}
-				<div className="mb-7 flex w-full flex-wrap items-center gap-1.5">
 					{/* Tag filter popover */}
 					<Popover open={tagPopoverOpen} onOpenChange={setTagPopoverOpen}>
 						<PopoverTrigger asChild>
@@ -411,76 +439,36 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 							Clear all
 						</button>
 					)}
-
-					<div className="flex-1" />
-
-					<div className="relative shrink-0">
-						<span className="pointer-events-none absolute top-1/2 left-2.5 flex -translate-y-1/2 items-center text-[var(--text-ghost)]">
-							<HugeiconsIcon icon={Search01Icon} size={12} />
-						</span>
-						<input
-							ref={searchRef}
-							type="text"
-							value={search}
-							onChange={(e) => setSearch(e.target.value)}
-							onFocus={() => setSearchFocused(true)}
-							onBlur={() => setSearchFocused(false)}
-							placeholder="Search..."
-							className={`w-[160px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none transition-shadow duration-150 focus:ring-1 focus:ring-[var(--text-ghost)]/40 focus:ring-offset-0 focus-visible:outline-none ${!searchFocused && !search ? 'pr-9' : 'pr-3.5'}`}
-						/>
-						{!searchFocused && !search && (
-							<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
-								⌘F
-							</kbd>
-						)}
-					</div>
 				</div>
 
-				{/* Project list */}
-				<AnimatePresence mode="sync" initial={false}>
-					{filtered.length > 0 ? (
-						<m.div
-							key={deferredSearch + activeTechFilters.join(',') + (activeTypeFilter ?? '')}
-							initial="hidden"
-							animate={ready ? 'show' : 'hidden'}
-							exit={{ opacity: 0 }}
-							variants={{
-								hidden: {},
-								show: { transition: { staggerChildren: 0.04, delayChildren: 0.15 } },
-							}}
-							className="dim-list flex flex-col gap-0.5"
-						>
-							{filtered.map((project: Project, i: number) => (
-								<ProjectCard
-									key={project.slug}
-									project={project}
-									index={i}
-									onHoverChange={handleHoverChange}
-								/>
-							))}
-						</m.div>
-					) : (
-						<m.div
-							key="empty"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							className="flex flex-col items-center gap-3 py-16 text-center text-[13px] text-[var(--text-ghost)]"
-						>
-							<span>No projects found.</span>
-							{hasAnyFilter && (
-								<button
-									type="button"
-									onClick={clearAllFilters}
-									className="inline-flex cursor-pointer items-center rounded-full border-none bg-[var(--muted-bg)] px-3 py-[5px] text-[11px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-100 hover:text-[var(--text-primary)]"
-								>
-									Clear all filters
-								</button>
-							)}
-						</m.div>
-					)}
-				</AnimatePresence>
-			</m.div>
+				{/* Project list — plain DOM so it renders visible from SSR and never
+				    depends on hydration/preloader timing to be seen. */}
+				{filtered.length > 0 ? (
+					<div key={listAnimKey} className="dim-list flex flex-col gap-0.5">
+						{filtered.map((project: Project, i: number) => (
+							<ProjectCard
+								key={project.slug}
+								project={project}
+								index={i}
+								onHoverChange={handleHoverChange}
+							/>
+						))}
+					</div>
+				) : (
+					<div className="flex flex-col items-center gap-3 py-16 text-center text-[13px] text-[var(--text-ghost)]">
+						<span>No projects found.</span>
+						{hasAnyFilter && (
+							<button
+								type="button"
+								onClick={clearAllFilters}
+								className="inline-flex cursor-pointer items-center rounded-full border-none bg-[var(--muted-bg)] px-3 py-[5px] text-[11px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-100 hover:text-[var(--text-primary)]"
+							>
+								Clear all filters
+							</button>
+						)}
+					</div>
+				)}
+			</div>
 
 			{/* Preview image portal -- rendered at body to avoid filter/transform containing block */}
 			{typeof document !== 'undefined' &&

@@ -7,7 +7,7 @@ category: essay
 draft: false
 ---
 
-import Video from '@/components/blog/mdx/Video.astro';
+import DemoVideo from '@/components/blog/mdx/DemoVideo.astro';
 
 I had first started working on my portfolio in November 2023.
 
@@ -25,8 +25,9 @@ The stack was pure vanilla: HTML, CSS, JavaScript. I was learning JS by building
 
 The aesthetic I was going for was... a lot. I was adding all and any style of animation I could find — scroll animations, hover animations, entrance sequences, cursor effects. I think I was going for a maximalist aesthetic and I was just really really into it. But for a freelance portfolio it actually worked really well. Clients would look at it and immediately understand I cared about craft. That was really the whole point.
 
-<Video
+<DemoVideo
   src="/blog/building-my-portfolio/portfolio.mp4"
+  aspectRatio="1280 / 774"
   caption="A walkthrough of v1. Scroll animations, hover effects, cursor trails -- the whole maximalist kitchen sink."
 />
 
@@ -166,7 +167,7 @@ There was one mid-debug surprise that took an embarrassing amount of time to tra
 
 Accessibility got the same pass at the same time. Final scores landed at 100 / 100 / 100 / 100 across performance, accessibility, best practices, and SEO. The accessibility wins were mostly contrast: `--text-muted` was at `rgba(0,0,0,0.35)` which fails WCAG against the warm off-white background. Bumped it to `0.54` and did the same for sidebar nav links and section labels. A couple of ARIA fixes (a `role="img"` on the signature SVG container, a few missing favicons that 404'd in the manifest), and that was it.
 
-I wrote a much longer version of this exercise for the [GAIA landing page](/blog/gaia-landing-page-performance), which started at 34 and ended at 100. Different stack (Next.js, not Astro), different bottlenecks (forced reflows, Sentry on the critical path), but the same general shape: profile honestly, fix the worst thing first, refuse to ship visual regressions to make the score look better.
+I ran the same exercise on the GAIA landing page, which started at 34 and ended at 100. Different stack (Next.js, not Astro), different bottlenecks (forced reflows, Sentry on the critical path), but the same general shape: profile honestly, fix the worst thing first, refuse to ship visual regressions to make the score look better.
 
 ---
 
