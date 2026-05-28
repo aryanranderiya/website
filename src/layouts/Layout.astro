@@ -149,6 +149,15 @@ const commandKProjects = sortProjects(await getCollection('projects')).map((p) =
       })();
     </script>
 
+    <!-- Rybbit Analytics (self-hosted at as.heygaia.io). `defer` keeps it off
+         the critical path; the script itself is ~3 KB. -->
+    <script
+      is:inline
+      src="https://as.heygaia.io/api/script.js"
+      data-site-id="e590f37d4278"
+      defer
+    ></script>
+
     <!-- Structured Data: Person -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
