@@ -13,9 +13,19 @@ interface Props {
 	tocLabel?: string;
 	/** How the TOC entry renders: inline thumbnail or icon + label line. */
 	tocMode?: 'inline' | 'line';
+	/** Constrain width for tall portrait shots so they don't dominate. */
+	portrait?: boolean;
 }
 
-const { src, alt = '', caption, toc = false, tocLabel, tocMode = 'inline' } = Astro.props;
+const {
+	src,
+	alt = '',
+	caption,
+	toc = false,
+	tocLabel,
+	tocMode = 'inline',
+	portrait = false,
+} = Astro.props;
 
 function slugify(input: string): string {
 	return input
@@ -30,6 +40,7 @@ const id = toc ? `img-${slugify(label || src)}` : undefined;
 
 <figure
   id={id}
+  class:list={[{ 'figure-portrait': portrait }]}
   data-toc={toc ? '' : undefined}
   data-toc-label={toc ? label : undefined}
   data-toc-mode={toc ? tocMode : undefined}
@@ -38,3 +49,10 @@ const id = toc ? `img-${slugify(label || src)}` : undefined;
   <img src={src} alt={alt} loading="lazy" />
   {caption && <figcaption set:html={caption} />}
 </figure>
+
+<style is:global>
+  .prose figure.figure-portrait {
+    max-width: 360px;
+    margin-inline: auto;
+  }
+</style>
