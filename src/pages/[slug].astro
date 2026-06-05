@@ -22,6 +22,11 @@ interface Props {
 const { post } = Astro.props;
 const { Content, headings } = await post.render();
 
+// Posts can tag images into the TOC via `toc` on <Figure>/<ImageGrid>. The TOC
+// is then assembled client-side from the DOM, but we need to know at build time
+// whether to render the TOC rail at all (some posts have no headings).
+const hasTocImages = /\btoc(\s|=|>|\/)/.test(post.body);
+
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const currentTags = new Set(post.data.tags);
 const related = allPosts
@@ -36,8 +41,8 @@ const related = allPosts
 	.map((p) => ({
 		slug: p.slug,
 		title: p.data.title,
-		description: p.data.description,
-		tags: p.data.tags,
+		date: p.data.date.toISOString(),
+		featured: p.data.featured,
 	}));
 
 // Cycling prev/next through all posts (newest first, matching the list order).
@@ -55,6 +60,7 @@ const nextPost = ordered[(currentIndex + 1) % ordered.length];
   tags={post.data.tags}
   cover={post.data.cover}
   headings={headings}
+  forceToc={hasTocImages}
   slug={post.slug}
 >
   <Content components={mdxComponents} />

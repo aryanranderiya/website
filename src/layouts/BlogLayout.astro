@@ -23,6 +23,7 @@ interface Props {
   category?: string;
   cover?: string;
   headings?: Heading[];
+  forceToc?: boolean;
   slug?: string;
 }
 
@@ -34,9 +35,11 @@ const {
   tags = [],
   cover,
   headings = [],
+  forceToc = false,
   slug,
 } = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const showToc = tocHeadings.length > 1 || forceToc;
 
 const canonicalURL = new URL(Astro.url.pathname, SITE.url).toString();
 const articleJsonLd = JSON.stringify({
@@ -258,7 +261,7 @@ const breadcrumbJsonLd = JSON.stringify({
     </script>
 
     {
-      tocHeadings.length > 1 && (
+      showToc && (
         <aside class="hidden min-[1080px]:block w-56 shrink-0 sticky top-[calc(var(--section-padding-top)+24px)]">
           <TableOfContents headings={headings} />
         </aside>

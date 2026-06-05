@@ -244,6 +244,79 @@ Press <Kbd>⌘</Kbd> + <Kbd>K</Kbd> to open the command palette.
 The raw markdown `<kbd>...</kbd>` works too; the component is only
 worth the import if you want the styled key-pill in a lot of places.
 
+### `<Figure>` — single image (+ optional TOC tag)
+
+```mdx
+<Figure
+  src="/blog/my-post/shot.webp"
+  alt="Alt text."
+  caption="A short caption. Can contain <a href='...'>links</a>."
+/>
+```
+
+A captioned image, equivalent to writing a `<figure>` by hand but with the
+bonus that it can be **tagged into the table of contents**. Add `toc` plus
+an optional `tocLabel` (falls back to caption, then alt) and `tocMode`:
+
+```mdx
+<Figure
+  src="/blog/my-post/desk.webp"
+  caption="My current setup."
+  toc
+  tocLabel="My current setup"
+  tocMode="inline"   {/* "inline" (default) = small thumbnail, "line" = image icon + label */}
+/>
+```
+
+See **Table of contents tagging** below.
+
+### `<ImageGrid>` — multi-image grid
+
+```mdx
+<ImageGrid
+  cols={2}
+  caption="Optional caption under the whole grid."
+  images={[
+    { src: "/blog/my-post/a.webp", alt: "First image." },
+    { src: "/blog/my-post/b.webp", alt: "Second image." },
+    { src: "/blog/my-post/c.webp", alt: "Third image." },
+    { src: "/blog/my-post/d.webp", alt: "Fourth image." },
+  ]}
+/>
+```
+
+Lays out several images in a responsive square grid (one column on
+mobile, `cols` columns from 560px up — defaults to 2). Images are
+`object-fit: cover` with rounded corners, flat (no borders),
+`--muted-bg` surface. Every image still gets the automatic lightbox.
+Registered globally, so no import needed. Use it instead of stacking
+multiple `<figure>` blocks when the shots belong together.
+
+Individual grid images can also be tagged into the TOC:
+
+```mdx
+images={[
+  { src: "/blog/my-post/a.webp", alt: "First.", toc: true, tocLabel: "First", tocMode: "inline" },
+]}
+```
+
+### Table of contents tagging
+
+The right-rail TOC ("On this page") is normally built from `##`/`###`
+headings. You can also tag **images** into it from `<Figure>` (single) or
+`<ImageGrid>` (per-image) with `toc` + `tocLabel` + `tocMode`:
+
+- `tocMode="inline"` (default) — a small uniform landscape thumbnail next
+  to the label.
+- `tocMode="line"` — an image icon next to the label (no thumbnail).
+
+The TOC list is assembled **client-side** from the rendered DOM, so heading
+and image entries appear in document order. The rail shows up automatically
+when a post has more than one heading **or** any tagged image (even a post
+with zero headings, like an image-led photo essay). It needs at least two
+total entries to render. Implementation: `src/components/ui/TableOfContents.astro`
+(its styles are `is:global` under `#toc` because entries are built in JS).
+
 ### `<Tweet>` — X / Twitter embed
 
 ```mdx

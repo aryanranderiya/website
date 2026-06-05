@@ -1,0 +1,40 @@
+---
+// Single image + optional caption. When `toc` is set, the figure is tagged
+// to appear in the table of contents (see TableOfContents.astro), either as a
+// small inline thumbnail (`tocMode="inline"`, default) or an icon + label row
+// (`tocMode="line"`). The lightbox picks up the <img> automatically.
+interface Props {
+	src: string;
+	alt?: string;
+	caption?: string;
+	/** Tag this image into the table of contents. */
+	toc?: boolean;
+	/** Label shown in the TOC. Falls back to caption, then alt. */
+	tocLabel?: string;
+	/** How the TOC entry renders: inline thumbnail or icon + label line. */
+	tocMode?: 'inline' | 'line';
+}
+
+const { src, alt = '', caption, toc = false, tocLabel, tocMode = 'inline' } = Astro.props;
+
+function slugify(input: string): string {
+	return input
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/(^-|-$)/g, '');
+}
+
+const label = tocLabel ?? caption ?? alt;
+const id = toc ? `img-${slugify(label || src)}` : undefined;
+---
+
+<figure
+  id={id}
+  data-toc={toc ? '' : undefined}
+  data-toc-label={toc ? label : undefined}
+  data-toc-mode={toc ? tocMode : undefined}
+  data-toc-thumb={toc ? src : undefined}
+>
+  <img src={src} alt={alt} loading="lazy" />
+  {caption && <figcaption set:html={caption} />}
+</figure>
