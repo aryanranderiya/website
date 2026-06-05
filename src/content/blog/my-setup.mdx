@@ -1,5 +1,5 @@
 ---
-title: "My Setup, June 2026"
+title: "My (vibecoding) setup, June 2026"
 description: The tools, MCPs, terminal, and hardware I actually use every day to build GAIA.
 date: 2026-06-06
 tags: [setup, tools, workflow]
@@ -14,17 +14,31 @@ Here's the whole thing, dumped out honestly. This is what June 2026 looks like f
   <figcaption>The whole setup as it stands right now.</figcaption>
 </figure>
 
-I primarily use [Claude](https://claude.com/claude-code) now, and honestly it's been the thing that stuck. The road to it was a mess though. I used [GitHub Copilot](https://github.com/features/copilot) all through university because of the free student plan, but over time it just turned to shit and got frustrating to work with. Then [Google Antigravity](https://antigravity.google/) came out and it was genuinely great, a shitton of usage limits at first. But then they cut the limits down, so I did the obvious dumb thing and made six different accounts to switch between, all on the Google Pro plan. I'd signed up for one when it was free for about a year, and added the rest into my family plan so every account got high limits. Switching between all of them every time I hit a wall got exhausting fast, and I also wanted to try [opencode](https://opencode.ai/), so I found an opencode extension that automatically rotated my accounts for me. I rode that till I got banned on all of them, lmao. I also gave [Cursor](https://cursor.com/) a shot but the free plan limits were tiny, and I tried [Kiro](https://kiro.dev/) too but never really enjoyed it. Then I switched to Claude and it was genuinely mind-blowing for me. I tried [Codex](https://openai.com/codex/) as well, but my experience at the time was negative. I went in through a business free trial and for whatever reason it was disappointing, the quality of the plans and the quality of the code just felt subpar. That said, people keep praising it and saying it's better than Claude, so who knows, maybe it really is now.
+I primarily use [Claude](https://claude.com/claude-code) now, and honestly it's been the thing that stuck. The road to it was a mess though.
+
+I used [GitHub Copilot](https://github.com/features/copilot) all through university because of the free student plan, but over time it just turned to shit and got frustrating to work with. Then [Google Antigravity](https://antigravity.google/) came out and it was genuinely great, a shitton of usage limits at first.
+
+But then they cut the limits down, so I did the obvious dumb thing and made six different accounts to switch between, all on the Google Pro plan. I'd signed up for one when it was free for about a year, and added the rest into my family plan so every account got high limits. Switching between all of them every time I hit a wall got exhausting fast, and I also wanted to try [opencode](https://opencode.ai/), so I found an opencode extension that automatically rotated my accounts for me. I rode that till I got banned on all of them, lmao.
+
+I also gave [Cursor](https://cursor.com/) a shot but the free plan limits were tiny, and I tried [Kiro](https://kiro.dev/) too but never really enjoyed it. Then I switched to Claude and it was genuinely mind-blowing for me.
+
+I tried [Codex](https://openai.com/codex/) as well, but my experience at the time was negative. I went in through a business free trial and for whatever reason it was disappointing, the quality of the plans and the quality of the code just felt subpar. That said, people keep praising it and saying it's better than Claude, so who knows, maybe it really is now.
 
 The MCPs are where a lot of my actual leverage comes from. The one I reach for most for frontend is [Agentation](https://agentation.com/). I really love that I can annotate my UI changes and just tell the agent, copy them over, or let them get ingested automatically through the MCP. Being able to annotate a specific component, pause an animation, or select multiple components at once instead of fumbling to explain in words which thing I'm even talking about. That's such a relief.
 
 Then [Chrome DevTools](https://github.com/ChromeDevTools/chrome-devtools-mcp) is a fucking game changer for how I work. It literally gives the agent the ability to see network requests, inspect the DOM, write console scripts to poke at elements and behaviour, drop logs into the code and try things and read the console back to understand the finer issues. It can take screenshots to understand the state of things and actually see the same UI I'm looking at. Frontend can be a bit non-deterministic because of browser and CSS quirks, so being able to pinpoint root causes instead of guessing is huge.
 
-[LangSmith](https://smith.langchain.com/) is the next big one. We use it in our Python backend for GAIA, and during local dev we monitor agent traces through it. Being able to pinpoint what exactly went wrong, the specific prompts, the exact agent invoked, every step in depth, makes debugging so much easier for the LLM. When an agent just explores through code it misses a lot of the intricacies of a real system, so being able to validate what's actually happening and what's causing an issue speeds everything up. Alongside this I've also set up file logs, so each process, the Python backend, the WhatsApp/Discord/Telegram bots, our arq worker, all write to file logs. That way an agent doesn't have to fumble with terminal output and can actually watch live what's going on in the app. Massive time saver.
+[LangSmith](https://smith.langchain.com/) is the next big one. We use it in our Python backend for GAIA, and during local dev we monitor agent traces through it. Being able to pinpoint what exactly went wrong, the specific prompts, the exact agent invoked, every step in depth, makes debugging so much easier for the LLM. When an agent just explores through code it misses a lot of the intricacies of a real system, so being able to validate what's actually happening and what's causing an issue speeds everything up.
 
-[context7](https://context7.com/) I don't lean on heavily, but it's good for pulling docs on a new library or site so the LLM doesn't hallucinate. [deepwiki](https://deepwiki.com/) is really great for indexing repositories, understanding code quickly, or asking questions about a new repo or some library or package. [Linear](https://linear.app/) is how I manage and triage issues for GAIA; we juggle a lot of projects and I genuinely love Linear.
+Alongside this I've also set up file logs, so each process, the Python backend, the WhatsApp/Discord/Telegram bots, our arq worker, all write to file logs. That way an agent doesn't have to fumble with terminal output and can actually watch live what's going on in the app. Massive time saver.
 
-For prod, [Grafana](https://grafana.com/) and [Sentry](https://sentry.io/) for exploring logs and figuring out what broke. This is also a game changer. Giving an LLM observability into what's going wrong, or what already went wrong, is everything. Being able to read logs, query logs, and pinpoint the actual root cause is so good. Shoutout to [loggingsucks](https://loggingsucks.com/) for teaching me good high-cardinality logging practices. There's also a handful I've installed but barely touch: [refero](https://refero.design/), [Magic](https://21st.dev/magic), [HeroUI](https://heroui.com/), and [Dagger](https://dagger.io/).
+[context7](https://context7.com/) I don't lean on heavily, but it's good for pulling docs on a new library or site so the LLM doesn't hallucinate. [deepwiki](https://deepwiki.com/) is really great for indexing repositories, understanding code quickly, or asking questions about a new repo or some library or package.
+
+[Linear](https://linear.app/) is how I manage and triage issues for GAIA; we juggle a lot of projects and I genuinely love Linear.
+
+For prod, [Grafana](https://grafana.com/) and [Sentry](https://sentry.io/) for exploring logs and figuring out what broke. This is also a game changer. Giving an LLM observability into what's going wrong, or what already went wrong, is everything. Being able to read logs, query logs, and pinpoint the actual root cause is so good. Shoutout to [loggingsucks](https://loggingsucks.com/) for teaching me good high-cardinality logging practices.
+
+There's also a handful I've installed but barely touch: [refero](https://refero.design/), [Magic](https://21st.dev/magic), [HeroUI](https://heroui.com/), and [Dagger](https://dagger.io/).
 
 On the vibe-coding side of things: I use the [GitHub CLI](https://cli.github.com/) to manage our issues, create PRs, and resolve comments. [rtk](https://github.com/) I use to understand my token savings, screenshot below.
 
@@ -72,9 +86,9 @@ Then there's a second monitor, a [Dell P2314H](https://www.dell.com/support/home
   <figcaption>The secondary screen on the floor, portrait, for Obsidian tasks and Spotify.</figcaption>
 </figure>
 
-That home server itself is an old RGB tower that's been repurposed into our little home lab. It runs a bunch of stuff self-hosted over Tailscale, [analytics](https://posthog.com/), [Langfuse](https://langfuse.com/) for LLM tracing, a [Jellyfin](https://jellyfin.org/) media server, and a handful of other things. Honestly it's just really fun to tinker around with.
+That home server is my dad's old machine, the one he used to use for trading and didn't need anymore, now repurposed into our little home lab. It runs a bunch of stuff self-hosted over Tailscale, [analytics](https://www.rybbit.io/), [Langfuse](https://langfuse.com/) for LLM tracing, a [Jellyfin](https://jellyfin.org/) media server, and a handful of other things. Honestly it's just really fun to tinker around with.
 
-<figure class="max-w-xs mx-auto">
+<figure class="max-w-xs">
   <img src="/blog/my-setup/home-server.webp" alt="The home server, an RGB PC tower glowing with three lit fans and a blue-lit AIO cooler inside." />
   <figcaption>The home server, still rocking its RGB fans.</figcaption>
 </figure>

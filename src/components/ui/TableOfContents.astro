@@ -303,12 +303,16 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
   function movePreview(e: MouseEvent) {
     if (!preview) return;
-    const pad = 18;
+    const gap = 16;
     const w = preview.offsetWidth;
     const h = preview.offsetHeight;
-    let left = e.clientX + pad;
+    // Anchor to the left of the TOC rail so it never overlaps the entries;
+    // only the vertical position tracks the cursor.
+    const nav = document.getElementById('toc');
+    const railLeft = nav ? nav.getBoundingClientRect().left : e.clientX;
+    let left = railLeft - gap - w;
+    if (left < 8) left = 8; // fallback on narrow viewports
     let top = e.clientY - h / 2;
-    if (left + w > window.innerWidth - 8) left = e.clientX - pad - w;
     top = Math.max(8, Math.min(top, window.innerHeight - h - 8));
     preview.style.left = `${left}px`;
     preview.style.top = `${top}px`;

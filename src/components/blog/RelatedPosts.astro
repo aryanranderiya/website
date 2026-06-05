@@ -22,8 +22,8 @@ function formatDate(dateStr: string): string {
 ---
 
 {posts.length > 0 && (
-  <aside class="mt-20">
-    <p class="mb-6 font-medium text-[13px] text-[var(--text-ghost)]">Related posts</p>
+  <aside class="not-prose mt-10">
+    <p class="mb-3 font-medium text-[13px] text-[var(--text-ghost)]">Related posts</p>
     <div class="dim-list related-list flex flex-col gap-1">
       {posts.map(post => (
         <a
