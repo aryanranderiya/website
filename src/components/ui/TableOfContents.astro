@@ -76,7 +76,8 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
     transition: color 0.15s ease;
   }
 
-  #toc .toc-link.active {
+  #toc .toc-link.active,
+  #toc .toc-link:hover {
     color: var(--text-primary);
   }
 
