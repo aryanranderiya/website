@@ -7,6 +7,8 @@
 // blog-specific — they render in every collection.
 import Callout from './Callout.astro';
 import DemoVideo from './DemoVideo.astro';
+import Figure from './Figure.astro';
+import ImageGrid from './ImageGrid.astro';
 import Kbd from './Kbd.astro';
 import Tweet from './Tweet.astro';
 import Video from './Video.astro';
@@ -15,6 +17,8 @@ import YouTube from './YouTube.astro';
 export const mdxComponents = {
 	Callout,
 	DemoVideo,
+	Figure,
+	ImageGrid,
 	Kbd,
 	Tweet,
 	Video,

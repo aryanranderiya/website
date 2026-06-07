@@ -2,8 +2,8 @@
 interface RelatedPost {
 	slug: string;
 	title: string;
-	description: string;
-	tags: string[];
+	date: string;
+	featured?: boolean;
 }
 
 interface Props {
@@ -11,32 +11,38 @@ interface Props {
 }
 
 const { posts } = Astro.props;
+
+function formatDate(dateStr: string): string {
+	return new Date(dateStr).toLocaleDateString('en-US', {
+		month: 'short',
+		day: 'numeric',
+		year: 'numeric',
+	});
+}
 ---
 
 {posts.length > 0 && (
-  <aside class="mt-12">
-    <p class="text-label mb-5 text-[var(--text-ghost)]">Related</p>
-    <div class="flex flex-col gap-1">
+  <aside class="not-prose mt-10">
+    <p class="mb-3 font-medium text-[13px] text-[var(--text-ghost)]">Related posts</p>
+    <div class="dim-list related-list flex flex-col gap-1">
       {posts.map(post => (
         <a
           href={`/${post.slug}`}
-          class="group flex flex-col gap-1 py-3 px-3 -mx-3 rounded-[var(--radius-md)] transition-colors no-underline hover:bg-[var(--muted-bg)]"
+          class="dim-list-row group/item -mx-2 flex items-center gap-[14px] rounded-[var(--radius-md)] px-2 py-[10px] no-underline transition-colors hover:bg-[var(--muted-bg)]"
         >
-          <span class="text-sm font-medium text-[var(--text-secondary)] transition-colors duration-150 group-hover:text-[var(--text-primary)]">
-            {post.title}
-          </span>
-          <span class="text-xs leading-snug text-[var(--text-ghost)]">
-            {post.description}
-          </span>
-          {post.tags.length > 0 && (
-            <div class="flex flex-wrap gap-1.5 mt-1">
-              {post.tags.slice(0, 4).map(tag => (
-                <span class="text-[10px] px-2 py-0.5 rounded-full bg-[var(--muted-bg)] text-[var(--text-ghost)]">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
+          <div class="flex min-w-0 flex-1 items-center gap-2">
+            <span class="truncate font-medium text-[13px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover/item:text-[var(--text-primary)]">
+              {post.title}
+            </span>
+            {post.featured && (
+              <span class="shrink-0 rounded-full bg-[var(--muted-bg)] px-1.5 py-[2px] font-normal text-[10px] text-[var(--text-ghost)] tracking-[0.02em]">
+                Featured
+              </span>
+            )}
+          </div>
+          <time class="shrink-0 text-[13px] text-[var(--text-ghost)]">
+            {formatDate(post.date)}
+          </time>
         </a>
       ))}
     </div>

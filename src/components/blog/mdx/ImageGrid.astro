@@ -1,0 +1,78 @@
+---
+interface GridImage {
+	src: string;
+	alt?: string;
+	/** Tag this image into the table of contents. */
+	toc?: boolean;
+	/** Label shown in the TOC. Falls back to alt. */
+	tocLabel?: string;
+	/** How the TOC entry renders: inline thumbnail or icon + label line. */
+	tocMode?: 'inline' | 'line';
+}
+
+interface Props {
+	/** Images to lay out in the grid. */
+	images: GridImage[];
+	/** Columns on desktop. Defaults to 2. */
+	cols?: number;
+	/** Optional caption shown beneath the whole grid. */
+	caption?: string;
+}
+
+const { images = [], cols = 2, caption } = Astro.props;
+
+function slugify(input: string): string {
+	return input
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, '-')
+		.replace(/(^-|-$)/g, '');
+}
+---
+
+<figure class="my-6">
+	<div class="image-grid" style={`--cols:${cols}`}>
+		{
+			images.map((img) => {
+				const label = img.tocLabel ?? img.alt ?? '';
+				const id = img.toc ? `img-${slugify(label || img.src)}` : undefined;
+				return (
+					<img
+						src={img.src}
+						alt={img.alt ?? ''}
+						loading="lazy"
+						id={id}
+						data-toc={img.toc ? '' : undefined}
+						data-toc-label={img.toc ? label : undefined}
+						data-toc-mode={img.toc ? (img.tocMode ?? 'inline') : undefined}
+						data-toc-thumb={img.toc ? img.src : undefined}
+					/>
+				);
+			})
+		}
+	</div>
+	{caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+	.image-grid {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 8px;
+	}
+
+	@media (min-width: 560px) {
+		.image-grid {
+			grid-template-columns: repeat(var(--cols), 1fr);
+		}
+	}
+
+	.image-grid :global(img) {
+		width: 100%;
+		height: 100%;
+		aspect-ratio: 1 / 1;
+		object-fit: cover;
+		border-radius: 10px;
+		margin: 0;
+		background: var(--muted-bg);
+	}
+</style>

@@ -1,5 +1,5 @@
 ---
-import { CopyLinkIcon } from '../icons';
+import { HugeiconsIcon, Link04Icon } from '@icons';
 
 interface Props {
 	title: string;
@@ -11,11 +11,11 @@ const { url } = Astro.props;
 <div class="flex items-center justify-center">
   <button
     id="copy-link-btn"
-    class="inline-flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-[var(--radius-md)] bg-[var(--muted-bg)] text-[var(--text-muted)] transition-colors duration-150 hover:bg-[var(--muted-bg-strong)] hover:text-[var(--text-secondary)] active:scale-95"
+    class="inline-flex items-center gap-1.5 text-xs px-3.5 py-2 rounded-full bg-[var(--muted-bg)] text-[var(--text-muted)] transition-colors duration-150 hover:bg-[var(--muted-bg-strong)] hover:text-[var(--text-secondary)] active:scale-95"
     aria-label="Copy link"
     data-url={url}
   >
-    <CopyLinkIcon width={16} height={16} />
+    <HugeiconsIcon icon={Link04Icon} size={16} />
     <span id="copy-label">Copy link</span>
   </button>
 </div>
