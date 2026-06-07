@@ -1,0 +1,100 @@
+---
+title: "Chasing Vercel Parity on Cloudflare Workers"
+description: "A 31-hour migration-hardening marathon to make a Next.js app on Cloudflare Workers feel as fast as Vercel — fourteen distinct fixes from R2 caching to woff2 fonts, each measured, ending in a one-line Suspense fix that had silently client-rendered the entire homepage."
+date: 2026-06-06
+platform: claude-code
+model: claude-opus-4-8
+harness: "Claude Code v2.1.168"
+category: infrastructure
+featured: true
+tokens: "12.8M"
+tokenCount: 12758346
+apiCalls: 954
+messageCount: 1359
+duration: "31h 26m 36s"
+filesChanged: 32
+linesChanged: "+310 / -164"
+agents:
+  - "Find homepage LCP hero image (Explore)"
+  - "Find homepage nav/link prefetch source (Explore)"
+  - "Map landing page eager hydration (Explore)"
+  - "Trace heavy-lib SSR usage (Explore)"
+  - "Audit GAIA web app perf config (Explore)"
+  - "Research CF Workers + OpenNext perf levers (general-purpose)"
+  - "Research Next.js bundle/hydration cuts (general-purpose)"
+  - "Rigorous CF vs Vercel speed comparison (general-purpose)"
+  - "Review staged cloudflare/perf changes (general-purpose)"
+agentCount: 9
+project: "GAIA"
+branch: "fix/landing-ssr-and-cloudflare-perf"
+sessionId: "fdb77710-1495-4594-87d1-70b07aff83a8"
+---
+
+GAIA's marketing site runs in two places: `heygaia.io` on Vercel, and `cf.heygaia.io` on Cloudflare Workers via the `@opennextjs/cloudflare` adapter — a cost-driven migration in progress. The Cloudflare copy felt slow, and the entire thirty-one-hour session was one question, asked and re-asked in escalating frustration, that turned out to have fourteen separate answers stacked on top of each other:
+
+> *"nextjs slow on cloudflare workers? https://cf.heygaia.io/ vs heygaia.io? whats going on?"*
+
+What follows is the value of each change, in the order it was found — because no single fix got there, and the one that finally mattered was the last thing anyone would have suspected.
+
+## Fix 1 — An incremental cache, because there wasn't one
+
+The opening measurement was brutal: `cf.heygaia.io` returned `x-nextjs-cache: MISS` on every request with TTFB swinging 2.6–5.6s, while Vercel served `x-vercel-cache: HIT` at ~0.16s. The `open-next.config.ts` was the empty default — no incremental cache backend at all, so the Worker re-rendered the page from scratch every time. Live-fetching the OpenNext docs (which recommend R2 over KV because KV's eventual consistency breaks revalidation) gave the production shape: `withRegionalCache(r2IncrementalCache)` for a durable store fronted by a per-PoP Cache-API layer, `doQueue` for the time-based ISR, and `enableCacheInterception`. **Value: every repeat request became a cache hit instead of a full re-render.** It required provisioning an R2 bucket and a `DOQueueHandler` Durable Object with a SQLite migration.
+
+## Fix 2 — Stop baking `localhost` into the production bundle
+
+Before the first deploy the user caught a landmine: *"ensure if we rebuild shit, the actual api url is properly used in the backend."* The build was embedding `NEXT_PUBLIC_API_BASE_URL=http://localhost:8000`. Tracing it ruled out `.env`, `.env.production`, even `next.config.mjs`'s `env` block — the value came from `apps/web/mise.toml`'s `[env]`, which as a real process env var shadows every dotenv file. A dedicated `mise deploy` task injecting `https://api.heygaia.io/api/v1/` fixed it, verified by grepping the built worker until `localhost:8000` returned zero occurrences and `api.heygaia.io` appeared 84 times. **Value: the deployed app actually talks to the production API instead of a developer's laptop.**
+
+## Fix 3 — Get image optimization off the Worker (−93% per image)
+
+Cache HITs landed but the browser still dragged, and the user pushed back on shallow profiling: *"it seems really noticeably slow oni browser please exlpore a lot more in the time like dont rely on a couple profiling."* A headless-Chrome trace showed **218 network requests**, ~40 of them `/_next/image` calls at 1–2s each. Cloudflare has no Vercel-style image CDN; OpenNext's default optimizer runs *in the Worker, uncached*, and was emitting a 318KB output for a 318KB webp input — pure overhead. The fix was a custom `image-loader.ts` routing `next/image` through Cloudflare's `/cdn-cgi/image/` endpoint with `format=auto`. **Value: a 400px hero variant fell from 318KB to 22KB (−93%), served as AVIF from the edge with zero Worker time.** This was the single biggest contributor to the "feels slow in the browser" complaint.
+
+## Fixes 4–7 — The compounding wins, each measured
+
+A cluster of smaller changes each carried real, quantified value. **Fonts:** the six OTF files, converted with `fonttools` + `brotli` to woff2, dropped from 334KB to 176KB (−48%, −157KB off the critical path). **Immutable headers:** `/_next/static/*` was being served `cache-control: max-age=0, must-revalidate` — forcing the browser to revalidate all 43 content-hashed chunks on every navigation; a `public/_headers` file flipping them to `immutable` fixed repeat-visit and in-app-navigation cost. **Homepage ISR:** adding `export const revalidate = 3600` gave the homepage a stable cache entry, cutting its TTFB p50 from **1.37s to 0.71s**. **Prefetch storm:** the nav mega-menu (24 links) and footer (37 links) were firing 25+ RSC prefetch requests against the cold Worker on every load; `prefetch={false}` contained it. Plus a modern `browserslist` to drop legacy polyfills. None of these alone was dramatic; together they were the difference between "rough" and "tight."
+
+## Fix 8 — The 500 outage that exposed a latent binding bug
+
+Mid-session, while experimenting with `staticAssetsIncrementalCache`, the live test site started throwing 500s. `wrangler tail --format json` caught it: `Error: IgnorableError: No service binding for cache revalidation worker`. OpenNext's Durable Object queue needs a `WORKER_SELF_REFERENCE` service binding to call back into the worker and re-render stale pages — and it had been missing from `wrangler.jsonc` the whole time. It only surfaced once pages aged past their `revalidate` window and the queue fired. **Value: ISR revalidation works instead of 500-ing — and this same binding is required for the production migration.** Adding it, plus rolling back the broken experiment, restored service.
+
+## "Why 2 seconds? Why wasn't this the case with Vercel?"
+
+This was the question that reframed everything. Both deployments run the *same* app — I verified Vercel's eager bundle at 800KB/39 chunks versus Cloudflare's 848KB/43 chunks. Yet identical JavaScript showed a 117ms render delay on Vercel and 1766ms on Cloudflare. The user then made the sharpest observation of the session:
+
+> *"worker times is supposed to be in milliseconds according to cloudflare so there is some issue with our code."*
+
+They were exactly right. `wrangler tail` showed **CPU time 8–19ms, wall time 118–382ms** — the Worker wasn't computing, it was *waiting on I/O* (R2 reads on regional-cache misses). That demolished the "cold start" narrative; the platform was behaving as advertised and our per-request R2 round-trips were the cost. After the user enabled Cloudflare Tiered Cache, wall time fell to 42–106ms and cold-path TTFB p50 dropped from ~1s to **0.28s**. **Value: the honest diagnosis — it was I/O latency, not compute, and not a cold-start mystery.**
+
+## The caching dead-ends, each disproven rather than assumed
+
+Under a Stop hook — *"please don't stop until cloudflare matches the vercel timing yeah try this caching it"* — I tried to get the HTML itself edge-cached like a static file. Every path was tested and failed, which is its own value: it stopped the team from chasing them later. A Cloudflare Cache Rule (scoped strictly to `cf.heygaia.io`, since the same zone held the live Vercel apex) stripped the `Set-Cookie: NEXT_LOCALE` and `Vary: RSC` headers that block caching — but `cf-cache-status` stayed absent, proving **Cloudflare Cache Rules don't cache a Worker's generated response.** Switching `incrementalCache` to `staticAssetsIncrementalCache` didn't move HTML to the edge either, and broke ISR. `Smart Placement` went in (worker co-located near R2) but needs hours of traffic to activate. The R2 bucket turned out already optimally placed in `APAC`. Each "no" was backed by a measurement, not a guess.
+
+## The animation that had to stay beautiful
+
+A hard constraint shaped the eventual breakthrough: *"no dont drop the blur in fade its unacceptable i want it beautifully animated perfectly figure out the best practice to do this."* The hero's per-character blur-in was Framer-Motion driven, gating each glyph at `opacity: 0` until a `requestAnimationFrame` flipped state *after hydration* — so the LCP text was invisible until JS ran. The best-practice rewrite drove the identical effect (blur 12px→0, translateY 16px→0, the same `cubic-bezier(0.22, 1, 0.36, 1)`, per-char `animation-delay` stagger) with a pure CSS `@keyframes gaia-soft-blur-in` that auto-plays from the SSR HTML — compositor thread, zero hydration cost. The gating `MotionContainer` wrapper came out entirely. **Value: the animation is preserved exactly, but it no longer waits on JavaScript to start.**
+
+## The breakthrough — the entire homepage was client-rendered
+
+And yet the deployed page *still* wouldn't show the CSS animation. Reading the OpenNext incremental-cache `.cache` files directly (JSON with `html`/`rsc`/`segmentData`) exposed the disease every earlier fix had been treating: the prerendered homepage had **zero `<h1>` tags and 38KB of empty shell**, while a sibling page `/for` prerendered 128KB of real content. The hero — the LCP element, the entire `LandingPageClient` tree — was absent from the server HTML and only appeared after the full bundle hydrated. *That* was the 1.8s render delay, all along.
+
+The markup named the mechanism: `<template data-dgst="BAILOUT_TO_CLIENT_SIDE_RENDERING">` at app-root. A local `next build` (which OOM'd until given `--max-old-space-size=8192`) reproduced it. The cause is textbook Next.js — a component calling `useSearchParams()` without a `<Suspense>` boundary deopts the *entire statically-generated page* to client rendering. The codebase already knew this: `GlobalAuth` was Suspense-wrapped with a comment explaining the exact hazard. Its sibling `GlobalInterceptor` (which reads `useSearchParams` via `useOAuthSuccessToast`) was not. Someone had fixed one and missed the other:
+
+```tsx
+<Suspense fallback={<></>}>
+  <GlobalAuth />
+</Suspense>
+<GlobalInterceptor />   // ← unwrapped: deopts the whole page to CSR
+```
+
+Wrapping it in its own `<Suspense>` contained the bailout. The next build's `en.html` went from 38KB to **478KB**, the `<h1>` returned, `gaia-soft-blur-in` appeared 33 times, and the browser trace closed the case:
+
+| Metric | Start | After hero CSS | After SSR fix |
+|---|---|---|---|
+| LCP | 6021 ms | 2392 ms | **470 ms** |
+| Render delay | 3129 ms | 1766 ms | **352 ms** |
+| SSR HTML | 38 KB shell | 38 KB shell | **478 KB full** |
+
+## The honest verdict
+
+A dedicated comparison agent then caught the caveat that recontextualized every "Vercel is faster" number from the whole session: `heygaia.io` serves a **bot-challenge page to curl** (HTTP 403, 33KB interstitial), so curl had been measuring an edge stub, not the real app. The fair, browser-based comparison: Cloudflare's 470ms LCP sits beside Vercel's 344ms lab and *beats* Vercel's 3173ms CrUX field figure for real users; warm TTFB is ~0.09s on Cloudflare vs ~0.057s on Vercel — imperceptible.
+
+The arc is the lesson. "Make Cloudflare match Vercel" was framed as an infrastructure problem, and the infrastructure work — R2 caching, the image CDN, woff2 fonts, immutable headers, ISR, the `WORKER_SELF_REFERENCE` binding, Tiered Cache — was all real and all necessary for a sane migration. But every one of those was treating a 1.8s render delay whose root cause was a single un-`<Suspense>`'d hook shipping a blank shell to every visitor, on *both* platforms. The migration hardening was worth doing; the parity came from one boundary. It shipped as PR #740 against `develop` — 32 files, +310/−164 — backed by nine subagents (five Explore agents mapping the hydration surface, three research agents pulling current OpenNext and Next.js guidance, one rigorous speed comparison, one review pass that caught the orphaned `.otf` files and dead `MotionContainer` before commit), and a final code review and type-check pass before it went up.
