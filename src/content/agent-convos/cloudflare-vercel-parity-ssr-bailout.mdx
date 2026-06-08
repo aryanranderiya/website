@@ -1,19 +1,19 @@
 ---
 title: "Chasing Vercel Parity on Cloudflare Workers"
-description: "A 31-hour migration-hardening marathon to make a Next.js app on Cloudflare Workers feel as fast as Vercel — fourteen distinct fixes from R2 caching to woff2 fonts, each measured, ending in a one-line Suspense fix that had silently client-rendered the entire homepage."
+description: "A two-session, ~41-hour migration-hardening marathon to make a Next.js app on Cloudflare Workers match Vercel — from R2 caching and a one-line Suspense fix that had silently client-rendered the homepage, to proving the remaining cold start was the Worker bundle itself and moving the entire landing onto static assets, plus repairing the blog, native-integration, and slug-page rendering that only broke on Cloudflare."
 date: 2026-06-06
 platform: claude-code
 model: claude-opus-4-8
 harness: "Claude Code v2.1.168"
 category: infrastructure
 featured: true
-tokens: "12.8M"
-tokenCount: 12758346
-apiCalls: 954
-messageCount: 1359
-duration: "31h 26m 36s"
-filesChanged: 32
-linesChanged: "+310 / -164"
+tokens: "17.9M"
+tokenCount: 17901277
+apiCalls: 1654
+messageCount: 2358
+duration: "40h 53m 37s"
+filesChanged: 47
+linesChanged: "+540 / -277"
 agents:
   - "Find homepage LCP hero image (Explore)"
   - "Find homepage nav/link prefetch source (Explore)"
@@ -24,10 +24,11 @@ agents:
   - "Research Next.js bundle/hydration cuts (general-purpose)"
   - "Rigorous CF vs Vercel speed comparison (general-purpose)"
   - "Review staged cloudflare/perf changes (general-purpose)"
-agentCount: 9
+  - "Investigate blog + native integrations + extract codegen (Explore)"
+agentCount: 10
 project: "GAIA"
 branch: "fix/landing-ssr-and-cloudflare-perf"
-sessionId: "fdb77710-1495-4594-87d1-70b07aff83a8"
+sessionId: "fdb77710-1495-4594-87d1-70b07aff83a8, 7ba85ab7-bd69-4470-9776-c5a80882cf39"
 ---
 
 GAIA's marketing site runs in two places: `heygaia.io` on Vercel, and `cf.heygaia.io` on Cloudflare Workers via the `@opennextjs/cloudflare` adapter — a cost-driven migration in progress. The Cloudflare copy felt slow, and the entire thirty-one-hour session was one question, asked and re-asked in escalating frustration, that turned out to have fourteen separate answers stacked on top of each other:
@@ -97,4 +98,50 @@ Wrapping it in its own `<Suspense>` contained the bailout. The next build's `en.
 
 A dedicated comparison agent then caught the caveat that recontextualized every "Vercel is faster" number from the whole session: `heygaia.io` serves a **bot-challenge page to curl** (HTTP 403, 33KB interstitial), so curl had been measuring an edge stub, not the real app. The fair, browser-based comparison: Cloudflare's 470ms LCP sits beside Vercel's 344ms lab and *beats* Vercel's 3173ms CrUX field figure for real users; warm TTFB is ~0.09s on Cloudflare vs ~0.057s on Vercel — imperceptible.
 
-The arc is the lesson. "Make Cloudflare match Vercel" was framed as an infrastructure problem, and the infrastructure work — R2 caching, the image CDN, woff2 fonts, immutable headers, ISR, the `WORKER_SELF_REFERENCE` binding, Tiered Cache — was all real and all necessary for a sane migration. But every one of those was treating a 1.8s render delay whose root cause was a single un-`<Suspense>`'d hook shipping a blank shell to every visitor, on *both* platforms. The migration hardening was worth doing; the parity came from one boundary. It shipped as PR #740 against `develop` — 32 files, +310/−164 — backed by nine subagents (five Explore agents mapping the hydration surface, three research agents pulling current OpenNext and Next.js guidance, one rigorous speed comparison, one review pass that caught the orphaned `.otf` files and dead `MotionContainer` before commit), and a final code review and type-check pass before it went up.
+The arc is the lesson. "Make Cloudflare match Vercel" was framed as an infrastructure problem, and the infrastructure work — R2 caching, the image CDN, woff2 fonts, immutable headers, ISR, the `WORKER_SELF_REFERENCE` binding, Tiered Cache — was all real and all necessary for a sane migration. But every one of those was treating a 1.8s render delay whose root cause was a single un-`<Suspense>`'d hook shipping a blank shell to every visitor, on *both* platforms. The migration hardening was worth doing; the parity came from one boundary. It shipped as PR #740 against `develop` — 32 files, +310/−164 — backed by nine subagents (five Explore agents mapping the hydration surface, three research agents pulling current OpenNext and Next.js guidance, one rigorous speed comparison, one review pass that caught the orphaned `.otf` files and dead `MotionContainer` before commit), and a final code review and type-check pass before it went up. But the branch wasn't done.
+
+## The sequel — a fresh tab still stalled
+
+Two days later, same branch, the user reopened it with the symptom that started everything:
+
+> *"btw i opened cf.heygaia.io in a new tab. why does it take some time like is there really no way to optimise start up speed?"*
+
+and then set the rules of engagement:
+
+> *"please do not assume things. ensure that your claims are validated perfectly... ensure that cache and other issues don't dilute or puddle your claims."*
+
+Render-delay was gone, but cold TTFB on a genuinely fresh tab was still 1.5–2.5s. `wrangler tail` told the real story: on requests where the browser saw 1.9s, the Worker's own `wallTime` was **94–520ms** and `cpuTime` 27–121ms, with `x-opennext-cache: HIT` — the worker wasn't rendering, it was barely running. The ~1.5s lived *outside* `wallTime`, in isolate spin-up. Cloudflare's deploy-time "Worker Startup Time: 39ms" was a red herring; that's measured warm with the V8 code cache hot, and `wallTime` never counts the cold load-and-compile of the bundle.
+
+## Proving it was our bundle, not the platform
+
+> *"are you sure nothing can be done?"*
+
+That push was the right one — I'd concluded "fixed platform overhead, nothing to do" without running the one experiment that settles it. I deployed a five-line hello-world Worker (`coldprobe-gaia`) to the same account and force-idled both. Isolating server time (TTFB minus TLS): the trivial worker cold-started in **0.11–0.21s**; `gaia` in **1.5–2.1s** — same region, same Smart Placement, same cold conditions. That ~1.6s delta *is* loading and compiling our 30 MB / 6.7 MB-gzip bundle (the esbuild metafile pinned 23 MB of it as the app's own SSR code), not platform overhead. Re-running the edge-cache idea — a Cache Rule scoped to `cf.heygaia.io` plus a Transform Rule stripping `Vary` — still left `cf-cache-status` absent, re-confirming from Cloudflare's own docs that **a Worker runs in front of the cache**: you cannot cache its HTML response to skip it.
+
+## Moving the landing off the Worker entirely
+
+What *is* served in front of the Worker is Workers Static Assets — that's why `/_next/static/*` is fast. The landing pages are static marketing content that had no business behind a dynamic worker. The user's framing nailed the architecture:
+
+> *"i thought we tried to make it fully true static assets for the landing page? did we not?"*
+
+We hadn't. So `scripts/promote-static-landing.mjs` promotes the prerendered landing HTML into `.open-next/assets`, deriving the page set from the `(landing)` route group and excluding the five locale-detection prefixes and auth routes so i18n and login keep their Worker. Verified by headers — `cf-cache-status: HIT`, no `x-opennext-cache`, no `cf-placement` — **the homepage went from ~1.8s cold to ~0.1–0.25s, cold-immune**, served from the edge with the Worker never invoked, brotli-compressed 481 KB → 55 KB.
+
+## The 404s the populate-skip hid
+
+> *"tell me about the sitemap do all pages render perfectly?"*
+
+They didn't. `/compare/activepieces` and the whole programmatic-SEO surface returned **200 on Vercel, 404 on Cloudflare** — thousands of URLs. The cause was self-inflicted: to dodge a flaky R2 populate step, I'd been deploying with `OPEN_NEXT_DEPLOY=true wrangler deploy`, which skips the populate, so each new build's prerendered pages never reached R2. The prerender is **1.6 GB across 5,553 files** — far too large to serve as static assets, so those pages *must* be R2-served. A proper `opennextjs-cloudflare deploy`, whose populate uploaded 5,633 files in ~3 minutes, restored every slug page — English and localized — to 200.
+
+## The blog that fs forgot, and an empty shard
+
+> *"yeah bro the blog sitemap needs to be fixed properly man what the hell."*
+
+The blog sitemap shard was empty because `lib/blog.ts` read markdown with `fs.readdirSync(process.cwd()/content/blog)` at request time — impossible on Workers. The fix migrated blog onto the exact worker-safe loader every other SEO section uses (`feature-data.ts`: fs at build, the Cloudflare ASSETS binding at runtime), with a new `extract-blog-data.mjs` generating `public/data/blog/*.json` from the markdown, wired into `prebuild`. Shard 1 went 0 → 6 posts and `/blog/[slug]` works on the Worker. The hardcoded-empty `NATIVE_INTEGRATIONS` shard — a literal `return []` — got a real implementation fetching `/integrations/config` for platform integrations, 0 → 32 entries. All eleven shards now resolve; the other empties (explore/community/integrations) had only been blank because the build still pointed at `localhost`.
+
+## How it deploys on master
+
+> *"the deploy should run on master i've linked git to cloudflare worker. how will it work properly?"*
+
+Confirmed against OpenNext's own guidance: Cloudflare Workers Builds runs `opennextjs-cloudflare build` then `opennextjs-cloudflare deploy`, and **the R2 populate runs automatically inside `deploy`** (via a temporary worker) on every push — so the slug-page 404s cannot recur on master. A new `cf:build` script folds the static-landing promotion into the build phase, and `cf.heygaia.io` was added to the production CORS allowlist so the browser can reach `api.heygaia.io`. The leftover sitemap question resolved cleanly too: `/fr` and `/es/pricing` aren't in the sitemap because those pages are English-only and 307-redirect — the generator correctly emits locale URLs only for the five translated page-types, which all resolve 200.
+
+The parity arc found one Suspense boundary. The sequel found that "fast" still had a Worker cold-start sitting in front of every static page, and the fix was architectural rather than a config knob: stop serving static content through a dynamic worker. Same branch, same PR #740 — now 47 files across both sessions, the landing cold-immune off the edge, the programmatic-SEO and blog surfaces rendering on Workers, and every sitemap shard populated.
