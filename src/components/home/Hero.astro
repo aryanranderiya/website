@@ -1,17 +1,17 @@
 ---
-import Avatar from "@/components/Avatar.astro";
-import ButtonLink from "@/components/ui/ButtonLink";
-import PreviewLink from "@/components/ui/PreviewLink";
-import { fetchOgMetadata } from "@/lib/fetchOgMetadata";
+import Avatar from '@/components/Avatar.astro';
+import ButtonLink from '@/components/ui/ButtonLink';
+import PreviewLink from '@/components/ui/PreviewLink';
+import { fetchOgMetadata } from '@/lib/fetchOgMetadata';
 
 // Build-time OG scrape — the resulting `preview` payload is baked into the
 // page HTML and shipped to <PreviewLink> as static props. No client fetch,
 // no caching headaches, and the data is always whatever the target site
 // publishes at build time.
 const [experienceCompanyOg, gaiaOg, spotifyOg] = await Promise.all([
-	fetchOgMetadata("https://experience.heygaia.io"),
-	fetchOgMetadata("https://heygaia.io"),
-	fetchOgMetadata("https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"),
+	fetchOgMetadata('https://experience.heygaia.io'),
+	fetchOgMetadata('https://heygaia.io'),
+	fetchOgMetadata('https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH'),
 ]);
 ---
 
@@ -167,15 +167,16 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = await Promise.all([
 </style>
 
 <script>
-	(function () {
-		const hero = document.querySelector(
-			".hero-waiting",
-		) as HTMLElement | null;
+	import { onPage } from "@/lib/lifecycle";
+
+	// Re-runs on every navigation back to home, so the fresh `.hero-waiting`
+	// element gets un-paused too — otherwise the hero stays paused/invisible
+	// until a hard reload.
+	onPage(() => {
+		const hero = document.querySelector(".hero-waiting") as HTMLElement | null;
 		if (!hero) return;
 
-		function start() {
-			hero!.classList.remove("hero-waiting");
-		}
+		const start = () => hero.classList.remove("hero-waiting");
 
 		// If preloader was already shown in a previous session, start immediately
 		try {
@@ -188,6 +189,10 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = await Promise.all([
 		// First visit — wait for the preloader to fire its done event
 		window.addEventListener("preloader:done", start, { once: true });
 		// Safety fallback: if event never fires (e.g. preloader removed), start after 2s
-		setTimeout(start, 2000);
-	})();
+		const fallback = setTimeout(start, 2000);
+		return () => {
+			window.removeEventListener("preloader:done", start);
+			clearTimeout(fallback);
+		};
+	});
 </script>
