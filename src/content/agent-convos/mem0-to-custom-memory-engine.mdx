@@ -1,0 +1,96 @@
+---
+title: "Replacing mem0 with a custom local memory engine in one 14-hour session"
+description: "A full mem0 rip-out replaced by a hybrid-retrieval memory engine (Chroma + Postgres FTS + local reranker), benchmarked against LongMemEval from 39.6% to 90%+ held-out accuracy, with folders, a dated journal, auto-written profile documents, an entity graph, and a landing page section — all built, tested against live data, and shipped to a PR in a single session."
+date: 2026-06-11
+platform: claude-code
+model: claude-fable-5
+harness: "Claude Code v2.1.173"
+category: knowledge-engineering
+featured: true
+tokens: "34.4M"
+tokenCount: 34415444
+apiCalls: 2139
+messageCount: 3353
+duration: "14h 19m 30s"
+filesChanged: 345
+linesChanged: "+21,456 / -8,717"
+agents:
+  [
+    "mem0-system-mapper (exploration)",
+    "frontend-memory-ui-mapper (exploration)",
+    "hindsight-architecture-researcher (research)",
+    "supermemory-architecture-researcher (research)",
+    "infra-mapper (exploration)",
+    "memory-engine-foundation (implementation)",
+    "extraction-layer-builder (implementation)",
+    "write-path-builder (implementation)",
+    "read-path-builder (implementation)",
+    "consolidation-vfs-builder (implementation)",
+    "mem0-removal-rewirer (implementation)",
+    "memory-tools-endpoints-builder (implementation)",
+    "memory-settings-ui-builder (implementation)",
+    "memory-tool-cards-builder (implementation)",
+    "adversarial-pytest-writer (testing)",
+    "accuracy-benchmark-builder (testing)",
+    "code-reviewer (review)",
+    "ui-polish-passes (design)",
+    "settings-url-restructure (implementation)",
+    "memory-docs-writer (docs)",
+    "graph-edge-deduper (implementation)",
+    "proactive-todos-tracer (exploration)",
+    "email-preview-finder (exploration)",
+    "landing-memory-section-builder (implementation)",
+  ]
+agentCount: 42
+project: "GAIA"
+branch: "feat/memory-system"
+sessionId: "f54d8586-01ce-4477-9e6d-dc16c32c502e"
+---
+
+GAIA's long-term memory ran on mem0, a hosted memory service, and it showed: flat fact lists, no sense of time, no organization, no idea who the user actually was. The brief that opened this session asked for a full replacement:
+
+> *"I want to replace our current entire memory system of mem0 with a custom memory system of our own which is way better... gaia needs to know about the user context (user.md) then memory.md too to remember conventions... then gaia should be aware of day to day what's going on like working memory... date wise memory... every single thing i tell it should NOT be forgotten."*
+
+Fourteen hours and 19 minutes later the branch held a complete memory engine — hybrid retrieval over local models, an extraction-and-reconciliation write path with version lineage, five auto-consolidated profile documents, a dated journal, an entity graph, a folder tree, nine agent tools with chat cards, a settings UI, a LongMemEval benchmark harness that went from 39.6% to 90%+ held-out accuracy, a landing page section, and an open PR. 345 files changed, +21,456 / −8,717 lines, 42 subagent spawns, 34.4M net tokens.
+
+## Architecture before code
+
+The session started with parallel exploration agents mapping the existing mem0 integration, the frontend memory UI, GAIA's infra, and two reference systems the user pointed at — Hindsight and Supermemory. The user pushed back early on scope drift: *"so are we reusing supermemory or are we creating super memory from scratch??"* — the answer that survived planning was from scratch, stealing only ideas: Hindsight's separation of episodic and semantic memory, Supermemory's graph view (its MIT-licensed `memory-graph` React component was the one piece reused directly).
+
+The plan that came out of it: Postgres as the source of truth for facts with full lineage (`version`, `parent_id`, `root_id`, `is_latest`), ChromaDB for vectors, Redis for the hot per-turn cache, and two local models so nothing memory-related ever leaves the box — `mxbai-embed-large-v1` for 1024-dim embeddings (1.64GB resident) and `jina-reranker-v1-turbo-en` as a cross-encoder (172MB). The read path was designed to use zero LLM calls: Chroma ANN and Postgres full-text search run concurrently, fuse via reciprocal-rank fusion (k=60), the reranker re-scores the fused list, and a blend of rerank logits and raw cosine similarity (0.6/0.4) feeds confidence tiering that caps weak results and cuts everything below a relevance-dropoff ratio.
+
+## Ten subsystems in parallel
+
+Implementation ran as a fleet: separate agents built the engine foundation, the extraction layer, the write path, the read path, consolidation plus a VFS projection, the mem0 removal across every backend touchpoint, agent tools and API endpoints, the settings UI, and chat tool cards, while another wrote an adversarial pytest suite. The write path does the heavy lifting: an extraction LLM pulls atomic third-person facts (with entities, edges, journal lines, and agenda updates) from each conversation, then a reconciliation pass classifies every new fact against its nearest neighbors as DUPLICATE, UPDATES, EXTENDS, or NEW. UPDATES supersedes the old fact but keeps it in a version chain; EXTENDS deliberately does not bump the version — an early bug had extensions creating "v2 · history" entries whose history view said "No earlier versions."
+
+Memory lands in five shapes: semantic facts auto-filed into a folder tree, a dated episodic journal with daily rollover summaries, five core documents (user.md, memory.md, agenda.md, people.md, insights.md) rewritten by debounced consolidation and injected into every conversation turn, an entity graph with alias resolution (first-name mentions merge into full-name nodes by whole-word token containment), and verbatim transcript chunks for exact-recall questions. Everything also projects to a read-only virtual filesystem — `memory/user.md`, `journal/2026-06-11.md`, `facts/work/gaia.md` — that the agent can `ls` and `grep` like a directory, with mutations only allowed through the tools.
+
+## The benchmark grind
+
+The user rejected a synthetic benchmark immediately — *"btw which model are we using to build the benchmark. how do we ensure its an actually good benchmark?"* — and pointed at LongMemEval, the academic long-term-memory benchmark. The first run was sobering: 39.6% on a 48-question oracle set. The directive was blunt:
+
+> *"alright keep iterating until we reach 90-95+ baseline on all parts of the benchmark. also dont overfit the benchmark"*
+
+The iteration loop that followed classified every miss into one of three failure stages — EXTRACTION (the fact never got stored), RETRIEVAL (stored but not recalled), ANSWER (recalled but the model fumbled it) — via a `--diagnose` flag on the harness. Each class got a product fix, not a benchmark hack: extraction prompts gained rules for capturing quantities, complete recommendation lists, and identity mappings; retrieval gained the cosine-blend rescue for weak-but-correct facts after the ms-marco reranker was caught emitting flat ~−11 logits on conversational queries (swapped for jina-turbo); answer misses got dated context notes — `[occurred]`, `[mentioned]`, `[previously: ...]` — rendered by a single `entry_to_note` mapper shared by the per-turn injection, the agent tools, and the benchmark, so the test exercises exactly what production ships. A `search_conversations` tool over verbatim transcript chunks closed the "what exactly did you say three weeks ago" class. Scores climbed 39.6% → 52.1% → 72.9% on the tuning seed, then 93.1%, 83.3%, and 12/12 on three held-out seeds — about 90.8% aggregate on questions never used for tuning.
+
+## Live-fire debugging
+
+Mid-session the user tested against the running app and the bugs got real. Extraction JSON leaked into the chat stream — *"also wtf is going on why is this surfaced on the frontend bro"* — because nested LLM calls inherit the parent graph's streaming callbacks; the fix threads a `silent` config through every background extraction call. A burst test stored zero facts and looked like an LLM quota issue until the user corrected the diagnosis — *"mate gemini free tier isnt there. if its on our end then clear redis"* — it was GAIA's own chat rate limiter returning 429s. An `asyncio.Lock` in the Chroma store turned out to be bound to a dead event loop across test runs and became a per-loop lock registry.
+
+The subtlest bug came from a direct user question: *"how is the memory graph created btw? can u evaluate if its actually good?"* The entities were clean, but every edge read backwards — "Surat is from Aryan," "GAIA is building Aryan." The graph dedup helper normalized each edge's endpoints into canonical UUID order to collapse A→B/B→A duplicates, but kept the directional label, silently inverting meaning on read. The fix keeps the unordered pair as only the dedup key and preserves the winning edge's stored direction — the database had been right all along.
+
+Data quality got the same treatment as code: when the user spotted five separate "GAIA recommended restaurant X" rows polluting a folder — *"i dont want stuff like ths either like every current actions shouldnt be shown in memory... only things that'll help in the future i guess"* — the extraction prompt gained a future-useful-only rule (the current task is never a fact; the durable preference it reveals is), recommendation lists became one engaged-with fact instead of one per item, and the folder taxonomy grew to three levels with explicit pressure to segregate.
+
+## Email previews, or how Gmail gets its avatars
+
+A side quest turned into real reverse-engineering. Email addresses in chat markdown showed "No preview available," and the user wanted person previews. Gravatar covered one address; plain Gmail addresses 404 everywhere public. The breakthrough was realizing the Composio integration's `tools.proxy` gives raw authenticated access to any Google API under the user's Gmail connection — including the People API. `people:searchContacts` resolved saved contacts with names and photos; `otherContacts:search` (with Google's documented warmup-request quirk) covers anyone the user has ever emailed — the same surface Gmail's own sender avatars come from.
+
+Then the user reported gradients instead of faces. Downloading the actual photo bytes and viewing them confirmed it: Google generates gradient avatars for contacts without explicit pictures, serves them as ordinary CONTACT photos without the `default=true` monogram flag, and hides the person's real account photo behind a second call — `people.get` on the contact resource returns PROFILE-source photo entries the search response omits. The final resolver chain queries saved contacts, other-contacts, and Gravatar concurrently, merges field-wise in priority order, prefers PROFILE photos, skips monograms, and falls back to the company-domain favicon for org addresses. Verified end to end by downloading each resolved avatar and visually checking it was a face, not a blob.
+
+## The overnight close
+
+The user went to sleep mid-session with a standing goal — *"i'm going to sleep btw ensure all the tasks are complete"* — and queued work kept arriving until the moment they did: a landing-page memory section ("use the copywriting tool... think of things from the user's perspective"), a first-principles pass over how proactive todos link to memory, and a read-only backfill evaluation. The proactive-todos audit produced one real fix: dated commitments said in chat ("follow up with Sam on Friday") were landing in memory — which can't wake an agent up — instead of scheduled tracked todos, which can. The comms prompt gained a remember/track/schedule decision rule.
+
+The backfill ran as a local-only dry-run script (never committed) that replays all 136 of the user's conversations plus 200 inbox emails through the real extraction pipeline with zero writes, simulating the rolling dedup state the live pipeline would see, and emits markdown reports: 130 candidate facts across 12 folders, 270 journal entries, 65 entities, 28 edges. A delegated agent built the landing section — three bento cards reusing the founders-demo chat components, copy written through the copywriting skill ("Mention it once, it's filed forever"). The session closed with a 50-commit PR into develop, every quality gate green, and 58 memory tests passing.
+
+The whole thing is the kind of project that would conservatively be a multi-week epic for a small team: a storage engine, an IR pipeline, prompt systems, a benchmark harness with failure-stage diagnostics, four frontend surfaces, and a marketing page — designed, built, debugged against live data, and measured, in one continuous session.
