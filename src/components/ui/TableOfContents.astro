@@ -155,7 +155,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 </style>
 
 <script>
-  let tocObserver: IntersectionObserver | null = null;
+  import { onPage } from '@/lib/lifecycle';
 
   function buildToc() {
     const nav = document.getElementById('toc');
@@ -231,13 +231,10 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
     nav.hidden = false;
   }
 
-  function initToc() {
+  function initToc(): (() => void) | void {
     buildToc();
 
-    if (tocObserver) {
-      tocObserver.disconnect();
-      tocObserver = null;
-    }
+    let tocObserver: IntersectionObserver | null = null;
 
     const indicator = document.getElementById('toc-indicator') as HTMLElement | null;
     const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('#toc .toc-link'));
@@ -286,40 +283,39 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
       }
     });
 
-    wireImagePreview();
-  }
+    // Floating preview that scales up and follows the cursor on image entries.
+    // Scoped per-init so it tears down cleanly on navigation (the body-appended
+    // preview node would otherwise orphan across swaps).
+    let preview: HTMLDivElement | null = null;
+    let previewImg: HTMLImageElement | null = null;
 
-  // Floating preview that scales up and follows the cursor on image entries.
-  let preview: HTMLDivElement | null = null;
-  let previewImg: HTMLImageElement | null = null;
+    function ensurePreview() {
+      if (preview) return;
+      preview = document.createElement('div');
+      preview.className = 'toc-preview';
+      previewImg = document.createElement('img');
+      preview.appendChild(previewImg);
+      document.body.appendChild(preview);
+    }
 
-  function ensurePreview() {
-    if (preview) return;
-    preview = document.createElement('div');
-    preview.className = 'toc-preview';
-    previewImg = document.createElement('img');
-    preview.appendChild(previewImg);
-    document.body.appendChild(preview);
-  }
+    function movePreview(e: MouseEvent) {
+      if (!preview) return;
+      const gap = 16;
+      const w = preview.offsetWidth;
+      const h = preview.offsetHeight;
+      // Anchor to the left of the TOC rail so it never overlaps the entries;
+      // only the vertical position tracks the cursor.
+      const nav = document.getElementById('toc');
+      const railLeft = nav ? nav.getBoundingClientRect().left : e.clientX;
+      let left = railLeft - gap - w;
+      if (left < 8) left = 8; // fallback on narrow viewports
+      let top = e.clientY - h / 2;
+      top = Math.max(8, Math.min(top, window.innerHeight - h - 8));
+      preview.style.left = `${left}px`;
+      preview.style.top = `${top}px`;
+    }
 
-  function movePreview(e: MouseEvent) {
-    if (!preview) return;
-    const gap = 16;
-    const w = preview.offsetWidth;
-    const h = preview.offsetHeight;
-    // Anchor to the left of the TOC rail so it never overlaps the entries;
-    // only the vertical position tracks the cursor.
-    const nav = document.getElementById('toc');
-    const railLeft = nav ? nav.getBoundingClientRect().left : e.clientX;
-    let left = railLeft - gap - w;
-    if (left < 8) left = 8; // fallback on narrow viewports
-    let top = e.clientY - h / 2;
-    top = Math.max(8, Math.min(top, window.innerHeight - h - 8));
-    preview.style.left = `${left}px`;
-    preview.style.top = `${top}px`;
-  }
-
-  function wireImagePreview() {
+    const previewDisposers: Array<() => void> = [];
     const imgLinks = Array.from(
       document.querySelectorAll<HTMLAnchorElement>('#toc .toc-link.toc-img'),
     );
@@ -327,20 +323,34 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
       const src = link.dataset.preview;
       if (!src) continue;
 
-      link.addEventListener('mouseenter', (e) => {
+      const onEnter = (e: Event) => {
         ensurePreview();
         if (previewImg && previewImg.src !== src) previewImg.src = src;
         movePreview(e as MouseEvent);
         requestAnimationFrame(() => preview?.classList.add('toc-preview--visible'));
-      });
+      };
+      const onMove = (e: Event) => movePreview(e as MouseEvent);
+      const onLeave = () => preview?.classList.remove('toc-preview--visible');
 
-      link.addEventListener('mousemove', (e) => movePreview(e as MouseEvent));
-
-      link.addEventListener('mouseleave', () => {
-        preview?.classList.remove('toc-preview--visible');
+      link.addEventListener('mouseenter', onEnter);
+      link.addEventListener('mousemove', onMove);
+      link.addEventListener('mouseleave', onLeave);
+      previewDisposers.push(() => {
+        link.removeEventListener('mouseenter', onEnter);
+        link.removeEventListener('mousemove', onMove);
+        link.removeEventListener('mouseleave', onLeave);
       });
     }
+
+    return () => {
+      tocObserver?.disconnect();
+      tocObserver = null;
+      previewDisposers.forEach((d) => d());
+      preview?.remove();
+      preview = null;
+      previewImg = null;
+    };
   }
 
-  document.addEventListener('astro:page-load', initToc);
+  onPage(initToc);
 </script>

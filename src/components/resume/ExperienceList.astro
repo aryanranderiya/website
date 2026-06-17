@@ -104,20 +104,25 @@ if (excludeTypes) items = items.filter((entry) => !excludeTypes.includes(entry.e
 }
 
 <script>
-	const items = document.querySelectorAll<HTMLElement>('[data-scroll-animate]');
-	const observer = new IntersectionObserver(
-		(entries) => {
-			for (const entry of entries) {
-				if (entry.isIntersecting) {
-					const el = entry.target as HTMLElement;
-					const idx = parseInt(el.dataset.index ?? '0', 10);
-					el.style.animationDelay = `${idx * 0.04}s`;
-					el.classList.add('animate-fade-in-up');
-					observer.unobserve(el);
+	import { onPage } from '@/lib/lifecycle';
+
+	onPage(() => {
+		const items = document.querySelectorAll<HTMLElement>('[data-scroll-animate]');
+		const observer = new IntersectionObserver(
+			(entries) => {
+				for (const entry of entries) {
+					if (entry.isIntersecting) {
+						const el = entry.target as HTMLElement;
+						const idx = parseInt(el.dataset.index ?? '0', 10);
+						el.style.animationDelay = `${idx * 0.04}s`;
+						el.classList.add('animate-fade-in-up');
+						observer.unobserve(el);
+					}
 				}
-			}
-		},
-		{ rootMargin: '-40px 0px' },
-	);
-	for (const item of items) observer.observe(item);
+			},
+			{ rootMargin: '-40px 0px' },
+		);
+		for (const item of items) observer.observe(item);
+		return () => observer.disconnect();
+	});
 </script>

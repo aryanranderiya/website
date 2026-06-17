@@ -16,25 +16,15 @@ const { target } = Astro.props;
 
 <script>
 	import { bindSelector } from '@/lib/flip-lightbox';
+	import { onPage } from '@/lib/lifecycle';
 
 	// Re-bind on the initial load AND after every <ClientRouter /> view
 	// transition (the body swap brings in fresh <img> elements). bindSelector is
 	// idempotent, so re-running it only wires up newly-added images.
-	function init() {
+	onPage(() => {
 		document.querySelectorAll<HTMLElement>('.lb-config').forEach((node) => {
 			const sel = node.dataset.lbTarget;
 			if (sel) bindSelector(sel);
 		});
-	}
-
-	if (!(window as unknown as { __lbPageBound?: boolean }).__lbPageBound) {
-		(window as unknown as { __lbPageBound?: boolean }).__lbPageBound = true;
-		document.addEventListener('astro:page-load', init);
-	}
-
-	if (document.readyState === 'loading') {
-		document.addEventListener('DOMContentLoaded', init, { once: true });
-	} else {
-		init();
-	}
+	});
 </script>

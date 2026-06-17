@@ -1,7 +1,6 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
 import { mdxComponents } from '@/components/blog/mdx';
-import NewsletterSignup from '@/components/blog/NewsletterSignup.astro';
 import RelatedPosts from '@/components/blog/RelatedPosts.astro';
 import ShareButtons from '@/components/blog/ShareButtons.astro';
 import PostNav from '@/components/ui/PostNav.astro';
@@ -68,7 +67,6 @@ const nextPost = ordered[(currentIndex + 1) % ordered.length];
   <div class="mt-16 pt-10 border-t border-[var(--border)]">
     <ShareButtons title={post.data.title} url={Astro.url.href} />
     <RelatedPosts posts={related} />
-    <!-- <NewsletterSignup /> -->
 
     <PostNav
       class="mt-10"

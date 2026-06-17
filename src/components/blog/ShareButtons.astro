@@ -21,29 +21,37 @@ const { url } = Astro.props;
 </div>
 
 <script>
-  const btn = document.getElementById("copy-link-btn");
-  const label = document.getElementById("copy-label");
+  import { onPage } from "@/lib/lifecycle";
 
-  btn?.addEventListener("click", async () => {
-    const url = (btn as HTMLButtonElement).dataset.url ?? window.location.href;
-    try {
-      await navigator.clipboard.writeText(url);
-      if (label) label.textContent = "Copied!";
-      setTimeout(() => {
-        if (label) label.textContent = "Copy link";
-      }, 2000);
-    } catch {
-      // Fallback for browsers without clipboard API
-      const input = document.createElement("input");
-      input.value = url;
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand("copy");
-      document.body.removeChild(input);
-      if (label) label.textContent = "Copied!";
-      setTimeout(() => {
-        if (label) label.textContent = "Copy link";
-      }, 2000);
-    }
+  onPage(() => {
+    const btn = document.getElementById("copy-link-btn");
+    const label = document.getElementById("copy-label");
+    if (!btn) return;
+
+    const onClick = async () => {
+      const url = (btn as HTMLButtonElement).dataset.url ?? window.location.href;
+      try {
+        await navigator.clipboard.writeText(url);
+        if (label) label.textContent = "Copied!";
+        setTimeout(() => {
+          if (label) label.textContent = "Copy link";
+        }, 2000);
+      } catch {
+        // Fallback for browsers without clipboard API
+        const input = document.createElement("input");
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand("copy");
+        document.body.removeChild(input);
+        if (label) label.textContent = "Copied!";
+        setTimeout(() => {
+          if (label) label.textContent = "Copy link";
+        }, 2000);
+      }
+    };
+
+    btn.addEventListener("click", onClick);
+    return () => btn.removeEventListener("click", onClick);
   });
 </script>

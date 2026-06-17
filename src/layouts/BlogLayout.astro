@@ -1,89 +1,87 @@
 ---
-import BlogLinks from "@/components/blog/BlogLinks";
-import Giscus from "@/components/blog/Giscus.astro";
-import BackLink from "@/components/ui/BackLink.astro";
-import Lightbox from "@/components/ui/Lightbox.astro";
-import TableOfContents from "@/components/ui/TableOfContents.astro";
-import { SITE } from "@/constants/site";
-import { formatDate } from "@/lib/utils";
-import PageLayout from "./PageLayout.astro";
+import BlogLinks from '@/components/blog/BlogLinks';
+import Giscus from '@/components/blog/Giscus.astro';
+import BackLink from '@/components/ui/BackLink.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
+import TableOfContents from '@/components/ui/TableOfContents.astro';
+import { SITE } from '@/constants/site';
+import { formatDate } from '@/lib/utils';
+import PageLayout from './PageLayout.astro';
 
 interface Heading {
-  depth: number;
-  slug: string;
-  text: string;
+	depth: number;
+	slug: string;
+	text: string;
 }
 
 interface Props {
-  title: string;
-  description: string;
-  date: Date;
-  updated?: Date;
-  tags?: string[];
-  category?: string;
-  cover?: string;
-  headings?: Heading[];
-  forceToc?: boolean;
-  slug?: string;
+	title: string;
+	description: string;
+	date: Date;
+	updated?: Date;
+	tags?: string[];
+	category?: string;
+	cover?: string;
+	headings?: Heading[];
+	forceToc?: boolean;
+	slug?: string;
 }
 
 const {
-  title,
-  description,
-  date,
-  updated,
-  tags = [],
-  cover,
-  headings = [],
-  forceToc = false,
-  slug,
+	title,
+	description,
+	date,
+	updated,
+	tags = [],
+	cover,
+	headings = [],
+	forceToc = false,
+	slug,
 } = Astro.props;
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const showToc = tocHeadings.length > 1 || forceToc;
 
 const canonicalURL = new URL(Astro.url.pathname, SITE.url).toString();
 const articleJsonLd = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "Article",
-  headline: title,
-  description: description,
-  datePublished: date.toISOString(),
-  ...(updated ? { dateModified: updated.toISOString() } : {}),
-  author: {
-    "@type": "Person",
-    name: SITE.name,
-    url: SITE.url,
-  },
-  publisher: {
-    "@type": "Person",
-    name: SITE.name,
-    url: SITE.url,
-  },
-  ...(cover
-    ? {
-        image: cover.startsWith("http")
-          ? cover
-          : new URL(cover, SITE.url).toString(),
-      }
-    : {}),
-  url: canonicalURL,
-  inLanguage: "en-US",
-  isPartOf: { "@type": "Blog", url: `${SITE.url}/blog` },
+	'@context': 'https://schema.org',
+	'@type': 'Article',
+	headline: title,
+	description: description,
+	datePublished: date.toISOString(),
+	...(updated ? { dateModified: updated.toISOString() } : {}),
+	author: {
+		'@type': 'Person',
+		name: SITE.name,
+		url: SITE.url,
+	},
+	publisher: {
+		'@type': 'Person',
+		name: SITE.name,
+		url: SITE.url,
+	},
+	...(cover
+		? {
+				image: cover.startsWith('http') ? cover : new URL(cover, SITE.url).toString(),
+			}
+		: {}),
+	url: canonicalURL,
+	inLanguage: 'en-US',
+	isPartOf: { '@type': 'Blog', url: `${SITE.url}/blog` },
 });
 
 const breadcrumbJsonLd = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Blog",
-      item: `${SITE.url}/blog`,
-    },
-    { "@type": "ListItem", position: 3, name: title, item: canonicalURL },
-  ],
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: [
+		{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+		{
+			'@type': 'ListItem',
+			position: 2,
+			name: 'Blog',
+			item: `${SITE.url}/blog`,
+		},
+		{ '@type': 'ListItem', position: 3, name: title, item: canonicalURL },
+	],
 });
 ---
 
@@ -100,23 +98,38 @@ const breadcrumbJsonLd = JSON.stringify({
   <script is:inline type="application/ld+json" set:html={articleJsonLd} />
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
 
-  <script is:inline>
-    document.addEventListener("DOMContentLoaded", () => {
-      const refs = document.querySelectorAll(".prose a[data-footnote-ref]");
+  <script>
+    import { onPage } from "@/lib/lifecycle";
+
+    onPage(() => {
+      const refs = document.querySelectorAll<HTMLElement>(
+        ".prose a[data-footnote-ref]",
+      );
+      // Track every listener + live tooltip so we can fully tear down before
+      // the next blog post swaps in (otherwise an open tooltip would orphan).
+      const disposers: Array<() => void> = [];
+
       refs.forEach((ref) => {
         const id = (ref.getAttribute("href") || "").slice(1);
         const fnEl = id ? document.getElementById(id) : null;
         if (!fnEl) return;
 
-        let tooltip = null;
-        let hideTimer = null;
+        let tooltip: HTMLDivElement | null = null;
+        let hideTimer: ReturnType<typeof setTimeout> | undefined;
 
-        ref.addEventListener("mouseenter", () => {
+        const removeTooltip = () => {
+          if (tooltip) {
+            tooltip.remove();
+            tooltip = null;
+          }
+        };
+
+        const onEnter = () => {
           clearTimeout(hideTimer);
           if (tooltip) return;
 
           // Clone footnote content, strip the backref arrow
-          const clone = fnEl.cloneNode(true);
+          const clone = fnEl.cloneNode(true) as HTMLElement;
           clone
             .querySelectorAll("a[data-footnote-backref]")
             .forEach((el) => el.remove());
@@ -140,17 +153,23 @@ const breadcrumbJsonLd = JSON.stringify({
           requestAnimationFrame(
             () => tooltip && tooltip.classList.add("fn-tooltip--visible"),
           );
-        });
+        };
 
-        ref.addEventListener("mouseleave", () => {
-          hideTimer = setTimeout(() => {
-            if (tooltip) {
-              tooltip.remove();
-              tooltip = null;
-            }
-          }, 80);
+        const onLeave = () => {
+          hideTimer = setTimeout(removeTooltip, 80);
+        };
+
+        ref.addEventListener("mouseenter", onEnter);
+        ref.addEventListener("mouseleave", onLeave);
+        disposers.push(() => {
+          clearTimeout(hideTimer);
+          removeTooltip();
+          ref.removeEventListener("mouseenter", onEnter);
+          ref.removeEventListener("mouseleave", onLeave);
         });
       });
+
+      return () => disposers.forEach((d) => d());
     });
   </script>
 

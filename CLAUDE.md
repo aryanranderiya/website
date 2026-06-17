@@ -9,6 +9,46 @@
 - **Never use text/symbol substitutes** for icons — always use a proper gaia-icons component.
 - Astro pages can import and render gaia-icons components directly in the template (server-side rendered) — no `client:load` needed for static icons.
 
+## Client-Side Scripts (ClientRouter / view transitions)
+
+The site runs `<ClientRouter />`, so internal navigation **swaps the DOM instead
+of doing a full page load**. A bundled `<script>` module runs exactly ONCE per
+hard load and **never re-runs on navigation** — so any interactivity wired at
+module top level (or on `DOMContentLoaded` / `window.onload`) silently dies after
+the first in-app navigation and only "comes back" on a hard reload.
+
+**Hard rule:** any `.astro` `<script>` that wires interactivity (event listeners,
+`setInterval`, `IntersectionObserver`/`MutationObserver`/`ResizeObserver`,
+animations, DOM queries that attach behavior) **MUST** route through `onPage()`
+from `@/lib/lifecycle`. Do all DOM access inside the callback; return a cleanup
+function so listeners/timers/observers tear down before the next swap.
+
+```ts
+import { onPage } from '@/lib/lifecycle';
+
+onPage(() => {
+  const btn = document.getElementById('copy');
+  const onClick = () => navigator.clipboard.writeText(location.href);
+  btn?.addEventListener('click', onClick);
+  return () => btn?.removeEventListener('click', onClick); // runs before next swap
+});
+```
+
+- **Never** use `DOMContentLoaded`, `window.onload`, or top-level DOM wiring in
+  `.astro` scripts — they don't fire on a swap.
+- **Don't** hand-roll the `astro:page-load` boilerplate per file — use `onPage`.
+- `is:inline` head scripts that must run pre-paint (theme, analytics) are the
+  exception: they use `astro:after-swap` directly (they can't import `onPage`).
+- A script on a `transition:persist` element legitimately runs once (its DOM
+  survives swaps) — mark it with a `lifecycle-ok` comment to satisfy the guard.
+- React islands (`client:*`) re-hydrate on swap automatically; use `useEffect`,
+  not `onPage`. (Note `transition:persist`+`transition:persist-props` islands do
+  NOT re-run effects on nav — sync via an `astro:page-load` listener inside the
+  effect.)
+
+Enforced by `pnpm lint:lifecycle` (`scripts/check-lifecycle.mjs`), which runs in
+the pre-commit and pre-push hooks.
+
 ## Design System
 
 - **Flat design — no borders or outlines anywhere.** Do not use `border`, `border-[var(--border)]`, `ring`, `outline`, or `divide` on UI cards, containers, notices, or panels.

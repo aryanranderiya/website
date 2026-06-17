@@ -11,6 +11,10 @@ pre-commit:
       stage_fixed: true
     type-check:
       run: pnpm astro check
+    lifecycle:
+      # Catch ClientRouter-unsafe <script> blocks that break on navigation.
+      glob: "src/**/*.astro"
+      run: pnpm lint:lifecycle
 
 pre-push:
   parallel: true
@@ -19,3 +23,5 @@ pre-push:
       run: pnpm biome check ./src
     type-check:
       run: pnpm astro check
+    lifecycle:
+      run: pnpm lint:lifecycle
