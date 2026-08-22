@@ -1,0 +1,55 @@
+---
+import ButtonLink from '@/components/ui/ButtonLink';
+import PageLayout from '@/layouts/PageLayout.astro';
+
+// Rendered per request so middleware can serve this page's markdown mirror to
+// agents (see src/middleware.ts).
+export const prerender = false;
+---
+
+<PageLayout
+  title="About"
+  description="Aryan Randeriya is a developer, designer, and builder interested in hardware, robotics, and human-computer interaction."
+  markdownAlt
+>
+  <div class="max-w-lg">
+    <h1 class="text-heading-1 mb-4 animate-fade-in stagger-1">About</h1>
+
+    <p class="text-body mb-5 animate-fade-in stagger-2">
+      I'm Aryan Randeriya — a developer, designer, and builder interested in
+      hardware, robotics, and human-computer interaction. I'm the Founder & CEO
+      of <a href="https://experience.heygaia.io" class="underline underline-offset-2">The Experience Company</a>,
+      where we're currently building
+      <a href="https://heygaia.io" class="underline underline-offset-2">GAIA</a>, a proactive personal AI
+      assistant that acts before you even need to ask.
+    </p>
+
+    <p class="text-body mb-5 animate-fade-in stagger-3">
+      Born in the United Kingdom, based in Ahmedabad, India. I've been
+      tinkering with computers since a very young age. I'm a product guy who is
+      a developer and designer by heart: I love building products, shipping
+      things, tinkering with code, and exploring new ideas.
+    </p>
+
+    <h2 class="text-heading-2 mb-3 mt-8 animate-fade-in stagger-4">What I'm building</h2>
+    <p class="text-body mb-5 animate-fade-in stagger-4">
+      GAIA is an open-source personal AI assistant that proactively manages
+      email, calendar, todos, workflows, and digital tools. The goal behind
+      GAIA — and The Experience Company — is that every person should have
+      their own truly intelligent assistant, and that technology should improve
+      the human experience of everyday life.
+    </p>
+
+    <h2 class="text-heading-2 mb-3 mt-8 animate-fade-in stagger-5">Interests</h2>
+    <p class="text-body mb-6 animate-fade-in stagger-5">
+      Areas I actively work in and want to explore further: product
+      engineering, AI agents, hardware programming, household robotics,
+      personal companions, smart wearables, and AR/VR.
+    </p>
+
+    <div class="flex gap-2 flex-wrap mb-6 animate-fade-in stagger-6">
+      <ButtonLink href="/resume" label="View resume" icon="folder" trailingArrow size="sm" client:load />
+      <ButtonLink href="/contact" label="Get in touch" icon="arrow-right" trailingArrow variant="secondary" size="sm" client:load />
+    </div>
+  </div>
+</PageLayout>

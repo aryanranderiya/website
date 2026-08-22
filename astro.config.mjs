@@ -27,7 +27,10 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/api/') &&
         !page.includes('/f4llout/') &&
-        !page.includes('/404'),
+        !page.includes('/404') &&
+        // Privacy is deliberately unlinked and noindex — keep it out of the
+        // sitemap so crawlers don't get a mixed signal.
+        !page.includes('/privacy'),
       serialize(item) {
         const url = item.url;
         let priority = 0.5;
@@ -81,6 +84,12 @@ export default defineConfig({
     resolve: {
       alias: {
         '@icons': fileURLToPath(new URL('./src/components/icons/index.ts', import.meta.url)),
+        // React 19's react-dom/server.browser calls `new MessageChannel()`,
+        // which doesn't exist in the Workers runtime — any on-demand page
+        // rendering a React island fails to boot. server.edge is the renderer
+        // built for edge runtimes and avoids MessageChannel entirely.
+        // https://github.com/withastro/astro/issues/12824
+        ...(import.meta.env.PROD ? { 'react-dom/server': 'react-dom/server.edge' } : {}),
       },
     },
     optimizeDeps: {

@@ -1,0 +1,61 @@
+---
+import PageLayout from '@/layouts/PageLayout.astro';
+
+// Rendered per request so middleware can serve this page's markdown mirror to
+// agents (see src/middleware.ts). Intentionally unlinked from site navigation.
+export const prerender = false;
+---
+
+<PageLayout
+  title="Privacy"
+  description="This site collects no personal data and sets no tracking cookies of its own."
+  noindex
+  markdownAlt
+>
+  <div class="max-w-lg">
+    <h1 class="text-heading-1 mb-4 animate-fade-in stagger-1">Privacy</h1>
+
+    <p class="text-body mb-5 animate-fade-in stagger-2">
+      This is the personal website of Aryan Randeriya. It collects no personal
+      data and sets no tracking cookies of its own.
+    </p>
+
+    <h2 class="text-heading-2 mb-3 mt-8 animate-fade-in stagger-3">What is collected</h2>
+    <p class="text-body mb-3 animate-fade-in stagger-3">
+      Two third-party analytics services are used to understand aggregate,
+      anonymous traffic:
+    </p>
+    <ul class="flex flex-col gap-2 text-body mb-5 animate-fade-in stagger-3 list-disc pl-5">
+      <li>
+        <strong>Google Analytics</strong> — standard page-view and event
+        metrics. Google may set its own cookies per their policies.
+      </li>
+      <li>
+        <strong>Rybbit</strong> (self-hosted) — a privacy-focused, cookieless
+        analytics script that records anonymized page views without
+        identifying visitors.
+      </li>
+    </ul>
+
+    <h2 class="text-heading-2 mb-3 mt-8 animate-fade-in stagger-4">What is not done here</h2>
+    <ul class="flex flex-col gap-2 text-body mb-5 animate-fade-in stagger-4 list-disc pl-5">
+      <li>No accounts, so no user data is stored.</li>
+      <li>No comment forms or newsletter sign-ups.</li>
+      <li>No advertising or cross-site tracking.</li>
+      <li>No selling or sharing of visitor data — there is no visitor data to sell.</li>
+    </ul>
+
+    <p class="text-body mb-5 animate-fade-in stagger-5">
+      If you email me, the email and its contents stay between you and me; it
+      is not added to any mailing list.
+    </p>
+
+    <h2 class="text-heading-2 mb-3 mt-8 animate-fade-in stagger-6">Third-party content</h2>
+    <p class="text-body mb-6 animate-fade-in stagger-6">
+      Embedded widgets (Spotify, GitHub cards, maps) load from their own
+      domains under their own privacy policies. Questions about this page can
+      go to
+      <a href="mailto:hey@aryanranderiya.com" class="underline underline-offset-2">hey@aryanranderiya.com</a>.
+    </p>
+  </div>
+</PageLayout>

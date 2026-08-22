@@ -5,18 +5,15 @@ import SectionLink from '@/components/ui/SectionLink';
 
 interface Post {
 	slug: string;
-	data: {
-		title: string;
-		date: string | Date;
-	};
+	title: string;
+	date: string;
 }
 
+// Posts arrive already reduced to { slug, title, date } by the page that renders
+// this island — serializing whole content-collection entries would bake every
+// post body into the HTML as island props.
 export default function BlogPreview({ posts }: { posts: Post[] }) {
-	const latest = posts.slice(0, 3).map((p) => ({
-		slug: p.slug,
-		title: p.data.title,
-		date: typeof p.data.date === 'string' ? p.data.date : p.data.date.toISOString(),
-	}));
+	const latest = posts.slice(0, 3);
 
 	return (
 		<section className="mt-10 mb-8 pb-6">

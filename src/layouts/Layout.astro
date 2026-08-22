@@ -21,6 +21,8 @@ interface Props {
 	articleDate?: Date;
 	articleModified?: Date;
 	section?: string;
+	/** Advertise that this URL serves text/markdown when asked via Accept. */
+	markdownAlt?: boolean;
 }
 
 const {
@@ -34,6 +36,7 @@ const {
 	articleDate,
 	articleModified,
 	section,
+	markdownAlt = false,
 } = Astro.props;
 
 const metaTitle = title ? `${title} | ${SITE.name}` : SEO.defaultTitle;
@@ -64,6 +67,9 @@ const commandKProjects = sortProjects(await getCollection('projects')).map((p) =
 
     <!-- Canonical -->
     <link rel="canonical" href={canonicalURL.toString()} />
+    {markdownAlt && (
+      <link rel="alternate" type="text/markdown" href={canonicalURL.toString()} title="Markdown version (send Accept: text/markdown)" />
+    )}
 
     <!-- Favicon -->
     <link rel="icon" type="image/webp" href="/old-portfolio-logo.webp" />

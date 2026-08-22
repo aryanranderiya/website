@@ -2,36 +2,23 @@
 import Avatar from "@/components/Avatar.astro";
 import ButtonLink from "@/components/ui/ButtonLink";
 import PreviewLink from "@/components/ui/PreviewLink";
-import { fetchOgMetadata } from "@/lib/fetchOgMetadata";
+import ogPreviews from "@/data/og-previews.json";
 
-// Build-time OG scrape — the resulting `preview` payload is baked into the
-// page HTML and shipped to <PreviewLink> as static props. No client fetch,
-// no caching headaches, and the data is always whatever the target site
-// publishes at build time.
-const [experienceCompanyOg, gaiaOg, spotifyOg] = await Promise.all([
-	fetchOgMetadata("https://experience.heygaia.io"),
-	fetchOgMetadata("https://heygaia.io"),
-	fetchOgMetadata("https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"),
-]);
+// OG previews are scraped once by `scripts/fetch-og-previews.mjs` and committed
+// to src/data/og-previews.json. The homepage renders on demand, so the preview
+// payload must be baked at build time — a live scrape here would run per request.
+const [experienceCompanyOg, gaiaOg, spotifyOg] = [
+	ogPreviews["https://experience.heygaia.io"],
+	ogPreviews["https://heygaia.io"],
+	ogPreviews["https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"],
+];
 ---
 
-<!-- <section class="pb-12 hero-waiting"> --><!-- <h1
-		class="text-2xl font-semibold text-[var(--text-primary)] m-0 mb-4 animate-fade-in"
-		style="animation-delay:0.05s"
-	>
-		Hey! Welcome to my digital world.
-<img
-			src="/images/waving-hand.webp"
-			alt="Waving hand"
-			width="28"
-			height="28"
-			class="inline align-middle w-auto h-[0.9em] mb-[2px]"
-		/> --><!-- </section> -->
 <div>
 	<div class="flex items-center gap-3 mb-5" data-hero-name-row>
 		<Avatar inline />
 		<div class="flex flex-col -space-y-1" data-hero-name-block>
-			<span class="text-lg font-medium">Aryan Randeriya</span>
+			<h1 class="text-lg font-medium">Aryan Randeriya</h1>
 			<span class="text-lg text-(--text-muted)">Designer & Developer</span
 			>
 		</div>

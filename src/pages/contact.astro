@@ -1,0 +1,71 @@
+---
+import ButtonLink from '@/components/ui/ButtonLink';
+import PageLayout from '@/layouts/PageLayout.astro';
+
+// Rendered per request so middleware can serve this page's markdown mirror to
+// agents (see src/middleware.ts).
+export const prerender = false;
+
+const socials = [
+	{
+		label: 'GitHub',
+		href: 'https://github.com/aryanranderiya',
+		desc: 'Code, open source, and this site\u2019s source',
+	},
+	{
+		label: 'Twitter / X',
+		href: 'https://twitter.com/aryanranderiya',
+		desc: 'Thoughts, updates, and the occasional demo',
+	},
+	{
+		label: 'LinkedIn',
+		href: 'https://linkedin.com/in/aryanranderiya',
+		desc: 'The professional record',
+	},
+	{
+		label: 'Instagram',
+		href: 'https://instagram.com/aryanranderiya',
+		desc: 'Photos, camera rolls, and life off-screen',
+	},
+];
+---
+
+<PageLayout
+  title="Contact"
+  description="The fastest way to reach Aryan Randeriya is email — hey@aryanranderiya.com."
+  markdownAlt
+>
+  <div class="max-w-lg">
+    <h1 class="text-heading-1 mb-4 animate-fade-in stagger-1">Contact</h1>
+
+    <p class="text-body mb-6 animate-fade-in stagger-2">
+      The fastest way to reach me is email at
+      <a href="mailto:hey@aryanranderiya.com" class="underline underline-offset-2">hey@aryanranderiya.com</a>.
+      I try to respond to all reasonable emails.
+    </p>
+
+    <div class="mb-8 animate-fade-in stagger-3">
+      <ButtonLink href="mailto:hey@aryanranderiya.com" label="hey@aryanranderiya.com" icon="mail" trailingArrow size="sm" client:load />
+    </div>
+
+    <h2 class="text-heading-2 mb-3 animate-fade-in stagger-4">Elsewhere</h2>
+    <ul class="flex flex-col gap-4 text-body mb-8 animate-fade-in stagger-4 list-none p-0">
+      {
+        socials.map((social) => (
+          <li>
+            <a href={social.href} target="_blank" rel="noopener noreferrer" class="underline underline-offset-2">
+              {social.label}
+            </a>
+            <span class="text-[var(--text-muted)]"> — {social.desc}</span>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="text-body animate-fade-in stagger-5">
+      For recruiting, collaboration, or questions about GAIA, a short email
+      with context gets the fastest reply. DMs on social platforms are checked
+      less frequently.
+    </p>
+  </div>
+</PageLayout>

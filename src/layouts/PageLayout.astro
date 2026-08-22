@@ -16,6 +16,8 @@ interface Props {
 	articleDate?: Date;
 	articleModified?: Date;
 	section?: string;
+	/** Advertise that this URL serves text/markdown when asked via Accept. */
+	markdownAlt?: boolean;
 }
 
 const {
@@ -25,6 +27,7 @@ const {
 	articleDate,
 	articleModified,
 	section,
+	markdownAlt,
 	...layoutProps
 } = Astro.props;
 
@@ -43,6 +46,7 @@ const isHome = Astro.url.pathname === '/';
 	articleDate={articleDate}
 	articleModified={articleModified}
 	section={section}
+	{markdownAlt}
 >
 	{/* Set the sidebar-avatar body class synchronously so the sidebar and
 	    avatar render in the correct state on first paint, and patched on

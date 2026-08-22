@@ -18,5 +18,16 @@ import PageLayout from '@/layouts/PageLayout.astro';
       size="sm"
       client:load
     />
+    <p class="text-body mt-10 mb-3 text-[var(--text-muted)]">
+      Looking for something specific? Try:
+    </p>
+    <ul class="flex flex-wrap justify-center gap-x-5 gap-y-2 text-body list-none p-0 m-0">
+      <li><a href="/projects/" class="underline underline-offset-2">Projects</a></li>
+      <li><a href="/blog/" class="underline underline-offset-2">Blog</a></li>
+      <li><a href="/resume/" class="underline underline-offset-2">Resume</a></li>
+      <li><a href="/contact/" class="underline underline-offset-2">Contact</a></li>
+      <li><a href="/sitemap-index.xml" class="underline underline-offset-2">Sitemap</a></li>
+      <li><a href="/llms.txt" class="underline underline-offset-2">llms.txt</a></li>
+    </ul>
   </div>
 </PageLayout>
