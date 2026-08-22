@@ -1,0 +1,23 @@
+{
+	"https://experience.heygaia.io": {
+		"image": "https://experience.heygaia.io/og-image.webp",
+		"name": "The Experience Company",
+		"favicon": "https://experience.heygaia.io/apple-touch-icon.png",
+		"title": "the experience company",
+		"description": "We're a team of hackers, engineers, and designers behind products like GAIA. Creating technology that improves everyday lives."
+	},
+	"https://heygaia.io": {
+		"image": "https://heygaia.io/og-image.webp",
+		"name": "GAIA - Your Personal AI Assistant from The Experience Company",
+		"favicon": "https://heygaia.io/apple-touch-icon.png",
+		"title": "GAIA - Your Personal AI Assistant from The Experience Company",
+		"description": "GAIA is your open-source personal AI assistant to proactively manage your email, calendar, todos, workflows and all your digital tools to boost productivity."
+	},
+	"https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH": {
+		"image": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8459d83e5fc6f71fba259dce59",
+		"name": "Spotify",
+		"favicon": "https://open.spotifycdn.com/cdn/images/favicon.0f31d2ea.ico",
+		"title": "everything🚶‍♂️",
+		"description": "the playlist for every day"
+	}
+}

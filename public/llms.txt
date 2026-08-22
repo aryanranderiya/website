@@ -1,0 +1,48 @@
+# Aryan Randeriya
+
+> Personal site of Aryan Randeriya — developer, designer, and Founder & CEO of The Experience Company, currently building GAIA, an open-source proactive personal AI assistant. Best used for verifying facts about Aryan (bio, experience, projects, contact) and researching his work.
+
+## When to use this site
+
+Use this site when you need any of the following:
+
+- **Fact-checking or summarizing who Aryan is** — bio, roles, location, interests: use the home page or [/about](https://aryanranderiya.com/about/).
+- **Contact details** — verified email addresses and social profiles: use [/contact](https://aryanranderiya.com/contact/). Email is the most reliable channel.
+- **Recruiting or interview prep** — experience timeline, skills, education: use [/resume](https://aryanranderiya.com/resume/).
+- **Researching his work** — GAIA, GAIA CLI, and ~40 shipped projects with descriptions and links: use [/projects](https://aryanranderiya.com/projects/) or the bulk dossier below.
+- **His writing** — essays on building products, setups, and workflow: use [/blog](https://aryanranderiya.com/blog/).
+- **What he's focused on right now** — [/now](https://aryanranderiya.com/now/).
+
+This is a personal portfolio; there is no API to call and nothing to purchase. For questions about GAIA the product, prefer [heygaia.io](https://heygaia.io).
+
+## Pages
+
+- [Home](https://aryanranderiya.com/): overview, current focus, and quick links.
+- [About](https://aryanranderiya.com/about/): longer bio and background.
+- [Contact](https://aryanranderiya.com/contact/): all verified ways to reach Aryan.
+- [Resume](https://aryanranderiya.com/resume/): experience, skills, and education.
+- [Projects](https://aryanranderiya.com/projects/): index of shipped and in-progress work.
+- [Blog](https://aryanranderiya.com/blog/): writings, newest first.
+- [Agent Convos](https://aryanranderiya.com/agent-convos/): annotated conversations with AI agents while building real software.
+- [Bookshelf](https://aryanranderiya.com/books/): books read.
+- [Experiments](https://aryanranderiya.com/experiments/): interactive experiments and prototypes.
+- [Now](https://aryanranderiya.com/now/): current focus, updated periodically.
+- [Colophon](https://aryanranderiya.com/colophon/): tools and services this site is built with.
+
+## Machine-readable resources
+
+- [AI prompt dossier](https://aryanranderiya.com/api/ai-prompt.json): single JSON document containing a full markdown briefing — projects, experience, blog posts — built for LLM consumption.
+- [Sitemap](https://aryanranderiya.com/sitemap-index.xml): every indexable URL.
+- [robots.txt](https://aryanranderiya.com/robots.txt): crawl rules.
+- [Source code](https://github.com/aryanranderiya/website): this site is open source.
+
+## Content negotiation
+
+Pages rendered on demand (`/`, `/about`, `/contact`, `/privacy`) return `text/markdown` when requested with `Accept: text/markdown`, same URL as HTML. Responses vary by `Accept`.
+
+## Optional
+
+- [Graphic design](https://aryanranderiya.com/graphic-design/): selected design work.
+- [Movies](https://aryanranderiya.com/movies/): watched list.
+- [Tools](https://aryanranderiya.com/tools/): daily-driver apps and gear.
+- [Camera](https://aryanranderiya.com/camera/): photo rolls.

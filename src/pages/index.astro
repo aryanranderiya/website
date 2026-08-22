@@ -1,30 +1,36 @@
 ---
 import { getCollection } from 'astro:content';
 import BlogPreview from '@/components/home/BlogPreview';
-import FeaturedProjects from '@/components/home/FeaturedProjects';
 import Hero from '@/components/home/Hero.astro';
 import MapWidget from '@/components/home/MapWidget';
 import Signature from '@/components/home/Signature';
 import SocialsGrid from '@/components/home/SocialsGrid';
 import SpotifyWidget from '@/components/home/SpotifyWidget';
-import ExperienceList from '@/components/resume/ExperienceList.astro';
 import PageLayout from '@/layouts/PageLayout.astro';
-import { mapProject, sortProjects } from '@/utils/projects';
 
-// Fetch and sort blog posts by date descending (exclude drafts)
+// Rendered per request so middleware can negotiate content type — agents that
+// send `Accept: text/markdown` get a clean markdown mirror of this page (see
+// src/middleware.ts). All data below is bundled, nothing is fetched live.
+export const prerender = false;
+
+// Fetch and sort blog posts by date descending (exclude drafts), then keep
+// only the fields <BlogPreview> renders. Passing whole collection entries
+// would serialize every post body into the island props baked into the HTML.
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
-const posts = allPosts.sort(
-	(a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
-);
-
-// Fetch projects for FeaturedProjects component
-const allProjectEntries = await getCollection('projects');
-const allProjects = sortProjects(allProjectEntries).map(mapProject);
+const latestPosts = allPosts
+	.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+	.slice(0, 3)
+	.map((p) => ({
+		slug: p.slug,
+		title: p.data.title,
+		date: new Date(p.data.date).toISOString(),
+	}));
 ---
 
 <PageLayout
   title="Home"
   description="Founder, designer, and developer. Currently building GAIA, an AI companion."
+  markdownAlt
 >
   <!-- Hero -->
   <Hero />
@@ -42,17 +48,7 @@ const allProjects = sortProjects(allProjectEntries).map(mapProject);
     <SocialsGrid client:idle />
   </div>
 
-  <!-- <div class="mt-8"> -->
-    <!-- <ExperienceList featuredOnly compact /> -->
-  <!-- </div> -->
-
-  <!-- <FeaturedProjects projects={allProjects} client:visible /> -->
-
-  <!-- <section class="pb-12">
-    <Toolbox client:visible />
-  </section> -->
-
-  <BlogPreview posts={posts} client:visible />
+  <BlogPreview posts={latestPosts} client:visible />
 
   <Signature client:visible />
 </PageLayout>
