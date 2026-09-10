@@ -1,15 +1,7 @@
 {
   "design/ad_mockups/Ad_mockup_1.webp": "2FQFFwI2CYaIdniAZFy4V4d4lIA2DGcI",
   "design/ad_mockups/Ad_mockup_3.webp": "0WkJFwgHJoiJhniChXuIJ7h2d293B4gC",
-  "design/apparel/Tshirt BlueRose.webp": "jeeFDQI4B/iIdYJut/h0fD/HCFiJiYJZJw==",
   "design/ad_mockups/Ad_mockup_2.webp": "mZkNDg5IaIh3eAeHl4h4eIiI5lqPZQU=",
-  "design/apparel/Tshirt Future1.webp": "CAiCBQA4Bsl1d4SsmAlnd1CHCFiJiYJZJw==",
-  "design/apparel/Tshirt Interstellar.webp": "yweGBQA4F/eHd4Ke1/mKPgepCFiJiYJZJw==",
-  "design/apparel/Tshirt Japan.webp": "bTiKDQI49xiIeX9gGAl3kXAXCFiJiYJZJw==",
-  "design/apparel/Tshirt Kanye.webp": "CwiGBQA4F/h2h4Ke2F8gmwOnCFiJiYJZJw==",
-  "design/apparel/Tshirt Nuclear.webp": "zAeGBQA4F/iHd4Gv1/l4bnAYCFiJiYJZJw==",
-  "design/apparel/Tshirt Spiderverse.webp": "S/eBDQA4COZ2hnGuuPiLf7/YCFiJiYJZJw==",
-  "design/apparel/Tshirt Porsche.webp": "8weGBQA4xkl3iY6CCLmOYBT3CFiJiYJZJw==",
   "design/apparel/TshirtDragon.webp": "ChiGDQI4J/d3h3KNyCh3cGIHCFiJiYJZJw==",
   "design/apparel/TshirtBlueRose.webp": "TNeFDQQ5CNZ5l3G/iOeKb574B0h3iHJnWA==",
   "design/apparel/TshirtButterfly.webp": "SweGFQA5COaJZ3GPpteHLwd/B0h3iHJnWA==",
@@ -56,5 +48,13 @@
   "design/thumbnails/thumbnail_8.webp": "h+cFDIKLZGd/enhUq5emqT95+g==",
   "design/thumbnails/thumbnail_6.webp": "6pYFPJBoZ3hgmGeYdIdGkGgQeQ==",
   "design/thumbnails/thumbnail_7.webp": "mQgGHIT2d5htaJZwhcW0N1AcBQ==",
-  "design/thumbnails/thumbnail_9.webp": "J+cNDIKAZ6pFhpmOiKVRYhACNA=="
+  "design/thumbnails/thumbnail_9.webp": "J+cNDIKAZ6pFhpmOiKVRYhACNA==",
+  "design/apparel/tshirt-blue-rose.webp": "jeeFDQI4B/iIdYJut/h0fD/HCFiJiYJZJw==",
+  "design/apparel/tshirt-future-1.webp": "CAiCBQA4Bsl1d4SsmAlnd1CHCFiJiYJZJw==",
+  "design/apparel/tshirt-interstellar.webp": "yweGBQA4F/eHd4Ke1/mKPgepCFiJiYJZJw==",
+  "design/apparel/tshirt-japan.webp": "bTiKDQI49xiIeX9gGAl3kXAXCFiJiYJZJw==",
+  "design/apparel/tshirt-kanye.webp": "CwiGBQA4F/h2h4Ke2F8gmwOnCFiJiYJZJw==",
+  "design/apparel/tshirt-nuclear.webp": "zAeGBQA4F/iHd4Gv1/l4bnAYCFiJiYJZJw==",
+  "design/apparel/tshirt-porsche.webp": "8weGBQA4xkl3iY6CCLmOYBT3CFiJiYJZJw==",
+  "design/apparel/tshirt-spiderverse.webp": "S/eBDQA4COZ2hnGuuPiLf7/YCFiJiYJZJw=="
 }

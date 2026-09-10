@@ -2,8 +2,11 @@
 /**
  * find-unused-assets.mjs
  *
- * Scans all source files (.astro, .tsx, .ts, .mdx, .md, .json) for references
+ * Scans all source files (.astro, .tsx, .ts, .mdx, .md, .json, .css) for references
  * to files in public/, then reports assets that are never referenced.
+ * Handles CSS url(...) refs, runtime-built URLs (template literals / string
+ * concatenation mark their directory prefix as used), and src/data/*.json
+ * manifest keys (path-like keys and bare slugs).
  *
  * Usage:  node scripts/find-unused-assets.mjs
  *         node scripts/find-unused-assets.mjs --delete   (delete unreferenced files)
@@ -25,7 +28,7 @@ const ASSET_EXTS = new Set([
 ]);
 
 const SOURCE_EXTS = new Set([
-  '.astro', '.tsx', '.ts', '.jsx', '.js', '.mdx', '.md', '.json',
+  '.astro', '.tsx', '.ts', '.jsx', '.js', '.mdx', '.md', '.json', '.css',
 ]);
 
 const ALWAYS_KEEP = new Set([
@@ -74,10 +77,73 @@ async function main() {
   // 2. Collect all source files (src + root-level config files)
   const srcFiles = await walk(SRC_DIR, SOURCE_EXTS);
 
-  // 3. Build a single giant string of all source content
-  const sourceContent = (
-    await Promise.all(srcFiles.map((f) => readFile(f, 'utf8').catch(() => '')))
-  ).join('\n');
+  // 3. Build a single giant string of all source content.
+  // Per-file contents are retained so data manifests can be parsed below.
+  const fileContents = await Promise.all(
+    srcFiles.map(async (f) => ({ file: f, content: await readFile(f, 'utf8').catch(() => '') }))
+  );
+  const sourceContent = fileContents.map((f) => f.content).join('\n');
+
+  // 3a. Dynamic path prefixes from template literals / string concatenation.
+  // Literal substring matching misses URLs built at runtime, e.g.
+  //   `/images/books/${entry.id}.webp`        (src/pages/books/index.astro)
+  //   `/images/games/fallout/${i + 1}.webp`   (src/pages/f4llout/index.astro,
+  //                                           Array.from({ length: 9 }, …))
+  //   `/images/design/apparel/${file}` …      (DesignGallery.tsx)
+  //   `/icons/colophon/${item.icon}`          (src/pages/colophon.astro)
+  // Any asset under a referenced prefix counts as used. ONLY strings with
+  // interpolation (${…}) or + concatenation qualify — a plain literal such as
+  // one "/images/blog/foo.webp" must never mark its whole directory used,
+  // or genuinely unused siblings in that directory would be masked.
+  const DYNAMIC_PREFIX_RE =
+    /(?:^|[`\s('"=])\/((?:images|icons|fonts|videos?|assets?|media|files)\/[A-Za-z0-9_\-]+(?:\/[A-Za-z0-9_\-]+)*\/)/g;
+  const dynamicPrefixes = new Set();
+  // Backtick strings that interpolate: static prefix before ${…}.
+  for (const m of sourceContent.matchAll(/`[^`]*\$\{[^`]*`/g)) {
+    for (const pm of m[0].matchAll(DYNAMIC_PREFIX_RE)) dynamicPrefixes.add(pm[1]);
+  }
+  // Quoted strings adjacent to + (either side): '…' + x or x + '…'.
+  for (const m of sourceContent.matchAll(/"[^"\n]*"\s*\+|\+\s*"[^"\n]*"|'[^'\n]*'\s*\+|\+\s*'[^'\n]*'/g)) {
+    for (const pm of m[0].matchAll(DYNAMIC_PREFIX_RE)) dynamicPrefixes.add(pm[1]);
+  }
+
+  // 3b. References via src/data/*.json manifests. Keys (and string values)
+  // that look like asset paths count, e.g. design-thumbhashes.json keys
+  // ("design/headers/foo.webp" ↔ public/images/design/headers/foo.webp).
+  // Bare top-level keys (book-covers.json slugs like "my-book-slug")
+  // match by asset basename ("images/books/my-book-slug.webp").
+  const jsonPathRefs = new Set();
+  const jsonSlugKeys = new Set();
+  const collectJsonRefs = (node, depth) => {
+    if (typeof node === 'string') {
+      const s = node.trim().replace(/^\/+/, '');
+      if (s.includes('/') && ASSET_EXTS.has(extname(s).toLowerCase())) jsonPathRefs.add(s);
+      return;
+    }
+    if (Array.isArray(node)) {
+      node.forEach((v) => collectJsonRefs(v, depth + 1));
+      return;
+    }
+    if (node && typeof node === 'object') {
+      for (const [k, v] of Object.entries(node)) {
+        const key = k.trim();
+        if (key.includes('/') && ASSET_EXTS.has(extname(key).toLowerCase())) {
+          jsonPathRefs.add(key.replace(/^\/+/, ''));
+        } else if (depth === 0 && key && !/[\s:/]/.test(key)) {
+          jsonSlugKeys.add(key);
+        }
+        collectJsonRefs(v, depth + 1);
+      }
+    }
+  };
+  for (const { file, content } of fileContents) {
+    if (!file.includes('/src/data/') || !file.endsWith('.json')) continue;
+    try {
+      collectJsonRefs(JSON.parse(content), 0);
+    } catch {
+      // Not parseable JSON — already covered by raw text matching above.
+    }
+  }
 
   // 4. For each asset, check if any path fragment appears in source
   const unused = [];
@@ -101,11 +167,28 @@ async function main() {
       continue;
     }
 
-    // Match on the full relative path OR just the filename (less precise but catches more)
+    // Match on the full relative path OR just the filename (less precise but catches more).
+    // Dynamic prefixes (template literals / concatenation) and JSON manifest
+    // keys conservatively mark whole subtrees / slug-matched files as used.
+    const basenameNoExt = filename.replace(/\.[^.]+$/, '');
+    const isDynamic = [...dynamicPrefixes].some((p) => relPath.startsWith(p));
+    let isManifestRef = false;
+    if (jsonSlugKeys.has(basenameNoExt)) {
+      isManifestRef = true;
+    } else {
+      for (const ref of jsonPathRefs) {
+        if (relPath === ref || relPath.endsWith(`/${ref}`)) {
+          isManifestRef = true;
+          break;
+        }
+      }
+    }
     const isReferenced =
       sourceContent.includes(relPath) ||
       sourceContent.includes(`/${relPath}`) ||
-      sourceContent.includes(filename);
+      sourceContent.includes(filename) ||
+      isDynamic ||
+      isManifestRef;
 
     if (isReferenced) {
       used.push(relPath);
@@ -132,6 +215,9 @@ async function main() {
 
   const pad = (s, n) => String(s).padStart(n);
 
+  if (dynamicPrefixes.size > 0) {
+    console.log(`Dynamic prefixes treated as used: ${[...dynamicPrefixes].sort().join(', ')}`);
+  }
   console.log(`\nUnused assets (${unused.length} files, ${await formatSize(totalUnusedBytes)} total):\n`);
   console.log(`  ${'Size'.padStart(8)}  Path`);
   console.log(`  ${'────────'.padStart(8)}  ────────────────────────────────────────`);

@@ -1,4 +1,5 @@
 ---
+import { Code } from 'astro/components';
 import GaiaFooter from '@/components/experiments/gaia-footer/GaiaFooter';
 import HoloCardIsland from '@/components/experiments/HoloCardIsland';
 import { DEMO_CARD } from '@/components/experiments/holo-card/demo';
@@ -25,7 +26,67 @@ const fmtDate = (d: string) =>
   </div>
 
   {/* live, interactive component */}
-  {exp.slug === "gaia-footer" ? (
+  {exp.gaiaUi ? (
+  <div class="mb-10 flex flex-col gap-9 animate-fade-in stagger-2">
+    {exp.gaiaUi.variants.map((v) => (
+      <section>
+        <div class="mb-1 flex items-baseline justify-between gap-4">
+          <h2 class="text-heading-2">{v.name}</h2>
+          <a
+            href={`${exp.gaiaUi?.docsUrl}#${v.anchor}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="shrink-0 text-[12px] text-[var(--text-ghost)] no-underline transition-colors hover:text-[var(--text-secondary)]"
+          >
+            Live ↗
+          </a>
+        </div>
+        {v.description && (
+          <p class="max-w-xl text-[13.5px] text-[var(--text-secondary)] leading-relaxed">{v.description}</p>
+        )}
+      </section>
+    ))}
+    {exp.gaiaUi.example && (
+      <section>
+        <h2 class="text-heading-2 mb-3">Example</h2>
+        <Code code={exp.gaiaUi.example} lang="tsx" />
+      </section>
+    )}
+    {exp.gaiaUi.props.length > 0 && (
+      <section>
+        <h2 class="text-heading-2 mb-3">Props</h2>
+        <div class="overflow-x-auto rounded-xl border border-[var(--border)]">
+          <table class="w-full text-left text-[13px]">
+            <thead>
+              <tr class="border-b border-[var(--border)] text-[var(--text-ghost)]">
+                <th class="px-4 py-2.5 font-medium">Prop</th>
+                <th class="px-4 py-2.5 font-medium">Type</th>
+                <th class="px-4 py-2.5 font-medium">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              {exp.gaiaUi.props.map((p) => (
+                <tr class="border-b border-[var(--border)] last:border-0">
+                  <td class="px-4 py-2.5 font-mono text-[12px]">{p.prop}</td>
+                  <td class="px-4 py-2.5 font-mono text-[12px] text-[var(--text-muted)]">{p.type}</td>
+                  <td class="px-4 py-2.5 text-[var(--text-secondary)]">{p.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )}
+    <a
+      href={exp.gaiaUi.docsUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="inline-flex w-fit items-center gap-1.5 rounded-xl border border-[var(--border)] px-4 py-2 text-[13px] no-underline transition-colors hover:bg-[var(--muted-bg)]"
+    >
+      View on GAIA UI →
+    </a>
+  </div>
+  ) : exp.slug === "gaia-footer" ? (
     <div class="mb-10 overflow-hidden rounded-2xl animate-fade-in stagger-2">
       <GaiaFooter client:only="react" />
     </div>

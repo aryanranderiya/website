@@ -4,7 +4,7 @@ date: 2026-09-09
 category: personal
 description: " "
 featured: true
-cover: /images/blog/9-9-26/cover.webp
+cover: /images/blog/assistants/cover.webp
 ---
 
 hi so if you don't know me my name is aryan and i'm the founder of the experience company where we're building a personal assistant called gaia.
@@ -33,7 +33,7 @@ the gap between the current state of ai and what the world knows and uses is fuc
 
 even for the people who do use ai, most use-cases and verticals are just unexplored tbh. like if you've seen anthropic's chart (attached below) the observed ai usage is shocking. 
 
-[](/images/blog/9-9-26/AI_Usage_Chart.png)
+[](/images/blog/assistants/AI_Usage_Chart.png)
 
 it's not just about industries either, like development is the most popular industry where ai is used. but in the average world outside of twitter or outside sf or the valley, people still don't use ai the way the top 1% do. hell i barely even saw people using claude code. the company i used to work at was fairly ai forward but shared a single max plan between like 20 people and my co-founder's and my individual usage was more than the rest of the entire company's usage combined. i've seen people still using and advocating for github copilot or copy-pasting code when the frontier is light years ahead. it's apparent that the distance between the top 1% and the rest will take a long time to bridge the gap just because it's just progressing too fast for most to keep playing catch up.
 
@@ -51,7 +51,7 @@ another thing is that everyone just wants everything for free right now. this is
 
 additionally, we can see that none of these power users really have any loyalty to a product or any model. you can see this with the model usage stats of opencode. purple is when deepseek v4 flash was free. blue was when glm 5.3 flash was in stealth as ox-alpha and had unlimited free usage. pink is muse spark 1.3 contributor another free model.
 
-[](/images/blog/9-9-26/opencode1.png)
+[](/images/blog/assistants/opencode1.png)
 
 this is just proof to show that these models go trending when free because i've seen developers don't care about their data being sold ngl, and personally i don't mind my coding data being sold for the betterment of models either. this is a completely different story for non tech consumers who do pretty much care about privacy and would be wary about even connecting shit like emails. it's gonna be difficult for people to trust meta for an assistant that manages their entire life. even more so for a closed-source one.
 

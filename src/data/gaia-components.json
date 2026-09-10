@@ -1,0 +1,198 @@
+{
+  "components": [
+    {
+      "slug": "chat-demo",
+      "title": "Chat Demo",
+      "description": "A reusable platform-aware chat preview with pixel-accurate bubbles, headers and composers for iMessage, WhatsApp, Slack, Discord and Telegram.",
+      "docsUrl": "https://ui.heygaia.io/docs/components/chat-demo",
+      "variants": [
+        {
+          "name": "iMessage",
+          "anchor": "imessage",
+          "description": "Light, white background, no header chrome. Outgoing bubbles use the canonical iMessage vertical gradient (#309BFE → #027BFF). The tail silhouette is rendered with a CSS clip-path so it composites cleanly on any backgroun"
+        },
+        {
+          "name": "WhatsApp",
+          "anchor": "whatsapp",
+          "description": null
+        },
+        {
+          "name": "Slack",
+          "anchor": "slack",
+          "description": null
+        },
+        {
+          "name": "Discord",
+          "anchor": "discord",
+          "description": null
+        },
+        {
+          "name": "Telegram",
+          "anchor": "telegram",
+          "description": null
+        }
+      ],
+      "example": "import { ChatDemo } from \"@/components/ui/chat-demo\";\nimport { IPhoneMockup } from \"@/components/ui/iphone-mockup\";\n\nexport default function Example() {\n  return (\n    <IPhoneMockup>\n      <ChatDemo\n        platform=\"imessage\"\n        title=\"GAIA\"\n        messages={[\n          { from: \"them\", text: \"Morning ☀️\", time: \"9:41 AM\" },\n          { from: \"me\",   text: \"Morning!\", status: \"read\" },\n        ]}\n      />\n    </IPhoneMockup>\n  );\n}",
+      "props": [
+        {
+          "prop": "platform",
+          "type": "\"imessage\" | \"whatsapp\" | \"slack\" | \"discord\" | \"telegram\"",
+          "default": "–",
+          "description": "Which platform's chrome and bubbles to render."
+        },
+        {
+          "prop": "messages",
+          "type": "ChatMessageItem[]",
+          "default": "–",
+          "description": "Messages to display. See shape below."
+        },
+        {
+          "prop": "title",
+          "type": "string",
+          "default": "–",
+          "description": "Contact name (or channel name for Slack / Discord)."
+        },
+        {
+          "prop": "subtitle",
+          "type": "string",
+          "default": "–",
+          "description": "Header subtitle (e.g. `online`, `42 members`)."
+        },
+        {
+          "prop": "headerAvatar",
+          "type": "string",
+          "default": "github avatar",
+          "description": "URL for the conversation avatar (iMessage / WhatsApp / Telegram)."
+        },
+        {
+          "prop": "showComposer",
+          "type": "boolean",
+          "default": "true",
+          "description": "Toggle the bottom composer row."
+        },
+        {
+          "prop": "theme",
+          "type": "\"light\" | \"dark\"",
+          "default": "platform default",
+          "description": "Force light/dark theme. Discord defaults to dark."
+        },
+        {
+          "prop": "className",
+          "type": "string",
+          "default": "–",
+          "description": "Extra classes for the outer wrapper."
+        }
+      ]
+    },
+    {
+      "slug": "footer-glow",
+      "title": "Footer Glow",
+      "description": "A glowing footer backdrop with an interactive halftone wordmark.",
+      "docsUrl": "https://ui.heygaia.io/docs/components/footer-glow",
+      "variants": [
+        {
+          "name": "With a bottom bar over the glow",
+          "anchor": "with-a-bottom-bar-over-the-glow",
+          "description": "Anything passed as children renders over the glow, below the wordmark — a status badge, social links, copyright."
+        },
+        {
+          "name": "Custom glow or wallpaper background",
+          "anchor": "custom-glow-or-wallpaper-background",
+          "description": null
+        },
+        {
+          "name": "Standalone wordmark",
+          "anchor": "standalone-wordmark",
+          "description": "The halftone wordmark ships as its own component if you only want the dot-grid lockup without the glow."
+        }
+      ],
+      "example": null,
+      "props": [
+        {
+          "prop": "text",
+          "type": "string",
+          "default": "-",
+          "description": "Word rendered as the halftone dot grid"
+        },
+        {
+          "prop": "logoSrc",
+          "type": "string",
+          "default": "-",
+          "description": "Image mark composed left of the text"
+        },
+        {
+          "prop": "backgroundSrc",
+          "type": "string",
+          "default": "-",
+          "description": "Wallpaper image behind the glow"
+        },
+        {
+          "prop": "glowColor",
+          "type": "string",
+          "default": "\"#00a3ff\"",
+          "description": "Accent of the fallback CSS glow"
+        },
+        {
+          "prop": "fontClassName",
+          "type": "string",
+          "default": "\"font-serif font-bold\"",
+          "description": "Font classes for the wordmark lettering"
+        },
+        {
+          "prop": "children",
+          "type": "ReactNode",
+          "default": "-",
+          "description": "Content over the glow, below the wordmark"
+        },
+        {
+          "prop": "className",
+          "type": "string",
+          "default": "-",
+          "description": "Additional CSS classes"
+        },
+        {
+          "prop": "Prop",
+          "type": "Type",
+          "default": "Default",
+          "description": "Description"
+        },
+        {
+          "prop": "------",
+          "type": "------",
+          "default": "---------",
+          "description": "-------------"
+        },
+        {
+          "prop": "text",
+          "type": "string",
+          "default": "-",
+          "description": "Word rendered as the halftone dot grid"
+        },
+        {
+          "prop": "logoSrc",
+          "type": "string",
+          "default": "-",
+          "description": "Image mark composed left of the text"
+        },
+        {
+          "prop": "aspectRatio",
+          "type": "string",
+          "default": "\"23 / 4\"",
+          "description": "Reserved ratio before the first draw"
+        },
+        {
+          "prop": "fontClassName",
+          "type": "string",
+          "default": "\"font-serif font-bold\"",
+          "description": "Classes on the font probe"
+        },
+        {
+          "prop": "className",
+          "type": "string",
+          "default": "-",
+          "description": "Additional CSS classes"
+        }
+      ]
+    }
+  ]
+}

@@ -14,22 +14,40 @@ import PageLayout from '@/layouts/PageLayout.astro';
   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
     {
       experiments.map((exp, i) => (
-        exp.slug === "gaia-footer" ? (
+        exp.gaiaUi ? (
+        <a
+          href={`/experiments/${exp.slug}`}
+          class="group block cursor-pointer rounded-2xl bg-[var(--muted-bg)] p-6 animate-fade-in sm:col-span-2"
+          style={`animation-delay:${0.15 + i * 0.07}s`}
+          aria-label={exp.title}
+        >
+          {/* static native preview - title, lead, variant chips */}
+          <div class="mb-1 text-[15px] font-semibold tracking-[-0.01em]">{exp.title}</div>
+          <p class="mb-4 max-w-xl text-[13px] text-[var(--text-muted)] leading-relaxed">{exp.gaiaUi.description}</p>
+          <div class="flex flex-wrap gap-1.5">
+            {exp.gaiaUi.variants.map((v) => (
+              <span class="rounded-full border border-[var(--border)] px-2.5 py-1 text-[11px] text-[var(--text-muted)]">
+                {v.name}
+              </span>
+            ))}
+          </div>
+        </a>
+        ) : exp.slug === "gaia-footer" ? (
           <a
             href={`/experiments/${exp.slug}`}
-            class="group block overflow-hidden rounded-2xl bg-[var(--muted-bg)] animate-fade-in transition-[transform,background-color,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:bg-[var(--muted-bg-strong)] hover:shadow-[0_14px_34px_-12px_rgba(0,0,0,0.22)] sm:col-span-2"
+            class="group block cursor-pointer overflow-hidden rounded-2xl bg-[var(--muted-bg)] animate-fade-in sm:col-span-2"
             style={`animation-delay:${0.15 + i * 0.07}s`}
             aria-label={exp.title}
           >
-            {/* static preview - cropped top of the footer; clicks open the detail */}
-            <div class="pointer-events-none h-[312px] w-full overflow-hidden">
+            {/* static preview - natural footer height; clicks open the detail */}
+            <div class="pointer-events-none w-full overflow-hidden">
               <GaiaFooter client:only="react" />
             </div>
           </a>
         ) : (
         <a
           href={`/experiments/${exp.slug}`}
-          class="group flex items-center justify-center rounded-2xl bg-[var(--muted-bg)] py-10 animate-fade-in transition-[transform,background-color,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:bg-[var(--muted-bg-strong)] hover:shadow-[0_14px_34px_-12px_rgba(0,0,0,0.22)]"
+          class="group flex cursor-pointer items-center justify-center rounded-2xl bg-[var(--muted-bg)] py-10 animate-fade-in"
           style={`animation-delay:${0.15 + i * 0.07}s`}
           aria-label={exp.title}
         >

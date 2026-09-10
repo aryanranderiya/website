@@ -1,0 +1,48 @@
+# Deploy the Worker to production on every push to master.
+# Replaces the old Pages git integration (retired: its `dist` output dir no
+# longer matches the Astro 7 Cloudflare adapter layout) and the removed
+# CircleCI pipeline (which only ran checks, never deployed).
+#
+# One-time setup: create an API token (dash.cloudflare.com → Profile →
+# API Tokens → "Edit Cloudflare Workers" template) and store it as the
+# CLOUDFLARE_API_TOKEN repo secret:
+#   gh secret set CLOUDFLARE_API_TOKEN
+# Until then this workflow fails at the deploy step by design.
+
+name: Deploy
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# Production deploys queue — never cancel a live deploy for a newer push.
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bun run build
+
+      - name: Deploy Worker
+        run: bunx wrangler deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          # Account ID is not a secret (visible in dashboard URLs).
+          CLOUDFLARE_ACCOUNT_ID: d65fe47d4d3b4f2725e87b91c772cbc3

@@ -3,6 +3,9 @@
 // detail page (/experiments/[slug]) where the live component, title,
 // description and writeup are shown.
 
+import type { GaiaUiEmbed } from './gaia-ui';
+import { gaiaUiEmbedFor } from './gaia-ui';
+
 export interface Experiment {
 	/** unique id, also used to map to its live component + as the route */
 	slug: string;
@@ -13,9 +16,27 @@ export interface Experiment {
 	bio: string;
 	/** ISO date */
 	date: string;
+	/** GAIA UI docs embed — grid shows the first variant, detail shows all */
+	gaiaUi?: GaiaUiEmbed;
 }
 
 export const experiments: Experiment[] = [
+	{
+		slug: 'chat-demo',
+		title: 'Chat Demo',
+		description: 'GAIA UI chat preview — pixel-accurate bubbles for every platform.',
+		bio: 'Live embeds from the GAIA UI docs. One entry per component, variants below, full docs linked at the bottom.',
+		date: '2026-09-11',
+		gaiaUi: gaiaUiEmbedFor('chat-demo'),
+	},
+	{
+		slug: 'footer-glow',
+		title: 'Footer Glow',
+		description: 'GAIA UI glowing footer backdrop with the halftone wordmark.',
+		bio: 'Live embeds from the GAIA UI docs — same component family as the GAIA Footer experiment above, shown in its documented variants.',
+		date: '2026-09-11',
+		gaiaUi: gaiaUiEmbedFor('footer-glow'),
+	},
 	{
 		slug: 'holo-card',
 		title: 'Holographic Card',
