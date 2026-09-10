@@ -710,17 +710,13 @@ function MarkerLabel({ children, className, position = 'top' }: MarkerLabelProps
 	);
 }
 
+type MapControlKind = 'zoom' | 'compass' | 'locate' | 'fullscreen';
+
 type MapControlsProps = {
 	/** Position of the controls on the map (default: "bottom-right") */
 	position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-	/** Show zoom in/out buttons (default: true) */
-	showZoom?: boolean;
-	/** Show compass button to reset bearing (default: false) */
-	showCompass?: boolean;
-	/** Show locate button to find user's location (default: false) */
-	showLocate?: boolean;
-	/** Show fullscreen toggle button (default: false) */
-	showFullscreen?: boolean;
+	/** Which control groups to render (default: ["zoom"]) */
+	controls?: MapControlKind[];
 	/** Additional CSS classes for the controls container */
 	className?: string;
 	/** Callback with user coordinates when located */
@@ -774,15 +770,13 @@ function ControlButton({
 
 function MapControls({
 	position = 'bottom-right',
-	showZoom = true,
-	showCompass = false,
-	showLocate = false,
-	showFullscreen = false,
+	controls = ['zoom'],
 	className,
 	onLocate,
 }: MapControlsProps) {
 	const { map } = useMap();
 	const [waitingForLocation, setWaitingForLocation] = useState(false);
+	const show = (kind: MapControlKind) => controls.includes(kind);
 
 	const handleZoomIn = useCallback(() => {
 		map?.zoomTo(map.getZoom() + 1, { duration: 300 });
@@ -835,7 +829,7 @@ function MapControls({
 		<div
 			className={cn('absolute z-10 flex flex-col gap-1.5', positionClasses[position], className)}
 		>
-			{showZoom && (
+			{show('zoom') && (
 				<ControlGroup>
 					<ControlButton onClick={handleZoomIn} label="Zoom in">
 						<Plus className="size-4" />
@@ -845,12 +839,12 @@ function MapControls({
 					</ControlButton>
 				</ControlGroup>
 			)}
-			{showCompass && (
+			{show('compass') && (
 				<ControlGroup>
 					<CompassButton onClick={handleResetBearing} />
 				</ControlGroup>
 			)}
-			{showLocate && (
+			{show('locate') && (
 				<ControlGroup>
 					<ControlButton
 						onClick={handleLocate}
@@ -865,7 +859,7 @@ function MapControls({
 					</ControlButton>
 				</ControlGroup>
 			)}
-			{showFullscreen && (
+			{show('fullscreen') && (
 				<ControlGroup>
 					<ControlButton onClick={handleFullscreen} label="Toggle fullscreen">
 						<Maximize className="size-4" />
