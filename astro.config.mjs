@@ -5,6 +5,7 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { viteStaticCopy } from 'vite-plugin-static-copy';
 import { unified } from '@astrojs/markdown-remark';
 import { fileURLToPath } from 'node:url';
 import { rehypeOgPreview } from './src/lib/rehypeOgPreview.ts';
@@ -81,7 +82,28 @@ export default defineConfig({
     ],
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      // MapLibre resolves its Web Worker relative to import.meta.url at
+      // runtime (`./maplibre-gl-worker.mjs`), which Vite can't statically
+      // analyze — the file is never emitted and the map renders blank.
+      // Copy the worker + its shared chunk to a stable URL and point
+      // MapLibre at it (see src/components/ui/map.tsx).
+      viteStaticCopy({
+        targets: [
+          {
+            src: 'node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs',
+            dest: 'vendor/maplibre',
+            rename: { stripBase: true },
+          },
+          {
+            src: 'node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs',
+            dest: 'vendor/maplibre',
+            rename: { stripBase: true },
+          },
+        ],
+      }),
+    ],
     resolve: {
       alias: {
         '@icons': fileURLToPath(new URL('./src/components/icons/index.ts', import.meta.url)),
