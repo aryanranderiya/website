@@ -7,12 +7,12 @@ tech: [Python, Flask, HTML, CSS, JavaScript]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/OS_Mini_Project/srtn.png
+coverImage: /images/projects/os-mini-project/srtn.png
 images:
-  - /ProjectMedia/OS_Mini_Project/srtn.png
-  - /ProjectMedia/OS_Mini_Project/srtn-2.png
-  - /ProjectMedia/OS_Mini_Project/producer-consumer.png
-  - /ProjectMedia/OS_Mini_Project/sstf.png
+  - /images/projects/os-mini-project/srtn.png
+  - /images/projects/os-mini-project/srtn-2.png
+  - /images/projects/os-mini-project/producer-consumer.png
+  - /images/projects/os-mini-project/sstf.png
 order: 19
 url: https://osproject.vercel.app
 github: https://github.com/aryanranderiya/OSMiniProject

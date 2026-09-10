@@ -7,10 +7,10 @@ tech: [Go]
 featured: false
 type: cli
 folder: Projects
-coverImage: /ProjectMedia/GoSpider/screenshot-1.png
+coverImage: /images/projects/gospider/screenshot-1.png
 images:
-  - /ProjectMedia/GoSpider/screenshot-1.png
-  - /ProjectMedia/GoSpider/screenshot-2.webp
+  - /images/projects/gospider/screenshot-1.png
+  - /images/projects/gospider/screenshot-2.webp
 order: 18
 github: https://github.com/aryanranderiya/GoSpider
 ---

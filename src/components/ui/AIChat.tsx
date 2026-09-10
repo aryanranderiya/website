@@ -5,7 +5,9 @@ import './message-bubble.css';
 import { ArrowUp02Icon, Cancel01Icon, ChatBotIcon, HugeiconsIcon } from '@icons';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
+import type { RefObject } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import useSWR from 'swr';
 import { FOLLOWUP_SYSTEM_PROMPT, SUGGESTED_QUESTIONS } from '@/data/ai-context';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
@@ -87,6 +89,153 @@ const WELCOME: Message = {
 	role: 'assistant',
 	content: "Hey! I'm Aryan's AI. Ask me anything about his work, projects, or experience.",
 };
+
+// SWR fetcher: HTTP errors are checked before the body is consumed, and a
+// failure just leaves the chat on its fallback (no detailed context).
+async function fetchAiPrompt(url: string): Promise<string> {
+	const res = await fetch(url);
+	if (!res.ok) throw new Error(`AI prompt request failed with status ${res.status}`);
+	const data = (await res.json()) as { prompt?: string };
+	return data.prompt ?? '';
+}
+
+// Loads the engine singleton into React state. One effect, no timers.
+function useChatEngine() {
+	const [loadProgress, setLoadProgress] = useState('');
+	const [isModelReady, setIsModelReady] = useState(_engineReady);
+	const [loadError, setLoadError] = useState(_engineError);
+
+	useEffect(() => {
+		// Sync singleton state back into React (handles page re-navigation).
+		if (_engineReady) setIsModelReady(true);
+		if (_engineError) setLoadError(_engineError);
+		getEngine(
+			(text) => setLoadProgress(text),
+			() => {
+				setIsModelReady(true);
+				setLoadProgress('');
+			},
+			(msg) => {
+				setLoadError(msg);
+				setLoadProgress('');
+			}
+		);
+	}, []);
+
+	return { isModelReady, loadProgress, loadError };
+}
+
+// Fetches the system prompt through the SWR cache (deduped, race-free) and
+// stores it in the module cache + caller ref. Non-critical: on failure the
+// chat simply runs without the detailed context.
+function useAiPrompt(promptRef: { current: string }) {
+	const shouldFetch = !promptRef.current && !_cachedPrompt;
+	const { data } = useSWR(shouldFetch ? '/api/ai-prompt.json' : null, fetchAiPrompt, {
+		revalidateOnFocus: false,
+		shouldRetryOnError: false,
+	});
+
+	useEffect(() => {
+		if (data) {
+			_cachedPrompt = data;
+			promptRef.current = data;
+		}
+	}, [data, promptRef]);
+}
+
+function useChatMessages(isModelReady: boolean, promptRef: { current: string }) {
+	const [messages, setMessages] = useState<Message[]>([WELCOME]);
+	const [isStreaming, setIsStreaming] = useState(false);
+	const [isGeneratingFollowUps, setIsGeneratingFollowUps] = useState(false);
+
+	const generateFollowUps = useCallback(async (userQ: string, aiAnswer: string, msgId: string) => {
+		if (!_engine) return;
+		setIsGeneratingFollowUps(true);
+		try {
+			const res = (await _engine.chat.completions.create({
+				messages: [
+					{ role: 'system', content: FOLLOWUP_SYSTEM_PROMPT },
+					{
+						role: 'user',
+						content: `User asked: "${userQ}"\nAI answered: "${aiAnswer.slice(0, 300)}"`,
+					},
+				],
+				max_tokens: 100,
+				temperature: 0.85,
+			})) as { choices: { message: { content?: string } }[] };
+			const raw = res.choices[0]?.message?.content ?? '[]';
+			const parsed = JSON.parse(raw.match(/\[[\s\S]*\]/)?.[0] ?? '[]') as string[];
+			const followUps = parsed
+				.slice(0, 3)
+				.filter((s: unknown) => typeof s === 'string') as string[];
+			setMessages((prev: Message[]) =>
+				prev.map((m: Message) => (m.id === msgId ? { ...m, followUps } : m))
+			);
+		} catch {
+			// silently skip - follow-ups are non-critical
+		} finally {
+			setIsGeneratingFollowUps(false);
+		}
+	}, []);
+
+	const sendMessage = useCallback(
+		async (text: string) => {
+			if (!text.trim() || isStreaming || !isModelReady) return;
+
+			const userMsg: Message = { id: `u-${Date.now()}`, role: 'user', content: text.trim() };
+			const assistantId = `a-${Date.now() + 1}`;
+
+			// Clear follow-ups from all previous assistant messages
+			setMessages((prev: Message[]) => [
+				...prev.map((m: Message) => ({ ...m, followUps: undefined })),
+				userMsg,
+				{ id: assistantId, role: 'assistant', content: '' },
+			]);
+			setIsStreaming(true);
+
+			let fullResponse = '';
+			try {
+				const history = messages.map((m: Message) => ({ role: m.role, content: m.content }));
+				const chunks = (await _engine?.chat.completions.create({
+					messages: [
+						{ role: 'system', content: promptRef.current },
+						...history,
+						{ role: 'user', content: text.trim() },
+					],
+					stream: true,
+					temperature: 0.7,
+					max_tokens: 350,
+				})) as AsyncIterable<{ choices: { delta: { content?: string } }[] }>;
+
+				for await (const chunk of chunks) {
+					const delta = chunk.choices[0]?.delta?.content ?? '';
+					if (delta) {
+						fullResponse += delta;
+						setMessages((prev: Message[]) =>
+							prev.map((m: Message) =>
+								m.id === assistantId ? { ...m, content: m.content + delta } : m
+							)
+						);
+					}
+				}
+			} catch {
+				setMessages((prev: Message[]) =>
+					prev.map((m: Message) =>
+						m.id === assistantId ? { ...m, content: 'Something went wrong. Please try again.' } : m
+					)
+				);
+			} finally {
+				setIsStreaming(false);
+				if (fullResponse) {
+					generateFollowUps(text.trim(), fullResponse, assistantId);
+				}
+			}
+		},
+		[isStreaming, isModelReady, messages, generateFollowUps, promptRef]
+	);
+
+	return { messages, isStreaming, isGeneratingFollowUps, sendMessage };
+}
 
 function TypingDots() {
 	return (
@@ -170,166 +319,325 @@ function AssistantBubble({
 	);
 }
 
-export default function AIChat() {
-	const [activePrompt, setActivePrompt] = useState(_cachedPrompt);
-	const [isOpen, setIsOpen] = useState(false);
-	const [messages, setMessages] = useState<Message[]>([WELCOME]);
-	const [input, setInput] = useState('');
-	const [isStreaming, setIsStreaming] = useState(false);
-	const [isGeneratingFollowUps, setIsGeneratingFollowUps] = useState(false);
-	const [loadProgress, setLoadProgress] = useState('');
-	const [isModelReady, setIsModelReady] = useState(_engineReady);
-	const [loadError, setLoadError] = useState(_engineError);
+function ChatHeader({
+	isModelReady,
+	isGeneratingFollowUps,
+	loadError,
+	onClose,
+}: {
+	isModelReady: boolean;
+	isGeneratingFollowUps: boolean;
+	loadError: string;
+	onClose: () => void;
+}) {
+	return (
+		<div className="flex shrink-0 items-center justify-between border-[rgba(0,0,0,0.06)] border-b px-4 py-3">
+			<div className="flex items-center gap-2">
+				<div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bbff]">
+					<HugeiconsIcon icon={ChatBotIcon} size={14} color="white" />
+				</div>
+				<div>
+					<p className="font-[550] text-[13px] text-[var(--foreground)] leading-none tracking-[-0.02em]">
+						Ask about Aryan
+					</p>
+					<p className="mt-0.5 text-[11px] text-[rgba(0,0,0,0.35)]">
+						{isModelReady
+							? isGeneratingFollowUps
+								? 'Thinking...'
+								: 'Ready'
+							: loadError
+								? 'Error'
+								: 'Loading model...'}
+					</p>
+				</div>
+			</div>
+			<button
+				type="button"
+				onClick={onClose}
+				className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-black/6"
+				aria-label="Close chat"
+			>
+				<HugeiconsIcon icon={Cancel01Icon} size={14} color="rgba(0,0,0,0.45)" />
+			</button>
+		</div>
+	);
+}
 
+function MessageList({
+	messages,
+	isStreaming,
+	isModelReady,
+	loadError,
+	loadProgress,
+	onFollowUp,
+}: {
+	messages: Message[];
+	isStreaming: boolean;
+	isModelReady: boolean;
+	loadError: string;
+	loadProgress: string;
+	onFollowUp: (q: string) => void;
+}) {
 	const messagesEndRef = useRef<HTMLDivElement>(null);
-	const inputRef = useRef<HTMLInputElement>(null);
-
-	const showInitialSuggestions = messages.length === 1 && !isStreaming;
 
 	useEffect(() => {
 		messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
 	}, []);
 
-	useEffect(() => {
-		if (isOpen && isModelReady) {
-			setTimeout(() => inputRef.current?.focus(), 350);
-		}
-	}, [isOpen, isModelReady]);
+	return (
+		<div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-5 py-3">
+			{messages.map((msg: Message) => (
+				<m.div
+					key={msg.id}
+					initial={{ opacity: 0, y: 6, filter: 'blur(4px)' }}
+					animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+					transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
+				>
+					{msg.role === 'user' ? (
+						<UserBubble content={msg.content} />
+					) : (
+						<AssistantBubble
+							content={msg.content}
+							isStreaming={isStreaming && msg.id === messages[messages.length - 1]?.id}
+							followUps={msg.followUps}
+							onFollowUp={onFollowUp}
+						/>
+					)}
+				</m.div>
+			))}
 
-	// Sync singleton state back into React on mount (handles page re-navigation)
-	useEffect(() => {
-		if (_engineReady) setIsModelReady(true);
-		if (_engineError) setLoadError(_engineError);
-	}, []);
+			{/* Model loading bubble */}
+			{!isModelReady && !loadError && (
+				<m.div
+					initial={{ opacity: 0, y: 4 }}
+					animate={{ opacity: 1, y: 0 }}
+					className="mb-2 flex justify-start"
+				>
+					<div className="imessage-bubble imessage-from-them max-w-[85%]">
+						<div className="mb-1.5 flex items-center gap-2">
+							<m.div
+								className="h-3 w-3 shrink-0 rounded-full border-[#00bbff] border-[1.5px] border-t-transparent"
+								animate={{ rotate: 360 }}
+								transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+							/>
+							<span className="text-[12px] opacity-80">{loadProgress || 'Loading model...'}</span>
+						</div>
+						<div className="mb-1.5 h-px overflow-hidden rounded-full bg-[rgba(0,0,0,0.08)]">
+							<m.div
+								className="h-full rounded-full"
+								style={{ background: '#00bbff' }}
+								animate={{ x: ['-100%', '100%'] }}
+								transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+							/>
+						</div>
+						<p className="text-[11px] opacity-50">Downloads once, loads from cache after.</p>
+					</div>
+				</m.div>
+			)}
 
-	useEffect(() => {
-		if (!isOpen || _cachedPrompt) return;
-		fetch('/api/ai-prompt.json')
-			.then((r) => r.json())
-			.then((data: { prompt?: string }) => {
-				_cachedPrompt = data.prompt ?? '';
-				setActivePrompt(_cachedPrompt);
-			})
-			.catch(() => {}); // non-critical — chat still works without the detailed context
-	}, [isOpen]);
+			{loadError && (
+				<m.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					className="mb-2 flex justify-start"
+				>
+					<div className="imessage-bubble imessage-from-them text-[12px] text-[rgba(200,50,50,0.85)]">
+						{loadError}
+					</div>
+				</m.div>
+			)}
 
-	useEffect(() => {
-		if (!isOpen) return;
-		getEngine(
-			(text) => setLoadProgress(text),
-			() => {
-				setIsModelReady(true);
-				setLoadProgress('');
-			},
-			(msg) => {
-				setLoadError(msg);
-				setLoadProgress('');
-			}
-		);
-	}, [isOpen]);
-
-	const generateFollowUps = useCallback(async (userQ: string, aiAnswer: string, msgId: string) => {
-		if (!_engine) return;
-		setIsGeneratingFollowUps(true);
-		try {
-			const res = (await _engine.chat.completions.create({
-				messages: [
-					{ role: 'system', content: FOLLOWUP_SYSTEM_PROMPT },
-					{
-						role: 'user',
-						content: `User asked: "${userQ}"\nAI answered: "${aiAnswer.slice(0, 300)}"`,
-					},
-				],
-				max_tokens: 100,
-				temperature: 0.85,
-			})) as { choices: { message: { content?: string } }[] };
-			const raw = res.choices[0]?.message?.content ?? '[]';
-			const parsed = JSON.parse(raw.match(/\[[\s\S]*\]/)?.[0] ?? '[]') as string[];
-			const followUps = parsed
-				.slice(0, 3)
-				.filter((s: unknown) => typeof s === 'string') as string[];
-			setMessages((prev: Message[]) =>
-				prev.map((m: Message) => (m.id === msgId ? { ...m, followUps } : m))
-			);
-		} catch {
-			// silently skip - follow-ups are non-critical
-		} finally {
-			setIsGeneratingFollowUps(false);
-		}
-	}, []);
-
-	const sendMessage = useCallback(
-		async (text: string) => {
-			if (!text.trim() || isStreaming || !isModelReady) return;
-
-			const userMsg: Message = { id: `u-${Date.now()}`, role: 'user', content: text.trim() };
-			const assistantId = `a-${Date.now() + 1}`;
-
-			// Clear follow-ups from all previous assistant messages
-			setMessages((prev: Message[]) => [
-				...prev.map((m: Message) => ({ ...m, followUps: undefined })),
-				userMsg,
-				{ id: assistantId, role: 'assistant', content: '' },
-			]);
-			setInput('');
-			setIsStreaming(true);
-
-			let fullResponse = '';
-			try {
-				const history = messages.map((m: Message) => ({ role: m.role, content: m.content }));
-				const chunks = (await _engine?.chat.completions.create({
-					messages: [
-						{ role: 'system', content: activePrompt },
-						...history,
-						{ role: 'user', content: text.trim() },
-					],
-					stream: true,
-					temperature: 0.7,
-					max_tokens: 350,
-				})) as AsyncIterable<{ choices: { delta: { content?: string } }[] }>;
-
-				for await (const chunk of chunks) {
-					const delta = chunk.choices[0]?.delta?.content ?? '';
-					if (delta) {
-						fullResponse += delta;
-						setMessages((prev: Message[]) =>
-							prev.map((m: Message) =>
-								m.id === assistantId ? { ...m, content: m.content + delta } : m
-							)
-						);
-					}
-				}
-			} catch {
-				setMessages((prev: Message[]) =>
-					prev.map((m: Message) =>
-						m.id === assistantId ? { ...m, content: 'Something went wrong. Please try again.' } : m
-					)
-				);
-			} finally {
-				setIsStreaming(false);
-				if (fullResponse) {
-					generateFollowUps(text.trim(), fullResponse, assistantId);
-				}
-			}
-		},
-		[isStreaming, isModelReady, messages, generateFollowUps, activePrompt]
+			<div ref={messagesEndRef} />
+		</div>
 	);
+}
 
+function SuggestionChips({
+	visible,
+	onSelect,
+}: {
+	visible: boolean;
+	onSelect: (q: string) => void;
+}) {
+	return (
+		<AnimatePresence>
+			{visible && (
+				<m.div
+					initial={{ opacity: 0, y: 8 }}
+					animate={{ opacity: 1, y: 0 }}
+					exit={{ opacity: 0, y: 4 }}
+					transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1] }}
+					className="flex shrink-0 flex-wrap gap-1.5 px-4 pb-2"
+				>
+					{SUGGESTED_QUESTIONS.map((q) => (
+						<button
+							type="button"
+							key={q}
+							onClick={() => onSelect(q)}
+							className="cursor-pointer rounded-full border-[1.5px] border-[rgba(0,0,0,0.22)] border-dashed px-2.5 py-1 text-[11.5px] text-[rgba(0,0,0,0.55)] leading-[1.4] tracking-[-0.01em] transition-colors hover:bg-black/5"
+						>
+							{q}
+						</button>
+					))}
+				</m.div>
+			)}
+		</AnimatePresence>
+	);
+}
+
+function ChatInput({
+	inputRef,
+	input,
+	setInput,
+	modelReady,
+	streaming,
+	onSend,
+}: {
+	inputRef: RefObject<HTMLInputElement | null>;
+	input: string;
+	setInput: (v: string) => void;
+	modelReady: boolean;
+	streaming: boolean;
+	onSend: (text: string) => void;
+}) {
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		sendMessage(input);
+		if (input.trim().length === 0 || !modelReady || streaming) return;
+		onSend(input);
+		setInput('');
 	};
 
-	const canSend = input.trim().length > 0 && isModelReady && !isStreaming;
+	const canSend = input.trim().length > 0 && modelReady && !streaming;
+
+	return (
+		<div className="shrink-0 border-[rgba(0,0,0,0.06)] border-t px-3 pt-2 pb-3">
+			<form
+				onSubmit={handleSubmit}
+				className="relative flex items-center rounded-full bg-[rgba(0,0,0,0.05)]"
+			>
+				<input
+					ref={inputRef}
+					type="text"
+					value={input}
+					onChange={(e) => setInput(e.target.value)}
+					placeholder={modelReady ? 'Ask anything...' : 'Loading model...'}
+					disabled={!modelReady || streaming}
+					className="w-full rounded-full border-none bg-transparent py-2.5 pr-11 pl-4 text-[13px] text-[var(--foreground)] tracking-[-0.01em] shadow-none outline-none transition-opacity focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-40"
+				/>
+				<m.button
+					type="submit"
+					disabled={!canSend}
+					className="absolute right-1 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full disabled:cursor-default disabled:opacity-30"
+					style={{ background: '#00bbff' }}
+					whileHover={canSend ? { scale: 1.08 } : {}}
+					whileTap={canSend ? { scale: 0.92 } : {}}
+					aria-label="Send message"
+				>
+					<HugeiconsIcon icon={ArrowUp02Icon} size={16} color="white" />
+				</m.button>
+			</form>
+		</div>
+	);
+}
+
+function ChatPanel({
+	onClose,
+	messages,
+	isStreaming,
+	isGeneratingFollowUps,
+	sendMessage,
+	isModelReady,
+	loadProgress,
+	loadError,
+	input,
+	setInput,
+}: {
+	onClose: () => void;
+	messages: Message[];
+	isStreaming: boolean;
+	isGeneratingFollowUps: boolean;
+	sendMessage: (text: string) => void;
+	isModelReady: boolean;
+	loadProgress: string;
+	loadError: string;
+	input: string;
+	setInput: (v: string) => void;
+}) {
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		if (!isModelReady) return;
+		const id = setTimeout(() => inputRef.current?.focus(), 350);
+		return () => clearTimeout(id);
+	}, [isModelReady]);
+
+	const showInitialSuggestions = messages.length === 1 && !isStreaming;
+
+	return (
+		<m.div
+			key="chat"
+			className="absolute inset-0 flex flex-col"
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			exit={{ opacity: 0 }}
+			transition={{ delay: 0.12, duration: 0.2 }}
+		>
+			<ChatHeader
+				isModelReady={isModelReady}
+				isGeneratingFollowUps={isGeneratingFollowUps}
+				loadError={loadError}
+				onClose={onClose}
+			/>
+
+			<MessageList
+				messages={messages}
+				isStreaming={isStreaming}
+				isModelReady={isModelReady}
+				loadError={loadError}
+				loadProgress={loadProgress}
+				onFollowUp={sendMessage}
+			/>
+
+			{/* Initial suggestion chips */}
+			<SuggestionChips visible={showInitialSuggestions && isModelReady} onSelect={sendMessage} />
+
+			<ChatInput
+				inputRef={inputRef}
+				input={input}
+				setInput={setInput}
+				modelReady={isModelReady}
+				streaming={isStreaming}
+				onSend={sendMessage}
+			/>
+		</m.div>
+	);
+}
+
+export default function AIChat() {
+	const [isOpen, setIsOpen] = useState(false);
+	// Chat state lives here (always mounted) so closing the panel never
+	// wipes the conversation or the draft input.
+	const promptRef = useRef(_cachedPrompt);
+	const { isModelReady, loadProgress, loadError } = useChatEngine();
+	useAiPrompt(promptRef);
+	const { messages, isStreaming, isGeneratingFollowUps, sendMessage } = useChatMessages(
+		isModelReady,
+		promptRef
+	);
+	const [input, setInput] = useState('');
 
 	return (
 		<LazyMotion features={loadFeatures}>
 			<m.div
+				layout
 				className="fixed right-6 bottom-6 overflow-hidden"
-				style={{ zIndex: 9998, transformOrigin: 'bottom right' }}
-				animate={{
+				style={{
+					zIndex: 9998,
+					transformOrigin: 'bottom right',
 					width: isOpen ? 360 : 48,
 					height: isOpen ? 520 : 48,
+				}}
+				animate={{
 					borderRadius: isOpen ? 20 : 24,
 					boxShadow: isOpen
 						? '0 16px 48px rgba(0,0,0,0.14), 0 4px 16px rgba(0,0,0,0.08)'
@@ -367,168 +675,18 @@ export default function AIChat() {
 				{/* Chat panel */}
 				<AnimatePresence>
 					{isOpen && (
-						<m.div
-							key="chat"
-							className="absolute inset-0 flex flex-col"
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							exit={{ opacity: 0 }}
-							transition={{ delay: 0.12, duration: 0.2 }}
-						>
-							{/* Header */}
-							<div className="flex shrink-0 items-center justify-between border-[rgba(0,0,0,0.06)] border-b px-4 py-3">
-								<div className="flex items-center gap-2">
-									<div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bbff]">
-										<HugeiconsIcon icon={ChatBotIcon} size={14} color="white" />
-									</div>
-									<div>
-										<p className="font-[550] text-[13px] text-[var(--foreground)] leading-none tracking-[-0.02em]">
-											Ask about Aryan
-										</p>
-										<p className="mt-0.5 text-[11px] text-[rgba(0,0,0,0.35)]">
-											{isModelReady
-												? isGeneratingFollowUps
-													? 'Thinking...'
-													: 'Ready'
-												: loadError
-													? 'Error'
-													: 'Loading model...'}
-										</p>
-									</div>
-								</div>
-								<button
-									type="button"
-									onClick={() => setIsOpen(false)}
-									className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-black/6"
-									aria-label="Close chat"
-								>
-									<HugeiconsIcon icon={Cancel01Icon} size={14} color="rgba(0,0,0,0.45)" />
-								</button>
-							</div>
-
-							{/* Messages */}
-							<div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-5 py-3">
-								{messages.map((msg: Message) => (
-									<m.div
-										key={msg.id}
-										initial={{ opacity: 0, y: 6, filter: 'blur(4px)' }}
-										animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-										transition={{ duration: 0.3, ease: [0.19, 1, 0.22, 1] }}
-									>
-										{msg.role === 'user' ? (
-											<UserBubble content={msg.content} />
-										) : (
-											<AssistantBubble
-												content={msg.content}
-												isStreaming={isStreaming && msg.id === messages[messages.length - 1]?.id}
-												followUps={msg.followUps}
-												onFollowUp={sendMessage}
-											/>
-										)}
-									</m.div>
-								))}
-
-								{/* Model loading bubble */}
-								{!isModelReady && !loadError && (
-									<m.div
-										initial={{ opacity: 0, y: 4 }}
-										animate={{ opacity: 1, y: 0 }}
-										className="mb-2 flex justify-start"
-									>
-										<div className="imessage-bubble imessage-from-them max-w-[85%]">
-											<div className="mb-1.5 flex items-center gap-2">
-												<m.div
-													className="h-3 w-3 shrink-0 rounded-full border-[#00bbff] border-[1.5px] border-t-transparent"
-													animate={{ rotate: 360 }}
-													transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
-												/>
-												<span className="text-[12px] opacity-80">
-													{loadProgress || 'Loading model...'}
-												</span>
-											</div>
-											<div className="mb-1.5 h-px overflow-hidden rounded-full bg-[rgba(0,0,0,0.08)]">
-												<m.div
-													className="h-full rounded-full"
-													style={{ background: '#00bbff' }}
-													animate={{ x: ['-100%', '100%'] }}
-													transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
-												/>
-											</div>
-											<p className="text-[11px] opacity-50">
-												Downloads once, loads from cache after.
-											</p>
-										</div>
-									</m.div>
-								)}
-
-								{loadError && (
-									<m.div
-										initial={{ opacity: 0 }}
-										animate={{ opacity: 1 }}
-										className="mb-2 flex justify-start"
-									>
-										<div className="imessage-bubble imessage-from-them text-[12px] text-[rgba(200,50,50,0.85)]">
-											{loadError}
-										</div>
-									</m.div>
-								)}
-
-								<div ref={messagesEndRef} />
-							</div>
-
-							{/* Initial suggestion chips */}
-							<AnimatePresence>
-								{showInitialSuggestions && isModelReady && (
-									<m.div
-										initial={{ opacity: 0, y: 8 }}
-										animate={{ opacity: 1, y: 0 }}
-										exit={{ opacity: 0, y: 4 }}
-										transition={{ duration: 0.25, ease: [0.19, 1, 0.22, 1] }}
-										className="flex shrink-0 flex-wrap gap-1.5 px-4 pb-2"
-									>
-										{SUGGESTED_QUESTIONS.map((q) => (
-											<button
-												type="button"
-												key={q}
-												onClick={() => sendMessage(q)}
-												className="cursor-pointer rounded-full border-[1.5px] border-[rgba(0,0,0,0.22)] border-dashed px-2.5 py-1 text-[11.5px] text-[rgba(0,0,0,0.55)] leading-[1.4] tracking-[-0.01em] transition-colors hover:bg-black/5"
-											>
-												{q}
-											</button>
-										))}
-									</m.div>
-								)}
-							</AnimatePresence>
-
-							{/* Input */}
-							<div className="shrink-0 border-[rgba(0,0,0,0.06)] border-t px-3 pt-2 pb-3">
-								<form
-									onSubmit={handleSubmit}
-									className="relative flex items-center rounded-full bg-[rgba(0,0,0,0.05)]"
-								>
-									<input
-										ref={inputRef}
-										type="text"
-										value={input}
-										onChange={(e) => setInput(e.target.value)}
-										placeholder={isModelReady ? 'Ask anything...' : 'Loading model...'}
-										disabled={!isModelReady || isStreaming}
-										className="w-full rounded-full border-none bg-transparent py-2.5 pr-11 pl-4 text-[13px] text-[var(--foreground)] tracking-[-0.01em] shadow-none outline-none transition-opacity focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-40"
-									/>
-									<m.button
-										type="submit"
-										disabled={!canSend}
-										className="absolute right-1 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full disabled:cursor-default disabled:opacity-30"
-										style={{ background: '#00bbff' }}
-										whileHover={canSend ? { scale: 1.08 } : {}}
-										whileTap={canSend ? { scale: 0.92 } : {}}
-										aria-label="Send message"
-									>
-										<HugeiconsIcon icon={ArrowUp02Icon} size={16} color="white" />
-									</m.button>
-								</form>
-							</div>
-						</m.div>
+						<ChatPanel
+							onClose={() => setIsOpen(false)}
+							messages={messages}
+							isStreaming={isStreaming}
+							isGeneratingFollowUps={isGeneratingFollowUps}
+							sendMessage={sendMessage}
+							isModelReady={isModelReady}
+							loadProgress={loadProgress}
+							loadError={loadError}
+							input={input}
+							setInput={setInput}
+						/>
 					)}
 				</AnimatePresence>
 			</m.div>

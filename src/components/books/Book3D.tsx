@@ -66,7 +66,7 @@ export default function Book3D({
 				{/* reflection — flipped cover, absolutely placed BELOW the book so it overlaps the
 				    shelf's lit top surface (the book itself stays put). Fades out smoothly. */}
 				<div
-					className="absolute inset-x-0 top-full overflow-hidden opacity-50 transition-transform duration-200 ease-out group-hover:translate-y-1 [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)]"
+					className="absolute inset-x-0 top-full overflow-hidden opacity-50 transition-transform duration-200 ease-out [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)] group-hover:translate-y-1"
 					style={{ height: reflectionH }}
 					aria-hidden="true"
 				>

@@ -7,20 +7,20 @@ tech: [React, Node.js, Express, Supabase]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/University_Research Portal/UniversityPortalBanner.webp
+coverImage: /images/projects/university-research-portal/UniversityPortalBanner.webp
 images:
-  - /ProjectMedia/University_Research Portal/UniversityPortalBanner.webp
-  - /ProjectMedia/University_Research Portal/0.png
-  - /ProjectMedia/University_Research Portal/1.webp
-  - /ProjectMedia/University_Research Portal/2.webp
-  - /ProjectMedia/University_Research Portal/3.webp
-  - /ProjectMedia/University_Research Portal/4.webp
-  - /ProjectMedia/University_Research Portal/5.webp
-  - /ProjectMedia/University_Research Portal/6.webp
-  - /ProjectMedia/University_Research Portal/7.webp
-  - /ProjectMedia/University_Research Portal/8.webp
-  - /ProjectMedia/University_Research Portal/9.webp
-  - /ProjectMedia/University_Research Portal/10.webp
+  - /images/projects/university-research-portal/UniversityPortalBanner.webp
+  - /images/projects/university-research-portal/0.png
+  - /images/projects/university-research-portal/1.webp
+  - /images/projects/university-research-portal/2.webp
+  - /images/projects/university-research-portal/3.webp
+  - /images/projects/university-research-portal/4.webp
+  - /images/projects/university-research-portal/5.webp
+  - /images/projects/university-research-portal/6.webp
+  - /images/projects/university-research-portal/7.webp
+  - /images/projects/university-research-portal/8.webp
+  - /images/projects/university-research-portal/9.webp
+  - /images/projects/university-research-portal/10.webp
 order: 13
 ---
 

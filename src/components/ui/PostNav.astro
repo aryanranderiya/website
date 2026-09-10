@@ -16,8 +16,15 @@ interface Props {
 	class?: string;
 }
 
-const { backHref, backLabel, prevHref, nextHref, prevLabel, nextLabel, class: className } =
-	Astro.props;
+const {
+	backHref,
+	backLabel,
+	prevHref,
+	nextHref,
+	prevLabel,
+	nextLabel,
+	class: className,
+} = Astro.props;
 
 const btn =
 	'inline-flex h-9 w-9 items-center justify-center rounded-full bg-[var(--muted-bg)] text-[var(--text-secondary)]! no-underline! transition-[background-color,color,transform] duration-150 hover:bg-[var(--muted-bg-strong)] hover:text-[var(--text-primary)]! active:scale-90 active:bg-[var(--muted-bg-strong)]';

@@ -7,14 +7,14 @@ tech: [React, TypeScript, Vite, Express, MongoDB, Node.js]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/Encode_Appointment/encode-1.webp
+coverImage: /images/projects/encode-appointment/encode-1.webp
 images:
-  - /ProjectMedia/Encode_Appointment/encode-1.webp
-  - /ProjectMedia/Encode_Appointment/encode-2.webp
-  - /ProjectMedia/Encode_Appointment/encode-3.webp
-  - /ProjectMedia/Encode_Appointment/encode-4.webp
-  - /ProjectMedia/Encode_Appointment/encode-5.webp
-  - /ProjectMedia/Encode_Appointment/encode-6.webp
+  - /images/projects/encode-appointment/encode-1.webp
+  - /images/projects/encode-appointment/encode-2.webp
+  - /images/projects/encode-appointment/encode-3.webp
+  - /images/projects/encode-appointment/encode-4.webp
+  - /images/projects/encode-appointment/encode-5.webp
+  - /images/projects/encode-appointment/encode-6.webp
 order: 35
 url: https://encode-aryan.vercel.app
 github: https://github.com/aryanranderiya/encode-assignment

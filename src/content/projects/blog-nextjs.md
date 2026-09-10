@@ -7,13 +7,13 @@ tech: [Next.js, TypeScript, TailwindCSS, SQLite]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/Pesronal_Blog/blog_project_banner.webp
+coverImage: /images/projects/blog-nextjs/blog_project_banner.webp
 images:
-  - /ProjectMedia/Pesronal_Blog/blog_project_banner.webp
-  - /ProjectMedia/Pesronal_Blog/screenshot-1.webp
-  - /ProjectMedia/Pesronal_Blog/screenshot-2.webp
-  - /ProjectMedia/Pesronal_Blog/screenshot-3.webp
-  - /ProjectMedia/Pesronal_Blog/screenshot-4.webp
+  - /images/projects/blog-nextjs/blog_project_banner.webp
+  - /images/projects/blog-nextjs/screenshot-1.webp
+  - /images/projects/blog-nextjs/screenshot-2.webp
+  - /images/projects/blog-nextjs/screenshot-3.webp
+  - /images/projects/blog-nextjs/screenshot-4.webp
 order: 19
 url: https://blog.aryanranderiya.com
 github: https://github.com/aryanranderiya/Blog-Next.js

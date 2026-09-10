@@ -1,11 +1,12 @@
-// Spotify "now playing" endpoint, served live from a Cloudflare Pages
-// Function. Set SPOTIFY_CLIENT_ID / SPOTIFY_CLIENT_SECRET /
-// SPOTIFY_REFRESH_TOKEN as encrypted secrets in the CF Pages dashboard
-// (Project → Settings → Environment Variables → "Encrypt").
+// Spotify "now playing" endpoint, served live from a Cloudflare Worker
+// on every request, never prerendered. Set SPOTIFY_CLIENT_ID /
+// SPOTIFY_CLIENT_SECRET / SPOTIFY_REFRESH_TOKEN as secrets
+// (`bunx wrangler secret put <KEY>` or the dashboard).
 
+import { env } from 'cloudflare:workers';
 import type { APIRoute } from 'astro';
 
-// Run as a Pages Function on every request, never prerender.
+// Run on the edge on every request, never prerender.
 export const prerender = false;
 
 // 15s of edge cache, 30s of stale-while-revalidate. Browser must always
@@ -26,12 +27,11 @@ interface SpotifyEnv {
 	SPOTIFY_REFRESH_TOKEN?: string;
 }
 
-function readEnv(locals: unknown): SpotifyEnv {
-	// On Cloudflare Pages, secrets live on `Astro.locals.runtime.env`.
-	// `astro dev` (with platformProxy enabled) populates the same path
-	// from .dev.vars / .env.
-	const runtime = (locals as { runtime?: { env?: SpotifyEnv } } | undefined)?.runtime;
-	return runtime?.env ?? {};
+function readEnv(): SpotifyEnv {
+	// On Cloudflare Workers, secrets live on the `cloudflare:workers` env
+	// binding. In local dev (workerd via the Cloudflare Vite plugin) they
+	// come from `.dev.vars` / `.env`.
+	return (env ?? {}) as SpotifyEnv;
 }
 
 async function getAccessToken(env: SpotifyEnv): Promise<string | null> {
@@ -61,8 +61,8 @@ async function getAccessToken(env: SpotifyEnv): Promise<string | null> {
 	}
 }
 
-export const GET: APIRoute = async ({ locals }) => {
-	const env = readEnv(locals);
+export const GET: APIRoute = async () => {
+	const env = readEnv();
 
 	const token = await getAccessToken(env);
 	if (!token) {

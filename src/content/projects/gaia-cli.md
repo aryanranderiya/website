@@ -7,9 +7,9 @@ tech: [Node.js, TypeScript, React, Docker]
 featured: false
 type: cli
 folder: Projects
-coverImage: /ProjectMedia/GAIA/cli.webp
+coverImage: /images/projects/gaia/cli.webp
 images:
-  - /ProjectMedia/GAIA/cli.webp
+  - /images/projects/gaia/cli.webp
 order: 2
 url: https://heygaia.io/cli
 github: https://github.com/theexperiencecompany/gaia

@@ -1,9 +1,10 @@
+import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { defineCollection, z } from 'astro:content';
+import { z } from 'astro/zod';
 
 // Blog posts
 const blog = defineCollection({
-	type: 'content',
+	loader: glob({ pattern: ['**/*.md', '**/*.mdx'], base: './src/content/blog' }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string(),
@@ -19,7 +20,7 @@ const blog = defineCollection({
 
 // Projects
 const projects = defineCollection({
-	type: 'content',
+	loader: glob({ pattern: ['**/*.md', '**/*.mdx'], base: './src/content/projects' }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string(),
@@ -36,8 +37,8 @@ const projects = defineCollection({
 		// fills its frame with object-fit: cover, so match the clip to avoid crop.
 		// Defaults to 16 / 9 when omitted.
 		videoAspectRatio: z.string().optional(),
-		url: z.string().url().optional(),
-		github: z.string().url().optional(),
+		url: z.url().optional(),
+		github: z.url().optional(),
 		featured: z.boolean().default(false),
 		type: z
 			.enum(['mobile', 'web', 'os', 'design', 'other', 'cli', 'game', 'desktop'])
@@ -70,7 +71,7 @@ const books = defineCollection({
 
 // Movies
 const movies = defineCollection({
-	type: 'content',
+	loader: glob({ pattern: ['**/*.md', '**/*.mdx'], base: './src/content/movies' }),
 	schema: z.object({
 		title: z.string(),
 		year: z.number(),
@@ -91,7 +92,7 @@ const movies = defineCollection({
 
 // Now page entries
 const now = defineCollection({
-	type: 'content',
+	loader: glob({ pattern: ['**/*.md', '**/*.mdx'], base: './src/content/now' }),
 	schema: z.object({
 		date: z.coerce.date(),
 		location: z.string().optional(),
@@ -100,7 +101,7 @@ const now = defineCollection({
 
 // Agent conversations - impressive agentic coding sessions
 const agentConvos = defineCollection({
-	type: 'content',
+	loader: glob({ pattern: ['**/*.md', '**/*.mdx'], base: './src/content/agent-convos' }),
 	schema: z.object({
 		title: z.string(),
 		description: z.string(),

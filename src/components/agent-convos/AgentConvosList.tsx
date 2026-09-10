@@ -185,6 +185,12 @@ const hasTransitioned =
 	typeof document !== 'undefined' &&
 	document.documentElement.classList.contains('has-transitioned');
 
+const colCellStyle: React.CSSProperties = {
+	padding: '0 0 10px 0',
+	textAlign: 'left',
+	borderBottom: '1px solid var(--border)',
+};
+
 export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 	const [sortKey, setSortKey] = useState<SortKey>('date');
 	const [sortDir, setSortDir] = useState<SortDir>('desc');
@@ -199,7 +205,7 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 	}
 
 	const sorted = useMemo(() => {
-		return [...convos].sort((a, b) => {
+		return convos.toSorted((a, b) => {
 			let cmp = 0;
 			switch (sortKey) {
 				case 'date':
@@ -216,20 +222,19 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 		});
 	}, [convos, sortKey, sortDir]);
 
-	const colStyle = (key: SortKey): React.CSSProperties => ({
+	const colButtonStyle = (key: SortKey): React.CSSProperties => ({
 		fontSize: '10px',
 		fontVariationSettings: sortKey === key ? '"wght" 600' : '"wght" 500',
 		color: sortKey === key ? 'var(--text-secondary)' : 'var(--text-ghost)',
 		letterSpacing: '0.06em',
 		textTransform: 'uppercase',
-		padding: '0 0 10px 0',
 		textAlign: 'left',
 		cursor: 'pointer',
 		userSelect: 'none',
 		whiteSpace: 'nowrap',
 		background: 'none',
 		border: 'none',
-		borderBottom: '1px solid var(--border)',
+		padding: 0,
 	});
 
 	return (
@@ -259,14 +264,21 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 							).map(([key, label]) => (
 								<th
 									key={key}
-									onClick={() => handleSort(key)}
-									// biome-ignore lint/nursery/noInlineStyles: dynamic styles based on sort state
-									style={colStyle(key)}
+									// biome-ignore lint/nursery/noInlineStyles: cell layout styles for the sort header
+									style={colCellStyle}
 								>
-									<span className="inline-flex items-center">
-										{label}
-										<SortIcon dir={sortKey === key ? sortDir : null} />
-									</span>
+									<button
+										type="button"
+										onClick={() => handleSort(key)}
+										aria-label={`Sort by ${label}`}
+										// biome-ignore lint/nursery/noInlineStyles: dynamic styles based on sort state
+										style={colButtonStyle(key)}
+									>
+										<span className="inline-flex items-center">
+											{label}
+											<SortIcon dir={sortKey === key ? sortDir : null} />
+										</span>
+									</button>
 								</th>
 							))}
 						</tr>

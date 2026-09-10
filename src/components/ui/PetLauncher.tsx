@@ -1,5 +1,5 @@
 import { Add01Icon, Github01Icon, HugeiconsIcon } from '@icons';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
 import { WebPet } from './web-pet';
 
@@ -29,7 +29,8 @@ const ANIMAL_MAP: Record<string, { color: string; label: string }> = {
 };
 
 const ANIMALS = Object.keys(ANIMAL_MAP);
-const STORAGE_KEY = 'portfolio-pet';
+const STORAGE_KEY = 'portfolio-pet:v1';
+const LEGACY_STORAGE_KEY = 'portfolio-pet';
 const NO_PET = 'none';
 
 const RANDOM_DEFAULTS: Array<{ animal: string; color: string }> = [
@@ -38,10 +39,29 @@ const RANDOM_DEFAULTS: Array<{ animal: string; color: string }> = [
 	{ animal: 'panda', color: 'black' },
 ];
 
+function isStoredPet(value: unknown): value is { animal: string; color: string } {
+	return (
+		typeof value === 'object' &&
+		value !== null &&
+		typeof (value as { animal?: unknown }).animal === 'string' &&
+		typeof (value as { color?: unknown }).color === 'string'
+	);
+}
+
 function getStored(): { animal: string; color: string } {
 	try {
 		const raw = localStorage.getItem(STORAGE_KEY);
-		if (raw) return JSON.parse(raw);
+		if (raw) {
+			const parsed: unknown = JSON.parse(raw);
+			if (isStoredPet(parsed)) return parsed;
+		}
+		// Migrate pre-versioned entries: accept the legacy key once so a future
+		// shape change can drop stale payloads instead of crashing JSON.parse.
+		const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
+		if (legacyRaw) {
+			const parsed: unknown = JSON.parse(legacyRaw);
+			if (isStoredPet(parsed)) return parsed;
+		}
 	} catch {}
 	// No stored preference - pick randomly between dog, deno, panda
 	const pick =
@@ -49,22 +69,37 @@ function getStored(): { animal: string; color: string } {
 	return pick;
 }
 
+function subscribeToMounted(): () => void {
+	return () => {};
+}
+
+function getMountedClientSnapshot(): boolean {
+	return true;
+}
+
+function getMountedServerSnapshot(): boolean {
+	return false;
+}
+
 export function PetLauncher() {
 	const preloaderDone = useAfterPreloader();
-	const [mounted, setMounted] = useState(false);
-	const [pet, setPet] = useState<{ animal: string; color: string }>({
-		animal: 'dog',
-		color: 'brown',
+	const mounted = useSyncExternalStore(
+		subscribeToMounted,
+		getMountedClientSnapshot,
+		getMountedServerSnapshot
+	);
+	const [pet, setPet] = useState<{ animal: string; color: string }>(() => {
+		if (typeof window === 'undefined') return { animal: 'dog', color: 'brown' };
+		return getStored();
 	});
+	// SSR bakes the default pet; the stored pet may differ on the client.
+	// Render the default until hydration commits so server and client HTML
+	// match (no hydration-mismatch warnings), then switch to the stored pet.
+	const renderPet = mounted ? pet : { animal: 'dog', color: 'brown' };
 	const [open, setOpen] = useState(false);
 	const [petPos, setPetPos] = useState<{ x: number; y: number } | null>(null);
 	const popoverRef = useRef<HTMLDivElement>(null);
 	const rafRef = useRef<number | null>(null);
-
-	useEffect(() => {
-		setMounted(true);
-		setPet(getStored());
-	}, []);
 
 	const trackPos = useCallback(() => {
 		const el = document.querySelector('[data-webpet-container]') as HTMLElement;
@@ -134,14 +169,14 @@ export function PetLauncher() {
 		};
 	};
 
-	const isNone = pet.animal === NO_PET;
+	const isNone = renderPet.animal === NO_PET;
 
 	return (
 		<>
 			{mounted && preloaderDone && !isNone && (
 				<WebPet
-					animal={pet.animal}
-					color={pet.color}
+					animal={renderPet.animal}
+					color={renderPet.color}
 					followMouse={true}
 					paused={open}
 					speed={12}
@@ -177,7 +212,7 @@ export function PetLauncher() {
 							</PetButton>
 
 							{ANIMALS.map((animal) => {
-								const isSelected = !isNone && pet.animal === animal;
+								const isSelected = !isNone && renderPet.animal === animal;
 								return (
 									<PetButton
 										key={animal}
@@ -186,7 +221,7 @@ export function PetLauncher() {
 										title={ANIMAL_MAP[animal]?.label}
 									>
 										<img
-											src={`/media/${animal}/icon.png`}
+											src={`/images/pets/${animal}/icon.png`}
 											alt={ANIMAL_MAP[animal]?.label}
 											width={28}
 											height={28}

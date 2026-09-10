@@ -332,11 +332,7 @@ function openAt(i: number) {
 
 	// PLAY: invert → identity, blur fades in behind it.
 	animate(s.backdrop, { opacity: 1 }, { duration: OPEN_DUR, ease: 'linear' });
-	animate(
-		s.img,
-		{ x: [tx, 0], y: [ty, 0], scale: [scale, 1] },
-		{ duration: OPEN_DUR, ease: EASE },
-	);
+	animate(s.img, { x: [tx, 0], y: [ty, 0], scale: [scale, 1] }, { duration: OPEN_DUR, ease: EASE });
 }
 
 function close() {

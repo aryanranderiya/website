@@ -1,16 +1,17 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
+import { type CollectionEntry, getCollection, render } from 'astro:content';
 import { mdxComponents } from '@/components/blog/mdx';
 import NewsletterSignup from '@/components/blog/NewsletterSignup.astro';
 import RelatedPosts from '@/components/blog/RelatedPosts.astro';
 import ShareButtons from '@/components/blog/ShareButtons.astro';
 import PostNav from '@/components/ui/PostNav.astro';
 import BlogLayout from '@/layouts/BlogLayout.astro';
+import { slugOf } from '@/utils/content';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog', ({ data }) => !data.draft);
 	return posts.map((post) => ({
-		params: { slug: post.slug },
+		params: { slug: slugOf(post) },
 		props: { post },
 	}));
 }
@@ -20,34 +21,46 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { Content, headings } = await post.render();
+const { Content, headings } = await render(post);
 
 // Posts can tag images into the TOC via `toc` on <Figure>/<ImageGrid>. The TOC
 // is then assembled client-side from the DOM, but we need to know at build time
 // whether to render the TOC rail at all (some posts have no headings).
-const hasTocImages = /\btoc(\s|=|>|\/)/.test(post.body);
+const hasTocImages = /\btoc(\s|=|>|\/)/.test(post.body ?? '');
 
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
 const currentTags = new Set(post.data.tags);
-const related = allPosts
-	.filter((p) => p.slug !== post.slug)
-	.map((p) => ({
-		...p,
-		score: p.data.tags.filter((t) => currentTags.has(t)).length,
-	}))
-	.filter((p) => p.score > 0)
-	.sort((a, b) => b.score - a.score || b.data.date.valueOf() - a.data.date.valueOf())
-	.slice(0, 3)
-	.map((p) => ({
-		slug: p.slug,
+// Single pass: skip self, score by shared tags, drop zero-score, and project
+// to the RelatedPosts shape together (previously filter→map→filter→sort→slice→map).
+const scored: {
+	slug: string;
+	title: string;
+	date: string;
+	featured: boolean | undefined;
+	score: number;
+	ts: number;
+}[] = [];
+for (const p of allPosts) {
+	if (slugOf(p) === slugOf(post)) continue;
+	const score = p.data.tags.filter((t) => currentTags.has(t)).length;
+	if (score <= 0) continue;
+	scored.push({
+		slug: slugOf(p),
 		title: p.data.title,
 		date: p.data.date.toISOString(),
 		featured: p.data.featured,
-	}));
+		score,
+		ts: p.data.date.valueOf(),
+	});
+}
+scored.sort((a, b) => b.score - a.score || b.ts - a.ts);
+const related = scored
+	.slice(0, 3)
+	.map(({ slug, title, date, featured }) => ({ slug, title, date, featured }));
 
 // Cycling prev/next through all posts (newest first, matching the list order).
-const ordered = [...allPosts].sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const currentIndex = ordered.findIndex((p) => p.slug === post.slug);
+const ordered = allPosts.toSorted((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const currentIndex = ordered.findIndex((p) => slugOf(p) === slugOf(post));
 const prevPost = ordered[(currentIndex - 1 + ordered.length) % ordered.length];
 const nextPost = ordered[(currentIndex + 1) % ordered.length];
 ---
@@ -61,7 +74,7 @@ const nextPost = ordered[(currentIndex + 1) % ordered.length];
   cover={post.data.cover}
   headings={headings}
   forceToc={hasTocImages}
-  slug={post.slug}
+  slug={slugOf(post)}
 >
   <Content components={mdxComponents} />
 
@@ -74,8 +87,8 @@ const nextPost = ordered[(currentIndex + 1) % ordered.length];
       class="mt-10"
       backHref="/blog"
       backLabel="Back to Writings"
-      prevHref={`/${prevPost.slug}`}
-      nextHref={`/${nextPost.slug}`}
+      prevHref={`/${slugOf(prevPost)}`}
+      nextHref={`/${slugOf(nextPost)}`}
       prevLabel={prevPost.data.title}
       nextLabel={nextPost.data.title}
     />

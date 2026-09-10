@@ -7,22 +7,22 @@ tech: [Next.js, Python, Supabase]
 featured: true
 type: mobile
 folder: Client
-coverImage: /ProjectMedia/Rezrek/image (1).webp
+coverImage: /images/projects/rezrek/image (1).webp
 images:
-  - /ProjectMedia/Rezrek/team.jpeg
-  - /ProjectMedia/Rezrek/rezrek main.webp
-  - /ProjectMedia/Rezrek/0.webp
-  - /ProjectMedia/Rezrek/1.webp
-  - /ProjectMedia/Rezrek/2.webp
-  - /ProjectMedia/Rezrek/3.webp
-  - /ProjectMedia/Rezrek/4.webp
-  - /ProjectMedia/Rezrek/5.webp
-  - /ProjectMedia/Rezrek/6.webp
-  - /ProjectMedia/Rezrek/7.webp
-  - /ProjectMedia/Rezrek/8.webp
-  - /ProjectMedia/Rezrek/9.webp
-  - /ProjectMedia/Rezrek/10.webp
-  - /ProjectMedia/Rezrek/11.webp
+  - /images/projects/rezrek/team.jpeg
+  - /images/projects/rezrek/rezrek main.webp
+  - /images/projects/rezrek/0.webp
+  - /images/projects/rezrek/1.webp
+  - /images/projects/rezrek/2.webp
+  - /images/projects/rezrek/3.webp
+  - /images/projects/rezrek/4.webp
+  - /images/projects/rezrek/5.webp
+  - /images/projects/rezrek/6.webp
+  - /images/projects/rezrek/7.webp
+  - /images/projects/rezrek/8.webp
+  - /images/projects/rezrek/9.webp
+  - /images/projects/rezrek/10.webp
+  - /images/projects/rezrek/11.webp
 order: 3
 url: https://rezrek.com
 ---

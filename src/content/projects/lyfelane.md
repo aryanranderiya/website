@@ -7,19 +7,19 @@ tech: [React, Node.js, Express, MongoDB, JavaScript]
 featured: false
 type: web
 folder: Client
-coverImage: /ProjectMedia/LyfeLane/2024-11-22_22-18.webp
+coverImage: /images/projects/lyfelane/2024-11-22_22-18.webp
 images:
-  - /ProjectMedia/LyfeLane/2024-11-22_22-18.webp
-  - /ProjectMedia/LyfeLane/2024-11-22_22-19.webp
-  - /ProjectMedia/LyfeLane/2024-11-22_22-19_1.webp
-  - /ProjectMedia/LyfeLane/2024-11-22_22-20.webp
-  - /ProjectMedia/LyfeLane/2024-11-22_22-22.webp
-  - /ProjectMedia/LyfeLane/2024-11-22_22-23.webp
-  - /ProjectMedia/LyfeLane/2024-11-22_22-23_1.webp
-  - /ProjectMedia/LyfeLane/2024-11-22_22-24.webp
-  - /ProjectMedia/LyfeLane/2024-11-22_22-24_1.webp
-  - /ProjectMedia/LyfeLane/2024-11-22_22-24_2.webp
-  - /ProjectMedia/LyfeLane/2024-11-22_22-24_3.webp
+  - /images/projects/lyfelane/2024-11-22_22-18.webp
+  - /images/projects/lyfelane/2024-11-22_22-19.webp
+  - /images/projects/lyfelane/2024-11-22_22-19_1.webp
+  - /images/projects/lyfelane/2024-11-22_22-20.webp
+  - /images/projects/lyfelane/2024-11-22_22-22.webp
+  - /images/projects/lyfelane/2024-11-22_22-23.webp
+  - /images/projects/lyfelane/2024-11-22_22-23_1.webp
+  - /images/projects/lyfelane/2024-11-22_22-24.webp
+  - /images/projects/lyfelane/2024-11-22_22-24_1.webp
+  - /images/projects/lyfelane/2024-11-22_22-24_2.webp
+  - /images/projects/lyfelane/2024-11-22_22-24_3.webp
 order: 32
 url: https://lyfelane.com
 ---

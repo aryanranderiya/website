@@ -23,7 +23,7 @@
  * across `astro:page-load` events.
  */
 interface Props {
-  inline?: boolean;
+	inline?: boolean;
 }
 const { inline = false } = Astro.props;
 ---
@@ -38,7 +38,7 @@ const { inline = false } = Astro.props;
   >
     <img
       data-avatar-img
-      src="/avatar.webp"
+      src="/images/site/avatar.webp"
       alt="Aryan Randeriya"
       width={38}
       height={38}
@@ -57,7 +57,7 @@ const { inline = false } = Astro.props;
   >
     <img
       data-avatar-img
-      src="/avatar.webp"
+      src="/images/site/avatar.webp"
       alt="Aryan Randeriya"
       width={32}
       height={32}
@@ -125,8 +125,8 @@ const { inline = false } = Astro.props;
 
 <script>
   const VARIANT_KEY = 'avatar-variant';
-  const DEFAULT_SRC = '/avatar.webp';
-  const ALT_SRC = '/avatar-original.webp';
+  const DEFAULT_SRC = '/images/site/avatar.webp';
+  const ALT_SRC = '/images/site/avatar-original.webp';
 
   function currentSrc(): string {
     return sessionStorage.getItem(VARIANT_KEY) === 'original' ? ALT_SRC : DEFAULT_SRC;

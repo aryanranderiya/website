@@ -7,15 +7,15 @@ tech: [Next.js, React, TypeScript, TailwindCSS, Framer Motion]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/GAIA_UI/gaia-ui-1.webp
+coverImage: /images/projects/gaia-ui/gaia-ui-1.webp
 images:
-  - /ProjectMedia/GAIA_UI/gaia-ui-1.webp
-  - /ProjectMedia/GAIA_UI/gaia-ui-7.webp
-  - /ProjectMedia/GAIA_UI/gaia-ui-2.webp
-  - /ProjectMedia/GAIA_UI/gaia-ui-3.webp
-  - /ProjectMedia/GAIA_UI/gaia-ui-4.webp
-  - /ProjectMedia/GAIA_UI/gaia-ui-5.webp
-  - /ProjectMedia/GAIA_UI/gaia-ui-6.webp
+  - /images/projects/gaia-ui/gaia-ui-1.webp
+  - /images/projects/gaia-ui/gaia-ui-7.webp
+  - /images/projects/gaia-ui/gaia-ui-2.webp
+  - /images/projects/gaia-ui/gaia-ui-3.webp
+  - /images/projects/gaia-ui/gaia-ui-4.webp
+  - /images/projects/gaia-ui/gaia-ui-5.webp
+  - /images/projects/gaia-ui/gaia-ui-6.webp
 order: 4
 url: https://ui.heygaia.io
 github: https://github.com/theexperiencecompany/gaia-ui

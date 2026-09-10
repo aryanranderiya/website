@@ -41,5 +41,6 @@ export const SOCIALS = [
 	},
 ] as const;
 
-// biome-ignore lint/style/noNonNullAssertion: Behance is always present in SOCIALS
-export const BEHANCE_URL = SOCIALS.find((s) => s.name === 'Behance')!.url;
+const behanceEntry = SOCIALS.find((s) => s.name === 'Behance');
+if (!behanceEntry) throw new Error('Behance entry missing from SOCIALS');
+export const BEHANCE_URL = behanceEntry.url;

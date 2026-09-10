@@ -1,21 +1,23 @@
 pre-commit:
   parallel: true
   commands:
+    react-doctor:
+      run: react_doctor_output=$(mktemp "${TMPDIR:-/tmp}/react-doctor-hook.XXXXXX"); if react-doctor --staged --blocking warning > "$react_doctor_output" 2>&1; then rm -f "$react_doctor_output"; else cat "$react_doctor_output" >&2; rm -f "$react_doctor_output"; printf "%s\n" "React Doctor found staged regressions." "Run react-doctor --staged --blocking warning to inspect." "Want them fixed? Ask your agent to run that command and resolve the findings." >&2; fi
     biome:
       # Match biome.json's `files.includes` (src/**/*.{ts,tsx,astro}) so we don't
       # hand biome paths it ignores (package.json, etc.) — biome exits non-zero
       # when every staged file is on its ignore list.
       glob: "src/**/*.{ts,tsx,astro}"
       # Safe fixes only — --unsafe would destructively delete style props (noInlineStyles)
-      run: pnpm biome check --write {staged_files}
+      run: bunx biome check --write {staged_files}
       stage_fixed: true
     type-check:
-      run: pnpm astro check
+      run: bunx astro check
 
 pre-push:
   parallel: true
   commands:
     biome:
-      run: pnpm biome check ./src
+      run: bunx biome check ./src
     type-check:
-      run: pnpm astro check
+      run: bunx astro check

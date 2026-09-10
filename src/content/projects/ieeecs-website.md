@@ -7,16 +7,16 @@ tech: [Astro, TypeScript, TailwindCSS]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/IEEE/ieee-1.webp
+coverImage: /images/projects/ieeecs-website/ieee-1.webp
 images:
-  - /ProjectMedia/IEEE/ieee-1.webp
-  - /ProjectMedia/IEEE/ieee-2.webp
-  - /ProjectMedia/IEEE/ieee-3.webp
-  - /ProjectMedia/IEEE/ieee-4.webp
-  - /ProjectMedia/IEEE/ieee-5.webp
-  - /ProjectMedia/IEEE/ieee-6.webp
-  - /ProjectMedia/IEEE/ieee-7.webp
-  - /ProjectMedia/IEEE/ieee-8.webp
+  - /images/projects/ieeecs-website/ieee-1.webp
+  - /images/projects/ieeecs-website/ieee-2.webp
+  - /images/projects/ieeecs-website/ieee-3.webp
+  - /images/projects/ieeecs-website/ieee-4.webp
+  - /images/projects/ieeecs-website/ieee-5.webp
+  - /images/projects/ieeecs-website/ieee-6.webp
+  - /images/projects/ieeecs-website/ieee-7.webp
+  - /images/projects/ieeecs-website/ieee-8.webp
 order: 37
 github: https://github.com/aryanranderiya/ieeecs-website
 ---

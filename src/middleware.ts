@@ -32,7 +32,10 @@ interface AcceptEntry {
 
 function parseAccept(header: string): AcceptEntry[] {
 	return header.split(',').map((raw) => {
-		const parts = raw.trim().split(';').map((s) => s.trim());
+		const parts = raw
+			.trim()
+			.split(';')
+			.map((s) => s.trim());
 		const type = parts[0]?.toLowerCase() ?? '*/*';
 		let q = 1;
 		for (const param of parts.slice(1)) {
@@ -135,7 +138,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
 					Vary: 'Accept',
 					'Cache-Control': 'no-store',
 				},
-			},
+			}
 		);
 	}
 

@@ -17,18 +17,25 @@ Live at [aryanranderiya.com](https://aryanranderiya.com).
 ## Running locally
 
 ```bash
-npm install
-npm run dev
+bun install
+bun run dev
 ```
 
-Build for production:
+> Known issue: `bun dev` (Cloudflare workerd runtime) currently fails at
+> startup with `require is not defined` from React's CJS shims
+> (`react-dom/server`, `react`). This is an upstream gap between Vite 8's
+> module runner, workerd, and React's packaging — production `build` +
+> `preview` are unaffected (rollup interops the CJS). Until upstream resolves
+> it, verify changes with the production loop below.
+
+Production loop (also what serves https://aryanranderiya.com):
 
 ```bash
-npm run build
-npm run preview
+bun run build
+bun run preview # serves dist/ on :4321 with the real Worker runtime
 ```
 
-Other useful scripts: `npm run type-check`, `npm run lint:fix`, `npm run check:fix`.
+Other useful scripts: `bun run type-check`, `bun run lint:fix`, `bun run check:fix`.
 
 ## Design principles
 

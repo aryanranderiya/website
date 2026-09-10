@@ -1,9 +1,11 @@
 'use client';
 
+import { QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 import { useEffect, useState } from 'react';
 import { useAfterPreloader } from '@/hooks/useAfterPreloader';
+import { queryClient } from '@/utils/queryClient';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
@@ -28,6 +30,8 @@ async function getNowPlaying(): Promise<SpotifyTrack> {
 	}
 }
 
+export const SPOTIFY_QUERY_KEY = ['spotify-now-playing'] as const;
+
 function ShimmerBlock({ w, h, r = 6 }: { w: string | number; h: number; r?: number }) {
 	return (
 		<div
@@ -45,8 +49,8 @@ function MusicBars() {
 				{[1, 2, 3].map((i) => (
 					<m.span
 						key={i}
-						className="block w-[2px] rounded-full bg-[#1DB954]"
-						animate={{ height: ['40%', '100%', '60%', '80%', '40%'] }}
+						className="block h-full w-[2px] origin-bottom rounded-full bg-[#1DB954]"
+						animate={{ scaleY: [0.4, 1, 0.6, 0.8, 0.4] }}
 						transition={{ duration: 0.8, repeat: Infinity, delay: i * 0.15, ease: 'easeInOut' }}
 					/>
 				))}
@@ -55,7 +59,7 @@ function MusicBars() {
 	);
 }
 
-const SPOTIFY_LOGO = '/images/spotify-logo.webp';
+const SPOTIFY_LOGO = '/images/site/spotify-logo.webp';
 
 function formatTime(ms?: number): string {
 	if (!ms) return '0:00';
@@ -65,28 +69,21 @@ function formatTime(ms?: number): string {
 
 const ART_SIZE = 64;
 
-export default function SpotifyWidget() {
-	const [track, setTrack] = useState<SpotifyTrack>({ isPlaying: false });
-	const [loading, setLoading] = useState(true);
+function SpotifyWidgetInner() {
+	// Polling lives in the query cache (deduped, race-free, shared across
+	// mounts) instead of a hand-rolled fetch + setInterval effect.
+	const { data: track = { isPlaying: false }, isLoading: loading } = useQuery({
+		queryKey: SPOTIFY_QUERY_KEY,
+		queryFn: getNowPlaying,
+		refetchInterval: 30000,
+	});
 	const [liveProgress, setLiveProgress] = useState(0);
 	const ready = useAfterPreloader();
 
+	// Re-anchor the ticking progress bar whenever a poll lands.
 	useEffect(() => {
-		getNowPlaying().then((t) => {
-			setTrack(t);
-			setLiveProgress(t.progress ?? 0);
-			setLoading(false);
-		});
-		const interval = setInterval(
-			() =>
-				getNowPlaying().then((t) => {
-					setTrack(t);
-					setLiveProgress(t.progress ?? 0);
-				}),
-			30000
-		);
-		return () => clearInterval(interval);
-	}, []);
+		setLiveProgress(track.progress ?? 0);
+	}, [track.progress]);
 
 	useEffect(() => {
 		if (!track.isPlaying || !track.duration) return;
@@ -218,8 +215,8 @@ export default function SpotifyWidget() {
 								</div>
 								<div className="h-1 overflow-hidden rounded-full bg-[var(--border)]">
 									<m.div
-										className="h-full rounded-full bg-[#1DB954]"
-										animate={{ width: `${progressPct}%` }}
+										className="h-full w-full origin-left rounded-full bg-[#1DB954]"
+										animate={{ scaleX: progressPct / 100 }}
 										transition={{ duration: 1, ease: 'linear' }}
 									/>
 								</div>
@@ -231,5 +228,13 @@ export default function SpotifyWidget() {
 				</div>
 			</m.div>
 		</LazyMotion>
+	);
+}
+
+export default function SpotifyWidget() {
+	return (
+		<QueryClientProvider client={queryClient}>
+			<SpotifyWidgetInner />
+		</QueryClientProvider>
 	);
 }

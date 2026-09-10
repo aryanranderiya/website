@@ -1,5 +1,6 @@
 'use client';
 
+import { navigate } from 'astro:transitions/client';
 import {
 	ArrowRight01Icon,
 	ArrowUp01Icon,
@@ -17,7 +18,6 @@ import {
 } from '@icons';
 import * as Dialog from '@radix-ui/react-dialog';
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
-import { navigate } from 'astro:transitions/client';
 import { Command } from 'cmdk';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
@@ -304,8 +304,7 @@ export default function CommandK({ projects = [] }: { projects?: ProjectLink[] }
 														key={action.id}
 														value={`${action.label} ${action.description} ${action.keywords ?? ''}`}
 														onSelect={() => {
-															if (action.href)
-																go(action.href, action.href.startsWith('http'));
+															if (action.href) go(action.href, action.href.startsWith('http'));
 															else runAction(action.id);
 														}}
 													>

@@ -7,14 +7,14 @@ tech: [React, TypeScript, TailwindCSS]
 featured: false
 type: web
 folder: Hackathon
-coverImage: /ProjectMedia/Nasa_Space Apps Hackathon 2024/2024-12-04_02-54.webp
+coverImage: /images/projects/sustain/2024-12-04_02-54.webp
 images:
-  - /ProjectMedia/Nasa_Space Apps Hackathon 2024/2024-12-04_02-54.webp
-  - /ProjectMedia/SUSTAIN/sustain-1.webp
-  - /ProjectMedia/SUSTAIN/sustain-2.webp
-  - /ProjectMedia/SUSTAIN/sustain-3.webp
-  - /ProjectMedia/SUSTAIN/sustain-4.webp
-  - /ProjectMedia/SUSTAIN/sustain-5.webp
+  - /images/projects/sustain/2024-12-04_02-54.webp
+  - /images/projects/sustain/sustain-1.webp
+  - /images/projects/sustain/sustain-2.webp
+  - /images/projects/sustain/sustain-3.webp
+  - /images/projects/sustain/sustain-4.webp
+  - /images/projects/sustain/sustain-5.webp
 order: 22
 github: https://github.com/Devarsh-42/SUSTAIN
 ---

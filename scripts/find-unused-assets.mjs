@@ -36,7 +36,7 @@ const ALWAYS_KEEP = new Set([
 // Directories under public/ that are dynamically loaded at runtime OR referenced
 // outside JS/TS source (manifests, browser conventions) — exclude from detection.
 const EXCLUDE_DIRS = new Set([
-  'media',          // web-pet GIFs: path built as /media/${folder}/${color}_${anim}_8fps.gif
+  'images/pets',    // web-pet GIFs: path built as /images/pets/${folder}/${color}_${anim}_8fps.gif
   'icons/favicons', // tool favicons fetched dynamically by fetch-favicons script
   'favicon',        // PWA icons referenced in public/favicon/site.webmanifest (not scanned)
 ]);
@@ -84,7 +84,7 @@ async function main() {
   const used = [];
 
   for (const assetPath of publicAssets) {
-    const relPath = relative(PUBLIC_DIR, assetPath); // e.g. "ProjectMedia/Foo/bar.png"
+    const relPath = relative(PUBLIC_DIR, assetPath); // e.g. "images/projects/foo/bar.png"
     const filename = relPath.split('/').pop();
 
     // Skip dynamically-loaded directories

@@ -46,7 +46,7 @@ I know it's going to be hard and it'll take some time, but building generational
 > Play Long-term Games With Long-term People - *Naval Ravikant*
 
 <figure>
-  <img src="/blog/job/lennys-time-to-pmf.webp" alt="Chart: time from founding to product-market fit for companies like Notion, Figma, Airbnb, and others — most sit in the 3–7 year range." />
+  <img src="/images/blog/job/lennys-time-to-pmf.webp" alt="Chart: time from founding to product-market fit for companies like Notion, Figma, Airbnb, and others — most sit in the 3–7 year range." />
   <figcaption>How long it took for companies to go from idea to product-market fit. Credits to <a href="https://www.lennysnewsletter.com" target="_blank" rel="noopener noreferrer">Lenny's Newsletter</a>.</figcaption>
 </figure>
 

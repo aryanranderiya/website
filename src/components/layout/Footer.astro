@@ -31,6 +31,16 @@ const { timezone } = SITE;
 </footer>
 
 <script define:vars={{ timezone }}>
+  // Hoisted: constructing an Intl formatter allocates locale-data tables, so
+  // build it once instead of on every 1s tick.
+  const tzPartsFormatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
+    hour12: false,
+  });
+
   function updateClock() {
     const now = new Date();
 
@@ -47,13 +57,7 @@ const { timezone } = SITE;
 
     // Clock hands - use local time in the target timezone
     const parts = Object.fromEntries(
-      new Intl.DateTimeFormat('en-US', {
-        timeZone: timezone,
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hour12: false,
-      }).formatToParts(now).map(({ type, value }) => [type, Number(value)])
+      tzPartsFormatter.formatToParts(now).map(({ type, value }) => [type, Number(value)])
     );
 
     const hours = parts.hour % 12;

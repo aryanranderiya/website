@@ -206,10 +206,9 @@ function ExperienceItem({ exp, index }: { exp: Experience; index: number }) {
 							{exp.description}
 						</p>
 						<ul className="m-0 flex list-none flex-col gap-1.5 p-0">
-							{exp.highlights.map((h, i) => (
+							{exp.highlights.map((h) => (
 								<li
-									// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
-									key={i}
+									key={h}
 									className="flex items-start gap-2 text-[0.75rem] text-[var(--muted-foreground)]"
 								>
 									<span className="mt-[1px] shrink-0 font-semibold text-[var(--accent-blue)]">

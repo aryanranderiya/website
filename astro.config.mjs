@@ -5,6 +5,7 @@ import react from '@astrojs/react';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { unified } from '@astrojs/markdown-remark';
 import { fileURLToPath } from 'node:url';
 import { rehypeOgPreview } from './src/lib/rehypeOgPreview.ts';
 
@@ -16,9 +17,9 @@ export default defineConfig({
   output: 'static',
   adapter: cloudflare({
     imageService: 'compile',
-    // Surface CF runtime bindings (env, secrets, KV) inside `astro dev`
-    // via miniflare, so the Spotify route can read process secrets locally.
-    platformProxy: { enabled: true },
+    // Prerender in Node: the static pages use Sharp and other Node-only
+    // packages at build time that the workerd runtime cannot run.
+    prerenderEnvironment: 'node',
   }),
   integrations: [
     react(),
@@ -105,10 +106,12 @@ export default defineConfig({
     },
   },
   markdown: {
+    // Sätteri is Astro 7's default Markdown pipeline, but the OG-preview
+    // rehype plugin needs the unified pipeline — keep it explicitly.
+    processor: unified({ rehypePlugins: [rehypeOgPreview] }),
     shikiConfig: {
       theme: 'github-dark',
       wrap: true,
     },
-    rehypePlugins: [rehypeOgPreview],
   },
 });

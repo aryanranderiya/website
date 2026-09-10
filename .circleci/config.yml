@@ -24,32 +24,32 @@ version: 2.1
 executors:
   node:
     docker:
-      - image: cimg/node:22.11
+      - image: cimg/node:22.12
     resource_class: medium  # 2 vCPU / 4 GB — well within the free tier
 
-# ─── Reusable command: install pnpm + project deps with cache ────────────────
+# ─── Reusable command: install bun + project deps with cache ────────────────
 
 commands:
   install_deps:
-    description: Install pnpm via corepack and project deps with caching
+    description: Install bun and project deps with caching
     steps:
       - checkout
       - run:
-          name: Enable pnpm
+          name: Install bun
           command: |
-            corepack enable
-            corepack prepare pnpm@10 --activate
+            curl -fsSL https://bun.sh/install | bash
+            echo 'export PATH="$HOME/.bun/bin:$PATH"' >> "$BASH_ENV"
       - restore_cache:
           keys:
-            - pnpm-v1-{{ checksum "pnpm-lock.yaml" }}
-            - pnpm-v1-
+            - bun-v1-{{ checksum "bun.lock" }}
+            - bun-v1-
       - run:
-          name: pnpm install
-          command: pnpm install --frozen-lockfile
+          name: bun install
+          command: bun install --frozen-lockfile
       - save_cache:
-          key: pnpm-v1-{{ checksum "pnpm-lock.yaml" }}
+          key: bun-v1-{{ checksum "bun.lock" }}
           paths:
-            - ~/.local/share/pnpm/store
+            - ~/.bun/install/cache
             - node_modules
 
 # ─── Jobs ────────────────────────────────────────────────────────────────────
@@ -62,20 +62,20 @@ jobs:
     executor: node
     steps:
       - install_deps
-      - run: pnpm check
-      - run: pnpm lint:emdash
+      - run: bun run check
+      - run: bun run lint:emdash
 
   type-check:
     executor: node
     steps:
       - install_deps
-      - run: pnpm type-check
+      - run: bun run type-check
 
   build:
     executor: node
     steps:
       - install_deps
-      - run: pnpm build
+      - run: bun run build
 
   dead-code:
     executor: node
@@ -83,7 +83,7 @@ jobs:
       - install_deps
       - run:
           name: knip (report only — non-blocking until baselined)
-          command: pnpm dead-code --reporter compact || true
+          command: bun run dead-code --reporter compact || true
 
   # Asset lane
 
@@ -91,7 +91,7 @@ jobs:
     executor: node
     steps:
       - install_deps
-      - run: pnpm unused-assets
+      - run: bun run unused-assets
 
   media-validation:
     executor: node
@@ -100,7 +100,7 @@ jobs:
       - run:
           name: Install ffmpeg
           command: sudo apt-get update && sudo apt-get install -y ffmpeg
-      - run: pnpm validate-media
+      - run: bun run validate-media
 
   image-budget:
     executor: node
@@ -111,13 +111,30 @@ jobs:
 
   # Security lane
 
+  # High-severity gate with a documented baseline. Each --ignore below is
+  # either a devDependency-only chain (never shipped to the Worker) with no
+  # published fix, or a fix that requires an incompatible major.
+  # Production-reaching CVEs (astro, maplibre, sharp, boneyard) are fixed via
+  # direct bumps + package.json `overrides`, NOT here. Re-run plain
+  # `bun audit` periodically: any NEW advisory fails.
+  # - GHSA-jmr9-qjv8-65gv, GHSA-7pqw-9j4j-h8q3: extract-zip symlink
+  #   traversal, latest release still vulnerable. Chain: lighthouse >
+  #   puppeteer (local-only browser installer).
+  # - GHSA-r5fr-rjxr-66jc: lodash _.template injection, no fixed release.
+  #   Chain: @lhci/cli > inquirer (local-only CLI).
+  # - GHSA-rpmf-866q-6p89, GHSA-rp42-5vxx-qpwr: basic-ftp DoS, fix requires
+  #   5.x -> 6.x major. Chain: lighthouse/puppeteer FTP proxy helpers.
   security-audit:
     executor: node
     steps:
       - install_deps
       - run:
-          name: pnpm audit (high+ severity only)
-          command: pnpm audit --audit-level=high
+          name: bun audit (high severity + baseline)
+          command: >
+            bun audit --audit-level=high
+            --ignore GHSA-jmr9-qjv8-65gv --ignore GHSA-7pqw-9j4j-h8q3
+            --ignore GHSA-r5fr-rjxr-66jc
+            --ignore GHSA-rpmf-866q-6p89 --ignore GHSA-rp42-5vxx-qpwr
 
   secret-scan:
     executor: node
@@ -130,7 +147,9 @@ jobs:
             sudo mv gitleaks /usr/local/bin/
       - run:
           name: Scan for committed secrets
-          command: gitleaks detect --source . --verbose --redact
+          # .gitleaks.toml allowlists reviewed false positives; the baseline
+          # pins the two historical ones so only NEW findings fail the job.
+          command: gitleaks detect --source . --verbose --redact --baseline-path .gitleaksbaseline
 
   # Aggregate gate — depend on everything; this is the job to mark "Required"
   # in CircleCI's branch protection.

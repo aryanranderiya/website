@@ -26,5 +26,12 @@ if (typeof window !== 'undefined') {
 		queryClient,
 		persister,
 		maxAge: MONTH_MS,
+		dehydrateOptions: {
+			// Never persist live/ephemeral state: a week-old "Now Playing"
+			// track must not paint as live on first load. (The query still
+			// caches in memory with the 30s poll; it just isn't restored
+			// from localStorage.)
+			shouldDehydrateQuery: (query) => query.queryKey[0] !== 'spotify-now-playing',
+		},
 	});
 }

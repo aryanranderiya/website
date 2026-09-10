@@ -141,7 +141,7 @@ if (patch && conversions.length) {
   console.log('\nPatching source references…');
   const srcFiles = await walk(SRC, (f) => SOURCE_EXTS.has(extname(f).toLowerCase()));
 
-  // Build a set of converted paths (e.g. "/ProjectMedia/foo.png")
+  // Build a set of converted paths (e.g. "/images/projects/foo.png")
   const pathMap = new Map();
   for (const c of conversions) {
     const publicPath = '/' + relative(PUBLIC, c.png).split('\\').join('/');

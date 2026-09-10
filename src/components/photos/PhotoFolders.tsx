@@ -147,8 +147,7 @@ function FolderCard({ folder }: { folder: PhotoFolder }) {
 							][i] ?? { left: '50%', top: '56%' };
 							return (
 								<EmojiSticker
-									// biome-ignore lint/suspicious/noArrayIndexKey: stickers are a fixed config list
-									key={i}
+									key={`${folder.id}-${sticker.emoji}-${sticker.rotate ?? 0}`}
 									emoji={sticker.emoji}
 									rotate={sticker.rotate ?? 0}
 									style={{ left: pos.left, top: pos.top, transform: 'translate(-50%, -50%)' }}
@@ -187,11 +186,19 @@ export default function PhotoFolders() {
 							<feMergeNode in="o" />
 							<feMergeNode in="SourceGraphic" />
 						</feMerge>
-						<feDropShadow dx="0" dy="2" stdDeviation="1.4" floodColor="#000000" floodOpacity="0.3" />
+						<feDropShadow
+							dx="0"
+							dy="2"
+							stdDeviation="1.4"
+							floodColor="#000000"
+							floodOpacity="0.3"
+						/>
 					</filter>
-					{/* normalised to a 0–1 box so the clip scales with any folder size */}
+					{/* normalised to a 0–1 box so the clip scales with any folder size.
+					    Scale is computed (1/190, 1/140) rather than rounded so the
+					    silhouette keeps its exact proportions. */}
 					<clipPath id="folder-clip" clipPathUnits="objectBoundingBox">
-						<path d={FOLDER_PATH} transform="scale(0.0052632, 0.0071429)" />
+						<path d={FOLDER_PATH} transform={`scale(${1 / 190} ${1 / 140})`} />
 					</clipPath>
 				</defs>
 			</svg>

@@ -40,11 +40,7 @@ try {
 }
 
 const escapeHtml = (s: string) =>
-	s
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;');
+	s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 // Escape first, then linkify: t.co → real url (or drop the media short-link),
 // @mentions and #hashtags → Twitter links. Newlines preserved via pre-wrap.
@@ -61,25 +57,26 @@ function buildTextHtml(t: NonNullable<Awaited<ReturnType<typeof getTweet>>>): st
 	s = s.replace(
 		/(^|[^\w@/])@(\w{1,15})/g,
 		(_, p, h) =>
-			`${p}<a href="https://twitter.com/${h}" target="_blank" rel="noopener noreferrer">@${h}</a>`,
+			`${p}<a href="https://twitter.com/${h}" target="_blank" rel="noopener noreferrer">@${h}</a>`
 	);
 	s = s.replace(
 		/(^|[^\w&/])#(\w+)/g,
 		(_, p, h) =>
-			`${p}<a href="https://twitter.com/hashtag/${h}" target="_blank" rel="noopener noreferrer">#${h}</a>`,
+			`${p}<a href="https://twitter.com/hashtag/${h}" target="_blank" rel="noopener noreferrer">#${h}</a>`
 	);
 	return s.trim();
 }
 
 // Pick a sensibly-sized mp4 (largest variant ≤ 1280px wide) for native playback.
 function pickMp4(t: NonNullable<Awaited<ReturnType<typeof getTweet>>>) {
-	const mp4s = (t.video?.variants ?? [])
-		.filter((v) => v.type === 'video/mp4' && v.src)
-		.map((v) => {
-			const m = v.src.match(/\/(\d+)x(\d+)\//);
-			return { src: v.src, w: m ? Number(m[1]) : 0, h: m ? Number(m[2]) : 0 };
-		})
-		.sort((a, b) => a.w - b.w);
+	// Single pass: filter to mp4-with-src and project to { src, w, h } together.
+	const mp4s: { src: string; w: number; h: number }[] = [];
+	for (const v of t.video?.variants ?? []) {
+		if (v.type !== 'video/mp4' || !v.src) continue;
+		const m = v.src.match(/\/(\d+)x(\d+)\//);
+		mp4s.push({ src: v.src, w: m ? Number(m[1]) : 0, h: m ? Number(m[2]) : 0 });
+	}
+	mp4s.sort((a, b) => a.w - b.w);
 	if (!mp4s.length) return null;
 	const capped = mp4s.filter((v) => v.w <= 1280);
 	return capped.length ? capped[capped.length - 1] : mp4s[mp4s.length - 1];

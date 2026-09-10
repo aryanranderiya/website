@@ -18,13 +18,15 @@
 		"covers": "node scripts/fetch-book-covers.mjs",
 		"unused-assets": "node scripts/find-unused-assets.mjs",
 		"validate-media": "node scripts/validate-media.mjs",
-		"image-budget": "node scripts/image-budget.mjs"
+		"image-budget": "node scripts/image-budget.mjs",
+		"doctor": "react-doctor"
 	},
 	"dependencies": {
-		"@astrojs/cloudflare": "^12.6.13",
-		"@astrojs/mdx": "^4.0.0",
-		"@astrojs/react": "^4.4.2",
-		"@astrojs/sitemap": "^3.0.0",
+		"@astrojs/cloudflare": "^14.3.1",
+		"@astrojs/markdown-remark": "^7.3.1",
+		"@astrojs/mdx": "^8.0.1",
+		"@astrojs/react": "^6.0.5",
+		"@astrojs/sitemap": "^3.7.4",
 		"@fontsource-variable/inter": "^5.2.8",
 		"@grizzshutsdown/simpleplayer": "^0.1.2",
 		"@mlc-ai/web-llm": "^0.2.82",
@@ -41,8 +43,8 @@
 		"@tanstack/react-query-persist-client": "^5.96.1",
 		"@theexperiencecompany/gaia-icons": "^1.9.0",
 		"agentation": "^3.0.2",
-		"astro": "^5.17.1",
-		"boneyard-js": "^1.6.0",
+		"astro": "^7.3.2",
+		"boneyard-js": "^1.10.0",
 		"class-variance-authority": "^0.7.1",
 		"clsx": "^2.1.1",
 		"cmdk": "^1.1.1",
@@ -50,7 +52,7 @@
 		"framer-motion": "^12.10.0",
 		"gsap": "^3.13.0",
 		"lucide-react": "^1.14.0",
-		"maplibre-gl": "^5.24.0",
+		"maplibre-gl": "^6.9.0",
 		"motion": "^12.38.0",
 		"react": "^19.2.4",
 		"react-dom": "^19.2.4",
@@ -65,7 +67,7 @@
 		"tw-animate-css": "^1.2.9"
 	},
 	"devDependencies": {
-		"@astrojs/check": "^0.9.4",
+		"@astrojs/check": "^0.9.10",
 		"@biomejs/biome": "^2.4.11",
 		"@lhci/cli": "^0.15.1",
 		"@playwright/test": "^1.59.1",
@@ -75,8 +77,25 @@
 		"lefthook": "^2.1.5",
 		"lighthouse": "^13.1.0",
 		"playwright": "^1.59.1",
-		"sharp": "^0.34.1",
+		"react-doctor": "^0.9.13",
+		"sharp": "^0.35.4",
 		"typescript": "^5.8.3",
 		"wrangler": "^4.85.0"
+	},
+	"overrides": {
+		"sharp": "^0.35.4",
+		"smol-toml": "^1.7.1",
+		"tmp": "^0.2.6",
+		"undici": "^7.29.0",
+		"ws": "^8.21.0",
+		"yaml": "^2.8.3",
+		"brace-expansion@^1.0.0": "1.1.18",
+		"brace-expansion@^2.0.0": "2.1.4",
+		"browserslist": "^4.28.9",
+		"fast-uri": "^3.1.7",
+		"ip-address": "^10.7.0",
+		"js-yaml@^3.0.0": "^4.0.0",
+		"picomatch@^2.0.0": "2.3.2",
+		"picomatch@^4.0.0": "4.0.7"
 	}
 }

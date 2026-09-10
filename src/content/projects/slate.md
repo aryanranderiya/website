@@ -7,13 +7,13 @@ tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: web
 folder: Hackathon
-coverImage: /ProjectMedia/Slate/banner.webp
+coverImage: /images/projects/slate/banner.webp
 images:
-  - /ProjectMedia/Slate/banner.webp
-  - /ProjectMedia/Slate/screenshot.webp
-  - /ProjectMedia/Slate/screenshot-1.webp
-  - /ProjectMedia/Slate/screenshot-2.webp
-  - /ProjectMedia/Slate/screenshot-3.webp
+  - /images/projects/slate/banner.webp
+  - /images/projects/slate/screenshot.webp
+  - /images/projects/slate/screenshot-1.webp
+  - /images/projects/slate/screenshot-2.webp
+  - /images/projects/slate/screenshot-3.webp
 order: 21
 url: https://slate-notetaking.vercel.app
 github: https://github.com/aryanranderiya/slate

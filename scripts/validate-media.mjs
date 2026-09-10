@@ -96,7 +96,7 @@ for (const file of allMedia) {
 
 const sourceFiles = await walk(SRC, (f) => SOURCE_EXTS.has(extname(f).toLowerCase()));
 // Trailing \b prevents matching .webm in `.webmanifest` etc.
-const refRegex = /["'`(]\/((?:ProjectMedia|design|blog|images|icons|media|ClientWork|favicon|Resume)[^"'`)\s]+?\.(?:png|jpe?g|webp|avif|gif|svg|mp4|webm|mov|pdf))(?=["'`)\s])/gi;
+const refRegex = /["'`(]\/((?:images|icons|favicon)[^"'`)\s]+?\.(?:png|jpe?g|webp|avif|gif|svg|mp4|webm|mov|pdf))(?=["'`)\s])/gi;
 // Skip files where the doc explicitly demonstrates broken/example refs in code blocks
 const SKIP_REFS_FOR = new Set(['src/content/blog/CLAUDE.md']);
 
@@ -125,6 +125,9 @@ for (const sf of sourceFiles) {
     const ref = m[1];
     // Skip template literals (paths with ${...} placeholders aren't real)
     if (ref.includes('${')) continue;
+    // Skip <placeholder> segments (docs show example paths like
+    // `/images/books/<slug>.webp` in inline code, not live references)
+    if (/<[^>]*>/.test(ref)) continue;
     const onDisk = join(PUBLIC, decodeURIComponent(ref));
     try { await stat(onDisk); }
     catch { missing.push({ ref: '/' + ref, source: relSrc }); }

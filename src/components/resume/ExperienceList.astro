@@ -11,12 +11,16 @@ interface Props {
 
 const { featuredOnly = false, includeTypes, excludeTypes } = Astro.props;
 
+// Sets built once outside the loop for constant-time membership checks.
+const includeSet = includeTypes ? new Set(includeTypes) : null;
+const excludeSet = excludeTypes ? new Set(excludeTypes) : null;
+
 let items = featuredOnly
 	? experience.filter((entry) => entry.featured !== false).slice(0, 6)
 	: experience;
 
-if (includeTypes) items = items.filter((entry) => includeTypes.includes(entry.employmentType));
-if (excludeTypes) items = items.filter((entry) => !excludeTypes.includes(entry.employmentType));
+if (includeSet) items = items.filter((entry) => includeSet.has(entry.employmentType));
+if (excludeSet) items = items.filter((entry) => !excludeSet.has(entry.employmentType));
 ---
 
 <div class="flex flex-col">

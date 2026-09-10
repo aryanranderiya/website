@@ -7,6 +7,7 @@ import Signature from '@/components/home/Signature';
 import SocialsGrid from '@/components/home/SocialsGrid';
 import SpotifyWidget from '@/components/home/SpotifyWidget';
 import PageLayout from '@/layouts/PageLayout.astro';
+import { slugOf } from '@/utils/content';
 
 // Rendered per request so middleware can negotiate content type — agents that
 // send `Accept: text/markdown` get a clean markdown mirror of this page (see
@@ -21,7 +22,7 @@ const latestPosts = allPosts
 	.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
 	.slice(0, 3)
 	.map((p) => ({
-		slug: p.slug,
+		slug: slugOf(p),
 		title: p.data.title,
 		date: new Date(p.data.date).toISOString(),
 	}));

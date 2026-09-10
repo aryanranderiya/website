@@ -187,7 +187,7 @@ export default function ToolsGrid() {
 							type="button"
 							key={cat}
 							onClick={() => setActiveCategory(cat)}
-							className="cursor-pointer rounded-full border px-[10px] py-[3px] text-[11px] tracking-[0.01em] transition-all duration-150"
+							className="cursor-pointer rounded-full border px-[10px] py-[3px] text-[11px] tracking-[0.01em] transition-colors duration-150"
 							// biome-ignore lint/nursery/noInlineStyles: dynamic background/color/borderColor based on active category
 							style={{
 								background: activeCategory === cat ? 'var(--foreground)' : 'transparent',

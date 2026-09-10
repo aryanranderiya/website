@@ -1,6 +1,7 @@
 ---
-import { type CollectionEntry, getCollection } from 'astro:content';
+import { type CollectionEntry, getCollection, render } from 'astro:content';
 import NowLayout from '@/layouts/NowLayout.astro';
+import { slugOf } from '@/utils/content';
 
 export async function getStaticPaths() {
 	const allEntries = await getCollection('now');
@@ -11,7 +12,7 @@ export async function getStaticPaths() {
 	// All entries except the latest get their own slug page
 	// (latest is served at /now)
 	return sorted.slice(1).map((entry) => ({
-		params: { slug: entry.slug },
+		params: { slug: slugOf(entry) },
 		props: { entry, allEntries: sorted },
 	}));
 }
@@ -22,14 +23,14 @@ interface Props {
 }
 
 const { entry, allEntries } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 
 const sorted = allEntries.sort(
 	(a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 );
 
 const entries = sorted.map((e, i) => ({
-	slug: e.slug,
+	slug: slugOf(e),
 	date: e.data.date,
 	isLatest: i === 0,
 }));
@@ -39,7 +40,7 @@ const entries = sorted.map((e, i) => ({
   date={entry.data.date}
   location={entry.data.location}
   entries={entries}
-  currentSlug={entry.slug}
+  currentSlug={slugOf(entry)}
 >
   <Content />
 </NowLayout>

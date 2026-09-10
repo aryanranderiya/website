@@ -7,10 +7,10 @@ tech: [Objective-C]
 featured: false
 type: desktop
 folder: Projects
-coverImage: /ProjectMedia/Bauhaus_Screensaver/screenshot-1.webp
+coverImage: /images/projects/bauhaus-screensaver/screenshot-1.webp
 images:
-  - /ProjectMedia/Bauhaus_Screensaver/screenshot-1.webp
-  - /ProjectMedia/Bauhaus_Screensaver/screenshot-2.webp
+  - /images/projects/bauhaus-screensaver/screenshot-1.webp
+  - /images/projects/bauhaus-screensaver/screenshot-2.webp
 order: 17
 github: https://github.com/aryanranderiya/BauhausScreensaver
 ---

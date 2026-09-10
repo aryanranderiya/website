@@ -7,11 +7,11 @@ tech: [React, Node.js, Express, MongoDB, TailwindCSS]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/URL_Shortener/URLShortener.webp
+coverImage: /images/projects/url-shortener/URLShortener.webp
 images:
-  - /ProjectMedia/URL_Shortener/URLShortener.webp
-  - /ProjectMedia/URL_Shortener/2024-03-14_21-13.webp
-  - /ProjectMedia/URL_Shortener/screenshot-1.webp
+  - /images/projects/url-shortener/URLShortener.webp
+  - /images/projects/url-shortener/2024-03-14_21-13.webp
+  - /images/projects/url-shortener/screenshot-1.webp
 order: 11
 url: https://links.aryanranderiya.com
 github: https://github.com/aryanranderiya/URLShortener

@@ -1,0 +1,16 @@
+# Gitleaks allowlists — every entry below is a reviewed false positive.
+# Historical findings live in .gitleaksbaseline (see secret-scan CI job).
+
+[extend]
+useDefault = true
+
+# Vendored TicketBus project README. Its only secret-like strings are Firebase
+# Storage download tokens (?alt=media&token=<uuid>) for public screenshots —
+# capability URLs scoped to those files, not credentials. Both the current
+# path and the pre-restructure path (for historical commits) are covered.
+[[allowlists]]
+description = "TicketBus README: public Firebase screenshot download tokens"
+paths = [
+  '''public/images/projects/ticketbus/TicketBus.md''',
+  '''public/ProjectMedia/TicketBus/TicketBus.md''',
+]

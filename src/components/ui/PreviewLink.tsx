@@ -38,6 +38,83 @@ interface PreviewLinkProps {
 	anchorClassName?: string;
 }
 
+function getDisplayHost(href: string): string {
+	return href
+		.replace(/^https?:\/\//, '')
+		.replace(/^mailto:/, '')
+		.split('/')[0];
+}
+
+function isMailtoHref(href: string): boolean {
+	return href.startsWith('mailto:');
+}
+
+function getAnchorPosition(rect: DOMRect): { above: boolean; anchorY: number; anchorX: number } {
+	const above = rect.top > window.innerHeight * 0.5;
+	return {
+		above,
+		anchorY: above ? rect.top : rect.bottom,
+		anchorX: rect.left + rect.width / 2,
+	};
+}
+
+function PreviewCardMeta({ preview, isMailto }: { preview: LinkPreview; isMailto: boolean }) {
+	if (!preview.name && !preview.favicon && !isMailto) return null;
+	return (
+		<div className="mb-1 flex items-center gap-1.5">
+			{isMailto ? (
+				<span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center text-[var(--text-muted)]">
+					<HugeiconsIcon icon={Mail01Icon} size={13} />
+				</span>
+			) : (
+				preview.favicon && (
+					<img
+						src={preview.favicon}
+						alt=""
+						className="h-3.5 w-3.5 shrink-0 rounded-[3px] object-contain"
+					/>
+				)
+			)}
+			{preview.name && (
+				<span className="truncate font-medium text-[11px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover:text-[var(--text-primary)]">
+					{preview.name}
+				</span>
+			)}
+		</div>
+	);
+}
+
+function PreviewCardHost({
+	displayHost,
+	previewTitle,
+	isMailto,
+}: {
+	displayHost: string;
+	previewTitle?: string;
+	isMailto: boolean;
+}) {
+	if (isMailto || displayHost === previewTitle) return null;
+	return (
+		<div className="mt-2 truncate text-[10px] text-[var(--text-ghost)] tracking-[0.01em] transition-colors duration-150 group-hover:text-[var(--text-muted)]">
+			{displayHost}
+		</div>
+	);
+}
+
+function PreviewCardImage({ preview }: { preview: LinkPreview }) {
+	if (!preview.image) return null;
+	return (
+		<div className="mb-2 aspect-[16/9] overflow-hidden rounded-lg bg-[var(--muted-bg)]">
+			<img
+				src={preview.image}
+				alt={preview.title ?? preview.name ?? ''}
+				className="block h-full w-full object-cover"
+				loading="lazy"
+			/>
+		</div>
+	);
+}
+
 export function PreviewCard({
 	rect,
 	visible,
@@ -55,14 +132,9 @@ export function PreviewCard({
 	onMouseEnter: () => void;
 	onMouseLeave: () => void;
 }) {
-	const above = rect.top > window.innerHeight * 0.5;
-	const anchorY = above ? rect.top : rect.bottom;
-	const anchorX = rect.left + rect.width / 2;
-	const isMailto = href.startsWith('mailto:');
-	const displayHost = href
-		.replace(/^https?:\/\//, '')
-		.replace(/^mailto:/, '')
-		.split('/')[0];
+	const { above, anchorY, anchorX } = getAnchorPosition(rect);
+	const isMailto = isMailtoHref(href);
+	const displayHost = getDisplayHost(href);
 
 	return (
 		// biome-ignore lint/a11y/noStaticElementInteractions: hover-only tooltip wrapper; the inner <a> handles activation
@@ -88,39 +160,8 @@ export function PreviewCard({
 				aria-label={preview.title ?? preview.name ?? displayHost}
 				className="group block w-[280px] cursor-pointer overflow-hidden rounded-xl border border-[var(--border)] bg-popover p-2.5 text-inherit no-underline shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.05)]"
 			>
-				{preview.image && (
-					<div className="mb-2 aspect-[16/9] overflow-hidden rounded-lg bg-[var(--muted-bg)]">
-						<img
-							src={preview.image}
-							alt={preview.title ?? preview.name ?? ''}
-							className="block h-full w-full object-cover"
-							loading="lazy"
-						/>
-					</div>
-				)}
-
-				{(preview.name || preview.favicon || isMailto) && (
-					<div className="mb-1 flex items-center gap-1.5">
-						{isMailto ? (
-							<span className="flex h-3.5 w-3.5 shrink-0 items-center justify-center text-[var(--text-muted)]">
-								<HugeiconsIcon icon={Mail01Icon} size={13} />
-							</span>
-						) : (
-							preview.favicon && (
-								<img
-									src={preview.favicon}
-									alt=""
-									className="h-3.5 w-3.5 shrink-0 rounded-[3px] object-contain"
-								/>
-							)
-						)}
-						{preview.name && (
-							<span className="truncate font-medium text-[11px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover:text-[var(--text-primary)]">
-								{preview.name}
-							</span>
-						)}
-					</div>
-				)}
+				<PreviewCardImage preview={preview} />
+				<PreviewCardMeta preview={preview} isMailto={isMailto} />
 
 				{preview.title && (
 					<div className="mb-0.5 line-clamp-2 overflow-hidden font-semibold text-[12px] text-[var(--text-primary)] leading-[1.35] tracking-[-0.01em]">
@@ -134,35 +175,102 @@ export function PreviewCard({
 					</p>
 				)}
 
-				{!isMailto && displayHost !== preview.title && (
-					<div className="mt-2 truncate text-[10px] text-[var(--text-ghost)] tracking-[0.01em] transition-colors duration-150 group-hover:text-[var(--text-muted)]">
-						{displayHost}
-					</div>
-				)}
+				<PreviewCardHost
+					displayHost={displayHost}
+					previewTitle={preview.title}
+					isMailto={isMailto}
+				/>
 			</a>
 		</div>
 	);
 }
 
-export default function PreviewLink({
-	href,
-	name,
+function MailtoStatusIcon({ copied, hovered }: { copied: boolean; hovered: boolean }) {
+	return (
+		<span
+			className="relative ml-1 inline-block align-middle leading-none"
+			// biome-ignore lint/nursery/noInlineStyles: dynamic opacity driven by hovered/copied state
+			style={{
+				width: 14,
+				height: 14,
+				opacity: copied ? 1 : hovered ? 0.7 : 0.3,
+				transition: 'opacity 0.2s ease',
+			}}
+		>
+			<span
+				className="absolute inset-0 flex items-center justify-center text-[var(--text-muted)]"
+				// biome-ignore lint/nursery/noInlineStyles: blur/scale cross-fade on copy→tick transition
+				style={{
+					opacity: copied ? 0 : 1,
+					filter: copied ? 'blur(4px)' : 'blur(0px)',
+					transform: copied ? 'scale(0.65)' : 'scale(1)',
+					transition:
+						'opacity 0.22s ease, filter 0.22s ease, transform 0.28s cubic-bezier(0.19,1,0.22,1)',
+				}}
+			>
+				<HugeiconsIcon icon={Copy01Icon} size={14} />
+			</span>
+			<span
+				className="absolute inset-0 flex items-center justify-center text-[#00bbff]"
+				// biome-ignore lint/nursery/noInlineStyles: blur/scale cross-fade on copy→tick transition
+				style={{
+					opacity: copied ? 1 : 0,
+					filter: copied ? 'blur(0px)' : 'blur(4px)',
+					transform: copied ? 'scale(1)' : 'scale(0.65)',
+					transition:
+						'opacity 0.22s ease, filter 0.22s ease, transform 0.28s cubic-bezier(0.19,1,0.22,1)',
+				}}
+			>
+				<HugeiconsIcon icon={CheckmarkCircle02Icon} size={14} />
+			</span>
+		</span>
+	);
+}
+
+function DefaultLinkContent({
 	logo,
-	preview,
-	hoverTextClass,
+	name,
+	rounded,
 	logoClassName,
-	rounded = true,
-	external,
-	children,
-	anchorClassName,
-}: PreviewLinkProps) {
-	const isExternal = external ?? !href.startsWith('mailto:');
-	const isMailto = href.startsWith('mailto:');
+	hoverTextClass,
+	isMailto,
+	copied,
+	hovered,
+}: {
+	logo?: string;
+	name: string;
+	rounded: boolean;
+	logoClassName?: string;
+	hoverTextClass?: string;
+	isMailto: boolean;
+	copied: boolean;
+	hovered: boolean;
+}) {
+	return (
+		<>
+			{logo && (
+				<img
+					src={logo}
+					alt={name}
+					className={`mb-px ml-1 inline h-[1.1em] w-auto align-middle ${rounded ? 'rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
+				/>
+			)}
+			{logo && ' '}
+			<span
+				className={`font-medium! underline decoration-dotted underline-offset-4 transition group-hover:text-foreground ${hoverTextClass ?? ''} decoration-muted-foreground/30`}
+			>
+				{name}
+			</span>
+			{isMailto && <MailtoStatusIcon copied={copied} hovered={hovered} />}
+		</>
+	);
+}
+
+function usePreviewHover() {
 	const anchorRef = useRef<HTMLAnchorElement>(null);
 	const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 	const [hovered, setHovered] = useState(false);
 	const [rect, setRect] = useState<DOMRect | null>(null);
-	const [copied, setCopied] = useState(false);
 
 	useEffect(() => () => clearTimeout(leaveTimer.current), []);
 
@@ -181,17 +289,42 @@ export default function PreviewLink({
 		setHovered(false);
 	}, []);
 
+	return { anchorRef, hovered, rect, show, hideFromAnchor, hideFromCard };
+}
+
+function useMailtoCopy(href: string, isMailto: boolean) {
+	const [copied, setCopied] = useState(false);
+
 	const handleClick = useCallback(
 		(e: React.MouseEvent) => {
-			if (isMailto) {
-				e.preventDefault();
-				navigator.clipboard.writeText(href.replace('mailto:', ''));
-				setCopied(true);
-				setTimeout(() => setCopied(false), 2000);
-			}
+			if (!isMailto) return;
+			e.preventDefault();
+			navigator.clipboard.writeText(href.replace('mailto:', ''));
+			setCopied(true);
+			setTimeout(() => setCopied(false), 2000);
 		},
 		[href, isMailto]
 	);
+
+	return { copied, handleClick };
+}
+
+export default function PreviewLink({
+	href,
+	name,
+	logo,
+	preview,
+	hoverTextClass,
+	logoClassName,
+	rounded = true,
+	external,
+	children,
+	anchorClassName,
+}: PreviewLinkProps) {
+	const isExternal = external ?? !isMailtoHref(href);
+	const isMailto = isMailtoHref(href);
+	const { anchorRef, hovered, rect, show, hideFromAnchor, hideFromCard } = usePreviewHover();
+	const { copied, handleClick } = useMailtoCopy(href, isMailto);
 
 	return (
 		<>
@@ -208,58 +341,16 @@ export default function PreviewLink({
 				className={anchorClassName ?? 'group inline'}
 			>
 				{children ?? (
-					<>
-						{logo && (
-							<img
-								src={logo}
-								alt={name}
-								className={`mb-px ml-1 inline h-[1.1em] w-auto align-middle ${rounded ? 'rounded-full' : ''}${logoClassName ? ` ${logoClassName}` : ''}`}
-							/>
-						)}
-						{logo && ' '}
-						<span
-							className={`font-medium! underline decoration-dotted underline-offset-4 transition group-hover:text-foreground ${hoverTextClass ?? ''} decoration-muted-foreground/30`}
-						>
-							{name}
-						</span>
-						{isMailto && (
-							<span
-								className="relative ml-1 inline-block align-middle leading-none"
-								// biome-ignore lint/nursery/noInlineStyles: dynamic opacity driven by hovered/copied state
-								style={{
-									width: 14,
-									height: 14,
-									opacity: copied ? 1 : hovered ? 0.7 : 0.3,
-									transition: 'opacity 0.2s ease',
-								}}
-							>
-								<span
-									className="absolute inset-0 flex items-center justify-center text-[var(--text-muted)]"
-									// biome-ignore lint/nursery/noInlineStyles: blur/scale cross-fade on copy→tick transition
-									style={{
-										opacity: copied ? 0 : 1,
-										filter: copied ? 'blur(4px)' : 'blur(0px)',
-										transform: copied ? 'scale(0.65)' : 'scale(1)',
-										transition: 'opacity 0.22s ease, filter 0.22s ease, transform 0.28s cubic-bezier(0.19,1,0.22,1)',
-									}}
-								>
-									<HugeiconsIcon icon={Copy01Icon} size={14} />
-								</span>
-								<span
-									className="absolute inset-0 flex items-center justify-center text-[#00bbff]"
-									// biome-ignore lint/nursery/noInlineStyles: blur/scale cross-fade on copy→tick transition
-									style={{
-										opacity: copied ? 1 : 0,
-										filter: copied ? 'blur(0px)' : 'blur(4px)',
-										transform: copied ? 'scale(1)' : 'scale(0.65)',
-										transition: 'opacity 0.22s ease, filter 0.22s ease, transform 0.28s cubic-bezier(0.19,1,0.22,1)',
-									}}
-								>
-									<HugeiconsIcon icon={CheckmarkCircle02Icon} size={14} />
-								</span>
-							</span>
-						)}
-					</>
+					<DefaultLinkContent
+						logo={logo}
+						name={name}
+						rounded={rounded}
+						logoClassName={logoClassName}
+						hoverTextClass={hoverTextClass}
+						isMailto={isMailto}
+						copied={copied}
+						hovered={hovered}
+					/>
 				)}
 			</a>
 			{preview &&

@@ -4,7 +4,7 @@
  * Commit the output (src/data/design-thumbhashes.json) — Cloudflare Pages
  * reads the committed file and never needs to run this script.
  *
- * Re-run whenever you add new images to public/design/.
+ * Re-run whenever you add new images to public/images/design/.
  */
 
 import { readdir, readFile, writeFile } from 'fs/promises';

@@ -13,7 +13,7 @@ styling live, flip `draft: false` and visit `/blog-authoring-reference`.
 
 Posts live in `src/content/blog/` as either `.md` (pure markdown, no
 React/Astro) or `.mdx` (markdown + imported components). The collection
-schema is in `src/content/config.ts`.
+schema is in `src/content.config.ts`.
 
 ---
 

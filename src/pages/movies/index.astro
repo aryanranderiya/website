@@ -2,10 +2,11 @@
 import { getCollection } from 'astro:content';
 import MoviesGrid from '@/components/movies/MoviesGrid';
 import PageLayout from '@/layouts/PageLayout.astro';
+import { slugOf } from '@/utils/content';
 
 const movieEntries = await getCollection('movies');
 const movies = movieEntries.map((entry) => ({
-	slug: entry.slug,
+	slug: slugOf(entry),
 	title: entry.data.title,
 	year: entry.data.year,
 	cover: entry.data.cover,

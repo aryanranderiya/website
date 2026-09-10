@@ -7,10 +7,10 @@ tech: [Python, Flask, MongoDB, HTML, CSS]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/YouTube_Shorts Automator/project_banner (2).png
+coverImage: /images/projects/youtube-shorts-automator/project_banner (2).png
 images:
-  - /ProjectMedia/YouTube_Shorts Automator/project_banner (2).png
-  - /ProjectMedia/YouTube_Shorts Automator/2024-04-04_02-07.png
+  - /images/projects/youtube-shorts-automator/project_banner (2).png
+  - /images/projects/youtube-shorts-automator/2024-04-04_02-07.png
 order: 12
 ---
 

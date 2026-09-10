@@ -5,6 +5,8 @@ import type { ReactNode } from 'react';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
+const FADE_IN_ANIMATE = { opacity: 1, y: 0, filter: 'blur(0px)' };
+
 interface FadeInProps {
 	children: ReactNode;
 	delay?: number;
@@ -25,7 +27,7 @@ export default function FadeIn({
 	inView = false,
 }: FadeInProps) {
 	const initial = { opacity: 0, y, filter: blur ? 'blur(4px)' : 'blur(0px)' };
-	const animate = { opacity: 1, y: 0, filter: 'blur(0px)' };
+	const animate = FADE_IN_ANIMATE;
 	const transition = {
 		duration: 0.4,
 		delay,
