@@ -22,6 +22,16 @@ import { createPortal } from 'react-dom';
 
 import { cn } from '@/lib/utils';
 
+// MapLibre locates its Web Worker via `new URL('./maplibre-gl-worker.mjs',
+// import.meta.url)` at runtime. After bundling, import.meta.url points at our
+// hashed chunk, so the worker 404s and no tiles ever render (blank map).
+// The worker + shared chunk are copied to a stable URL at build time (see
+// astro.config.mjs) — point MapLibre at it. Guarded for SSR (module is also
+// evaluated server-side during prerender).
+if (typeof window !== 'undefined' && !MapLibreGL.config.WORKER_URL) {
+	MapLibreGL.config.WORKER_URL = '/vendor/maplibre/maplibre-gl-worker.mjs';
+}
+
 const defaultStyles = {
 	dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
 	light: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',

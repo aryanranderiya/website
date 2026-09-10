@@ -10,12 +10,10 @@ import {
 	Home12Icon,
 	HugeiconsIcon,
 	Moon02Icon,
-	NoteIcon,
 	QuillWrite01Icon,
 	RoboticIcon,
 	ShuffleIcon,
 	SidebarRightIcon,
-	Stamp02Icon,
 	Sun01Icon,
 	TestTube01Icon,
 } from '@icons';
@@ -65,12 +63,10 @@ const NAV_GROUPS: {
 	{
 		label: null,
 		items: [
-			{ href: '/resume', label: 'Experience', icon: NoteIcon },
 			{ href: '/agent-convos', label: 'Agent Convos', icon: RoboticIcon },
 			{ href: '/books', label: 'Bookshelf', icon: Book01Icon },
 			{ href: '/experiments', label: 'Experiments', icon: TestTube01Icon },
 			{ href: '/now', label: 'Now', icon: Clock01Icon },
-			{ href: '/colophon', label: 'Colophon', icon: Stamp02Icon },
 		],
 	},
 	// {
