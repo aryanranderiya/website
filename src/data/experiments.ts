@@ -24,4 +24,12 @@ export const experiments: Experiment[] = [
 		bio: "This is the exact holo card from GAIA's onboarding flow, dropped in here as an experiment. The foil is a mix-blend-mode 'color-dodge' gradient that tracks your cursor; the 3D tilt is react-parallax-tilt; the silhouette is an SVG postage-stamp clip-path scaled to the card. Move your mouse across it to watch the foil shift, and click it to flip to the back.",
 		date: '2026-05-22',
 	},
+	{
+		slug: 'gaia-footer',
+		title: 'GAIA Footer',
+		description:
+			'A faithful replica of the heygaia.io site footer: deep-blue glow wallpaper, film-grain overlay, link columns, a giant wordmark, and the status plus social bottom bar.',
+		bio: "Rebuilt from the live heygaia.io footer markup. The wallpaper and Experience logo hotlink GAIA's CDN; the commercial type falls back to Inter with tight tracking; hovers use GAIA blue (#00bbff). The canvas-rendered giant wordmark is the one deliberate substitution: a blend-overlay type treatment instead of the original canvas effect. Images sit behind shimmer skeletons with a crossfade on load.",
+		date: '2026-09-10',
+	},
 ];

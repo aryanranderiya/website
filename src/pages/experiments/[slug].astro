@@ -1,4 +1,5 @@
 ---
+import GaiaFooter from '@/components/experiments/gaia-footer/GaiaFooter';
 import HoloCardIsland from '@/components/experiments/HoloCardIsland';
 import { DEMO_CARD } from '@/components/experiments/holo-card/demo';
 import BackLink from '@/components/ui/BackLink.astro';
@@ -24,6 +25,11 @@ const fmtDate = (d: string) =>
   </div>
 
   {/* live, interactive component */}
+  {exp.slug === "gaia-footer" ? (
+    <div class="mb-10 overflow-hidden rounded-2xl animate-fade-in stagger-2">
+      <GaiaFooter client:only="react" />
+    </div>
+  ) : (
   <div class="mb-10 flex justify-center rounded-2xl bg-[var(--muted-bg)] py-14 animate-fade-in stagger-2">
     <div style="width:320px;height:448px" transition:name={`holo-${exp.slug}`}>
       {exp.slug === "holo-card" && (
@@ -31,6 +37,7 @@ const fmtDate = (d: string) =>
       )}
     </div>
   </div>
+  )}
 
   {/* writeup */}
   <div class="animate-fade-in stagger-3">

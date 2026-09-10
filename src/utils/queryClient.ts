@@ -4,12 +4,18 @@ import { persistQueryClient } from '@tanstack/react-query-persist-client';
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
 const MONTH_MS = 30 * 24 * 60 * 60 * 1000;
+// gcTime feeds a raw setTimeout (Removable.scheduleGc in @tanstack/query-core).
+// Timer delays are 32-bit signed ints: anything over 2^31-1 ms (~24.8 days)
+// fires almost immediately, which garbage-collected idle prefetched queries
+// the moment their fetch settled (only observed queries like spotify
+// survived). MONTH_MS overflows — cap gcTime below the limit.
+const GC_MS = 24 * 24 * 60 * 60 * 1000;
 
 export const queryClient = new QueryClient({
 	defaultOptions: {
 		queries: {
 			staleTime: WEEK_MS,
-			gcTime: MONTH_MS,
+			gcTime: GC_MS,
 			retry: 1,
 			refetchOnWindowFocus: false,
 			refetchOnReconnect: false,

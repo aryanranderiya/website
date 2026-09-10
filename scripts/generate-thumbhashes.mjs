@@ -15,7 +15,7 @@ import { rgbaToThumbHash } from 'thumbhash';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(__dirname, '..');
-const DESIGN_DIR = join(ROOT, 'public', 'design');
+const DESIGN_DIR = join(ROOT, 'public', 'images', 'design');
 const OUT_FILE = join(ROOT, 'src', 'data', 'design-thumbhashes.json');
 
 // thumbhash works best at small sizes — 100px max keeps quality high
@@ -54,7 +54,11 @@ async function main() {
   const map = {};
   const results = await Promise.allSettled(
     files.map(async (filePath) => {
-      const key = relative(join(ROOT, 'public'), filePath).replace(/\\/g, '/');
+      // Keys are relative to public/ minus the images/ prefix
+      // (e.g. design/apparel/x.webp) to match DesignGallery.getHash.
+      const key = relative(join(ROOT, 'public'), filePath)
+        .replace(/\\/g, '/')
+        .replace(/^images\//, '');
       const hash = await hashImage(filePath);
       map[key] = hash;
       process.stdout.write('.');

@@ -11,9 +11,12 @@ import { openGroup } from '@/lib/flip-lightbox';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
-// Convert public URL → thumbhash lookup key: "/images/design/apparel/foo.webp" → "design/apparel/foo.webp"
+// Convert public URL → thumbhash lookup key:
+// "/images/design/apparel/foo.webp" → "design/apparel/foo.webp"
+// (hashes in design-thumbhashes.json are relative to public/, with no
+// "images/" prefix, so strip an optional "images/" segment too).
 function getHash(src: string): string | undefined {
-	return (thumbhashes as Record<string, string>)[src.replace(/^\//, '')];
+	return (thumbhashes as Record<string, string>)[src.replace(/^\/(images\/)?/, '')];
 }
 
 interface DesignGalleryProps {
@@ -83,6 +86,10 @@ export default function DesignGallery({
 								key={file}
 								src={apparelSrcs[i]}
 								alt={altText(file)}
+								// First two rows are above the fold: fetch eagerly at
+								// high priority so they resolve first; the rest lazy-load
+								// progressively as the user scrolls.
+								eager={i < 6}
 								onClick={() => openSection(apparelGrid.current, i)}
 							/>
 						))}
@@ -140,12 +147,23 @@ export default function DesignGallery({
 
 /* ── Sub-components ─────────────────────────────────────────── */
 
-function ApparelItem({ src, alt, onClick }: { src: string; alt: string; onClick: () => void }) {
+function ApparelItem({
+	src,
+	alt,
+	eager,
+	onClick,
+}: {
+	src: string;
+	alt: string;
+	eager?: boolean;
+	onClick: () => void;
+}) {
 	return (
 		<ProgressiveImg
 			src={src}
 			alt={alt}
 			hash={getHash(src)}
+			eager={eager}
 			// No hover zoom and the image itself is never touched — only the
 			// wrapper background colour changes on hover. Keeps the FLIP seamless.
 			className="relative aspect-square cursor-zoom-in overflow-hidden rounded-2xl bg-transparent transition-colors duration-300 hover:bg-[var(--muted-bg)]"

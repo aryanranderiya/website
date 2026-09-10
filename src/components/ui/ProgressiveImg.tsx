@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { thumbHashToDataURL } from 'thumbhash';
 import { cn } from '@/lib/utils';
 
@@ -13,6 +13,8 @@ interface ProgressiveImgProps {
 	onClick?: () => void;
 	style?: React.CSSProperties;
 	imgStyle?: React.CSSProperties;
+	/** Above-the-fold image: eager load with high fetch priority. Defaults to lazy. */
+	eager?: boolean;
 }
 
 /**
@@ -21,7 +23,7 @@ interface ProgressiveImgProps {
  * Shows a decoded thumbhash placeholder immediately (no network request --
  * just math), then crossfades to the real image when it finishes loading.
  *
- * If no hash is provided it renders a plain <img> with lazy loading.
+ * If no hash is provided it renders a plain <img> (lazy unless `eager`).
  */
 export default function ProgressiveImg({
 	src,
@@ -32,40 +34,35 @@ export default function ProgressiveImg({
 	onClick,
 	style,
 	imgStyle,
+	eager = false,
 }: ProgressiveImgProps) {
 	const [loaded, setLoaded] = useState(false);
 	// Once the opacity fade-in finishes we clear the inline transition so
 	// Tailwind's group-hover transition classes (scale, filter) take over cleanly.
 	const [faded, setFaded] = useState(false);
-	const [placeholder, setPlaceholder] = useState<string | null>(null);
-	const imgRef = useRef<HTMLImageElement>(null);
 
-	// Decode thumbhash → data URL on mount (pure JS, instant)
-	useEffect(() => {
-		if (!hash) return;
+	// Decode thumbhash → data URL synchronously during render (pure math,
+	// instant — no request). useMemo (not useEffect) so the placeholder is
+	// present on the very first paint, including SSR HTML — no blank frame.
+	const placeholder = useMemo<string | null>(() => {
+		if (!hash) return null;
 		try {
 			const bytes = Uint8Array.from(atob(hash), (c) => c.charCodeAt(0));
-			setPlaceholder(thumbHashToDataURL(bytes));
+			return thumbHashToDataURL(bytes);
 		} catch {
 			// Bad hash - silently fall back to no placeholder
+			return null;
 		}
 	}, [hash]);
 
-	// Handle images already cached - onLoad won't fire, so skip straight to faded
-	useEffect(() => {
-		if (imgRef.current?.complete) {
-			setLoaded(true);
-			setFaded(true);
-		}
-	}, []);
-
-	// No hash - plain lazy image, no extra DOM
+	// No hash - plain image, no extra DOM
 	if (!hash) {
 		return (
 			<img
 				src={src}
 				alt={alt}
-				loading="lazy"
+				loading={eager ? 'eager' : 'lazy'}
+				fetchPriority={eager ? 'high' : 'auto'}
 				decoding="async"
 				className={imgClassName}
 				// biome-ignore lint/nursery/noInlineStyles: style prop passed from parent for dynamic overrides
@@ -101,10 +98,18 @@ export default function ProgressiveImg({
 
 			{/* Real image - fades in over the placeholder */}
 			<img
-				ref={imgRef}
+				ref={(el) => {
+					// A cached image fires `load` before React attaches onLoad —
+					// catch it here so it doesn't stay stuck at opacity 0.
+					if (el?.complete && el.naturalWidth > 0) {
+						setLoaded(true);
+						setFaded(true);
+					}
+				}}
 				src={src}
 				alt={alt}
-				loading="lazy"
+				loading={eager ? 'eager' : 'lazy'}
+				fetchPriority={eager ? 'high' : 'auto'}
 				decoding="async"
 				className={cn('relative z-[1] h-full w-full object-cover', imgClassName)}
 				onLoad={() => setLoaded(true)}

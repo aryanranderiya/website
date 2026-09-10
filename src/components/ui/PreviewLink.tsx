@@ -102,14 +102,24 @@ function PreviewCardHost({
 }
 
 function PreviewCardImage({ preview }: { preview: LinkPreview }) {
-	if (!preview.image) return null;
+	const [loaded, setLoaded] = useState(false);
+	const [failed, setFailed] = useState(false);
+	if (!preview.image || failed) return null;
 	return (
-		<div className="mb-2 aspect-[16/9] overflow-hidden rounded-lg bg-[var(--muted-bg)]">
+		<div className="relative mb-2 aspect-[16/9] overflow-hidden rounded-lg bg-[var(--muted-bg)]">
+			{!loaded && (
+				<div
+					aria-hidden="true"
+					className="absolute inset-0 animate-[shimmer_1.4s_ease-in-out_infinite] bg-[length:220%_100%] bg-[linear-gradient(110deg,var(--shimmer-base)_8%,var(--shimmer-sweep)_18%,var(--shimmer-base)_33%)]"
+				/>
+			)}
 			<img
 				src={preview.image}
 				alt={preview.title ?? preview.name ?? ''}
-				className="block h-full w-full object-cover"
+				className={`relative block h-full w-full object-cover transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
 				loading="lazy"
+				onLoad={() => setLoaded(true)}
+				onError={() => setFailed(true)}
 			/>
 		</div>
 	);

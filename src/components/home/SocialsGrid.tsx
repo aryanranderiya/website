@@ -8,6 +8,25 @@ import { queryClient } from '@/utils/queryClient';
 import GithubGraph, { GITHUB_QUERY_KEY } from './GithubGraph';
 
 const AVATAR_URL = '/images/site/avatar-original.webp';
+
+// Shared fetchers so hover previews AND the idle prefetch below hit the
+// same query keys (React Query dedupes — one network request total).
+function fetchGithubContributions() {
+	return import('./GithubGraph').then((m) => m.fetchContributions('aryanranderiya'));
+}
+
+function prefetchSocialData() {
+	void queryClient.prefetchQuery({
+		queryKey: GITHUB_QUERY_KEY,
+		queryFn: fetchGithubContributions,
+		staleTime: Infinity,
+	});
+	void queryClient.prefetchQuery({
+		queryKey: ['monkeytype', 'aryanranderiya'],
+		queryFn: fetchMonkeytype,
+		staleTime: Infinity,
+	});
+}
 const _INSTAGRAM_GRADIENT =
 	'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)';
 
@@ -78,7 +97,7 @@ function InstagramLogo({ size = 18 }: { size?: number }) {
 function GitHubPreview() {
 	const { data } = useQuery({
 		queryKey: GITHUB_QUERY_KEY,
-		queryFn: () => import('./GithubGraph').then((m) => m.fetchContributions('aryanranderiya')),
+		queryFn: fetchGithubContributions,
 		staleTime: Infinity,
 	});
 	const total = data?.total;
@@ -115,18 +134,18 @@ function GitHubPreview() {
 					<span className="flex items-center text-[#8b949e]">
 						<HugeiconsIcon icon={RepositoryIcon} size={13} />
 					</span>
-					<span className="font-semibold text-[#e6edf3]">38</span>
+					<span className="font-semibold text-[#e6edf3]">48</span>
 					<span className="text-[#8b949e]">repos</span>
 				</div>
 				<div className="flex items-center gap-1">
 					<span className="flex items-center text-[#8b949e]">
 						<HugeiconsIcon icon={StarIcon} size={12} />
 					</span>
-					<span className="font-semibold text-[#e6edf3]">67</span>
+					<span className="font-semibold text-[#e6edf3]">74</span>
 					<span className="text-[#8b949e]">followers</span>
 				</div>
 				<div className="flex items-center gap-1">
-					<span className="font-semibold text-[#e6edf3]">11</span>
+					<span className="font-semibold text-[#e6edf3]">10</span>
 					<span className="text-[#8b949e]">following</span>
 				</div>
 			</div>
@@ -561,6 +580,21 @@ function SocialsGridInner() {
 	const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
 	useEffect(() => () => clearTimeout(leaveTimer.current), []);
+
+	// Warm the hover-preview queries as soon as the island hydrates
+	// (client:idle), so hovering a chip reads from cache instead of firing
+	// a 0.5–3s network request. No-op when localStorage already holds fresh
+	// data (persisted cache, 1-week staleTime).
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+		const ric = window.requestIdleCallback;
+		if (typeof ric === 'function') {
+			const id = ric(prefetchSocialData, { timeout: 2500 });
+			return () => window.cancelIdleCallback(id);
+		}
+		const t = setTimeout(prefetchSocialData, 1200);
+		return () => clearTimeout(t);
+	}, []);
 
 	return (
 		<div className="flex flex-wrap items-center gap-2">

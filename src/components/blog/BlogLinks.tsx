@@ -11,6 +11,25 @@ interface ActiveLink {
 	isExternal: boolean;
 }
 
+/** URLs already warmed via `new Image()` — module-level so repeat scans and client-side navigations never refetch. */
+const preloadedUrls = new Set<string>();
+
+function isPreloadableUrl(url: string | undefined): url is string {
+	if (!url) return false;
+	return !/^(data|blob):/i.test(url);
+}
+
+/** Kick off a low-priority fetch for the tooltip's remote images before hover. */
+function warmPreviewImages(preview: LinkPreview) {
+	for (const url of [preview.image, preview.favicon]) {
+		if (!isPreloadableUrl(url) || preloadedUrls.has(url)) continue;
+		preloadedUrls.add(url);
+		const img = new Image();
+		img.decoding = 'async';
+		img.src = url;
+	}
+}
+
 export default function BlogLinks() {
 	const [active, setActive] = useState<ActiveLink | null>(null);
 	const [visible, setVisible] = useState(false);
@@ -19,6 +38,29 @@ export default function BlogLinks() {
 
 	useEffect(() => {
 		const cleanup: Array<() => void> = [];
+
+		// Warm each anchor's preview images shortly before it can be hovered.
+		const warmObserver =
+			typeof IntersectionObserver === 'undefined'
+				? null
+				: new IntersectionObserver(
+						(entries) => {
+							for (const entry of entries) {
+								if (!entry.isIntersecting) continue;
+								const anchor = entry.target as HTMLAnchorElement;
+								warmObserver?.unobserve(anchor);
+								const raw = anchor.getAttribute('data-preview');
+								if (!raw) continue;
+								try {
+									warmPreviewImages(JSON.parse(raw) as LinkPreview);
+								} catch {
+									// Malformed preview JSON — hover binding already skipped it.
+								}
+							}
+						},
+						{ rootMargin: '400px' }
+					);
+		if (warmObserver) cleanup.push(() => warmObserver.disconnect());
 
 		const bindAnchor = (a: HTMLAnchorElement) => {
 			if (a.dataset.previewBound === '1') return;
@@ -56,11 +98,28 @@ export default function BlogLinks() {
 				a.removeEventListener('focus', enter);
 				a.removeEventListener('blur', leave);
 				delete a.dataset.previewBound;
+				delete a.dataset.previewWarmQueued;
 			});
 		};
 
 		const scan = () => {
-			document.querySelectorAll<HTMLAnchorElement>('.prose a[data-preview]').forEach(bindAnchor);
+			document.querySelectorAll<HTMLAnchorElement>('.prose a[data-preview]').forEach((a) => {
+				bindAnchor(a);
+				if (!warmObserver) {
+					// No IntersectionObserver (legacy browser): warm immediately.
+					const raw = a.getAttribute('data-preview');
+					if (!raw) return;
+					try {
+						warmPreviewImages(JSON.parse(raw) as LinkPreview);
+					} catch {
+						// Malformed preview JSON — hover binding already skipped it.
+					}
+					return;
+				}
+				if (a.dataset.previewWarmQueued === '1') return;
+				a.dataset.previewWarmQueued = '1';
+				warmObserver.observe(a);
+			});
 		};
 
 		scan();

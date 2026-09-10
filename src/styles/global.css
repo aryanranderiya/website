@@ -407,6 +407,24 @@ body {
 	margin: 0 auto;
 }
 
+/* Canonical left-aligned content column for `fullWidth` pages.
+   Single source of truth for the 640px column geometry — same left edge as
+   the centered `.page-container` on standard pages. Prefer this over
+   hand-rolled `ml-[max(...)]` / `max-w-[...]` wrappers so page titles and
+   body text align across every route. */
+.content-column {
+	width: 100%;
+	max-width: var(--content-max-width);
+	margin-left: max(0px, calc((100% - var(--content-max-width)) / 2));
+}
+
+@media (max-width: 59.9375rem) {
+	.content-column {
+		padding-left: 1rem;
+		padding-right: 1rem;
+	}
+}
+
 .section {
 	padding: 64px 0;
 }

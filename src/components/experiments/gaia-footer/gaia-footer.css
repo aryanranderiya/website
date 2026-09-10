@@ -1,0 +1,37 @@
+/* GAIA footer experiment - static styles that cannot be expressed with
+   Tailwind utilities (SVG noise data-uri, giant wordmark treatment). */
+
+.gaia-footer-noise {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='1' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.gaia-footer-wordmark {
+	background: radial-gradient(
+		ellipse 60% 90% at 50% 110%,
+		rgba(0, 187, 255, 0.16),
+		transparent 70%
+	);
+}
+
+.gaia-footer-wordmark-text {
+	font-family: 'Inter Variable', 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+	font-weight: 800;
+	font-size: clamp(4rem, 18vw, 12rem);
+	line-height: 0.9;
+	letter-spacing: -0.04em;
+	color: #ffffff;
+	mix-blend-mode: overlay;
+	opacity: 0.92;
+	user-select: none;
+}
+
+.gaia-footer-status {
+	color-scheme: normal;
+	border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.gaia-footer-crossfade {
+		transition: none;
+	}
+}
