@@ -152,7 +152,7 @@ function resolveAction(config: WebPetConfig, action: string): string {
 
 function getGifUrl(config: WebPetConfig, action: string): string {
 	const resolvedAction = resolveAction(config, action);
-	return `/media/${config.mediaFolder}/${config.defaultColor}_${resolvedAction}_8fps.gif`;
+	return `/images/pets/${config.mediaFolder}/${config.defaultColor}_${resolvedAction}_8fps.gif`;
 }
 
 function resolveBehavior(options: {
@@ -677,7 +677,7 @@ function useWebPetAnimation(
 			document.removeEventListener('mousemove', handleMouseMove);
 			if (animationId.current) cancelAnimationFrame(animationId.current);
 		};
-	}, [config, onHoverChange, spriteRef, wrapperRef, pausedRef?.current]);
+	}, [config, onHoverChange, spriteRef, wrapperRef, pausedRef]);
 }
 
 export function WebPet({
@@ -698,7 +698,9 @@ export function WebPet({
 	const wrapperRef = useRef<HTMLDivElement | null>(null);
 	const spriteRef = useRef<HTMLDivElement | null>(null);
 	const pausedRef = useRef(paused);
-	pausedRef.current = paused;
+	useEffect(() => {
+		pausedRef.current = paused;
+	}, [paused]);
 	const [isHovered, setIsHovered] = useState(false);
 
 	const config = useMemo(

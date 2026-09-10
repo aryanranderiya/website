@@ -7,10 +7,10 @@ tech: [Python, Spotify API]
 featured: false
 type: desktop
 folder: Projects
-coverImage: /ProjectMedia/Spotify_Tools/spotify_tools_project_banner.png
+coverImage: /images/projects/spotify-tools/spotify_tools_project_banner.png
 images:
-  - /ProjectMedia/Spotify_Tools/spotify_tools_project_banner.png
-video: /ProjectMedia/Spotify_Tools/SpotifyTools_demo.mp4
+  - /images/projects/spotify-tools/spotify_tools_project_banner.png
+video: /images/projects/spotify-tools/SpotifyTools_demo.mp4
 videoAspectRatio: "16 / 9"
 order: 19
 github: https://github.com/aryanranderiya/SpotifyTools

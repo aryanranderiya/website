@@ -7,23 +7,23 @@ tech: [Java, Android, Firebase]
 featured: true
 type: mobile
 folder: Featured
-coverImage: /ProjectMedia/TicketBus/TicketBus_project_banner.webp
+coverImage: /images/projects/ticketbus/TicketBus_project_banner.webp
 images:
-  - /ProjectMedia/TicketBus/TicketBus_project_banner.webp
-  - /ProjectMedia/TicketBus/SplashScreen.webp
-  - /ProjectMedia/TicketBus/Onboarding.webp
-  - /ProjectMedia/TicketBus/Login_Signup.webp
-  - /ProjectMedia/TicketBus/Dashboard.webp
-  - /ProjectMedia/TicketBus/Map.webp
-  - /ProjectMedia/TicketBus/TicketBooking.webp
-  - /ProjectMedia/TicketBus/Bus_Pass.webp
-  - /ProjectMedia/TicketBus/User_Profile.webp
-  - /ProjectMedia/TicketBus/AdminPanel.webp
-  - /ProjectMedia/TicketBus/AdminPanel_Bus.webp
-  - /ProjectMedia/TicketBus/AdminPanel_BusPass.webp
-  - /ProjectMedia/TicketBus/AdminPanel_Location.webp
-  - /ProjectMedia/TicketBus/AdminPanel_Users.webp
-video: /ProjectMedia/TicketBus/Ticketbus.mp4
+  - /images/projects/ticketbus/TicketBus_project_banner.webp
+  - /images/projects/ticketbus/SplashScreen.webp
+  - /images/projects/ticketbus/Onboarding.webp
+  - /images/projects/ticketbus/Login_Signup.webp
+  - /images/projects/ticketbus/Dashboard.webp
+  - /images/projects/ticketbus/Map.webp
+  - /images/projects/ticketbus/TicketBooking.webp
+  - /images/projects/ticketbus/Bus_Pass.webp
+  - /images/projects/ticketbus/User_Profile.webp
+  - /images/projects/ticketbus/AdminPanel.webp
+  - /images/projects/ticketbus/AdminPanel_Bus.webp
+  - /images/projects/ticketbus/AdminPanel_BusPass.webp
+  - /images/projects/ticketbus/AdminPanel_Location.webp
+  - /images/projects/ticketbus/AdminPanel_Users.webp
+video: /images/projects/ticketbus/Ticketbus.mp4
 videoAspectRatio: "608 / 1312"
 order: 5
 github: https://github.com/aryanranderiya/TicketBus

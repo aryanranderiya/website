@@ -1,0 +1,16 @@
+{
+	"$schema": "https://developers.cloudflare.com/schemas/wrangler.jsonc",
+	"name": "website",
+	"compatibility_date": "2025-10-01",
+	// https://github.com/withastro/astro/issues/14511 — with nodejs_compat,
+	// workerd's native `process` makes Astro think it's Node and return
+	// AsyncIterable bodies that workerd stringifies to "[object Object]".
+	"compatibility_flags": ["nodejs_compat", "disable_nodejs_process_v2"],
+	"assets": {
+		"directory": "./dist/client",
+		"binding": "ASSETS"
+	},
+	"observability": {
+		"enabled": true
+	}
+}

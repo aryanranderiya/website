@@ -7,7 +7,7 @@ import { createPortal } from 'react-dom';
 import { queryClient } from '@/utils/queryClient';
 import GithubGraph, { GITHUB_QUERY_KEY } from './GithubGraph';
 
-const AVATAR_URL = '/avatar-original.webp';
+const AVATAR_URL = '/images/site/avatar-original.webp';
 const _INSTAGRAM_GRADIENT =
 	'linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%)';
 
@@ -147,7 +147,7 @@ function TwitterPreview() {
 		<div className="w-[280px] overflow-hidden rounded-xl border border-[#2f3336] bg-black font-sans text-[#e7e9ea] shadow-2xl">
 			{/* Banner */}
 			<img
-				src="/twitter-banner.webp"
+				src="/images/site/twitter-banner.webp"
 				alt=""
 				className="h-[72px] w-full object-cover object-center"
 			/>
@@ -187,7 +187,7 @@ function LinkedInPreview() {
 	return (
 		<div className="w-[260px] overflow-hidden rounded-xl border border-[#283339] bg-[#1b1f23] font-sans text-[#e7e9ea] shadow-xl">
 			<img
-				src="/linkedin-banner.webp"
+				src="/images/site/linkedin-banner.webp"
 				alt=""
 				className="h-[52px] w-full object-cover object-center"
 			/>
@@ -244,11 +244,10 @@ function InstagramPreview() {
 					{ value: '1', label: 'post' },
 					{ value: '543', label: 'followers' },
 					{ value: '534', label: 'following' },
-				].map((stat, i) => (
+				].map((stat) => (
 					<div
-						// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
-						key={i}
-						className={`flex-1 text-center ${i < 2 ? 'border-[#262626] border-r' : ''}`}
+						key={stat.label}
+						className={`flex-1 text-center ${stat.label !== 'following' ? 'border-[#262626] border-r' : ''}`}
 					>
 						<div className="font-bold text-[#f5f5f5] text-sm">{stat.value}</div>
 						<div className="text-[#a8a8a8] text-[11px]">{stat.label}</div>

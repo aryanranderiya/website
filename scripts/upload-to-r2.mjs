@@ -6,7 +6,7 @@
  * then patches all source-file references to use the CDN URL.
  *
  * Usage:
- *   pnpm exec wrangler login          # one-time auth
+ *   bunx wrangler login          # one-time auth
  *   node scripts/upload-to-r2.mjs            # dry run (shows what will happen)
  *   node scripts/upload-to-r2.mjs --upload   # upload files
  *   node scripts/upload-to-r2.mjs --patch    # patch source references
@@ -27,7 +27,7 @@ const BUCKET     = 'website';
 const CDN_ORIGIN = 'https://cdn.aryanranderiya.com';
 
 // Directories under public/ to migrate
-const MIGRATE_DIRS = ['design', 'ProjectMedia', 'blog'];
+const MIGRATE_DIRS = ['images/design', 'images/projects', 'images/blog'];
 
 // Extensions to upload
 const MEDIA_EXTS = new Set([
@@ -93,7 +93,7 @@ if (upload) {
     process.stdout.write(`[${++done}/${files.length}] ${key} … `);
     try {
       execSync(
-        `pnpm exec wrangler r2 object put ${BUCKET}/${key} --file="${f}" --content-type="${ct}"`,
+        `bunx wrangler r2 object put ${BUCKET}/${key} --file="${f}" --content-type="${ct}"`,
         { cwd: ROOT, stdio: 'pipe' }
       );
       console.log('✓');

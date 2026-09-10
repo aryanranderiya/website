@@ -1,6 +1,7 @@
 'use client';
 
-import MapLibreGL, { type MarkerOptions, type PopupOptions } from 'maplibre-gl';
+import * as MapLibreGL from 'maplibre-gl';
+import type { MarkerOptions, PopupOptions } from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Loader2, Locate, Maximize, Minus, Plus, X } from 'lucide-react';
 import {
@@ -10,6 +11,7 @@ import {
 	useCallback,
 	useContext,
 	useEffect,
+	useEffectEvent,
 	useId,
 	useImperativeHandle,
 	useMemo,
@@ -23,6 +25,11 @@ import { cn } from '@/lib/utils';
 const defaultStyles = {
 	dark: 'https://basemaps.cartocdn.com/gl/dark-matter-gl-style/style.json',
 	light: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
+};
+
+const markerLabelPositionClasses = {
+	top: 'bottom-full mb-1',
+	bottom: 'top-full mt-1',
 };
 
 type Theme = 'light' | 'dark';
@@ -193,7 +200,9 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 	const isControlled = viewport !== undefined && onViewportChange !== undefined;
 
 	const onViewportChangeRef = useRef(onViewportChange);
-	onViewportChangeRef.current = onViewportChange;
+	useEffect(() => {
+		onViewportChangeRef.current = onViewportChange;
+	});
 
 	const mapStyles = useMemo(
 		() => ({
@@ -202,6 +211,17 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 		}),
 		[styles]
 	);
+
+	// Guarded render-phase reset for the async style-load flag. When the
+	// resolved style changes, clear `isStyleLoaded` during render so consumers
+	// never see a stale `true` while the new style loads. This converges
+	// because the second render sees prev === next and skips the update.
+	const nextStyle = resolvedTheme === 'dark' ? mapStyles.dark : mapStyles.light;
+	const [prevStyle, setPrevStyle] = useState<MapStyleOption>(() => nextStyle);
+	if (prevStyle !== nextStyle) {
+		setPrevStyle(nextStyle);
+		setIsStyleLoaded(false);
+	}
 
 	// Expose the map instance to the parent component
 	useImperativeHandle(ref, () => mapInstance as MapLibreGL.Map, [mapInstance]);
@@ -307,7 +327,6 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 
 		clearStyleTimeout();
 		currentStyleRef.current = newStyle;
-		setIsStyleLoaded(false);
 
 		mapInstance.setStyle(newStyle, { diff: true });
 	}, [mapInstance, resolvedTheme, mapStyles, clearStyleTimeout]);
@@ -390,14 +409,16 @@ function MapMarker({
 		onDrag,
 		onDragEnd,
 	});
-	callbacksRef.current = {
-		onClick,
-		onMouseEnter,
-		onMouseLeave,
-		onDragStart,
-		onDrag,
-		onDragEnd,
-	};
+	useEffect(() => {
+		callbacksRef.current = {
+			onClick,
+			onMouseEnter,
+			onMouseLeave,
+			onDragStart,
+			onDrag,
+			onDragEnd,
+		};
+	});
 
 	const marker = useMemo(() => {
 		const markerInstance = new MapLibreGL.Marker({
@@ -474,7 +495,9 @@ function MapMarker({
 		marker.setPitchAlignment(markerOptions.pitchAlignment ?? 'auto');
 	}
 
-	return <MarkerContext.Provider value={{ marker, map }}>{children}</MarkerContext.Provider>;
+	const markerContextValue = useMemo(() => ({ marker, map }), [marker, map]);
+
+	return <MarkerContext.Provider value={markerContextValue}>{children}</MarkerContext.Provider>;
 }
 
 type MarkerContentProps = {
@@ -558,7 +581,8 @@ function MarkerPopup({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [map]);
 
-	if (popup.isOpen()) {
+	useEffect(() => {
+		if (!popup.isOpen()) return;
 		const prev = prevPopupOptions.current;
 
 		if (prev.offset !== popupOptions.offset) {
@@ -569,7 +593,7 @@ function MarkerPopup({
 		}
 
 		prevPopupOptions.current = popupOptions;
-	}
+	});
 
 	const handleClose = () => popup.remove();
 
@@ -622,18 +646,20 @@ function MarkerTooltip({ children, className, ...popupOptions }: MarkerTooltipPr
 		};
 		const handleMouseLeave = () => tooltip.remove();
 
-		marker.getElement()?.addEventListener('mouseenter', handleMouseEnter);
-		marker.getElement()?.addEventListener('mouseleave', handleMouseLeave);
+		const element = marker.getElement();
+		element?.addEventListener('mouseenter', handleMouseEnter);
+		element?.addEventListener('mouseleave', handleMouseLeave);
 
 		return () => {
-			marker.getElement()?.removeEventListener('mouseenter', handleMouseEnter);
-			marker.getElement()?.removeEventListener('mouseleave', handleMouseLeave);
+			element?.removeEventListener('mouseenter', handleMouseEnter);
+			element?.removeEventListener('mouseleave', handleMouseLeave);
 			tooltip.remove();
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [map]);
 
-	if (tooltip.isOpen()) {
+	useEffect(() => {
+		if (!tooltip.isOpen()) return;
 		const prev = prevTooltipOptions.current;
 
 		if (prev.offset !== popupOptions.offset) {
@@ -644,7 +670,7 @@ function MarkerTooltip({ children, className, ...popupOptions }: MarkerTooltipPr
 		}
 
 		prevTooltipOptions.current = popupOptions;
-	}
+	});
 
 	return createPortal(
 		<div
@@ -670,17 +696,12 @@ type MarkerLabelProps = {
 };
 
 function MarkerLabel({ children, className, position = 'top' }: MarkerLabelProps) {
-	const positionClasses = {
-		top: 'bottom-full mb-1',
-		bottom: 'top-full mt-1',
-	};
-
 	return (
 		<div
 			className={cn(
 				'absolute left-1/2 -translate-x-1/2 whitespace-nowrap',
 				'font-medium text-[10px] text-foreground',
-				positionClasses[position],
+				markerLabelPositionClasses[position],
 				className
 			)}
 		>
@@ -689,17 +710,13 @@ function MarkerLabel({ children, className, position = 'top' }: MarkerLabelProps
 	);
 }
 
+type MapControlKind = 'zoom' | 'compass' | 'locate' | 'fullscreen';
+
 type MapControlsProps = {
 	/** Position of the controls on the map (default: "bottom-right") */
 	position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
-	/** Show zoom in/out buttons (default: true) */
-	showZoom?: boolean;
-	/** Show compass button to reset bearing (default: false) */
-	showCompass?: boolean;
-	/** Show locate button to find user's location (default: false) */
-	showLocate?: boolean;
-	/** Show fullscreen toggle button (default: false) */
-	showFullscreen?: boolean;
+	/** Which control groups to render (default: ["zoom"]) */
+	controls?: MapControlKind[];
 	/** Additional CSS classes for the controls container */
 	className?: string;
 	/** Callback with user coordinates when located */
@@ -753,15 +770,13 @@ function ControlButton({
 
 function MapControls({
 	position = 'bottom-right',
-	showZoom = true,
-	showCompass = false,
-	showLocate = false,
-	showFullscreen = false,
+	controls = ['zoom'],
 	className,
 	onLocate,
 }: MapControlsProps) {
 	const { map } = useMap();
 	const [waitingForLocation, setWaitingForLocation] = useState(false);
+	const show = (kind: MapControlKind) => controls.includes(kind);
 
 	const handleZoomIn = useCallback(() => {
 		map?.zoomTo(map.getZoom() + 1, { duration: 300 });
@@ -814,7 +829,7 @@ function MapControls({
 		<div
 			className={cn('absolute z-10 flex flex-col gap-1.5', positionClasses[position], className)}
 		>
-			{showZoom && (
+			{show('zoom') && (
 				<ControlGroup>
 					<ControlButton onClick={handleZoomIn} label="Zoom in">
 						<Plus className="size-4" />
@@ -824,12 +839,12 @@ function MapControls({
 					</ControlButton>
 				</ControlGroup>
 			)}
-			{showCompass && (
+			{show('compass') && (
 				<ControlGroup>
 					<CompassButton onClick={handleResetBearing} />
 				</ControlGroup>
 			)}
-			{showLocate && (
+			{show('locate') && (
 				<ControlGroup>
 					<ControlButton
 						onClick={handleLocate}
@@ -844,7 +859,7 @@ function MapControls({
 					</ControlButton>
 				</ControlGroup>
 			)}
-			{showFullscreen && (
+			{show('fullscreen') && (
 				<ControlGroup>
 					<ControlButton onClick={handleFullscreen} label="Toggle fullscreen">
 						<Maximize className="size-4" />
@@ -924,7 +939,9 @@ function MapPopup({
 	const { map } = useMap();
 	const popupOptionsRef = useRef(popupOptions);
 	const onCloseRef = useRef(onClose);
-	onCloseRef.current = onClose;
+	useEffect(() => {
+		onCloseRef.current = onClose;
+	});
 	const container = useMemo(() => document.createElement('div'), []);
 
 	const popup = useMemo(() => {
@@ -959,7 +976,8 @@ function MapPopup({
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [map]);
 
-	if (popup.isOpen()) {
+	useEffect(() => {
+		if (!popup.isOpen()) return;
 		const prev = popupOptionsRef.current;
 
 		if (popup.getLngLat().lng !== longitude || popup.getLngLat().lat !== latitude) {
@@ -973,7 +991,7 @@ function MapPopup({
 			popup.setMaxWidth(popupOptions.maxWidth ?? 'none');
 		}
 		popupOptionsRef.current = popupOptions;
-	}
+	});
 
 	const handleClose = () => {
 		popup.remove();
@@ -1098,19 +1116,28 @@ function MapRoute({
 	}, [isLoaded, map, layerId, color, width, opacity, dashArray]);
 
 	// Handle click and hover events
+	const onRouteClickEvent = useEffectEvent(() => {
+		onClick?.();
+	});
+	const onRouteMouseEnterEvent = useEffectEvent(() => {
+		onMouseEnter?.();
+	});
+	const onRouteMouseLeaveEvent = useEffectEvent(() => {
+		onMouseLeave?.();
+	});
 	useEffect(() => {
 		if (!isLoaded || !map || !interactive) return;
 
 		const handleClick = () => {
-			onClick?.();
+			onRouteClickEvent();
 		};
 		const handleMouseEnter = () => {
 			map.getCanvas().style.cursor = 'pointer';
-			onMouseEnter?.();
+			onRouteMouseEnterEvent();
 		};
 		const handleMouseLeave = () => {
 			map.getCanvas().style.cursor = '';
-			onMouseLeave?.();
+			onRouteMouseLeaveEvent();
 		};
 
 		map.on('click', layerId, handleClick);
@@ -1122,7 +1149,7 @@ function MapRoute({
 			map.off('mouseenter', layerId, handleMouseEnter);
 			map.off('mouseleave', layerId, handleMouseLeave);
 		};
-	}, [isLoaded, map, layerId, onClick, onMouseEnter, onMouseLeave, interactive]);
+	}, [isLoaded, map, layerId, interactive]);
 
 	return null;
 }
@@ -1314,7 +1341,9 @@ function MapArc<T extends MapArcDatum = MapArcDatum>({
 	);
 
 	const latestRef = useRef({ data, onClick, onHover });
-	latestRef.current = { data, onClick, onHover };
+	useEffect(() => {
+		latestRef.current = { data, onClick, onHover };
+	});
 
 	// Add source and layers on mount.
 	useEffect(() => {
@@ -1652,6 +1681,8 @@ function MapClusterLayer<P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonPr
 	]);
 
 	// Handle click events
+	const getOnClusterClick = useEffectEvent(() => onClusterClick);
+	const getOnPointClick = useEffectEvent(() => onPointClick);
 	useEffect(() => {
 		if (!isLoaded || !map) return;
 
@@ -1671,8 +1702,9 @@ function MapClusterLayer<P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonPr
 			const pointCount = feature.properties?.point_count as number;
 			const coordinates = (feature.geometry as GeoJSON.Point).coordinates as [number, number];
 
-			if (onClusterClick) {
-				onClusterClick(clusterId, coordinates, pointCount);
+			const onClusterClickLatest = getOnClusterClick();
+			if (onClusterClickLatest) {
+				onClusterClickLatest(clusterId, coordinates, pointCount);
 			} else {
 				// Default behavior: zoom to cluster expansion zoom
 				const source = map.getSource(sourceId) as MapLibreGL.GeoJSONSource;
@@ -1690,7 +1722,8 @@ function MapClusterLayer<P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonPr
 				features?: MapLibreGL.MapGeoJSONFeature[];
 			}
 		) => {
-			if (!onPointClick || !e.features?.length) return;
+			const onPointClickLatest = getOnPointClick();
+			if (!onPointClickLatest || !e.features?.length) return;
 
 			const feature = e.features[0];
 			const coordinates = (feature.geometry as GeoJSON.Point).coordinates.slice() as [
@@ -1703,7 +1736,10 @@ function MapClusterLayer<P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonPr
 				coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
 			}
 
-			onPointClick(feature as unknown as GeoJSON.Feature<GeoJSON.Point, P>, coordinates);
+			onPointClickLatest(
+				feature as unknown as GeoJSON.Feature<GeoJSON.Point, P>,
+				coordinates
+			);
 		};
 
 		// Cursor style handlers
@@ -1714,7 +1750,7 @@ function MapClusterLayer<P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonPr
 			map.getCanvas().style.cursor = '';
 		};
 		const handleMouseEnterPoint = () => {
-			if (onPointClick) {
+			if (getOnPointClick()) {
 				map.getCanvas().style.cursor = 'pointer';
 			}
 		};
@@ -1737,7 +1773,7 @@ function MapClusterLayer<P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonPr
 			map.off('mouseenter', unclusteredLayerId, handleMouseEnterPoint);
 			map.off('mouseleave', unclusteredLayerId, handleMouseLeavePoint);
 		};
-	}, [isLoaded, map, clusterLayerId, unclusteredLayerId, sourceId, onClusterClick, onPointClick]);
+	}, [isLoaded, map, clusterLayerId, unclusteredLayerId, sourceId]);
 
 	return null;
 }

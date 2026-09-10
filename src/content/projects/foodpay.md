@@ -8,12 +8,12 @@ featured: false
 type: web
 folder: Client
 order: 36
-coverImage: /ProjectMedia/FoodPay/1.jpeg
+coverImage: /images/projects/foodpay/1.jpeg
 images:
-  - /ProjectMedia/FoodPay/1.jpeg
-  - /ProjectMedia/FoodPay/2.jpeg
-  - /ProjectMedia/FoodPay/3.jpeg
-  - /ProjectMedia/FoodPay/4.jpeg
+  - /images/projects/foodpay/1.jpeg
+  - /images/projects/foodpay/2.jpeg
+  - /images/projects/foodpay/3.jpeg
+  - /images/projects/foodpay/4.jpeg
 github: https://github.com/aryanranderiya?tab=repositories&q=foodpay
 ---
 

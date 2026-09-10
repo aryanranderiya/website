@@ -1,5 +1,5 @@
 import type React from 'react';
-import { useId, useRef, useState } from 'react';
+import { type CSSProperties, type ReactNode, type RefObject, useId, useRef, useState } from 'react';
 import Tilt from 'react-parallax-tilt';
 import { BackCardContent, BackCardFooter } from './BackCardContent';
 import { CardOverlay } from './CardOverlay';
@@ -11,6 +11,305 @@ import { LogoHeader } from './LogoHeader';
 import { STAMP_NATURAL_HEIGHT, STAMP_NATURAL_WIDTH, STAMP_OUTER_PATH_D } from './stampShape';
 import type { HoloCardProps } from './types';
 import { calculateBackgroundPosition } from './utils';
+
+const STAMP_BORDER_STYLE: CSSProperties = {
+	position: 'absolute',
+	inset: 22,
+	border: '4px solid rgba(255, 255, 255, 0.92)',
+	borderRadius: 0,
+	pointerEvents: 'none',
+	zIndex: 4,
+	boxSizing: 'border-box',
+};
+
+function StampBorder() {
+	return <div aria-hidden="true" style={STAMP_BORDER_STYLE} />;
+}
+
+function StampClipDef({ clipId, clipTransform }: { clipId: string; clipTransform: string }) {
+	return (
+		<svg aria-hidden="true" width="0" height="0" style={{ position: 'absolute', width: 0, height: 0 }}>
+			<title>Stamp clip-path</title>
+			<defs>
+				<clipPath id={clipId} clipPathUnits="userSpaceOnUse">
+					<path d={STAMP_OUTER_PATH_D} transform={clipTransform} />
+				</clipPath>
+			</defs>
+		</svg>
+	);
+}
+
+function getContainerStyle(forceSide: 'front' | 'back' | undefined): CSSProperties {
+	return forceSide
+		? { perspective: 'none', transform: 'none' }
+		: { perspective: '1000px', cursor: 'pointer' };
+}
+
+function getInnerStyle(
+	forceSide: 'front' | 'back' | undefined,
+	effectiveFlipped: boolean,
+	height: number,
+	width: number
+): CSSProperties {
+	if (forceSide) {
+		return { transform: 'none', position: 'relative', height: `${height}px`, width: `${width}px` };
+	}
+	return {
+		transformStyle: 'preserve-3d',
+		transform: effectiveFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
+		height: `${height}px`,
+		width: `${width}px`,
+	};
+}
+
+function getFrontStyle(forceSide: 'front' | 'back' | undefined): CSSProperties {
+	if (forceSide) {
+		return {
+			display: forceSide === 'front' ? 'block' : 'none',
+			position: 'absolute',
+			inset: 0,
+		};
+	}
+	return {
+		position: 'absolute',
+		inset: 0,
+		backfaceVisibility: 'hidden',
+		WebkitBackfaceVisibility: 'hidden',
+	};
+}
+
+function getBackStyle(forceSide: 'front' | 'back' | undefined): CSSProperties {
+	if (forceSide) {
+		return {
+			display: forceSide === 'back' ? 'block' : 'none',
+			position: 'absolute',
+			inset: 0,
+			transform: 'none',
+		};
+	}
+	return {
+		position: 'absolute',
+		inset: 0,
+		backfaceVisibility: 'hidden',
+		WebkitBackfaceVisibility: 'hidden',
+		transform: 'rotateY(180deg)',
+	};
+}
+
+interface HoloFaceProps {
+	forceSide?: 'front' | 'back';
+	clipStyle: CSSProperties;
+	overlayColor?: string;
+	overlayOpacity: number;
+	name: string;
+	personalityPhrase: string;
+	accountNumber: string | number;
+	memberSince: string | number;
+	houseImage: string;
+	height: number;
+	width: number;
+	showSparkles: boolean;
+	hover: boolean;
+	animated: boolean;
+	activeRotation: { y: number; x: number };
+	activeBackgroundPosition: { tp: number; lp: number };
+	cardRef: RefObject<HTMLInputElement | null>;
+	onMouseMove: (event: React.MouseEvent<HTMLDivElement>) => void;
+	onTouchMove: (event: React.TouchEvent<HTMLDivElement>) => void;
+	onMouseOut: () => void;
+	children?: ReactNode;
+}
+
+function HoloFrontFace(props: HoloFaceProps) {
+	const {
+		forceSide,
+		clipStyle,
+		overlayColor,
+		overlayOpacity,
+		name,
+		personalityPhrase,
+		accountNumber,
+		memberSince,
+		houseImage,
+		height,
+		width,
+		showSparkles,
+		hover,
+		animated,
+		activeRotation,
+		activeBackgroundPosition,
+		cardRef,
+		onMouseMove,
+		onTouchMove,
+		onMouseOut,
+		children,
+	} = props;
+	if (forceSide) {
+		return (
+			<div className="relative h-full w-full" style={clipStyle}>
+				<StampBorder />
+				<CardOverlay overlayColor={overlayColor} overlayOpacity={overlayOpacity} />
+				<div className={CARD_CLASSES.CONTENT_WRAPPER}>
+					<LogoHeader variant="front" />
+					<FrontCardContent
+						name={name}
+						personalityPhrase={personalityPhrase}
+						accountNumber={accountNumber}
+						memberSince={memberSince}
+						isStatic
+					/>
+				</div>
+				<StyledHoloCard
+					$url={houseImage}
+					ref={cardRef}
+					$active={false}
+					$animated={false}
+					$activeRotation={activeRotation}
+					$activeBackgroundPosition={activeBackgroundPosition}
+					$height={height}
+					$width={width}
+					$showSparkles={showSparkles}
+				>
+					{children}
+				</StyledHoloCard>
+			</div>
+		);
+	}
+	return (
+		<Tilt className="relative h-full w-full p-0!" style={clipStyle}>
+			<StampBorder />
+			<CardOverlay overlayColor={overlayColor} overlayOpacity={overlayOpacity} />
+			<div className={CARD_CLASSES.CONTENT_WRAPPER}>
+				<LogoHeader variant="front" />
+				<FrontCardContent
+					name={name}
+					personalityPhrase={personalityPhrase}
+					accountNumber={accountNumber}
+					memberSince={memberSince}
+				/>
+			</div>
+			<StyledHoloCard
+				$url={houseImage}
+				ref={cardRef}
+				$active={hover}
+				$animated={animated}
+				$activeRotation={activeRotation}
+				$activeBackgroundPosition={activeBackgroundPosition}
+				onMouseMove={onMouseMove}
+				onTouchMove={onTouchMove}
+				onMouseOut={onMouseOut}
+				$height={height}
+				$width={width}
+				$showSparkles={showSparkles}
+			>
+				{children}
+			</StyledHoloCard>
+		</Tilt>
+	);
+}
+
+interface HoloBackFaceProps extends HoloFaceProps {
+	userBio: string;
+}
+
+function HoloBackFace(props: HoloBackFaceProps) {
+	const {
+		forceSide,
+		clipStyle,
+		overlayColor,
+		overlayOpacity,
+		name,
+		personalityPhrase,
+		userBio,
+		accountNumber,
+		memberSince,
+		houseImage,
+		height,
+		width,
+		showSparkles,
+		hover,
+		animated,
+		activeRotation,
+		activeBackgroundPosition,
+		cardRef,
+		onMouseMove,
+		onTouchMove,
+		onMouseOut,
+		children,
+	} = props;
+	if (forceSide) {
+		return (
+			<div className="relative h-full w-full" style={clipStyle}>
+				<StampBorder />
+				<CardOverlay overlayColor={overlayColor} overlayOpacity={overlayOpacity} />
+				<div className={CARD_CLASSES.CONTENT_WRAPPER_BACK}>
+					<div className="flex min-h-0 w-full flex-1 flex-col gap-4">
+						<BackCardContent
+							name={name}
+							personalityPhrase={personalityPhrase}
+							userBio={userBio}
+							accountNumber={accountNumber}
+							memberSince={memberSince}
+							isStatic
+						/>
+					</div>
+					<BackCardFooter
+						accountNumber={accountNumber}
+						memberSince={memberSince}
+						isStatic
+					/>
+				</div>
+				<StyledHoloCard
+					$url={houseImage}
+					ref={cardRef}
+					$active={false}
+					$animated={false}
+					$activeRotation={activeRotation}
+					$activeBackgroundPosition={activeBackgroundPosition}
+					$height={height}
+					$width={width}
+					$showSparkles={showSparkles}
+				>
+					{children}
+				</StyledHoloCard>
+			</div>
+		);
+	}
+	return (
+		<Tilt className="relative h-full w-full p-0!" style={clipStyle}>
+			<StampBorder />
+			<CardOverlay overlayColor={overlayColor} overlayOpacity={overlayOpacity} />
+			<div className={CARD_CLASSES.CONTENT_WRAPPER_BACK}>
+				<div className="flex min-h-0 w-full flex-1 flex-col gap-4">
+					<BackCardContent
+						name={name}
+						personalityPhrase={personalityPhrase}
+						userBio={userBio}
+						accountNumber={accountNumber}
+						memberSince={memberSince}
+					/>
+				</div>
+				<BackCardFooter accountNumber={accountNumber} memberSince={memberSince} />
+			</div>
+			<StyledHoloCard
+				$url={houseImage}
+				ref={cardRef}
+				$active={hover}
+				$animated={animated}
+				$activeRotation={activeRotation}
+				$activeBackgroundPosition={activeBackgroundPosition}
+				onMouseMove={onMouseMove}
+				onTouchMove={onTouchMove}
+				onMouseOut={onMouseOut}
+				$height={height}
+				$width={width}
+				$showSparkles={showSparkles}
+			>
+				{children}
+			</StyledHoloCard>
+		</Tilt>
+	);
+}
 
 export const HoloCard = ({
 	data,
@@ -92,58 +391,10 @@ export const HoloCard = ({
 
 	const effectiveFlipped = forceSide ? forceSide === 'back' : isFlipped;
 
-	// Static mode styles for download
-	const containerStyle = forceSide
-		? {
-				perspective: 'none',
-				transform: 'none',
-			}
-		: {
-				perspective: '1000px',
-				cursor: 'pointer',
-			};
-
-	const innerStyle = forceSide
-		? {
-				transform: 'none',
-				position: 'relative' as const,
-				height: `${height}px`,
-				width: `${width}px`,
-			}
-		: {
-				transformStyle: 'preserve-3d' as const,
-				transform: effectiveFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)',
-				height: `${height}px`,
-				width: `${width}px`,
-			};
-
-	const frontStyle = forceSide
-		? {
-				display: forceSide === 'front' ? 'block' : 'none',
-				position: 'absolute' as const,
-				inset: 0,
-			}
-		: {
-				position: 'absolute' as const,
-				inset: 0,
-				backfaceVisibility: 'hidden' as const,
-				WebkitBackfaceVisibility: 'hidden' as const,
-			};
-
-	const backStyle = forceSide
-		? {
-				display: forceSide === 'back' ? 'block' : 'none',
-				position: 'absolute' as const,
-				inset: 0,
-				transform: 'none', // Crucial: No rotation for static back view
-			}
-		: {
-				position: 'absolute' as const,
-				inset: 0,
-				backfaceVisibility: 'hidden' as const,
-				WebkitBackfaceVisibility: 'hidden' as const,
-				transform: 'rotateY(180deg)',
-			};
+	const containerStyle = getContainerStyle(forceSide);
+	const innerStyle = getInnerStyle(forceSide, effectiveFlipped, height, width);
+	const frontStyle = getFrontStyle(forceSide);
+	const backStyle = getBackStyle(forceSide);
 
 	// Stamp die-cut clip-path. The source path is landscape 1877.8125×1409.0625;
 	// we rotate it 90° CW and stretch into the card's portrait W×H inside the
@@ -159,196 +410,68 @@ export const HoloCard = ({
 		WebkitClipPath: clipUrl,
 	};
 
-	// Inner stamp border: a 4px solid-white rectangle ring inset 22px from the
-	// card edge. Uses CSS `border` (not mask-composite) so it renders the same
-	// way in `html-to-image` clones - earlier experiments with mask-composite
-	// gave a beautiful glass ring on screen but downloaded as a fully-filled
-	// white rectangle because the masking step was dropped during cloning.
-	// Rendered inside the clipped face so the Tilt transform carries it with
-	// the card.
-	const stampBorderStyle = {
-		position: 'absolute' as const,
-		inset: 22,
-		border: '4px solid rgba(255, 255, 255, 0.92)',
-		borderRadius: 0,
-		pointerEvents: 'none' as const,
-		zIndex: 4,
-		boxSizing: 'border-box' as const,
+	const faceProps = {
+		forceSide,
+		clipStyle,
+		overlayColor: overlay_color,
+		overlayOpacity: overlay_opacity,
+		name,
+		personalityPhrase: personality_phrase,
+		accountNumber: account_number,
+		memberSince: member_since,
+		houseImage,
+		height,
+		width,
+		showSparkles,
+		hover,
+		animated,
+		activeRotation,
+		activeBackgroundPosition,
+		cardRef: ref,
+		onMouseMove: handleOnMouseMove,
+		onTouchMove: handleOnTouchMove,
+		onMouseOut: handleOnMouseOut,
+		children,
 	};
-	const StampBorder = () => <div aria-hidden style={stampBorderStyle} />;
 
-	return (
-		<div
-			className={forceSide ? '' : 'perspective-1000'}
-			onClick={handleCardClick}
-			style={containerStyle}
-		>
-			<svg aria-hidden width="0" height="0" style={{ position: 'absolute', width: 0, height: 0 }}>
-				<title>Stamp clip-path</title>
-				<defs>
-					<clipPath id={clipId} clipPathUnits="userSpaceOnUse">
-						<path d={STAMP_OUTER_PATH_D} transform={clipTransform} />
-					</clipPath>
-				</defs>
-			</svg>
+	const cardInner = (
+		<>
+			<StampClipDef clipId={clipId} clipTransform={clipTransform} />
 			<div
 				className={forceSide ? 'relative' : 'relative transition-transform duration-700'}
 				style={innerStyle}
 			>
-				{/* Front Side */}
 				<div style={frontStyle}>
-					{forceSide ? (
-						<div className="relative h-full w-full" style={clipStyle}>
-							<StampBorder />
-							<CardOverlay overlayColor={overlay_color} overlayOpacity={overlay_opacity} />
-
-							<div className={CARD_CLASSES.CONTENT_WRAPPER}>
-								<LogoHeader variant="front" />
-								<FrontCardContent
-									name={name}
-									personalityPhrase={personality_phrase}
-									accountNumber={account_number}
-									memberSince={member_since}
-									isStatic
-								/>
-							</div>
-
-							{/* <DitherEffect intensity={1}> */}
-							<StyledHoloCard
-								$url={houseImage}
-								ref={ref}
-								$active={false}
-								$animated={false}
-								$activeRotation={activeRotation}
-								$activeBackgroundPosition={activeBackgroundPosition}
-								$height={height}
-								$width={width}
-								$showSparkles={showSparkles}
-							>
-								{children}
-							</StyledHoloCard>
-							{/* </DitherEffect> */}
-						</div>
-					) : (
-						<Tilt className="relative h-full w-full p-0!" style={clipStyle}>
-							<StampBorder />
-							<CardOverlay overlayColor={overlay_color} overlayOpacity={overlay_opacity} />
-
-							<div className={CARD_CLASSES.CONTENT_WRAPPER}>
-								<LogoHeader variant="front" />
-								<FrontCardContent
-									name={name}
-									personalityPhrase={personality_phrase}
-									accountNumber={account_number}
-									memberSince={member_since}
-								/>
-							</div>
-
-							{/* <DitherEffect intensity={1}> */}
-							<StyledHoloCard
-								$url={houseImage}
-								ref={ref}
-								$active={hover}
-								$animated={animated}
-								$activeRotation={activeRotation}
-								$activeBackgroundPosition={activeBackgroundPosition}
-								onMouseMove={handleOnMouseMove}
-								onTouchMove={handleOnTouchMove}
-								onMouseOut={handleOnMouseOut}
-								$height={height}
-								$width={width}
-								$showSparkles={showSparkles}
-							>
-								{children}
-							</StyledHoloCard>
-							{/* </DitherEffect> */}
-						</Tilt>
-					)}
+					<HoloFrontFace {...faceProps} />
 				</div>
-
-				{/* Back Side */}
 				<div style={backStyle}>
-					{forceSide ? (
-						<div className="relative h-full w-full" style={clipStyle}>
-							<StampBorder />
-							<CardOverlay overlayColor={overlay_color} overlayOpacity={overlay_opacity} />
-
-							<div className={CARD_CLASSES.CONTENT_WRAPPER_BACK}>
-								<div className="flex min-h-0 w-full flex-1 flex-col gap-4">
-									<BackCardContent
-										name={name}
-										personalityPhrase={personality_phrase}
-										userBio={user_bio}
-										accountNumber={account_number}
-										memberSince={member_since}
-										isStatic
-									/>
-								</div>
-
-								<BackCardFooter
-									accountNumber={account_number}
-									memberSince={member_since}
-									isStatic
-								/>
-							</div>
-
-							{/* <DitherEffect intensity={1}> */}
-							<StyledHoloCard
-								$url={houseImage}
-								ref={ref}
-								$active={false}
-								$animated={false}
-								$activeRotation={activeRotation}
-								$activeBackgroundPosition={activeBackgroundPosition}
-								$height={height}
-								$width={width}
-								$showSparkles={showSparkles}
-							>
-								{children}
-							</StyledHoloCard>
-							{/* </DitherEffect> */}
-						</div>
-					) : (
-						<Tilt className="relative h-full w-full p-0!" style={clipStyle}>
-							<StampBorder />
-							<CardOverlay overlayColor={overlay_color} overlayOpacity={overlay_opacity} />
-
-							<div className={CARD_CLASSES.CONTENT_WRAPPER_BACK}>
-								<div className="flex min-h-0 w-full flex-1 flex-col gap-4">
-									<BackCardContent
-										name={name}
-										personalityPhrase={personality_phrase}
-										userBio={user_bio}
-										accountNumber={account_number}
-										memberSince={member_since}
-									/>
-								</div>
-
-								<BackCardFooter accountNumber={account_number} memberSince={member_since} />
-							</div>
-
-							{/* <DitherEffect intensity={1}> */}
-							<StyledHoloCard
-								$url={houseImage}
-								ref={ref}
-								$active={hover}
-								$animated={animated}
-								$activeRotation={activeRotation}
-								$activeBackgroundPosition={activeBackgroundPosition}
-								onMouseMove={handleOnMouseMove}
-								onTouchMove={handleOnTouchMove}
-								onMouseOut={handleOnMouseOut}
-								$height={height}
-								$width={width}
-								$showSparkles={showSparkles}
-							>
-								{children}
-							</StyledHoloCard>
-							{/* </DitherEffect> */}
-						</Tilt>
-					)}
+					<HoloBackFace {...faceProps} userBio={user_bio} />
 				</div>
 			</div>
-		</div>
+		</>
+	);
+
+	// Static export mode renders a plain wrapper (no interaction).
+	if (forceSide) {
+		return (
+			<div className="" style={containerStyle}>
+				{cardInner}
+			</div>
+		);
+	}
+
+	// Interactive mode uses a native button so keyboard users get Enter/Space
+	// activation and screen readers get the button role for free.
+	return (
+		<button
+			type="button"
+			onClick={handleCardClick}
+			aria-pressed={effectiveFlipped}
+			aria-label={`Flip card for ${name}`}
+			className="perspective-1000 block cursor-pointer border-0 bg-transparent p-0 text-left"
+			style={containerStyle}
+		>
+			{cardInner}
+		</button>
 	);
 };

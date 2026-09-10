@@ -169,6 +169,17 @@ const LETTERS_LAST_NAME: LetterDef[] = [
 
 const ALL_ITEMS: (LetterDef | 'space')[] = [...LETTERS, SPACE, ...LETTERS_LAST_NAME];
 
+// Stable per-letter keys computed once at module scope. Several letters share
+// the same char/path (e.g. three identical "a"s), so the position suffix is
+// required for uniqueness — but it is baked in here, never read from the
+// render-time map index, so re-renders can't reassign identity.
+const ALL_ITEMS_WITH_KEY: { key: string; item: LetterDef | 'space' }[] = ALL_ITEMS.map(
+	(item, position) => ({
+		key: item === 'space' ? `space-${position}` : `${item.char}-${item.viewBox}-${position}`,
+		item,
+	})
+);
+
 export default function Signature() {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const isInView = useInView(containerRef, { once: true, margin: '-60px' });
@@ -190,15 +201,9 @@ export default function Signature() {
 				aria-label="Aryan Randeriya signature"
 				className="flex h-[51px] origin-[0_50%] scale-[1.7] flex-wrap items-center justify-start"
 			>
-				{ALL_ITEMS.map((item, i) => {
+				{ALL_ITEMS_WITH_KEY.map(({ key, item }) => {
 					if (item === 'space') {
-						return (
-							<div
-								// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
-								key={`space-${i}`}
-								className="h-[51px] w-3"
-							/>
-						);
+						return <div key={key} className="h-[51px] w-3" />;
 					}
 
 					const currentIndex = letterIndex;
@@ -206,8 +211,7 @@ export default function Signature() {
 
 					return (
 						<div
-							// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
-							key={`${item.char}-${i}`}
+							key={key}
 							// biome-ignore lint/nursery/noInlineStyles: dynamic margin from letter data
 							style={{ margin: item.margin }}
 						>

@@ -15,7 +15,7 @@ export function LogoLink({
 	logoClassName,
 	rounded = true,
 }: LogoLinkProps) {
-	const isGaia = logo === '/gaia-logo.webp';
+	const isGaia = logo === '/images/site/gaia-logo.webp';
 	return (
 		<a href={href} target="_blank" rel="noopener noreferrer" className="group">
 			<img

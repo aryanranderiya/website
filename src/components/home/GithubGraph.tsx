@@ -1,7 +1,7 @@
 'use client';
 
 import { QueryClientProvider, useQuery } from '@tanstack/react-query';
-import { useEffect, useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import { queryClient } from '@/utils/queryClient';
 
 interface ContributionDay {
@@ -263,11 +263,19 @@ function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
 	);
 }
 
+// Deterministic mount gate: SSR renders the fixture (getServerSnapshot), the
+// client renders live content from the first paint (getSnapshot) — no
+// mount-effect setState, so nothing flashes between the two.
+function subscribeToMounted(_onChange: () => void): () => void {
+	return () => {};
+}
+
 function GithubGraphRoot(props: { compact?: boolean }) {
-	const [mounted, setMounted] = useState(false);
-	useEffect(() => {
-		setMounted(true);
-	}, []);
+	const mounted = useSyncExternalStore(
+		subscribeToMounted,
+		() => true,
+		() => false
+	);
 
 	if (!mounted) return <GithubGraphFixture compact={props.compact} />;
 	return <GithubGraphInner {...props} />;

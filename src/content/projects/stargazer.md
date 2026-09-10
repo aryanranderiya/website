@@ -10,7 +10,7 @@ folder: Projects
 order: 18
 github: https://github.com/aryanranderiya/stargazer
 images:
-  - /ProjectMedia/Stargazer/screenshot.webp
+  - /images/projects/stargazer/screenshot.webp
 ---
 
 I built Stargazer because I wanted to scrape any github repo's starrers emails to contact them

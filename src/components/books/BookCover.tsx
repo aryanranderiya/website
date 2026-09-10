@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { thumbHashToDataURL } from 'thumbhash';
 
 const PALETTES = [
@@ -27,27 +27,35 @@ function bookColor(title: string): string {
 // only runs (probing the image) as a fallback for covers missing from the manifest.
 export function useCoverAspect(cover?: string, w?: number, h?: number, fallback = 1.45): number {
 	const known = w && h ? h / w : null;
-	const [aspect, setAspect] = useState(known ?? fallback);
+	// Only the async probe result lives in state. The sync values (known dims,
+	// fallback) derive during render so they never need a sync-back effect.
+	const [probed, setProbed] = useState(fallback);
+	const [prevCover, setPrevCover] = useState(cover);
+	const [prevFallback, setPrevFallback] = useState(fallback);
+	if (prevCover !== cover || prevFallback !== fallback) {
+		setPrevCover(cover);
+		setPrevFallback(fallback);
+		// Deliberately keep the previous probed value (no reset to fallback):
+		// it avoids a wrong-aspect flash + layout shift while the new cover
+		// probes. `probed` is only read when `cover && !known`, so a stale
+		// value can never leak into the known-dims or no-cover paths below.
+	}
 	useEffect(() => {
-		if (known) {
-			setAspect(known);
-			return;
-		}
-		if (!cover) {
-			setAspect(fallback);
-			return;
-		}
+		if (known != null) return;
+		if (!cover) return;
 		let active = true;
 		const probe = new window.Image();
 		probe.onload = () => {
-			if (active && probe.naturalWidth > 0) setAspect(probe.naturalHeight / probe.naturalWidth);
+			if (active && probe.naturalWidth > 0) setProbed(probe.naturalHeight / probe.naturalWidth);
 		};
 		probe.src = cover;
 		return () => {
 			active = false;
 		};
-	}, [cover, known, fallback]);
-	return aspect;
+	}, [cover, known]);
+	if (known != null) return known;
+	if (!cover) return fallback;
+	return probed;
 }
 
 // The shared book-cover face, matched 1:1 to miskov.ee. Used on the shelf (Book3D),
@@ -79,19 +87,16 @@ export default function BookCover({
 }) {
 	const [imgError, setImgError] = useState(false);
 	const [loaded, setLoaded] = useState(false);
-	const [placeholder, setPlaceholder] = useState<string | null>(null);
 
-	// Decode the thumbhash → data URL on mount (pure math, instant — no request).
-	useEffect(() => {
-		if (!hash) {
-			setPlaceholder(null);
-			return;
-		}
+	// Decode the thumbhash → data URL (pure math, instant — no request).
+	// Pure derivation from the `hash` prop, so it is memoized, not synced via effect.
+	const placeholder = useMemo<string | null>(() => {
+		if (!hash) return null;
 		try {
 			const bytes = Uint8Array.from(atob(hash), (c) => c.charCodeAt(0));
-			setPlaceholder(thumbHashToDataURL(bytes));
+			return thumbHashToDataURL(bytes);
 		} catch {
-			setPlaceholder(null);
+			return null;
 		}
 	}, [hash]);
 

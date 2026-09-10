@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { ClientRouter } from 'astro:transitions';
 import { SEO, SITE } from '@/constants/site';
+import { slugOf } from '@/utils/content';
 import { sortProjects } from '@/utils/projects';
 import '@/styles/global.css';
 import interLatinFont from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
@@ -46,7 +47,7 @@ const ogImageURL = ogImage.startsWith('http')
 	: new URL(ogImage, Astro.site ?? Astro.url.origin).toString();
 
 const commandKProjects = sortProjects(await getCollection('projects')).map((p) => ({
-	slug: p.slug,
+	slug: slugOf(p),
 	title: p.data.title,
 }));
 ---
@@ -72,8 +73,8 @@ const commandKProjects = sortProjects(await getCollection('projects')).map((p) =
     )}
 
     <!-- Favicon -->
-    <link rel="icon" type="image/webp" href="/old-portfolio-logo.webp" />
-    <link rel="apple-touch-icon" href="/old-portfolio-logo.webp" />
+    <link rel="icon" type="image/webp" href="/images/site/old-portfolio-logo.webp" />
+    <link rel="apple-touch-icon" href="/images/site/old-portfolio-logo.webp" />
     <link rel="manifest" href="/favicon/site.webmanifest" />
 
     <!-- Font preload — starts downloading in parallel with CSS parse -->

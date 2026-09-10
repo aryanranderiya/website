@@ -7,16 +7,16 @@ tech: [Next.js, React, TypeScript, TailwindCSS, Framer Motion, MongoDB]
 featured: false
 type: web
 folder: Client
-coverImage: /ProjectMedia/Blue_Lions/bluelions-1.webp
+coverImage: /images/projects/blue-lions/bluelions-1.webp
 images:
-  - /ProjectMedia/Blue_Lions/bluelions-1.webp
-  - /ProjectMedia/Blue_Lions/bluelions-2.webp
-  - /ProjectMedia/Blue_Lions/bluelions-3.webp
-  - /ProjectMedia/Blue_Lions/bluelions-4.webp
-  - /ProjectMedia/Blue_Lions/bluelions-5.webp
-  - /ProjectMedia/Blue_Lions/bluelions-6.webp
-  - /ProjectMedia/Blue_Lions/bluelions-7.webp
-  - /ProjectMedia/Blue_Lions/bluelions-8.webp
+  - /images/projects/blue-lions/bluelions-1.webp
+  - /images/projects/blue-lions/bluelions-2.webp
+  - /images/projects/blue-lions/bluelions-3.webp
+  - /images/projects/blue-lions/bluelions-4.webp
+  - /images/projects/blue-lions/bluelions-5.webp
+  - /images/projects/blue-lions/bluelions-6.webp
+  - /images/projects/blue-lions/bluelions-7.webp
+  - /images/projects/blue-lions/bluelions-8.webp
 order: 28
 ---
 

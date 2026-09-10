@@ -7,23 +7,23 @@ tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: web
 folder: Client
-coverImage: /ProjectMedia/MWI/1.webp
+coverImage: /images/projects/mwi/1.webp
 images:
-  - /ProjectMedia/MWI/2025-02-04_19-02.webp
-  - /ProjectMedia/MWI/1.webp
-  - /ProjectMedia/MWI/2.webp
-  - /ProjectMedia/MWI/3.webp
-  - /ProjectMedia/MWI/4.webp
-  - /ProjectMedia/MWI/5.webp
-  - /ProjectMedia/MWI/6.webp
-  - /ProjectMedia/MWI/7.webp
-  - /ProjectMedia/MWI/8.webp
-  - /ProjectMedia/MWI/9.webp
-  - /ProjectMedia/MWI/10.webp
-  - /ProjectMedia/MWI/11.webp
-  - /ProjectMedia/MWI/12.webp
-  - /ProjectMedia/MWI/13.webp
-  - /ProjectMedia/MWI/14.webp
+  - /images/projects/mwi/2025-02-04_19-02.webp
+  - /images/projects/mwi/1.webp
+  - /images/projects/mwi/2.webp
+  - /images/projects/mwi/3.webp
+  - /images/projects/mwi/4.webp
+  - /images/projects/mwi/5.webp
+  - /images/projects/mwi/6.webp
+  - /images/projects/mwi/7.webp
+  - /images/projects/mwi/8.webp
+  - /images/projects/mwi/9.webp
+  - /images/projects/mwi/10.webp
+  - /images/projects/mwi/11.webp
+  - /images/projects/mwi/12.webp
+  - /images/projects/mwi/13.webp
+  - /images/projects/mwi/14.webp
 order: 31
 url: https://mwi.gg
 ---

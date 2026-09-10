@@ -172,10 +172,11 @@ for (const tech of techList) {
 	}
 }
 
-const orderedLabels = [
-	...categories.map((c) => c.label).filter((l) => grouped[l]?.length),
-	...(grouped.Other ? ['Other'] : []),
-];
+const orderedLabels: string[] = [];
+for (const c of categories) {
+	if (grouped[c.label]?.length) orderedLabels.push(c.label);
+}
+if (grouped.Other) orderedLabels.push('Other');
 ---
 
 <section class="mb-12">

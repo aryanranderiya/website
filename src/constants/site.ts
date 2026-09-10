@@ -11,6 +11,7 @@ export const SITE = {
 	email: 'hey@aryanranderiya.com',
 	github: 'aryanranderiya',
 	twitter: 'aryanranderiya',
+	// gitleaks:allow -- public profile username, not a LinkedIn client ID
 	linkedin: 'aryanranderiya',
 	instagram: 'aryanranderiya',
 	monkeytype: 'aryanranderiya',

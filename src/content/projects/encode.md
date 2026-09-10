@@ -7,18 +7,18 @@ tech: [React, Node.js, Express, MongoDB, TailwindCSS, JavaScript]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/Encode_Official Website/encode.webp
+coverImage: /images/projects/encode/encode.webp
 images:
-  - /ProjectMedia/Encode_Official Website/encode.webp
-  - /ProjectMedia/Encode_Official Website/image.webp
-  - /ProjectMedia/Encode_Official Website/1.webp
-  - /ProjectMedia/Encode_Official Website/2.webp
-  - /ProjectMedia/Encode_Official Website/3.webp
-  - /ProjectMedia/Encode_Official Website/4.webp
-  - /ProjectMedia/Encode_Official Website/5.webp
-  - /ProjectMedia/Encode_Official Website/6.webp
-  - /ProjectMedia/Encode_Official Website/7.webp
-  - /ProjectMedia/Encode_Official Website/8.webp
+  - /images/projects/encode/encode.webp
+  - /images/projects/encode/image.webp
+  - /images/projects/encode/1.webp
+  - /images/projects/encode/2.webp
+  - /images/projects/encode/3.webp
+  - /images/projects/encode/4.webp
+  - /images/projects/encode/5.webp
+  - /images/projects/encode/6.webp
+  - /images/projects/encode/7.webp
+  - /images/projects/encode/8.webp
 order: 10
 url: https://encodepdeu.vercel.app
 github: https://github.com/Encode-PDEU/EncodeWebsite2024

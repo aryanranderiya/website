@@ -7,17 +7,17 @@ tech: [React, TypeScript, TailwindCSS]
 featured: false
 type: web
 folder: Client
-coverImage: /ProjectMedia/BlinkAnalytics/1.webp
+coverImage: /images/projects/blink-analytics/1.webp
 images:
-  - /ProjectMedia/BlinkAnalytics/1.webp
-  - /ProjectMedia/BlinkAnalytics/2.webp
-  - /ProjectMedia/BlinkAnalytics/3.webp
-  - /ProjectMedia/BlinkAnalytics/4.webp
-  - /ProjectMedia/BlinkAnalytics/5.webp
-  - /ProjectMedia/BlinkAnalytics/6.webp
-  - /ProjectMedia/BlinkAnalytics/7.webp
-  - /ProjectMedia/BlinkAnalytics/8.webp
-  - /ProjectMedia/BlinkAnalytics/9.webp
+  - /images/projects/blink-analytics/1.webp
+  - /images/projects/blink-analytics/2.webp
+  - /images/projects/blink-analytics/3.webp
+  - /images/projects/blink-analytics/4.webp
+  - /images/projects/blink-analytics/5.webp
+  - /images/projects/blink-analytics/6.webp
+  - /images/projects/blink-analytics/7.webp
+  - /images/projects/blink-analytics/8.webp
+  - /images/projects/blink-analytics/9.webp
 order: 30
 url: https://blinkanalytics.in
 github: https://github.com/aryanranderiya/blink-analytics

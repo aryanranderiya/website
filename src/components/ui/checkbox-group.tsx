@@ -1,7 +1,8 @@
 'use client';
 
 import * as CheckboxPrimitive from '@radix-ui/react-checkbox';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
 import {
 	createContext,
 	forwardRef,
@@ -9,6 +10,7 @@ import {
 	type ReactNode,
 	useContext,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from 'react';
@@ -24,6 +26,10 @@ interface CheckboxGroupContextValue {
 
 const CheckboxGroupContext = createContext<CheckboxGroupContextValue | null>(null);
 
+// domMax (not the shared domAnimation bundle) because the highlight overlays
+// below animate geometry via the `layout` prop, which lives in domMax.
+const loadMaxFeatures = () => import('motion/react').then((mod) => mod.domMax);
+
 function useCheckboxGroup() {
 	const ctx = useContext(CheckboxGroupContext);
 	if (!ctx) throw new Error('useCheckboxGroup must be used within a CheckboxGroup');
@@ -38,8 +44,6 @@ interface CheckboxGroupProps extends HTMLAttributes<HTMLDivElement> {
 const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
 	({ children, checkedIndices, className, ...props }, ref) => {
 		const containerRef = useRef<HTMLDivElement>(null);
-		const groupIdCounter = useRef(0);
-		const prevGroupMap = useRef(new Map<number, number>());
 
 		const {
 			activeIndex,
@@ -55,45 +59,45 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
 			measureItems();
 		}, [measureItems]);
 
-		const runs: { start: number; end: number }[] = [];
-		const sortedChecked = [...checkedIndices].sort((a, b) => a - b);
-		for (const idx of sortedChecked) {
-			const last = runs[runs.length - 1];
-			if (last && idx === last.end + 1) {
-				last.end = idx;
-			} else {
-				runs.push({ start: idx, end: idx });
-			}
-		}
-
-		const usedIds = new Set<number>();
-		const newGroupMap = new Map<number, number>();
-		const checkedGroups = runs.map((run) => {
-			let stableId: number | null = null;
-			for (let i = run.start; i <= run.end; i++) {
-				const prevId = prevGroupMap.current.get(i);
-				if (prevId !== undefined && !usedIds.has(prevId)) {
-					stableId = prevId;
-					break;
+		// Pure derivation of contiguous checked runs (no ref access: render-safe).
+		const sortedChecked = useMemo(
+			() => [...checkedIndices].toSorted((a, b) => a - b),
+			[checkedIndices]
+		);
+		const runs = useMemo(() => {
+			const result: { start: number; end: number }[] = [];
+			for (const idx of sortedChecked) {
+				const last = result[result.length - 1];
+				if (last && idx === last.end + 1) {
+					last.end = idx;
+				} else {
+					result.push({ start: idx, end: idx });
 				}
 			}
-			const id = stableId ?? ++groupIdCounter.current;
-			usedIds.add(id);
-			for (let i = run.start; i <= run.end; i++) {
-				newGroupMap.set(i, id);
-			}
-			return { ...run, id };
-		});
-		prevGroupMap.current = newGroupMap;
+			return result;
+		}, [sortedChecked]);
+
+		// Group identity is the index range itself: deterministic across
+		// renders, computed synchronously (no first-frame flash), and
+		// render-safe (no ref mutation during render).
+		const checkedGroups = useMemo(
+			() => runs.map((run) => ({ ...run, id: `${run.start}-${run.end}` })),
+			[runs]
+		);
 
 		const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+
+		const contextValue = useMemo(
+			() => ({ registerItem, activeIndex }),
+			[registerItem, activeIndex]
+		);
 
 		const activeRect = activeIndex !== null ? itemRects[activeIndex] : null;
 		const focusRect = focusedIndex !== null ? itemRects[focusedIndex] : null;
 		const isHoveringOther = activeIndex !== null && !checkedIndices.has(activeIndex);
 
 		return (
-			<CheckboxGroupContext.Provider value={{ registerItem, activeIndex }}>
+			<CheckboxGroupContext.Provider value={contextValue}>
 				{/* biome-ignore lint/a11y/useSemanticElements: <fieldset> doesn't accept the proximity-hover handlers without restyling */}
 				<div
 					ref={(node) => {
@@ -145,86 +149,94 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
 					className={cn('relative flex w-full max-w-full select-none flex-col gap-0.5', className)}
 					{...props}
 				>
-					<AnimatePresence>
-						{checkedGroups.map((group) => {
-							const startRect = itemRects[group.start];
-							const endRect = itemRects[group.end];
-							if (!startRect || !endRect) return null;
-							const mergedTop = startRect.top;
-							const mergedHeight = endRect.top + endRect.height - startRect.top;
-							const mergedLeft = Math.min(startRect.left, endRect.left);
-							const mergedWidth = Math.max(startRect.width, endRect.width);
-							return (
-								<motion.div
-									key={`group-${group.id}`}
-									className="pointer-events-none absolute rounded-lg bg-[var(--muted-bg-strong,var(--muted-bg))]"
-									initial={false}
-									animate={{
-										top: mergedTop,
-										left: mergedLeft,
-										width: mergedWidth,
-										height: mergedHeight,
-										opacity: isHoveringOther ? 0.8 : 1,
+					<LazyMotion features={loadMaxFeatures}>
+						<AnimatePresence>
+							{checkedGroups.map((group) => {
+								const startRect = itemRects[group.start];
+								const endRect = itemRects[group.end];
+								if (!startRect || !endRect) return null;
+								const mergedTop = startRect.top;
+								const mergedHeight = endRect.top + endRect.height - startRect.top;
+								const mergedLeft = Math.min(startRect.left, endRect.left);
+								const mergedWidth = Math.max(startRect.width, endRect.width);
+								return (
+									<m.div
+										key={`group-${group.id}`}
+										layout
+										className="pointer-events-none absolute rounded-lg bg-[var(--muted-bg-strong,var(--muted-bg))]"
+										style={{
+											top: mergedTop,
+											left: mergedLeft,
+											width: mergedWidth,
+											height: mergedHeight,
+										}}
+										initial={false}
+										animate={{
+											opacity: isHoveringOther ? 0.8 : 1,
+										}}
+										exit={{ opacity: 0, transition: { duration: 0.12 } }}
+										transition={{
+											...springs.moderate,
+											opacity: { duration: 0.08 },
+										}}
+									/>
+								);
+							})}
+						</AnimatePresence>
+
+						<AnimatePresence>
+							{activeRect && (
+								<m.div
+									key={sessionRef.current}
+									layout
+									className="pointer-events-none absolute rounded-lg bg-[var(--muted-bg)]"
+									style={{
+										top: activeRect.top,
+										left: activeRect.left,
+										width: activeRect.width,
+										height: activeRect.height,
 									}}
-									exit={{ opacity: 0, transition: { duration: 0.12 } }}
+									initial={{
+										opacity: 0,
+									}}
+									animate={{
+										opacity: 1,
+									}}
+									exit={{ opacity: 0, transition: { duration: 0.06 } }}
 									transition={{
-										...springs.moderate,
+										...springs.fast,
 										opacity: { duration: 0.08 },
 									}}
 								/>
-							);
-						})}
-					</AnimatePresence>
+							)}
+						</AnimatePresence>
 
-					<AnimatePresence>
-						{activeRect && (
-							<motion.div
-								key={sessionRef.current}
-								className="pointer-events-none absolute rounded-lg bg-[var(--muted-bg)]"
-								initial={{
-									opacity: 0,
-									top: activeRect.top,
-									left: activeRect.left,
-									width: activeRect.width,
-									height: activeRect.height,
-								}}
-								animate={{
-									opacity: 1,
-									top: activeRect.top,
-									left: activeRect.left,
-									width: activeRect.width,
-									height: activeRect.height,
-								}}
-								exit={{ opacity: 0, transition: { duration: 0.06 } }}
-								transition={{
-									...springs.fast,
-									opacity: { duration: 0.08 },
-								}}
-							/>
-						)}
-					</AnimatePresence>
+						<AnimatePresence>
+							{focusRect && (
+								<m.div
+									layout
+									className="pointer-events-none absolute z-20 rounded-[10px] border border-[#6B97FF]"
+									style={{
+										left: focusRect.left - 2,
+										top: focusRect.top - 2,
+										width: focusRect.width + 4,
+										height: focusRect.height + 4,
+									}}
+									initial={false}
+									animate={{
+										opacity: 1,
+									}}
+									exit={{ opacity: 0, transition: { duration: 0.06 } }}
+									transition={{
+										...springs.fast,
+										opacity: { duration: 0.08 },
+									}}
+								/>
+							)}
+						</AnimatePresence>
 
-					<AnimatePresence>
-						{focusRect && (
-							<motion.div
-								className="pointer-events-none absolute z-20 rounded-[10px] border border-[#6B97FF]"
-								initial={false}
-								animate={{
-									left: focusRect.left - 2,
-									top: focusRect.top - 2,
-									width: focusRect.width + 4,
-									height: focusRect.height + 4,
-								}}
-								exit={{ opacity: 0, transition: { duration: 0.06 } }}
-								transition={{
-									...springs.fast,
-									opacity: { duration: 0.08 },
-								}}
-							/>
-						)}
-					</AnimatePresence>
-
-					{children}
+						{children}
+					</LazyMotion>
 				</div>
 			</CheckboxGroupContext.Provider>
 		);
@@ -306,7 +318,7 @@ const CheckboxItem = forwardRef<HTMLDivElement, CheckboxItemProps>(
 					<AnimatePresence>
 						{checked && (
 							<CheckboxPrimitive.Indicator forceMount asChild>
-								<motion.svg
+								<m.svg
 									width={14}
 									height={14}
 									viewBox="0 0 24 24"
@@ -321,7 +333,7 @@ const CheckboxItem = forwardRef<HTMLDivElement, CheckboxItemProps>(
 									exit={{ opacity: 1 }}
 								>
 									<title>Checked</title>
-									<motion.path
+									<m.path
 										d="M6 12L10 16L18 8"
 										initial={{ pathLength: skipAnimation ? 1 : 0 }}
 										animate={{
@@ -333,7 +345,7 @@ const CheckboxItem = forwardRef<HTMLDivElement, CheckboxItemProps>(
 											transition: { duration: 0.06, ease: 'easeIn' },
 										}}
 									/>
-								</motion.svg>
+								</m.svg>
 							</CheckboxPrimitive.Indicator>
 						)}
 					</AnimatePresence>

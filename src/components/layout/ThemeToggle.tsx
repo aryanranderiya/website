@@ -1,7 +1,7 @@
 'use client';
 
 import { ColorsIcon, HugeiconsIcon, Moon02Icon, Sun01Icon } from '@icons';
-import { useEffect, useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 
 type Theme = 'light' | 'dark' | 'random';
 
@@ -45,17 +45,28 @@ function clearRandomPalette() {
 	}
 }
 
-export default function ThemeToggle() {
-	const [theme, setTheme] = useState<Theme>('light');
-	const [mounted, setMounted] = useState(false);
+function readStoredTheme(): Theme {
+	if (typeof localStorage === 'undefined') return 'light';
+	const stored = localStorage.getItem('theme') as Theme | null;
+	return stored === 'dark' || stored === 'random' ? stored : 'light';
+}
 
-	useEffect(() => {
-		setMounted(true);
-		const stored = localStorage.getItem('theme') as Theme | null;
-		if (stored === 'dark') setTheme('dark');
-		else if (stored === 'random') setTheme('random');
-		else setTheme('light');
-	}, []);
+// No-op subscription: "mounted" never changes after hydration; the store
+// exists only to give SSR (false → placeholder) and the client (true) matching
+// snapshots without a mount-effect state update.
+function subscribeToMounted(_onChange: () => void): () => void {
+	return () => {};
+}
+
+export default function ThemeToggle() {
+	// Lazy initializer reads the stored theme exactly once — no post-paint
+	// effect update, so the first client render already shows the right icon.
+	const [theme, setTheme] = useState<Theme>(readStoredTheme);
+	const mounted = useSyncExternalStore(
+		subscribeToMounted,
+		() => true,
+		() => false
+	);
 
 	function cycle() {
 		const html = document.documentElement;
@@ -99,7 +110,7 @@ export default function ThemeToggle() {
 			onClick={cycle}
 			aria-label="Cycle theme"
 			title={theme === 'light' ? 'Dark mode' : theme === 'dark' ? 'Shuffle mode' : 'Light mode'}
-			className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg bg-transparent text-[var(--muted-foreground)] transition-all duration-200 hover:opacity-70"
+			className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg bg-transparent text-[var(--muted-foreground)] transition-opacity duration-200 hover:opacity-70"
 		>
 			<HugeiconsIcon
 				icon={theme === 'light' ? Moon02Icon : theme === 'dark' ? ColorsIcon : Sun01Icon}

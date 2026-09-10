@@ -1,7 +1,8 @@
 'use client';
 
 import * as TabsPrimitive from '@radix-ui/react-tabs';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, LazyMotion } from 'motion/react';
+import * as m from 'motion/react-m';
 import {
 	Children,
 	type ComponentPropsWithoutRef,
@@ -13,6 +14,7 @@ import {
 	useContext,
 	useEffect,
 	useLayoutEffect,
+	useMemo,
 	useRef,
 	useState,
 } from 'react';
@@ -37,6 +39,10 @@ interface TabsListContextValue {
 }
 
 const TabsListContext = createContext<TabsListContextValue | null>(null);
+
+// domMax (not the shared domAnimation bundle) because the indicator overlays
+// below animate geometry via the `layout` prop, which lives in domMax.
+const loadMaxFeatures = () => import('motion/react').then((mod) => mod.domMax);
 
 function useTabsList() {
 	const ctx = useContext(TabsListContext);
@@ -83,14 +89,17 @@ const Tabs = forwardRef<HTMLDivElement, TabsProps>(
 			[onValueChange, onSelect, valueOrder, value, selectedIndex]
 		);
 
+		const tabsValueOrderContextValue = useMemo(
+			() => ({
+				valueOrder,
+				setValueOrder: updateValueOrder,
+				selectedValue: resolvedValue,
+			}),
+			[valueOrder, updateValueOrder, resolvedValue]
+		);
+
 		return (
-			<TabsValueOrderContext.Provider
-				value={{
-					valueOrder,
-					setValueOrder: updateValueOrder,
-					selectedValue: resolvedValue,
-				}}
-			>
+			<TabsValueOrderContext.Provider value={tabsValueOrderContextValue}>
 				<TabsPrimitive.Root
 					ref={ref}
 					value={resolvedValue}
@@ -117,10 +126,15 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 		const valueOrderCtx = useContext(TabsValueOrderContext);
 		const [optimisticIdx, setOptimisticIdx] = useState<number | null>(null);
 
-		const values = Children.toArray(children)
-			.filter(isValidElement)
-			.map((child) => (child.props as { value?: string }).value)
-			.filter((v): v is string => typeof v === 'string');
+		const values = useMemo(() => {
+			const result: string[] = [];
+			for (const child of Children.toArray(children)) {
+				if (!isValidElement(child)) continue;
+				const tabValue = (child.props as { value?: string }).value;
+				if (typeof tabValue === 'string') result.push(tabValue);
+			}
+			return result;
+		}, [children]);
 		const _valueOrderKey = values.join(',');
 		const setValueOrder = valueOrderCtx?.setValueOrder;
 
@@ -191,15 +205,18 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 			return child;
 		});
 
+		const tabsListContextValue = useMemo(
+			() => ({
+				registerTab,
+				hoveredIndex,
+				selectedValue,
+				setOptimisticIdx,
+			}),
+			[registerTab, hoveredIndex, selectedValue]
+		);
+
 		return (
-			<TabsListContext.Provider
-				value={{
-					registerTab,
-					hoveredIndex,
-					selectedValue,
-					setOptimisticIdx,
-				}}
-			>
+			<TabsListContext.Provider value={tabsListContextValue}>
 				<TabsPrimitive.List
 					ref={(node) => {
 						(containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
@@ -230,86 +247,94 @@ const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 					)}
 					{...props}
 				>
-					{selectedRect && (
-						<motion.div
-							className="pointer-events-none absolute rounded-lg bg-[var(--background)] shadow-sm dark:shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
-							initial={false}
-							animate={{
-								left: selectedRect.left,
-								width: selectedRect.width,
-								top: selectedRect.top,
-								height: selectedRect.height,
-								opacity: isHovering ? 0.85 : 1,
-							}}
-							transition={{
-								...springs.moderate,
-								opacity: { duration: 0.08 },
-							}}
-						/>
-					)}
-
-					<AnimatePresence>
-						{hoverRect && !isHoveringSelected && selectedRect && (
-							<motion.div
-								className="pointer-events-none absolute rounded-lg bg-[var(--foreground)]/10"
-								initial={{
+					<LazyMotion features={loadMaxFeatures}>
+						{selectedRect && (
+							<m.div
+								layout
+								className="pointer-events-none absolute rounded-lg bg-[var(--background)] shadow-sm dark:shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
+								style={{
 									left: selectedRect.left,
 									width: selectedRect.width,
 									top: selectedRect.top,
 									height: selectedRect.height,
-									opacity: 0,
 								}}
-								animate={{
-									left: hoverRect.left,
-									width: hoverRect.width,
-									top: hoverRect.top,
-									height: hoverRect.height,
-									opacity: 0.4,
-								}}
-								exit={
-									!isMouseInside.current && selectedRect
-										? {
-												left: selectedRect.left,
-												width: selectedRect.width,
-												top: selectedRect.top,
-												height: selectedRect.height,
-												opacity: 0,
-												transition: {
-													...springs.moderate,
-													opacity: { duration: 0.06 },
-												},
-											}
-										: { opacity: 0, transition: { duration: 0.06 } }
-								}
-								transition={{
-									...springs.fast,
-									opacity: { duration: 0.08 },
-								}}
-							/>
-						)}
-					</AnimatePresence>
-
-					<AnimatePresence>
-						{focusRect && (
-							<motion.div
-								className="pointer-events-none absolute z-20 rounded-[10px] border border-[#6B97FF]"
 								initial={false}
 								animate={{
-									left: focusRect.left - 2,
-									top: focusRect.top - 2,
-									width: focusRect.width + 4,
-									height: focusRect.height + 4,
+									opacity: isHovering ? 0.85 : 1,
 								}}
-								exit={{ opacity: 0, transition: { duration: 0.06 } }}
 								transition={{
-									...springs.fast,
+									...springs.moderate,
 									opacity: { duration: 0.08 },
 								}}
 							/>
 						)}
-					</AnimatePresence>
 
-					{indexedChildren}
+						<AnimatePresence>
+							{hoverRect && !isHoveringSelected && selectedRect && (
+								<m.div
+									layout
+									className="pointer-events-none absolute rounded-lg bg-[var(--foreground)]/10"
+									style={{
+										left: hoverRect.left,
+										width: hoverRect.width,
+										top: hoverRect.top,
+										height: hoverRect.height,
+									}}
+									initial={{
+										opacity: 0,
+									}}
+									animate={{
+										opacity: 0.4,
+									}}
+									exit={
+										!isMouseInside.current && selectedRect
+											? {
+													left: selectedRect.left,
+													width: selectedRect.width,
+													top: selectedRect.top,
+													height: selectedRect.height,
+													opacity: 0,
+													transition: {
+														...springs.moderate,
+														opacity: { duration: 0.06 },
+													},
+												}
+											: { opacity: 0, transition: { duration: 0.06 } }
+									}
+									transition={{
+										...springs.fast,
+										opacity: { duration: 0.08 },
+									}}
+								/>
+							)}
+						</AnimatePresence>
+
+						<AnimatePresence>
+							{focusRect && (
+								<m.div
+									layout
+									className="pointer-events-none absolute z-20 rounded-[10px] border border-[#6B97FF]"
+									style={{
+										left: focusRect.left - 2,
+										top: focusRect.top - 2,
+										width: focusRect.width + 4,
+										height: focusRect.height + 4,
+									}}
+									initial={false}
+									animate={{
+										opacity: 1,
+									}}
+									exit={{ opacity: 0, transition: { duration: 0.06 } }}
+									transition={{
+										...springs.fast,
+										opacity: { duration: 0.08 },
+									}}
+								/>
+							)}
+						</AnimatePresence>
+
+						{indexedChildren}
+					</LazyMotion>
 				</TabsPrimitive.List>
 			</TabsListContext.Provider>
 		);

@@ -1,16 +1,16 @@
 ---
-import Avatar from "@/components/Avatar.astro";
-import ButtonLink from "@/components/ui/ButtonLink";
-import PreviewLink from "@/components/ui/PreviewLink";
-import ogPreviews from "@/data/og-previews.json";
+import Avatar from '@/components/Avatar.astro';
+import ButtonLink from '@/components/ui/ButtonLink';
+import PreviewLink from '@/components/ui/PreviewLink';
+import ogPreviews from '@/data/og-previews.json';
 
 // OG previews are scraped once by `scripts/fetch-og-previews.mjs` and committed
 // to src/data/og-previews.json. The homepage renders on demand, so the preview
 // payload must be baked at build time — a live scrape here would run per request.
 const [experienceCompanyOg, gaiaOg, spotifyOg] = [
-	ogPreviews["https://experience.heygaia.io"],
-	ogPreviews["https://heygaia.io"],
-	ogPreviews["https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"],
+	ogPreviews['https://experience.heygaia.io'],
+	ogPreviews['https://heygaia.io'],
+	ogPreviews['https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH'],
 ];
 ---
 
@@ -33,7 +33,7 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 	<PreviewLink
 		client:visible
 		href="https://experience.heygaia.io"
-		logo="/images/experience-company-logo.svg"
+		logo="/images/site/experience-company-logo.svg"
 		name="The Experience Company"
 		logoClassName="logo-invert"
 		rounded={false}
@@ -51,7 +51,7 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 	<PreviewLink
 		client:visible
 		href="https://heygaia.io"
-		logo="/gaia-logo.webp"
+		logo="/images/site/gaia-logo.webp"
 		name="GAIA"
 		preview={gaiaOg ?? undefined}
 	/>
@@ -85,7 +85,7 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 	<br />
 	Born in{" "}
 	<img
-		src="/images/flag-uk.webp"
+		src="/images/site/flag-uk.webp"
 		alt="UK"
 		width="24"
 		height="16"
@@ -93,7 +93,7 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 	/>
 	the United Kingdom, based in{" "}
 	<img
-		src="/images/flag-india.webp"
+		src="/images/site/flag-india.webp"
 		alt="India"
 		width="24"
 		height="16"

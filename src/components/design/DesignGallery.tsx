@@ -11,7 +11,7 @@ import { openGroup } from '@/lib/flip-lightbox';
 
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
-// Convert public URL → thumbhash lookup key: "/design/apparel/foo.webp" → "design/apparel/foo.webp"
+// Convert public URL → thumbhash lookup key: "/images/design/apparel/foo.webp" → "design/apparel/foo.webp"
 function getHash(src: string): string | undefined {
 	return (thumbhashes as Record<string, string>)[src.replace(/^\//, '')];
 }
@@ -24,16 +24,16 @@ interface DesignGalleryProps {
 }
 
 function apparelSrc(file: string) {
-	return `/design/apparel/${file}`;
+	return `/images/design/apparel/${file}`;
 }
 function headerSrc(file: string) {
-	return `/design/headers/${file}`;
+	return `/images/design/headers/${file}`;
 }
 function thumbnailSrc(file: string) {
-	return `/design/thumbnails/${file}`;
+	return `/images/design/thumbnails/${file}`;
 }
 function adMockupSrc(file: string) {
-	return `/design/ad_mockups/${file}`;
+	return `/images/design/ad_mockups/${file}`;
 }
 
 function altText(file: string) {

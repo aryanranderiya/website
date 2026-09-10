@@ -1,83 +1,84 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
-import BackLink from "@/components/ui/BackLink.astro";
-import BlogLinks from "@/components/blog/BlogLinks";
-import { mdxComponents } from "@/components/blog/mdx";
-import ProjectCTAs from "@/components/projects/ProjectCTAs";
-import Lightbox from "@/components/ui/Lightbox.astro";
-import PostNav from "@/components/ui/PostNav.astro";
-import { SITE } from "@/constants/site";
-import PageLayout from "@/layouts/PageLayout.astro";
-import { normalizeImages, sortProjects } from "@/utils/projects";
-import { getTechIconUrl } from "@/utils/techIcons";
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import BlogLinks from '@/components/blog/BlogLinks';
+import { mdxComponents } from '@/components/blog/mdx';
+import ProjectCTAs from '@/components/projects/ProjectCTAs';
+import BackLink from '@/components/ui/BackLink.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
+import PostNav from '@/components/ui/PostNav.astro';
+import { SITE } from '@/constants/site';
+import PageLayout from '@/layouts/PageLayout.astro';
+import { slugOf } from '@/utils/content';
+import { normalizeImages, sortProjects } from '@/utils/projects';
+import { getTechIconUrl } from '@/utils/techIcons';
 
 export async function getStaticPaths() {
-  const projects = await getCollection("projects");
-  return projects.map((entry) => ({
-    params: { slug: entry.slug },
-    props: { entry },
-  }));
+	const projects = await getCollection('projects');
+	return projects.map((entry) => ({
+		params: { slug: slugOf(entry) },
+		props: { entry },
+	}));
 }
 
 interface Props {
-  entry: CollectionEntry<"projects">;
+	entry: CollectionEntry<'projects'>;
 }
 
 const { entry } = Astro.props;
-const { Content } = await entry.render();
+const { Content } = await render(entry);
 const p = entry.data;
 
-const formattedDate = new Date(p.date).toLocaleDateString("en-US", {
-  month: "long",
-  year: "numeric",
+const formattedDate = new Date(p.date).toLocaleDateString('en-US', {
+	month: 'long',
+	year: 'numeric',
 });
 const allImages = normalizeImages(p.images);
 const canonicalURL = new URL(Astro.url.pathname, SITE.url).toString();
 
 const breadcrumbJsonLd = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  itemListElement: [
-    { "@type": "ListItem", position: 1, name: "Home", item: SITE.url },
-    {
-      "@type": "ListItem",
-      position: 2,
-      name: "Projects",
-      item: `${SITE.url}/projects`,
-    },
-    { "@type": "ListItem", position: 3, name: p.title, item: canonicalURL },
-  ],
+	'@context': 'https://schema.org',
+	'@type': 'BreadcrumbList',
+	itemListElement: [
+		{ '@type': 'ListItem', position: 1, name: 'Home', item: SITE.url },
+		{
+			'@type': 'ListItem',
+			position: 2,
+			name: 'Projects',
+			item: `${SITE.url}/projects`,
+		},
+		{ '@type': 'ListItem', position: 3, name: p.title, item: canonicalURL },
+	],
 });
 
 const projectJsonLd = JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: p.title,
-  description: p.description,
-  url: p.url ?? canonicalURL,
-  dateCreated: new Date(p.date).toISOString(),
-  author: {
-    "@type": "Person",
-    name: SITE.name,
-    url: SITE.url,
-  },
-  ...(p.tech && p.tech.length > 0 ? { keywords: p.tech.join(", ") } : {}),
-  ...(allImages[0]
-    ? {
-        image: allImages[0].src.startsWith("http")
-          ? allImages[0].src
-          : new URL(allImages[0].src, SITE.url).toString(),
-      }
-    : {}),
+	'@context': 'https://schema.org',
+	'@type': 'SoftwareApplication',
+	name: p.title,
+	description: p.description,
+	url: p.url ?? canonicalURL,
+	dateCreated: new Date(p.date).toISOString(),
+	author: {
+		'@type': 'Person',
+		name: SITE.name,
+		url: SITE.url,
+	},
+	...(p.tech && p.tech.length > 0 ? { keywords: p.tech.join(', ') } : {}),
+	...(allImages[0]
+		? {
+				image: allImages[0].src.startsWith('http')
+					? allImages[0].src
+					: new URL(allImages[0].src, SITE.url).toString(),
+			}
+		: {}),
 });
 
 const heroImage = p.coverImage || allImages[0]?.src;
 const galleryImages = allImages;
-const videoAspect = p.videoAspectRatio ?? "16 / 9";
+const videoAspect = p.videoAspectRatio ?? '16 / 9';
 
 // Cycling prev/next through all projects in their sorted order.
-const allProjects = sortProjects(await getCollection("projects"));
-const projIndex = allProjects.findIndex((e) => e.slug === entry.slug);
+const allProjects = sortProjects(await getCollection('projects'));
+const projIndex = allProjects.findIndex((e) => slugOf(e) === slugOf(entry));
 const prevProject = allProjects[(projIndex - 1 + allProjects.length) % allProjects.length];
 const nextProject = allProjects[(projIndex + 1) % allProjects.length];
 ---
@@ -110,7 +111,7 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
       class="flex flex-col gap-3 min-[480px]:flex-row min-[480px]:items-start min-[480px]:justify-between min-[480px]:gap-4"
     >
       <h1
-        transition:name={`project-title-${entry.slug}`}
+        transition:name={`project-title-${slugOf(entry)}`}
         class="m-0 text-2xl font-medium leading-[1.1] tracking-[-0.03em] text-[var(--text-primary)]"
       >
         {p.title}
@@ -242,8 +243,8 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
     class="mt-16 pt-10 border-t border-[var(--border)]"
     backHref="/projects"
     backLabel="Back to Projects"
-    prevHref={`/projects/${prevProject.slug}`}
-    nextHref={`/projects/${nextProject.slug}`}
+    prevHref={`/projects/${slugOf(prevProject)}`}
+    nextHref={`/projects/${slugOf(nextProject)}`}
     prevLabel={prevProject.data.title}
     nextLabel={nextProject.data.title}
   />

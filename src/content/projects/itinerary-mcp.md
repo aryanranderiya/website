@@ -7,17 +7,17 @@ tech: [Python, FastAPI, SQLite, MCP]
 featured: false
 type: web
 folder: Projects
-coverImage: /ProjectMedia/Itinerary_MCP/screenshot-1.png
+coverImage: /images/projects/itinerary-mcp/screenshot-1.png
 images:
-  - /ProjectMedia/Itinerary_MCP/screenshot-1.png
-  - /ProjectMedia/Itinerary_MCP/screenshot-2.png
-  - /ProjectMedia/Itinerary_MCP/readme-3.webp
-  - /ProjectMedia/Itinerary_MCP/readme-4.webp
-  - /ProjectMedia/Itinerary_MCP/readme-5.webp
-  - /ProjectMedia/Itinerary_MCP/readme-6.webp
-  - /ProjectMedia/Itinerary_MCP/readme-7.webp
-  - /ProjectMedia/Itinerary_MCP/readme-8.webp
-  - /ProjectMedia/Itinerary_MCP/readme-9.webp
+  - /images/projects/itinerary-mcp/screenshot-1.png
+  - /images/projects/itinerary-mcp/screenshot-2.png
+  - /images/projects/itinerary-mcp/readme-3.webp
+  - /images/projects/itinerary-mcp/readme-4.webp
+  - /images/projects/itinerary-mcp/readme-5.webp
+  - /images/projects/itinerary-mcp/readme-6.webp
+  - /images/projects/itinerary-mcp/readme-7.webp
+  - /images/projects/itinerary-mcp/readme-8.webp
+  - /images/projects/itinerary-mcp/readme-9.webp
 order: 18
 github: https://github.com/aryanranderiya/itinerary-mcp-server
 ---

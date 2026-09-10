@@ -1,4 +1,5 @@
 import type { CollectionEntry } from 'astro:content';
+import { slugOf } from './content';
 
 export type ProjectImage = { src: string; caption?: string };
 
@@ -30,7 +31,7 @@ export function sortProjects(entries: CollectionEntry<'projects'>[]) {
 
 export function mapProject(entry: CollectionEntry<'projects'>) {
 	return {
-		slug: entry.slug,
+		slug: slugOf(entry),
 		title: entry.data.title,
 		description: entry.data.description,
 		shortDescription: entry.data.shortDescription,

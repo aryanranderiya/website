@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import AgentConvosList from '@/components/agent-convos/AgentConvosList';
 import PageLayout from '@/layouts/PageLayout.astro';
+import { slugOf } from '@/utils/content';
 
 const allConvos = await getCollection('agent-convos');
 const convos = allConvos
@@ -12,7 +13,7 @@ const convos = allConvos
 		return b.data.date.valueOf() - a.data.date.valueOf();
 	})
 	.map((c) => ({
-		slug: c.slug,
+		slug: slugOf(c),
 		title: c.data.title,
 		description: c.data.description,
 		date: c.data.date.toISOString(),

@@ -1,7 +1,7 @@
 # Books — content & cover pipeline
 
 Each `.md` file here is one book on the [Bookshelf](/books) page. The frontmatter is
-validated by the `books` schema in `src/content/config.ts`.
+validated by the `books` schema in `src/content.config.ts`.
 
 ## Adding a book
 

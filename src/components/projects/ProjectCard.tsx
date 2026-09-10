@@ -81,7 +81,7 @@ export default function ProjectCard({
 			}}
 			// biome-ignore lint/nursery/noInlineStyles: per-row stagger delay is computed from the list index
 			style={{ animationDelay: enterDelay }}
-			className={`dim-list-row animate-fade-in-up flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] no-underline transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+			className={`dim-list-row flex min-w-0 animate-fade-in-up cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] no-underline transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 		>
 			{/* Left: title + single chip — folder chip takes priority over type */}
 			<div className="flex min-w-0 shrink-0 items-center gap-1.5">
@@ -116,7 +116,7 @@ export default function ProjectCard({
 						</span>
 					)}
 					{project.date && (
-						<span className="shrink-0 text-[13px] text-[var(--text-ghost)] tracking-[-0.01em] tabular-nums">
+						<span className="shrink-0 text-[13px] text-[var(--text-ghost)] tabular-nums tracking-[-0.01em]">
 							{formatMonthShort(project.date)}
 						</span>
 					)}

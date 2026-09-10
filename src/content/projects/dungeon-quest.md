@@ -7,14 +7,14 @@ tech: [Next.js, TypeScript, TailwindCSS]
 featured: false
 type: game
 folder: Hackathon
-coverImage: /ProjectMedia/DungeonQuest/banner.webp
+coverImage: /images/projects/dungeon-quest/banner.webp
 images:
-  - /ProjectMedia/DungeonQuest/banner.webp
-  - /ProjectMedia/DungeonQuest/dungeon_quest.webp
-  - /ProjectMedia/DungeonQuest/screenshot-1.webp
-  - /ProjectMedia/DungeonQuest/screenshot-2.webp
-  - /ProjectMedia/DungeonQuest/screenshot-3.webp
-  - /ProjectMedia/DungeonQuest/screenshot-4.webp
+  - /images/projects/dungeon-quest/banner.webp
+  - /images/projects/dungeon-quest/dungeon_quest.webp
+  - /images/projects/dungeon-quest/screenshot-1.webp
+  - /images/projects/dungeon-quest/screenshot-2.webp
+  - /images/projects/dungeon-quest/screenshot-3.webp
+  - /images/projects/dungeon-quest/screenshot-4.webp
 order: 20
 url: https://pixel-quest.vercel.app/
 github: https://github.com/aryanranderiya/dungeon-quest
