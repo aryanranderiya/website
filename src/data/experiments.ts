@@ -27,9 +27,8 @@ export const experiments: Experiment[] = [
 	{
 		slug: 'gaia-footer',
 		title: 'GAIA Footer',
-		description:
-			'A faithful replica of the heygaia.io site footer: deep-blue glow wallpaper, film-grain overlay, link columns, a giant wordmark, and the status plus social bottom bar.',
-		bio: "Rebuilt from the live heygaia.io footer markup. The wallpaper and Experience logo hotlink GAIA's CDN; the commercial type falls back to Inter with tight tracking; hovers use GAIA blue (#00bbff). The canvas-rendered giant wordmark is the one deliberate substitution: a blend-overlay type treatment instead of the original canvas effect. Images sit behind shimmer skeletons with a crossfade on load.",
+		description: "heygaia.io's footer glow + interactive halftone GAIA dot-wordmark.",
+		bio: 'Ported from the GAIA www source. The wordmark is a live halftone dot grid rasterized from PP Editorial New and the GAIA mark — hover to swell the dots, click for the ripple.',
 		date: '2026-09-10',
 	},
 ];

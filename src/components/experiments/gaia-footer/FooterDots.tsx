@@ -510,7 +510,7 @@ export default function FooterDots() {
 			<span
 				ref={probeRef}
 				aria-hidden
-				className="absolute h-0 w-0 overflow-hidden font-bold font-serif"
+				className="gaia-footer-serif absolute h-0 w-0 overflow-hidden font-bold"
 			/>
 			{/* Two stacked layers, because a canvas can only carry one blend mode:
 			    the base halftone blends with the wallpaper, and the click ripple
@@ -523,8 +523,7 @@ export default function FooterDots() {
 				<canvas
 					ref={canvasRef}
 					aria-hidden
-					className="block w-full mix-blend-overlay"
-					style={{ aspectRatio: '23 / 4' }}
+					className="block aspect-[23/4] w-full mix-blend-overlay"
 				/>
 				<canvas
 					ref={glowRef}
