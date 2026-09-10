@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import './gaia-footer.css';
+import FooterDots from './FooterDots';
 
 const GAIA_ORIGIN = 'https://heygaia.io';
 
@@ -59,7 +60,9 @@ const LINK_COLUMNS: { heading: string; links: FooterLink[] }[] = [
 	{ heading: 'Legal', links: LEGAL_LINKS },
 ];
 
-const HOVER_ACCENT = 'hover:text-[#00bbff]';
+// heygaia.io dark theme: --primary is 210 40% 98% (near-white), so footer
+// links brighten to near-white on hover — NOT brand blue.
+const HOVER_ACCENT = 'hover:text-[#f8fafc]';
 
 function FooterLinkColumn({ heading, links }: { heading: string; links: FooterLink[] }) {
 	return (
@@ -214,7 +217,7 @@ export default function GaiaFooter() {
 	const [logoFailed, setLogoFailed] = useState(false);
 
 	return (
-		<footer className="relative z-20 w-full overflow-hidden bg-[#09090b]">
+		<footer className="gaia-footer relative z-20 w-full overflow-hidden bg-[#030712]">
 			{!wallpaperLoaded && !wallpaperFailed && (
 				<div
 					aria-hidden="true"
@@ -238,7 +241,7 @@ export default function GaiaFooter() {
 			)}
 			<div
 				aria-hidden="true"
-				className="pointer-events-none absolute inset-x-0 top-0 z-0 h-48 select-none bg-linear-to-b from-[#09090b] via-[#09090b]/50 to-transparent"
+				className="pointer-events-none absolute inset-x-0 top-0 z-0 h-48 select-none bg-linear-to-b from-[#030712] via-[#030712]/50 to-transparent"
 			/>
 			<div
 				aria-hidden="true"
@@ -251,12 +254,7 @@ export default function GaiaFooter() {
 					))}
 				</div>
 				<div className="mx-auto w-full max-w-7xl">
-					<div
-						aria-hidden="true"
-						className="gaia-footer-wordmark flex aspect-[23/4] w-full items-center justify-center overflow-hidden"
-					>
-						<span className="gaia-footer-wordmark-text">GAIA</span>
-					</div>
+					<FooterDots />
 				</div>
 				<div className="mx-auto grid w-full max-w-7xl grid-cols-1 items-center justify-items-center gap-6 sm:grid-cols-3">
 					<iframe
