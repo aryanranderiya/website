@@ -18,8 +18,14 @@ export const prerender = false;
 // only the fields <BlogPreview> renders. Passing whole collection entries
 // would serialize every post body into the island props baked into the HTML.
 const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+// Featured posts first, then newest — the homepage is a curated shopfront,
+// not a changelog.
 const latestPosts = allPosts
-	.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+	.sort(
+		(a, b) =>
+			Number(b.data.featured ?? false) - Number(a.data.featured ?? false) ||
+			new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+	)
 	.slice(0, 3)
 	.map((p) => ({
 		slug: slugOf(p),

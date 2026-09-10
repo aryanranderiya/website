@@ -88,6 +88,18 @@ export default function BookCover({
 	const [imgError, setImgError] = useState(false);
 	const [loaded, setLoaded] = useState(false);
 
+	// Reset when the cover changes (the detail sheet reuses this component
+	// across books). Render-phase reset — NOT a mount effect: an effect with
+	// [] would clobber the ref callback's setLoaded(true) for cached covers
+	// (complete at mount, `load` never refires) and stick them on the blur
+	// placeholder forever. Same prev-value pattern as useCoverAspect above.
+	const [prevCoverProp, setPrevCoverProp] = useState(cover);
+	if (prevCoverProp !== cover) {
+		setPrevCoverProp(cover);
+		setImgError(false);
+		setLoaded(false);
+	}
+
 	// Decode the thumbhash → data URL (pure math, instant — no request).
 	// Pure derivation from the `hash` prop, so it is memoized, not synced via effect.
 	const placeholder = useMemo<string | null>(() => {
@@ -99,11 +111,6 @@ export default function BookCover({
 			return null;
 		}
 	}, [hash]);
-
-	useEffect(() => {
-		setImgError(false);
-		setLoaded(false);
-	}, []);
 
 	const hasImage = !!cover && !imgError;
 	const color = bookColor(title);

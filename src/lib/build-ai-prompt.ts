@@ -75,23 +75,24 @@ ${experience
 	.join('\n\n')}`;
 
 	// ── Projects ───────────────────────────────────────────────────────────────
-	const projectSection = `## Projects (${sorted.length} total)
-${sorted
-	.map((p) => {
+	// One line per project. NEVER include bodies: the on-device model runs a
+	// 4k context window (mlc ctx4k build) and the full prompt must stay well
+	// under ~11k chars once history + generation are added. Bodies (60KB+)
+	// used to blow the window and EVERY completion threw.
+	const projectLines = sorted.map((p) => {
 		const d = p.data;
-		const body = p.body?.trim();
-		const lines = [
-			`### ${d.title}`,
-			d.description,
-			`Tech: ${d.tech.join(', ')} | Type: ${d.type}`,
-			d.url ? `URL: ${d.url}` : '',
-			d.github ? `GitHub: ${d.github}` : '',
-			d.featured ? 'Featured: yes' : '',
-			body ? `\n${body}` : '',
-		].filter(Boolean);
-		return lines.join('\n');
-	})
-	.join('\n\n---\n\n')}`;
+		return `- "${d.title}": ${d.description} [${d.tech.join(', ')}]${d.featured ? ' (featured)' : ''}`;
+	});
+	// Safety cap: drop oldest non-featured projects if still over budget.
+	const PROJECT_BUDGET = 6000;
+	while (
+		projectLines.join('\n').length > PROJECT_BUDGET &&
+		projectLines.some((_, i) => !sorted[i].data.featured)
+	) {
+		const idx = projectLines.findLastIndex((_, i) => !sorted[i].data.featured);
+		projectLines.splice(idx, 1);
+	}
+	const projectSection = `## Projects (${sorted.length} total)\n${projectLines.join('\n')}`;
 
 	// ── Blog ───────────────────────────────────────────────────────────────────
 	const publishedPosts = blogPosts.filter((p) => !p.data.draft);

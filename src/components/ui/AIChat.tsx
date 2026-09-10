@@ -195,7 +195,11 @@ function useChatMessages(isModelReady: boolean, promptRef: { current: string }) 
 
 			let fullResponse = '';
 			try {
-				const history = messages.map((m: Message) => ({ role: m.role, content: m.content }));
+				// Cap history: the on-device model has a 4k context window and
+				// the system prompt already fills most of it — unbounded
+				// history overflows the window and the call throws.
+				const recent = messages.slice(-6);
+				const history = recent.map((m: Message) => ({ role: m.role, content: m.content }));
 				const chunks = (await _engine?.chat.completions.create({
 					messages: [
 						{ role: 'system', content: promptRef.current },
@@ -218,7 +222,9 @@ function useChatMessages(isModelReady: boolean, promptRef: { current: string }) 
 						);
 					}
 				}
-			} catch {
+			} catch (err) {
+				// Log the real error (model/context failures otherwise vanish).
+				console.error('[AIChat] completion failed:', err);
 				setMessages((prev: Message[]) =>
 					prev.map((m: Message) =>
 						m.id === assistantId ? { ...m, content: 'Something went wrong. Please try again.' } : m
