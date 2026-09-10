@@ -1,19 +1,19 @@
 /* GAIA footer experiment - static styles that cannot be expressed with
    Tailwind utilities (SVG noise data-uri). */
 
-/* PP Editorial New, copied from the GAIA www repo (same company) for the
-   halftone wordmark rasterization. woff2 only — modern browsers. */
+/* Aeonik Extended Pro Bold, copied from the GAIA www repo (same company)
+   for the halftone wordmark rasterization. woff2 only — modern browsers. */
 @font-face {
-	font-family: 'PP Editorial New';
-	src: url('/fonts/PPEditorialNew-Regular.woff2') format('woff2');
-	font-weight: 400 800;
+	font-family: 'Aeonik';
+	src: url('/fonts/AeonikExtendedPro-Bold.woff2') format('woff2');
+	font-weight: 700;
 	font-style: normal;
 	font-display: swap;
 }
 
-/* Display serif for the wordmark probe (canvas resolves this family). */
+/* Display face for the wordmark probe (canvas resolves this family). */
 .gaia-footer-serif {
-	font-family: 'PP Editorial New', Georgia, 'Times New Roman', serif;
+	font-family: 'Aeonik', system-ui, sans-serif;
 }
 
 .gaia-footer-noise {

@@ -2,7 +2,7 @@
 title: "How to Stop Feeling Like Sh*t"
 author: "Andrea Owen"
 status: to-read
-cover: https://covers.openlibrary.org/b/id/14777563-L.jpg
+cover: https://www.hachettebookgroup.com/wp-content/uploads/2024/01/9781580056809.jpg
 year: 2017
 genre: []
 ---

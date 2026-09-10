@@ -28,7 +28,7 @@ export const experiments: Experiment[] = [
 		slug: 'gaia-footer',
 		title: 'GAIA Footer',
 		description: "heygaia.io's footer glow + interactive halftone GAIA dot-wordmark.",
-		bio: 'Ported from the GAIA www source. The wordmark is a live halftone dot grid rasterized from PP Editorial New and the GAIA mark — hover to swell the dots, click for the ripple.',
+		bio: 'Ported from the GAIA www source. The wordmark is a live halftone dot grid rasterized from Aeonik and the GAIA mark — hover to swell the dots, click for the ripple.',
 		date: '2026-09-10',
 	},
 ];

@@ -2,7 +2,7 @@
 title: "Cues"
 author: "Vanessa Van Edwards"
 status: to-read
-cover: https://covers.openlibrary.org/b/id/12854323-L.jpg
+cover: https://images.randomhouse.com/cover/9780593332191?width=500
 year: 2022
 genre: []
 ---
