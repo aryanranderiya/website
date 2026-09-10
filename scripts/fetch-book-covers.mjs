@@ -66,7 +66,7 @@ async function thumbhash(buffer) {
 async function main() {
 	await mkdir(OUT_DIR, { recursive: true });
 
-	const files = (await readdir(BOOKS_DIR)).filter((f) => f.endsWith('.md'));
+	const files = (await readdir(BOOKS_DIR)).filter((f) => f.endsWith('.md') && f !== 'README.md');
 	console.log(`Processing ${files.length} books…`);
 
 	const manifest = {};
