@@ -6,21 +6,21 @@
 	font-style: normal;
 	font-display: optional;
 	font-weight: 100 900;
-	src: url("@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2")
-		format("woff2-variations");
+	src: url("@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2") format("woff2-variations");
 	unicode-range:
 		U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
+
 @font-face {
 	font-family: "Inter Variable";
 	font-style: normal;
 	font-display: optional;
 	font-weight: 100 900;
-	src: url("@fontsource-variable/inter/files/inter-latin-wght-normal.woff2")
-		format("woff2-variations");
+	src: url("@fontsource-variable/inter/files/inter-latin-wght-normal.woff2") format("woff2-variations");
 	unicode-range:
 		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
+
 @import "tw-animate-css";
 
 /* ============================================
@@ -30,35 +30,35 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --breakpoint-sidebar: 60rem;
-  /* 960px — sidebar visibility threshold */
+	--breakpoint-sidebar: 60rem;
+	/* 960px — sidebar visibility threshold */
 
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 14px;
-  --radius-2xl: 20px;
-  --radius-3xl: 28px;
-  --radius-full: 9999px;
+	--radius-sm: 4px;
+	--radius-md: 6px;
+	--radius-lg: 10px;
+	--radius-xl: 14px;
+	--radius-2xl: 20px;
+	--radius-3xl: 28px;
+	--radius-full: 9999px;
 
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-border: var(--border);
-  --color-accent: var(--foreground);
-  --color-accent-blue: var(--accent-blue);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-destructive: var(--destructive);
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-border: var(--border);
+	--color-accent: var(--foreground);
+	--color-accent-blue: var(--accent-blue);
+	--color-card: var(--card);
+	--color-card-foreground: var(--card-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-input: var(--input);
+	--color-ring: var(--ring);
+	--color-destructive: var(--destructive);
 }
 
 /* ============================================
@@ -74,7 +74,7 @@
 	--text-secondary: rgba(0, 0, 0, 0.55);
 	--text-muted: rgba(0, 0, 0, 0.54);
 	--text-ghost: rgba(0, 0, 0, 0.32);
---text-faint: rgba(0, 0, 0, 0.2);
+	--text-faint: rgba(0, 0, 0, 0.2);
 
 	/* Sidebar nav text — lighter than body hierarchy */
 	--nav-text: rgba(0, 0, 0, 0.28);
@@ -123,7 +123,8 @@
 
 	/* Photo folders (camera) — frosted glass: milky body + a white top sheen (miskov.ee
 	   uses a white→transparent gradient overlay), photos read as soft hints behind */
-	--folder-sheen: rgba(255, 255, 255, 0.55); /* keep LOW — too much white hides the photos' backdrop-filter blur */
+	--folder-sheen: rgba(255, 255, 255, 0.55);
+	/* keep LOW — too much white hides the photos' backdrop-filter blur */
 	--folder-fill-top: rgba(255, 255, 255, 0.4);
 	--folder-fill-bot: rgba(255, 255, 255, 0.3);
 	--folder-edge: rgba(0, 0, 0, 0.13);
@@ -131,11 +132,16 @@
 
 	/* Bookshelf — 3D plank: greyish TOP surface + WHITE front face, each outlined,
 	   so the two layers read as distinct planes. */
-	--shelf-top-a: #d8d8d8; /* top surface, back edge (greyish) */
-	--shelf-top-b: #e6e6e6; /* top surface, front edge */
-	--shelf-front-a: #ffffff; /* front face, top (white) */
-	--shelf-front-b: #f1f1f1; /* front face, bottom */
-	--shelf-line: rgba(0, 0, 0, 0.1); /* outline of both layers */
+	--shelf-top-a: #d8d8d8;
+	/* top surface, back edge (greyish) */
+	--shelf-top-b: #e6e6e6;
+	/* top surface, front edge */
+	--shelf-front-a: #ffffff;
+	/* front face, top (white) */
+	--shelf-front-b: #f1f1f1;
+	/* front face, bottom */
+	--shelf-line: rgba(0, 0, 0, 0.1);
+	/* outline of both layers */
 
 	/* Typography scale — editorial (13px body, NOT 16px) */
 	--text-2xs: 0.625rem;
@@ -211,7 +217,7 @@
 	--text-secondary: rgba(255, 255, 255, 0.55);
 	--text-muted: rgba(255, 255, 255, 0.54);
 	--text-ghost: rgba(255, 255, 255, 0.32);
---text-faint: rgba(255, 255, 255, 0.24);
+	--text-faint: rgba(255, 255, 255, 0.24);
 
 	--nav-text: rgba(255, 255, 255, 0.28);
 	--nav-text-hover: rgba(255, 255, 255, 0.48);
@@ -324,7 +330,7 @@ body {
 }
 
 .text-heading-1 {
-	font-size: clamp(1.5rem, 3.5vw, 2rem);
+	font-size: clamp(1.3rem, 3.5vw, 1rem);
 	font-weight: var(--font-semibold);
 	line-height: var(--leading-tight);
 	letter-spacing: var(--tracking-tight);
@@ -683,10 +689,11 @@ a {
 	border-radius: 999px;
 }
 
-.prose blockquote > :first-child {
+.prose blockquote> :first-child {
 	margin-top: 0;
 }
-.prose blockquote > :last-child {
+
+.prose blockquote> :last-child {
 	margin-bottom: 0;
 }
 
@@ -754,8 +761,8 @@ a {
 }
 
 hr {
-margin: 20px 0 ;
-opacity: 30%;
+	margin: 20px 0;
+	opacity: 30%;
 }
 
 .prose mark {
@@ -789,6 +796,7 @@ opacity: 30%;
 	top: -0.5em;
 	position: relative;
 }
+
 .prose sub {
 	bottom: -0.25em;
 	position: relative;
@@ -809,6 +817,7 @@ opacity: 30%;
 	margin-bottom: 0.5em;
 	letter-spacing: -0.01em;
 }
+
 .prose h5,
 .prose h6 {
 	font-size: 0.85rem;
@@ -832,12 +841,15 @@ opacity: 30%;
 .prose ul {
 	list-style: disc;
 }
+
 .prose ul ul {
 	list-style: circle;
 }
+
 .prose ul ul ul {
 	list-style: square;
 }
+
 .prose ol {
 	list-style: decimal;
 }
@@ -848,15 +860,18 @@ opacity: 30%;
 	list-style: none;
 	padding-left: 0;
 }
+
 .prose ul.contains-task-list {
 	padding-left: 0.25em;
 }
+
 .prose li.task-list-item {
 	display: flex;
 	align-items: flex-start;
 	gap: 0.5em;
 }
-.prose li.task-list-item > input[type="checkbox"] {
+
+.prose li.task-list-item>input[type="checkbox"] {
 	margin-top: 0.35em;
 	accent-color: var(--text-primary);
 	width: 14px;
@@ -872,9 +887,11 @@ opacity: 30%;
 	overflow-x: auto;
 	display: block;
 }
+
 .prose thead {
 	border-bottom: 1px solid var(--border-strong);
 }
+
 .prose th,
 .prose td {
 	padding: 0.55em 0.8em;
@@ -882,6 +899,7 @@ opacity: 30%;
 	vertical-align: top;
 	border-bottom: 1px solid var(--border);
 }
+
 .prose th {
 	color: var(--text-ghost);
 	font-size: 0.78em;
@@ -889,9 +907,11 @@ opacity: 30%;
 	text-transform: uppercase;
 	letter-spacing: 0.06em;
 }
+
 .prose td {
 	color: var(--text-secondary);
 }
+
 .prose tbody tr:last-child td {
 	border-bottom: none;
 }
@@ -900,6 +920,7 @@ opacity: 30%;
 .prose figure {
 	margin: 1.5em 0;
 }
+
 .prose figcaption {
 	font-size: 0.85em;
 	color: var(--text-ghost);
@@ -927,10 +948,12 @@ simple-player {
 	gap: 0.35em 1.25em;
 	margin: 1.25em 0;
 }
+
 .prose dt {
 	color: var(--text-primary);
 	font-weight: var(--font-semibold);
 }
+
 .prose dd {
 	color: var(--text-secondary);
 	margin: 0;
@@ -943,9 +966,11 @@ simple-player {
 	background: var(--muted-bg);
 	border-radius: var(--radius-lg);
 }
+
 .prose details[open] summary {
 	margin-bottom: 0.75em;
 }
+
 .prose summary {
 	cursor: pointer;
 	color: var(--text-primary);
@@ -954,9 +979,11 @@ simple-player {
 	position: relative;
 	padding-left: 1.25em;
 }
+
 .prose summary::-webkit-details-marker {
 	display: none;
 }
+
 .prose summary::before {
 	content: "▸";
 	position: absolute;
@@ -965,6 +992,7 @@ simple-player {
 	transition: transform 0.15s ease;
 	color: var(--text-muted);
 }
+
 .prose details[open] summary::before {
 	transform: rotate(90deg);
 }
@@ -986,14 +1014,12 @@ simple-player {
 	position: absolute;
 	inset: 0;
 	border-radius: 3px;
-	background: linear-gradient(
-		110deg,
-		transparent 15%,
-		rgba(64, 196, 99, 0.28) 45%,
-		rgba(64, 196, 99, 0.42) 50%,
-		rgba(64, 196, 99, 0.28) 55%,
-		transparent 85%
-	);
+	background: linear-gradient(110deg,
+			transparent 15%,
+			rgba(64, 196, 99, 0.28) 45%,
+			rgba(64, 196, 99, 0.42) 50%,
+			rgba(64, 196, 99, 0.28) 55%,
+			transparent 85%);
 	background-size: 220% 100%;
 	animation: github-graph-shimmer 1.6s ease-in-out infinite;
 	pointer-events: none;
@@ -1004,6 +1030,7 @@ simple-player {
 	from {
 		background-position: 220% 0;
 	}
+
 	to {
 		background-position: -120% 0;
 	}
@@ -1022,6 +1049,7 @@ simple-player {
 	border-radius: 3px;
 	transition: background 120ms ease;
 }
+
 .prose sup a[data-footnote-ref]:hover,
 .prose a[data-footnote-ref]:hover {
 	background: color-mix(in srgb, var(--accent-blue) 18%, transparent);
@@ -1035,8 +1063,9 @@ simple-player {
 	font-size: 0.85em;
 	color: var(--text-muted);
 }
-.prose section.footnotes > h2,
-.prose section[data-footnotes] > h2 {
+
+.prose section.footnotes>h2,
+.prose section[data-footnotes]>h2 {
 	/* "Footnotes" heading that GFM injects — use the same label style as h5/h6 */
 	font-size: 0.72rem;
 	font-weight: var(--font-semibold);
@@ -1046,20 +1075,24 @@ simple-player {
 	margin-top: 0;
 	margin-bottom: 0.8em;
 }
+
 .prose section.footnotes ol,
 .prose section[data-footnotes] ol {
 	padding-left: 1.5em;
 }
+
 .prose section.footnotes li,
 .prose section[data-footnotes] li {
 	margin-bottom: 0.5em;
 }
+
 .prose a[data-footnote-backref] {
 	text-decoration: none;
 	color: var(--text-ghost);
 	margin-left: 0.25em;
 	transition: color 120ms ease;
 }
+
 .prose a[data-footnote-backref]:hover {
 	color: var(--accent-blue);
 }
@@ -1087,12 +1120,15 @@ simple-player {
 		transform 150ms ease,
 		filter 150ms ease;
 }
+
 .fn-tooltip p {
 	margin: 0;
 }
-.fn-tooltip p + p {
+
+.fn-tooltip p+p {
 	margin-top: 0.4em;
 }
+
 .fn-tooltip--visible {
 	opacity: 1;
 	transform: translateY(0);
@@ -1233,6 +1269,7 @@ html.has-transitioned .animate-fade-in {
    REDUCED MOTION
    ============================================ */
 @media (prefers-reduced-motion: reduce) {
+
 	*,
 	*::before,
 	*::after {
@@ -1298,33 +1335,56 @@ html.vt-nav #page-content {
 ::view-transition-group(page-content) {
 	animation: none;
 }
+
 ::view-transition-image-pair(page-content) {
 	isolation: auto;
 }
+
 ::view-transition-old(page-content) {
 	animation: 220ms cubic-bezier(0.6, 0, 0.8, 1) forwards page-hide;
 }
+
 ::view-transition-new(page-content) {
 	opacity: 0;
 	animation: 320ms 100ms var(--ease-expo) forwards page-appear;
 }
 
 @keyframes fade-in {
-	from { opacity: 0; }
-	to   { opacity: 1; }
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
 }
 
 @keyframes page-hide {
-	from { opacity: 1; filter: blur(0); }
-	to   { opacity: 0; filter: blur(3px); }
+	from {
+		opacity: 1;
+		filter: blur(0);
+	}
+
+	to {
+		opacity: 0;
+		filter: blur(3px);
+	}
 }
 
 @keyframes page-appear {
-	from { opacity: 0; filter: blur(3px); }
-	to   { opacity: 1; filter: blur(0); }
+	from {
+		opacity: 0;
+		filter: blur(3px);
+	}
+
+	to {
+		opacity: 1;
+		filter: blur(0);
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
+
 	::view-transition-old(page-content),
 	::view-transition-new(page-content) {
 		animation: none;
@@ -1404,11 +1464,12 @@ html.vt-nav #page-content {
 }
 
 @layer base {
-  .maplibregl-popup-content {
-    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+	.maplibregl-popup-content {
+		@apply bg-transparent! shadow-none! p-0! rounded-none!;
 	}
-  .maplibregl-popup-tip {
-    @apply hidden!;
+
+	.maplibregl-popup-tip {
+		@apply hidden!;
 	}
 }
 

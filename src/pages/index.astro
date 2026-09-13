@@ -26,12 +26,15 @@ const latestPosts = allPosts
 			Number(b.data.featured ?? false) - Number(a.data.featured ?? false) ||
 			new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
 	)
-	.slice(0, 3)
-	.map((p) => ({
-		slug: slugOf(p),
-		title: p.data.title,
-		date: new Date(p.data.date).toISOString(),
-	}));
+	.map((p) => {
+		const { date, ...rest } = p.data;
+
+		return {
+			slug: slugOf(p),
+			date: new Date(date).toISOString(),
+			...rest,
+		};
+	});
 ---
 
 <PageLayout
@@ -41,6 +44,8 @@ const latestPosts = allPosts
 >
   <!-- Hero -->
   <Hero />
+
+  <BlogPreview posts={latestPosts} client:visible />
 
   <!-- Spotify + Map -->
   <section class="pb-4">
@@ -54,8 +59,6 @@ const latestPosts = allPosts
   <div class="pb-8">
     <SocialsGrid client:idle />
   </div>
-
-  <BlogPreview posts={latestPosts} client:visible />
 
   <Signature client:visible />
 </PageLayout>

@@ -16,27 +16,30 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
 
 <nav id="toc" aria-label="Table of contents" hidden>
-  <p class="flex items-center gap-[5px] text-[10px] font-medium tracking-[0.08em] uppercase text-[var(--text-ghost)] mb-[10px]">
-    <HugeiconsIcon icon={TextAlignLeftIcon} size={11} color="var(--text-ghost)" />
+  <p
+    class="flex items-center gap-[5px] text-[10px] font-medium lowercase text-[var(--text-ghost)] mb-[10px]"
+  >
     On this page
   </p>
   <div class="toc-list-wrapper">
-    <div id="toc-indicator" aria-hidden="true" />
+    <div id="toc-indicator" aria-hidden="true"></div>
     <ul id="toc-list" class="list-none p-0 m-0 flex flex-col gap-px">
-      {toc.map((h) => (
-        <li>
-          <a
-            href={`#${h.slug}`}
-            class:list={[
-              'toc-link block leading-[1.5] py-[3px] no-underline',
-              h.depth === 3 ? 'pl-[10px] text-[11px]' : 'text-[11.5px]',
-            ]}
-            data-heading={h.slug}
-          >
-            {h.text}
-          </a>
-        </li>
-      ))}
+      {
+        toc.map((h) => (
+          <li>
+            <a
+              href={`#${h.slug}`}
+              class:list={[
+                "toc-link block leading-[1.5] py-[3px] no-underline",
+                h.depth === 3 ? "pl-[10px] text-[11px]" : "text-[11.5px]",
+              ]}
+              data-heading={h.slug}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))
+      }
     </ul>
   </div>
 
@@ -158,59 +161,65 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
   let tocObserver: IntersectionObserver | null = null;
 
   function buildToc() {
-    const nav = document.getElementById('toc');
-    const list = document.getElementById('toc-list');
-    const content = document.querySelector('.prose');
+    const nav = document.getElementById("toc");
+    const list = document.getElementById("toc-list");
+    const content = document.querySelector(".prose");
     if (!nav || !list || !content) return;
 
     // Collect headings + tagged images in document order.
     const nodes = Array.from(
-      content.querySelectorAll<HTMLElement>('h2[id], h3[id], [data-toc]'),
+      content.querySelectorAll<HTMLElement>("h2[id], h3[id], [data-toc]"),
     );
 
-    const iconTpl = document.getElementById('toc-img-icon') as HTMLTemplateElement | null;
+    const iconTpl = document.getElementById(
+      "toc-img-icon",
+    ) as HTMLTemplateElement | null;
     const frag = document.createDocumentFragment();
     let count = 0;
     let imgIndex = 0;
 
     for (const node of nodes) {
       if (!node.id) continue;
-      const li = document.createElement('li');
-      const a = document.createElement('a');
+      const li = document.createElement("li");
+      const a = document.createElement("a");
       a.href = `#${node.id}`;
       a.dataset.heading = node.id;
 
-      if (node.hasAttribute('data-toc')) {
-        const label = node.dataset.tocLabel ?? '';
-        const mode = node.dataset.tocMode === 'line' ? 'line' : 'inline';
-        const thumb = node.dataset.tocThumb ?? '';
-        a.className = 'toc-link toc-img block py-[4px] no-underline text-[11px]';
+      if (node.hasAttribute("data-toc")) {
+        const label = node.dataset.tocLabel ?? "";
+        const mode = node.dataset.tocMode === "line" ? "line" : "inline";
+        const thumb = node.dataset.tocThumb ?? "";
+        a.className =
+          "toc-link toc-img block py-[4px] no-underline text-[11px]";
 
         if (thumb) a.dataset.preview = thumb;
 
-        if (mode === 'inline' && thumb) {
-          const img = document.createElement('img');
-          img.className = 'toc-thumb';
+        if (mode === "inline" && thumb) {
+          const img = document.createElement("img");
+          img.className = "toc-thumb";
           img.src = thumb;
-          img.alt = '';
-          img.loading = 'lazy';
+          img.alt = "";
+          img.loading = "lazy";
           // Alternate a slight tilt for a scattered-photo feel.
-          img.style.setProperty('--toc-thumb-rot', imgIndex % 2 === 0 ? '-5deg' : '5deg');
+          img.style.setProperty(
+            "--toc-thumb-rot",
+            imgIndex % 2 === 0 ? "-5deg" : "5deg",
+          );
           imgIndex += 1;
           a.appendChild(img);
         } else if (iconTpl) {
           a.appendChild(iconTpl.content.cloneNode(true));
         }
 
-        const span = document.createElement('span');
-        span.className = 'toc-img-label';
+        const span = document.createElement("span");
+        span.className = "toc-img-label";
         span.textContent = label;
         a.appendChild(span);
       } else {
-        const isH3 = node.tagName === 'H3';
+        const isH3 = node.tagName === "H3";
         a.className = isH3
-          ? 'toc-link block leading-[1.5] py-[3px] no-underline pl-[10px] text-[11px]'
-          : 'toc-link block leading-[1.5] py-[3px] no-underline text-[11.5px]';
+          ? "toc-link block leading-[1.5] py-[3px] no-underline pl-[10px] text-[11px]"
+          : "toc-link block leading-[1.5] py-[3px] no-underline text-[11.5px]";
         a.textContent = node.textContent;
       }
 
@@ -222,8 +231,8 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
     // Only show the TOC when there are at least two entries.
     if (count < 2) {
       nav.hidden = true;
-      const aside = nav.closest('aside');
-      if (aside) (aside as HTMLElement).style.display = 'none';
+      const aside = nav.closest("aside");
+      if (aside) (aside as HTMLElement).style.display = "none";
       return;
     }
 
@@ -239,13 +248,17 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
       tocObserver = null;
     }
 
-    const indicator = document.getElementById('toc-indicator') as HTMLElement | null;
-    const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('#toc .toc-link'));
+    const indicator = document.getElementById(
+      "toc-indicator",
+    ) as HTMLElement | null;
+    const links = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>("#toc .toc-link"),
+    );
     if (!links.length) return;
 
     function moveIndicator(link: HTMLAnchorElement) {
       if (!indicator) return;
-      indicator.style.opacity = '1';
+      indicator.style.opacity = "1";
       indicator.style.transform = `translateY(${link.offsetTop}px)`;
       indicator.style.height = `${link.offsetHeight}px`;
     }
@@ -254,10 +267,10 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
       let found: HTMLAnchorElement | null = null;
       for (const link of links) {
         if (link.dataset.heading === id) {
-          link.classList.add('active');
+          link.classList.add("active");
           found = link;
         } else {
-          link.classList.remove('active');
+          link.classList.remove("active");
         }
       }
       if (found) moveIndicator(found);
@@ -265,7 +278,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
     const firstLink = links[0];
     if (firstLink) {
-      firstLink.classList.add('active');
+      firstLink.classList.add("active");
       requestAnimationFrame(() => moveIndicator(firstLink));
     }
 
@@ -275,7 +288,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
           if (entry.isIntersecting) setActive(entry.target.id);
         }
       },
-      { rootMargin: '0px 0px -70% 0px', threshold: 0 },
+      { rootMargin: "0px 0px -70% 0px", threshold: 0 },
     );
 
     links.forEach((link) => {
@@ -295,9 +308,9 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
   function ensurePreview() {
     if (preview) return;
-    preview = document.createElement('div');
-    preview.className = 'toc-preview';
-    previewImg = document.createElement('img');
+    preview = document.createElement("div");
+    preview.className = "toc-preview";
+    previewImg = document.createElement("img");
     preview.appendChild(previewImg);
     document.body.appendChild(preview);
   }
@@ -309,7 +322,7 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
     const h = preview.offsetHeight;
     // Anchor to the left of the TOC rail so it never overlaps the entries;
     // only the vertical position tracks the cursor.
-    const nav = document.getElementById('toc');
+    const nav = document.getElementById("toc");
     const railLeft = nav ? nav.getBoundingClientRect().left : e.clientX;
     let left = railLeft - gap - w;
     if (left < 8) left = 8; // fallback on narrow viewports
@@ -321,26 +334,28 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
   function wireImagePreview() {
     const imgLinks = Array.from(
-      document.querySelectorAll<HTMLAnchorElement>('#toc .toc-link.toc-img'),
+      document.querySelectorAll<HTMLAnchorElement>("#toc .toc-link.toc-img"),
     );
     for (const link of imgLinks) {
       const src = link.dataset.preview;
       if (!src) continue;
 
-      link.addEventListener('mouseenter', (e) => {
+      link.addEventListener("mouseenter", (e) => {
         ensurePreview();
         if (previewImg && previewImg.src !== src) previewImg.src = src;
         movePreview(e as MouseEvent);
-        requestAnimationFrame(() => preview?.classList.add('toc-preview--visible'));
+        requestAnimationFrame(() =>
+          preview?.classList.add("toc-preview--visible"),
+        );
       });
 
-      link.addEventListener('mousemove', (e) => movePreview(e as MouseEvent));
+      link.addEventListener("mousemove", (e) => movePreview(e as MouseEvent));
 
-      link.addEventListener('mouseleave', () => {
-        preview?.classList.remove('toc-preview--visible');
+      link.addEventListener("mouseleave", () => {
+        preview?.classList.remove("toc-preview--visible");
       });
     }
   }
 
-  document.addEventListener('astro:page-load', initToc);
+  document.addEventListener("astro:page-load", initToc);
 </script>
