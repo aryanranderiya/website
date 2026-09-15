@@ -4,6 +4,7 @@
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "astro dev",
+		"dev:fresh": "rm -rf node_modules/.vite && astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
 		"astro": "astro",
@@ -16,6 +17,8 @@
 		"type-check": "astro check",
 		"lint:emdash": "! grep -r '\\xe2\\x80\\x94' src --include='*.ts' --include='*.tsx' --include='*.astro' --include='*.md' --include='*.mdx' -l",
 		"covers": "node scripts/fetch-book-covers.mjs",
+		"gaia:components": "bun scripts/fetch-gaia-components.mjs",
+		"gaia:vendor": "bun scripts/fetch-gaia-vendor.mjs",
 		"unused-assets": "node scripts/find-unused-assets.mjs",
 		"validate-media": "node scripts/validate-media.mjs",
 		"image-budget": "node scripts/image-budget.mjs",

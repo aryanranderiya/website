@@ -83,6 +83,19 @@
 			"linter": { "enabled": false },
 			"formatter": { "enabled": false },
 			"assist": { "enabled": false }
+		},
+		{
+			"includes": [
+				"src/components/experiments/gaia-ui/chat-demo.tsx",
+				"src/components/experiments/gaia-ui/iphone-mockup.tsx",
+				"src/components/experiments/gaia-ui/footer-glow.tsx",
+				"src/components/experiments/gaia-ui/footer-wordmark.tsx",
+				"src/components/experiments/gaia-ui/grain-overlay.tsx",
+				"src/components/home/VinylDisk.tsx"
+			],
+			"linter": { "enabled": false },
+			"formatter": { "enabled": false },
+			"assist": { "enabled": false }
 		}
 	]
 }

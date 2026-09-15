@@ -1,0 +1,14 @@
+/* Aeonik Extended Pro Bold — display face for the GAIA wordmark canvas
+   rasterization, matching the GAIA UI docs demo. woff2 only. */
+@font-face {
+	font-family: 'Aeonik';
+	src: url('/fonts/AeonikExtendedPro-Bold.woff2') format('woff2');
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+/* Probe class: the wordmark canvas resolves its family from this element. */
+.gaia-ui-wordmark {
+	font-family: 'Aeonik', system-ui, sans-serif;
+}

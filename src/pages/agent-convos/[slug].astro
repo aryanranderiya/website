@@ -203,7 +203,7 @@ const metaIconColor = 'var(--text-ghost)';
 
     {/* Hover link previews + click-to-zoom images (shared with blog/projects) */}
     <BlogLinks client:idle />
-    <Lightbox target=".prose img:not(.blog-link-favicon):not(.not-prose *)" />
+    <Lightbox target=".prose img:not(.blog-link-favicon):not(.not-prose *), .tweet-embed img.tweet-media" />
 
     {/* Footer */}
     <div class="mt-16 pt-10" style="border-top: 1px solid var(--border);">

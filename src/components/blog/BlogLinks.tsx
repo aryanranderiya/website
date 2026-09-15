@@ -36,6 +36,7 @@ export default function BlogLinks() {
 	const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 	const activeAnchorRef = useRef<HTMLAnchorElement | null>(null);
 
+	// react-doctor-disable-next-line react-doctor/effect-needs-cleanup -- the cleanup below owns every allocation (observer disconnect, per-anchor listeners, scroll/swap listeners, pending timer); the array just keeps per-anchor teardown together.
 	useEffect(() => {
 		const cleanup: Array<() => void> = [];
 

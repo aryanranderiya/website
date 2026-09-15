@@ -33,7 +33,7 @@ export const experiments: Experiment[] = [
 		slug: 'footer-glow',
 		title: 'Footer Glow',
 		description: 'GAIA UI glowing footer backdrop with the halftone wordmark.',
-		bio: 'Live embeds from the GAIA UI docs — same component family as the GAIA Footer experiment above, shown in its documented variants.',
+		bio: 'Live embed from the GAIA UI docs, rendered natively with the interactive dot-grid wordmark.',
 		date: '2026-09-11',
 		gaiaUi: gaiaUiEmbedFor('footer-glow'),
 	},
@@ -44,12 +44,5 @@ export const experiments: Experiment[] = [
 			'A holographic membership card with a cursor-tracked foil sheen, a 3D parallax tilt, and a flip to the back - clipped to a postage-stamp die-cut silhouette.',
 		bio: "This is the exact holo card from GAIA's onboarding flow, dropped in here as an experiment. The foil is a mix-blend-mode 'color-dodge' gradient that tracks your cursor; the 3D tilt is react-parallax-tilt; the silhouette is an SVG postage-stamp clip-path scaled to the card. Move your mouse across it to watch the foil shift, and click it to flip to the back.",
 		date: '2026-05-22',
-	},
-	{
-		slug: 'gaia-footer',
-		title: 'GAIA Footer',
-		description: "heygaia.io's footer glow + interactive halftone GAIA dot-wordmark.",
-		bio: 'Ported from the GAIA www source. The wordmark is a live halftone dot grid rasterized from Aeonik and the GAIA mark — hover to swell the dots, click for the ripple.',
-		date: '2026-09-10',
 	},
 ];

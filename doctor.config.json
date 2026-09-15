@@ -1,0 +1,23 @@
+{
+	"$schema": "https://react.doctor/schema/config.json",
+	// Vendored upstream sources (overwritten by scripts/fetch-gaia-vendor.mjs):
+	// local fixes would be wiped on the next sync, so they are excluded here.
+	"ignore": {
+		"files": [
+			"src/components/experiments/gaia-ui/chat-demo.tsx",
+			"src/components/experiments/gaia-ui/iphone-mockup.tsx",
+			"src/components/experiments/gaia-ui/footer-glow.tsx",
+			"src/components/experiments/gaia-ui/footer-wordmark.tsx",
+			"src/components/experiments/gaia-ui/grain-overlay.tsx",
+			"src/components/home/VinylDisk.tsx"
+		],
+		// 30s instrumental preview: hidden programmatic audio driven by a
+		// labelled toggle; captions N/A (track title/artist shown as text).
+		"overrides": [
+			{
+				"files": ["src/components/home/SpotifyWidget.tsx"],
+				"rules": ["react-doctor/media-has-caption"]
+			}
+		]
+	}
+}

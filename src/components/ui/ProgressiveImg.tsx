@@ -17,6 +17,40 @@ interface ProgressiveImgProps {
 	eager?: boolean;
 }
 
+/** Plain image path (no thumbhash): own component so the main branch stays lean. */
+function PlainImg({
+	src,
+	alt,
+	className,
+	imgStyle,
+	onClick,
+	eager = false,
+}: {
+	src: string;
+	alt: string;
+	className?: string;
+	imgStyle?: React.CSSProperties;
+	onClick?: () => void;
+	eager?: boolean;
+}) {
+	return (
+		<img
+			src={src}
+			alt={alt}
+			loading={eager ? 'eager' : 'lazy'}
+			fetchPriority={eager ? 'high' : 'auto'}
+			decoding="async"
+			className={className}
+			// biome-ignore lint/nursery/noInlineStyles: style prop passed from parent for dynamic overrides
+			style={imgStyle}
+			onClick={onClick}
+			onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
+			role={onClick ? 'button' : undefined}
+			tabIndex={onClick ? 0 : undefined}
+		/>
+	);
+}
+
 /**
  * Progressive image component using Figma's thumbhash algorithm.
  *
@@ -58,19 +92,13 @@ export default function ProgressiveImg({
 	// No hash - plain image, no extra DOM
 	if (!hash) {
 		return (
-			<img
+			<PlainImg
 				src={src}
 				alt={alt}
-				loading={eager ? 'eager' : 'lazy'}
-				fetchPriority={eager ? 'high' : 'auto'}
-				decoding="async"
 				className={imgClassName}
-				// biome-ignore lint/nursery/noInlineStyles: style prop passed from parent for dynamic overrides
-				style={imgStyle}
+				imgStyle={imgStyle}
 				onClick={onClick}
-				onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
-				role={onClick ? 'button' : undefined}
-				tabIndex={onClick ? 0 : undefined}
+				eager={eager}
 			/>
 		);
 	}

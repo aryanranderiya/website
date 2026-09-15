@@ -1,9 +1,15 @@
 ---
-import GaiaFooter from '@/components/experiments/gaia-footer/GaiaFooter';
+import { ChatDemoInPhone } from '@/components/experiments/gaia-ui/demos';
+import { FooterGlow } from '@/components/experiments/gaia-ui/footer-glow';
+import '@/components/experiments/gaia-ui/wordmark-font.css';
 import HoloCardIsland from '@/components/experiments/HoloCardIsland';
 import { DEMO_CARD } from '@/components/experiments/holo-card/demo';
 import { experiments } from '@/data/experiments';
 import PageLayout from '@/layouts/PageLayout.astro';
+
+// Single-column previews first so they pair up; full-width ones after.
+const WIDE = new Set(['footer-glow']);
+const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number(WIDE.has(b.slug)));
 ---
 
 <PageLayout title="Experiments" description="A grid of small interactive component experiments.">
@@ -13,37 +19,33 @@ import PageLayout from '@/layouts/PageLayout.astro';
 
   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
     {
-      experiments.map((exp, i) => (
-        exp.gaiaUi ? (
+      ordered.map((exp, i) => (
+        exp.slug === "chat-demo" ? (
         <a
           href={`/experiments/${exp.slug}`}
-          class="group block cursor-pointer rounded-2xl bg-[var(--muted-bg)] p-6 animate-fade-in sm:col-span-2"
+          class="group flex cursor-pointer items-center justify-center rounded-2xl bg-[var(--muted-bg)] px-6 py-10 animate-fade-in"
           style={`animation-delay:${0.15 + i * 0.07}s`}
           aria-label={exp.title}
         >
-          {/* static native preview - title, lead, variant chips */}
-          <div class="mb-1 text-[15px] font-semibold tracking-[-0.01em]">{exp.title}</div>
-          <p class="mb-4 max-w-xl text-[13px] text-[var(--text-muted)] leading-relaxed">{exp.gaiaUi.description}</p>
-          <div class="flex flex-wrap gap-1.5">
-            {exp.gaiaUi.variants.map((v) => (
-              <span class="rounded-full border border-[var(--border)] px-2.5 py-1 text-[11px] text-[var(--text-muted)]">
-                {v.name}
-              </span>
-            ))}
+          {/* live preview - scaled iPhone so it fits the card; layout matches the scaled size but paint (shadow) is unclipped */}
+          <div class="pointer-events-none h-[375px] w-[179px] transition-transform duration-300 ease-out group-hover:scale-[1.04]">
+            <div class="origin-top-left scale-[0.46]">
+              <ChatDemoInPhone platform="imessage" client:only="react" />
+            </div>
           </div>
         </a>
-        ) : exp.slug === "gaia-footer" ? (
-          <a
-            href={`/experiments/${exp.slug}`}
-            class="group block cursor-pointer overflow-hidden rounded-2xl bg-[var(--muted-bg)] animate-fade-in sm:col-span-2"
-            style={`animation-delay:${0.15 + i * 0.07}s`}
-            aria-label={exp.title}
-          >
-            {/* static preview - natural footer height; clicks open the detail */}
-            <div class="pointer-events-none w-full overflow-hidden">
-              <GaiaFooter client:only="react" />
-            </div>
-          </a>
+        ) : exp.slug === "footer-glow" ? (
+        <a
+          href={`/experiments/${exp.slug}`}
+          class="group block cursor-pointer rounded-2xl bg-[var(--muted-bg)] animate-fade-in sm:col-span-2"
+          style={`animation-delay:${0.15 + i * 0.07}s`}
+          aria-label={exp.title}
+        >
+          {/* live preview - natural glow height, root rounds itself; clicks open the detail */}
+          <div class="pointer-events-none w-full">
+            <FooterGlow text="GAIA" logoSrc="/images/experiments/gaia-footer/logo.webp" backgroundSrc="/images/experiments/footer-glow-wallpaper.jpg" fontClassName="gaia-ui-wordmark font-bold" className="rounded-2xl" client:only="react" />
+          </div>
+        </a>
         ) : (
         <a
           href={`/experiments/${exp.slug}`}

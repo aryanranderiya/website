@@ -21,6 +21,62 @@ const RESPONSE_HEADERS = {
 
 const NOT_PLAYING = JSON.stringify({ isPlaying: false });
 
+/**
+ * Spotify's own `preview_url` is effectively dead (null for almost every
+ * track since 2024), so 30s samples come from the iTunes Search API instead:
+ * no auth, CORS-open, `previewUrl` is a playable m4a. We match loosely
+ * (Spotify titles carry "Remastered"/"Live"/"feat." suffixes iTunes lacks)
+ * and return null rather than the wrong song.
+ */
+function norm(s: string): string {
+	return s
+		.toLowerCase()
+		.replace(/\(.*?\)/g, '')
+		.replace(/\[.*?\]/g, '')
+		.replace(/\s+-\s+.*$/, '')
+		.replace(/feat\.?.*$/, '')
+		.replace(/[^a-z0-9\s]/g, '')
+		.replace(/\s+/g, ' ')
+		.trim();
+}
+
+async function lookupPreviewUrl(title: string, artist: string): Promise<string | null> {
+	const wantTrack = norm(title);
+	const wantArtist = norm(artist).split(' ')[0];
+	if (!wantTrack) return null;
+	try {
+		const res = await fetch(
+			`https://itunes.apple.com/search?term=${encodeURIComponent(`${artist} ${title}`)}&media=music&entity=song&limit=6`,
+			{ signal: AbortSignal.timeout(4000) }
+		);
+		if (!res.ok) return null;
+		const data = (await res.json()) as {
+			results?: { trackName?: string; artistName?: string; previewUrl?: string }[];
+		};
+		let best: string | null = null;
+		let bestScore = 0;
+		const wantTokens = new Set(wantTrack.split(' ').filter(Boolean));
+		for (const r of data.results ?? []) {
+			const gotTrack = norm(r.trackName ?? '');
+			const gotArtist = norm(r.artistName ?? '');
+			let overlap = 0;
+			for (const token of gotTrack.split(' ')) {
+				if (token && wantTokens.has(token)) overlap++;
+			}
+			const trackScore = gotTrack === wantTrack ? 2 : overlap > 0 ? 1 : 0;
+			const artistScore = wantArtist && new Set(gotArtist.split(' ')).has(wantArtist) ? 1 : 0;
+			if (trackScore + artistScore > bestScore && r.previewUrl) {
+				bestScore = trackScore + artistScore;
+				best = r.previewUrl;
+			}
+		}
+		// Require at least a contains-match on the title plus the artist.
+		return bestScore >= 2 ? best : null;
+	} catch {
+		return null;
+	}
+}
+
 interface SpotifyEnv {
 	SPOTIFY_CLIENT_ID?: string;
 	SPOTIFY_CLIENT_SECRET?: string;
@@ -98,15 +154,20 @@ export const GET: APIRoute = async () => {
 		return new Response(NOT_PLAYING, { status: 200, headers: RESPONSE_HEADERS });
 	}
 
+	const artist = data.item.artists.map((a) => a.name).join(', ');
+
 	const track = {
 		isPlaying: data.is_playing,
 		title: data.item.name,
-		artist: data.item.artists.map((a) => a.name).join(', '),
+		artist,
 		album: data.item.album.name,
 		albumArt: data.item.album.images[0]?.url,
 		songUrl: data.item.external_urls.spotify,
 		progress: data.progress_ms,
 		duration: data.item.duration_ms,
+		// 30s playable sample (see lookupPreviewUrl). Null when unmatched —
+		// the widget hides the vinyl player in that case.
+		previewUrl: await lookupPreviewUrl(data.item.name, artist),
 	};
 
 	return new Response(JSON.stringify(track), { status: 200, headers: RESPONSE_HEADERS });

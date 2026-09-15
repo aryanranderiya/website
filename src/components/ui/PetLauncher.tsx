@@ -97,7 +97,8 @@ export function PetLauncher() {
 	// match (no hydration-mismatch warnings), then switch to the stored pet.
 	const renderPet = mounted ? pet : { animal: 'dog', color: 'brown' };
 	const [open, setOpen] = useState(false);
-	const [petPos, setPetPos] = useState<{ x: number; y: number } | null>(null);
+	const [petPos, setPetPos] = useState<{ x: number; y: number; h: number } | null>(null);
+	const [popH, setPopH] = useState(0);
 	const popoverRef = useRef<HTMLDivElement>(null);
 	const rafRef = useRef<number | null>(null);
 
@@ -105,7 +106,7 @@ export function PetLauncher() {
 		const el = document.querySelector('[data-webpet-container]') as HTMLElement;
 		if (el) {
 			const rect = el.getBoundingClientRect();
-			setPetPos({ x: rect.left + rect.width / 2, y: rect.top });
+			setPetPos({ x: rect.left + rect.width / 2, y: rect.top, h: rect.height });
 		}
 		rafRef.current = requestAnimationFrame(trackPos);
 	}, []);
@@ -121,6 +122,28 @@ export function PetLauncher() {
 		};
 	}, [open, trackPos]);
 
+	useEffect(() => {
+		if (!open) {
+			setPopH(0);
+			return;
+		}
+		// Measure once the popover paints — content is static so one read is
+		// enough. The retry handle is tracked so unmount mid-retry can't leak.
+		let retry: number | null = null;
+		let cancelled = false;
+		const measure = () => {
+			if (cancelled) return;
+			const h = popoverRef.current?.offsetHeight ?? 0;
+			if (h > 0) setPopH(h);
+			else retry = requestAnimationFrame(measure);
+		};
+		const raf = requestAnimationFrame(measure);
+		return () => {
+			cancelled = true;
+			cancelAnimationFrame(raf);
+			if (retry) cancelAnimationFrame(retry);
+		};
+	}, [open]);
 	useEffect(() => {
 		if (!open) return;
 		const handler = (e: MouseEvent) => {
@@ -159,13 +182,23 @@ export function PetLauncher() {
 			};
 		}
 		const left = Math.min(Math.max(8, petPos.x - popW / 2), window.innerWidth - popW - 8);
+		// Default above the pet; flip below the cursor when the top would clip.
+		if (popH === 0 || petPos.y - gap - popH >= 8) {
+			return {
+				position: 'fixed',
+				top: petPos.y - gap,
+				left,
+				width: popW,
+				zIndex: 10000,
+				transform: 'translateY(-100%)',
+			};
+		}
 		return {
 			position: 'fixed',
-			top: petPos.y - gap,
+			top: Math.max(8, Math.min(petPos.y + petPos.h + gap, window.innerHeight - popH - 8)),
 			left,
 			width: popW,
 			zIndex: 10000,
-			transform: 'translateY(-100%)',
 		};
 	};
 

@@ -59,7 +59,9 @@ function getAnchorPosition(rect: DOMRect): { above: boolean; anchorY: number; an
 }
 
 function PreviewCardMeta({ preview, isMailto }: { preview: LinkPreview; isMailto: boolean }) {
-	if (!preview.name && !preview.favicon && !isMailto) return null;
+	const [faviconFailed, setFaviconFailed] = useState(false);
+	const showFavicon = !!preview.favicon && !faviconFailed;
+	if (!preview.name && !showFavicon && !isMailto) return null;
 	return (
 		<div className="mb-1 flex items-center gap-1.5">
 			{isMailto ? (
@@ -67,11 +69,12 @@ function PreviewCardMeta({ preview, isMailto }: { preview: LinkPreview; isMailto
 					<HugeiconsIcon icon={Mail01Icon} size={13} />
 				</span>
 			) : (
-				preview.favicon && (
+				showFavicon && (
 					<img
 						src={preview.favicon}
 						alt=""
 						className="h-3.5 w-3.5 shrink-0 rounded-[3px] object-contain"
+						onError={() => setFaviconFailed(true)}
 					/>
 				)
 			)}

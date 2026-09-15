@@ -9,7 +9,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 const MapWidgetInner = lazy(() => import('./MapWidgetInner'));
 
 function MapWidgetFixture() {
-	return <div className="h-40 rounded-2xl bg-black/[0.06]" />;
+	return <div className="h-full min-h-40 rounded-2xl bg-black/[0.06]" />;
 }
 
 export default function MapWidget() {

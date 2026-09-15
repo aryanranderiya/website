@@ -1,9 +1,13 @@
 ---
-import { Code } from 'astro/components';
-import GaiaFooter from '@/components/experiments/gaia-footer/GaiaFooter';
+import Tweet from '@/components/blog/mdx/Tweet.astro';
+import type { ChatPlatform } from '@/components/experiments/gaia-ui/chat-demo';
+import { ChatDemoInPhone } from '@/components/experiments/gaia-ui/demos';
+import { FooterGlow } from '@/components/experiments/gaia-ui/footer-glow';
+import '@/components/experiments/gaia-ui/wordmark-font.css';
 import HoloCardIsland from '@/components/experiments/HoloCardIsland';
 import { DEMO_CARD } from '@/components/experiments/holo-card/demo';
 import BackLink from '@/components/ui/BackLink.astro';
+import Lightbox from '@/components/ui/Lightbox.astro';
 import { type Experiment, experiments } from '@/data/experiments';
 import PageLayout from '@/layouts/PageLayout.astro';
 
@@ -13,96 +17,54 @@ export function getStaticPaths() {
 
 const { exp } = Astro.props as { exp: Experiment };
 
-const fmtDate = (d: string) =>
-	new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+const CHAT_PLATFORMS: ChatPlatform[] = ['imessage', 'whatsapp', 'slack', 'discord', 'telegram'];
+// Render the documented variants live — anchors double as platform ids.
+const chatPlatforms = (exp.gaiaUi?.variants.map((v) => v.anchor) ?? []).filter(
+	(a): a is ChatPlatform => (CHAT_PLATFORMS as string[]).includes(a)
+);
 ---
 
 <PageLayout title={`${exp.title} - Experiments`} description={exp.description}>
   <BackLink href="/experiments" label="Back to Experiments" class="mb-8" />
 
-  <div class="mb-8">
-    <h1 class="text-heading-1 mb-2 animate-fade-in stagger-1">{exp.title}</h1>
-    <span class="text-[12px] text-[var(--text-ghost)]">{fmtDate(exp.date)}</span>
+  <div class="mb-8 flex items-start justify-between gap-4 animate-fade-in stagger-1">
+    <div>
+      <h1 class="text-heading-1 mb-2">{exp.title}</h1>
+      <p class="max-w-xl text-[15px] text-[var(--text-secondary)] leading-relaxed">{exp.description}</p>
+    </div>
+    {exp.gaiaUi && (
+      <a
+        href={exp.gaiaUi.docsUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-1 inline-flex w-fit shrink-0 items-center gap-1.5 rounded-xl border border-[var(--border)] px-4 py-2 text-[13px] no-underline transition-colors hover:bg-[var(--muted-bg)]"
+      >
+        View on GAIA UI →
+      </a>
+    )}
   </div>
 
   {/* live, interactive component */}
-  {exp.gaiaUi ? (
-  <div class="mb-10 flex flex-col gap-9 animate-fade-in stagger-2">
-    {exp.gaiaUi.variants.map((v) => (
-      <section>
-        <div class="mb-1 flex items-baseline justify-between gap-4">
-          <h2 class="text-heading-2">{v.name}</h2>
-          <a
-            href={`${exp.gaiaUi?.docsUrl}#${v.anchor}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="shrink-0 text-[12px] text-[var(--text-ghost)] no-underline transition-colors hover:text-[var(--text-secondary)]"
-          >
-            Live ↗
-          </a>
-        </div>
-        {v.description && (
-          <p class="max-w-xl text-[13.5px] text-[var(--text-secondary)] leading-relaxed">{v.description}</p>
-        )}
-      </section>
+  {exp.slug === "chat-demo" && (
+  <div class="mb-10 flex flex-col items-center gap-10 animate-fade-in stagger-2">
+    {chatPlatforms.map((p) => (
+      <ChatDemoInPhone platform={p} client:only="react" />
     ))}
-    {exp.gaiaUi.example && (
-      <section>
-        <h2 class="text-heading-2 mb-3">Example</h2>
-        <Code code={exp.gaiaUi.example} lang="tsx" />
-      </section>
-    )}
-    {exp.gaiaUi.props.length > 0 && (
-      <section>
-        <h2 class="text-heading-2 mb-3">Props</h2>
-        <div class="overflow-x-auto rounded-xl border border-[var(--border)]">
-          <table class="w-full text-left text-[13px]">
-            <thead>
-              <tr class="border-b border-[var(--border)] text-[var(--text-ghost)]">
-                <th class="px-4 py-2.5 font-medium">Prop</th>
-                <th class="px-4 py-2.5 font-medium">Type</th>
-                <th class="px-4 py-2.5 font-medium">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              {exp.gaiaUi.props.map((p) => (
-                <tr class="border-b border-[var(--border)] last:border-0">
-                  <td class="px-4 py-2.5 font-mono text-[12px]">{p.prop}</td>
-                  <td class="px-4 py-2.5 font-mono text-[12px] text-[var(--text-muted)]">{p.type}</td>
-                  <td class="px-4 py-2.5 text-[var(--text-secondary)]">{p.description}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-    )}
-    <a
-      href={exp.gaiaUi.docsUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      class="inline-flex w-fit items-center gap-1.5 rounded-xl border border-[var(--border)] px-4 py-2 text-[13px] no-underline transition-colors hover:bg-[var(--muted-bg)]"
-    >
-      View on GAIA UI →
-    </a>
   </div>
-  ) : exp.slug === "gaia-footer" ? (
-    <div class="mb-10 overflow-hidden rounded-2xl animate-fade-in stagger-2">
-      <GaiaFooter client:only="react" />
-    </div>
-  ) : (
+  )}
+  {exp.slug === "footer-glow" && (
+  <div class="mb-10 flex flex-col gap-10 animate-fade-in stagger-2">
+    <FooterGlow text="GAIA" logoSrc="/images/experiments/gaia-footer/logo.webp" backgroundSrc="/images/experiments/footer-glow-wallpaper.jpg" fontClassName="gaia-ui-wordmark font-bold" className="rounded-2xl" client:only="react" />
+    <Tweet id="2095038928625733911" />
+  </div>
+  )}
+  {exp.slug === "holo-card" && (
   <div class="mb-10 flex justify-center rounded-2xl bg-[var(--muted-bg)] py-14 animate-fade-in stagger-2">
     <div style="width:320px;height:448px" transition:name={`holo-${exp.slug}`}>
-      {exp.slug === "holo-card" && (
-        <HoloCardIsland data={DEMO_CARD} width={320} height={448} client:only="react" />
-      )}
+      <HoloCardIsland data={DEMO_CARD} width={320} height={448} client:only="react" />
     </div>
   </div>
   )}
 
-  {/* writeup */}
-  <div class="animate-fade-in stagger-3">
-    <p class="mb-4 text-[15px] text-[var(--text-primary)] leading-relaxed">{exp.description}</p>
-    <p class="text-[13.5px] text-[var(--text-secondary)] leading-relaxed">{exp.bio}</p>
-  </div>
+  <Lightbox target=".tweet-embed img.tweet-media" />
 </PageLayout>

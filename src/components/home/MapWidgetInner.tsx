@@ -89,7 +89,7 @@ export default function MapWidgetInner() {
 				initial={{ opacity: 0, y: 10, filter: 'blur(4px)' }}
 				animate={ready ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
 				transition={{ duration: 0.45, ease: [0.19, 1, 0.22, 1], delay: 0.32 }}
-				className="relative h-40 overflow-hidden rounded-2xl bg-black/[0.06]"
+				className="relative h-full min-h-40 overflow-hidden rounded-2xl bg-black/[0.06]"
 			>
 				<AnimatePresence initial={false}>
 					<m.div

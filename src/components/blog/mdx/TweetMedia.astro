@@ -1,0 +1,67 @@
+---
+interface TweetVideo {
+	src: string;
+}
+
+interface TweetPhoto {
+	url: string;
+	width?: number;
+	height?: number;
+}
+
+interface Props {
+	video: TweetVideo | null;
+	videoPoster?: string;
+	photos: TweetPhoto[];
+	aspect: string;
+	/** Clamp tall single photos (nested quote cards) instead of full-bleed. */
+	clamp?: boolean;
+}
+
+const { video, videoPoster, photos, aspect, clamp = false } = Astro.props;
+---
+
+{
+	video ? (
+		<div
+			class="relative z-20 mt-3 overflow-hidden rounded-xl bg-black/5"
+			style={`aspect-ratio:${aspect}`}
+		>
+			<video
+				controls
+				playsinline
+				preload="metadata"
+				poster={videoPoster}
+				class="h-full w-full object-contain"
+			>
+				<source src={video.src} type="video/mp4" />
+			</video>
+		</div>
+	) : (
+		photos.length > 0 && (
+			<div
+				class:list={[
+					'mt-3 grid gap-2 overflow-hidden rounded-xl',
+					photos.length > 1 ? 'grid-cols-2' : 'grid-cols-1',
+				]}
+			>
+				{photos.map((p) => (
+					<img
+						src={p.url}
+						alt=""
+						loading="lazy"
+						class:list={[
+							'h-full w-full object-cover tweet-media',
+							clamp && photos.length === 1 && 'max-h-[520px]',
+						]}
+						style={
+							!clamp && photos.length === 1 && p.width && p.height
+								? `aspect-ratio:${p.width} / ${p.height}`
+								: undefined
+						}
+					/>
+				))}
+			</div>
+		)
+	)
+}
