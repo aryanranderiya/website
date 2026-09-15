@@ -22,7 +22,7 @@ export interface ChatMessageItem {
 	typing?: boolean;
 }
 
-export interface ChatDemoProps {
+interface ChatDemoProps {
 	platform: ChatPlatform;
 	messages: ChatMessageItem[];
 	title?: string;

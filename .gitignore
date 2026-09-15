@@ -34,3 +34,5 @@ pnpm-debug.log*
 .dolt/
 *.db
 .beads-credential-key
+.lighthouse/
+.lighthouseci/

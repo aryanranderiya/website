@@ -30,7 +30,7 @@ type WebPetConfig = {
 	movementActions: WebPetMovementAction[];
 };
 
-export type WebPetProps = {
+type WebPetProps = {
 	animal: string;
 	color?: string;
 	position?: 'fixed' | 'absolute';
@@ -114,7 +114,7 @@ const DEFAULT_SPEECH_CONFIG: ResolvedSpeechConfig = {
 
 const BUBBLE_GAP_PX = 6;
 
-export const WEB_PET_ACTIONS = DEFAULT_BEHAVIOR.actions;
+const WEB_PET_ACTIONS = DEFAULT_BEHAVIOR.actions;
 
 const WEB_PET_SPEEDS: Record<string, number> = {
 	bear: 3.9,
@@ -142,7 +142,7 @@ const WEB_PET_SPEEDS: Record<string, number> = {
 	zappy: 5.0,
 };
 
-export function getWebPetSpeed(animal: string, fallback: number): number {
+function getWebPetSpeed(animal: string, fallback: number): number {
 	return WEB_PET_SPEEDS[animal] ?? fallback;
 }
 

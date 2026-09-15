@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { FooterWordmark } from "./footer-wordmark";
 import { GrainOverlay } from "./grain-overlay";
 
-export interface FooterGlowProps {
+interface FooterGlowProps {
 	/** The word rendered as the halftone dot grid. */
 	text: string;
 	/** Optional image mark composed at the same height, left of the text. */

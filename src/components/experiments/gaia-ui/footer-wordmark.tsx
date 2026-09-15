@@ -449,7 +449,7 @@ function usePrefersReducedMotion(): boolean {
  * FooterWordmark
  * ---------------------------------------------------------------------- */
 
-export interface FooterWordmarkProps {
+interface FooterWordmarkProps {
 	/** The word to render as a halftone dot grid. */
 	text: string;
 	/** Optional image mark composed at the same height, left of the text. */

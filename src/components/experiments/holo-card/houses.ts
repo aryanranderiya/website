@@ -1,6 +1,6 @@
 // Inlined from GAIA's `@/features/onboarding/constants/houses`. Maps a house
 // name to the wallpaper used as the holo card's background image.
-export const HOUSES: Record<string, { image: string }> = {
+const HOUSES: Record<string, { image: string }> = {
 	frostpeak: { image: '/images/site/wallpapers/holo/frostpeak.jpg' },
 	greenvale: { image: '/images/site/wallpapers/holo/greenvale.jpg' },
 	mistgrove: { image: '/images/site/wallpapers/holo/mistgrove.png' },

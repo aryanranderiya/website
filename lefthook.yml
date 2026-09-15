@@ -19,5 +19,7 @@ pre-push:
   commands:
     biome:
       run: bunx biome check ./src
+    dead-code:
+      run: bunx knip --max-issues 0
     type-check:
       run: bunx astro check

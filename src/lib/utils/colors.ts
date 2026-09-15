@@ -1,4 +1,4 @@
-export function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 	const normalizedHex = hex.charAt(0) === '#' ? hex.substring(1) : hex;
 
 	if (normalizedHex.length === 3) {

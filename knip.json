@@ -3,7 +3,10 @@
   "entry": [
     "src/pages/**/*.{astro,ts,tsx}",
     "src/layouts/**/*.astro",
-    "astro.config.*"
+    "astro.config.*",
+    "src/components/ui/AIChat.tsx",
+    "src/bones/registry.js",
+    "src/data/ai-context.ts"
   ],
   "project": [
     "src/**/*.{astro,ts,tsx,js,jsx}"
@@ -14,6 +17,13 @@
   ],
   "ignoreDependencies": [
     "@astrojs/check",
-    "sharp"
+    "sharp",
+    "tailwindcss",
+    "tw-animate-css",
+    "cloudflare",
+    "@lhci/cli",
+    "lighthouse",
+    "@playwright/test",
+    "playwright"
   ]
 }

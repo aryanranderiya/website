@@ -7,7 +7,7 @@ const AVATAR = '/images/site/avatar.webp';
 const MEMOJI = '/images/site/memoji.webp';
 
 /** Demo thread per platform, using the documented ChatMessageItem shapes. */
-export const CHAT_DEMO_THREADS: Record<
+const CHAT_DEMO_THREADS: Record<
 	ChatPlatform,
 	{ title: string; subtitle?: string; messages: ChatMessageItem[] }
 > = {

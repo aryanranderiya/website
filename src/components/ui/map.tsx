@@ -1788,18 +1788,9 @@ function MapClusterLayer<P extends GeoJSON.GeoJsonProperties = GeoJSON.GeoJsonPr
 	return null;
 }
 
-export type { MapArcDatum, MapArcEvent, MapRef, MapViewport };
+
 export {
 	Map,
-	MapArc,
-	MapClusterLayer,
-	MapControls,
 	MapMarker,
-	MapPopup,
-	MapRoute,
 	MarkerContent,
-	MarkerLabel,
-	MarkerPopup,
-	MarkerTooltip,
-	useMap,
 };

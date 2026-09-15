@@ -8,7 +8,7 @@ export const CARD_IMAGES = {
 } as const;
 
 // Logo dimensions
-export const LOGO_SIZES = {
+const LOGO_SIZES = {
 	FRONT: {
 		width: 100,
 		height: 30,

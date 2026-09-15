@@ -67,7 +67,7 @@ async function getDemoTrack(): Promise<SpotifyTrack> {
 	};
 }
 
-export const SPOTIFY_QUERY_KEY = ['spotify-now-playing'] as const;
+const SPOTIFY_QUERY_KEY = ['spotify-now-playing'] as const;
 
 function ShimmerBlock({ w, h, r = 6 }: { w: string | number; h: number; r?: number }) {
 	return (

@@ -2,7 +2,7 @@
 
 import { type RefObject, useCallback, useEffect, useRef, useState } from 'react';
 
-export interface ItemRect {
+interface ItemRect {
 	top: number;
 	height: number;
 	left: number;

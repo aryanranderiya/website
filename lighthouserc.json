@@ -1,0 +1,29 @@
+{
+  "$schema": "https://github.com/GoogleChrome/lighthouse-ci/blob/main/docs/configuration.md",
+  "ci": {
+    "collect": {
+      "url": [
+        "https://aryanranderiya.com/",
+        "https://aryanranderiya.com/assistants/",
+        "https://aryanranderiya.com/experiments/",
+        "https://aryanranderiya.com/blog/"
+      ],
+      "numberOfRuns": 2,
+      "settings": {
+        "chromeFlags": "--no-sandbox --headless"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.9 }],
+        "categories:accessibility": ["error", { "minScore": 0.9 }],
+        "categories:best-practices": ["error", { "minScore": 0.9 }],
+        "categories:seo": ["error", { "minScore": 0.9 }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": "./.lighthouse"
+    }
+  }
+}

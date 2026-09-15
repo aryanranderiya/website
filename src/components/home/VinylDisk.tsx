@@ -9,7 +9,7 @@
 import { useId, type SVGProps } from "react";
 import { cn } from "@/lib/utils";
 
-export type VinylDiskProps = SVGProps<SVGSVGElement> & {
+type VinylDiskProps = SVGProps<SVGSVGElement> & {
   isPlaying?: boolean;
   spinDuration?: number;
 };

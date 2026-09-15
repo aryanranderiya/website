@@ -23,7 +23,7 @@ const VARIANT_CLASSES = {
 	surface: "opacity-[0.06] mix-blend-overlay",
 } as const;
 
-export interface GrainOverlayProps {
+interface GrainOverlayProps {
 	/** Compositing mode: `photo` for imagery, `surface` for gradients. */
 	variant?: keyof typeof VARIANT_CLASSES;
 	/** Match the parent's radius so the grain is clipped to the same shape. */

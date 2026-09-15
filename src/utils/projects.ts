@@ -1,7 +1,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { slugOf } from './content';
 
-export type ProjectImage = { src: string; caption?: string };
+type ProjectImage = { src: string; caption?: string };
 
 export function normalizeImages(
 	images: CollectionEntry<'projects'>['data']['images'] | undefined
@@ -9,7 +9,7 @@ export function normalizeImages(
 	return (images ?? []).map((img) => (typeof img === 'string' ? { src: img } : img));
 }
 
-export const FOLDER_PRIORITY: Record<string, number> = {
+const FOLDER_PRIORITY: Record<string, number> = {
 	Featured: 0,
 	Client: 1,
 	Hackathon: 2,

@@ -22,7 +22,7 @@ import {
 import type { IconProps } from '@theexperiencecompany/gaia-icons';
 import type { ComponentType } from 'react';
 
-export interface NavPage {
+interface NavPage {
 	href: string;
 	label: string;
 	description: string;
@@ -31,7 +31,7 @@ export interface NavPage {
 	external?: boolean;
 }
 
-export const PAGES: NavPage[] = [
+const PAGES: NavPage[] = [
 	{
 		href: '/',
 		label: 'Home',

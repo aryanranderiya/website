@@ -2,7 +2,7 @@
 
 import { cn } from "@/lib/utils";
 
-export interface IPhoneMockupProps {
+interface IPhoneMockupProps {
 	/** Status bar time, e.g. "9:41" */
 	time?: string;
 	/** Screen background color (CSS color) */

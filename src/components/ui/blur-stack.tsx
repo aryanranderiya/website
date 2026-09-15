@@ -1,4 +1,4 @@
-export interface BlurLayer {
+interface BlurLayer {
 	blur: number;
 	maskStops: [number, number, number, number]; // [fadeInStart, solidStart, solidEnd, fadeOutEnd]
 	zIndex: number;
