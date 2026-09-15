@@ -36,7 +36,7 @@ export default function BlogLinks() {
 	const leaveTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 	const activeAnchorRef = useRef<HTMLAnchorElement | null>(null);
 
-	// react-doctor-disable-next-line react-doctor/effect-needs-cleanup -- the cleanup below owns every allocation (observer disconnect, per-anchor listeners, scroll/swap listeners, pending timer); the array just keeps per-anchor teardown together.
+	// react-doctor-disable-next-line react-doctor/effect-needs-cleanup -- multi-subscription effect (observer + per-anchor listeners + global listeners + timer) with complete teardown below; the rule only accepts single-subscription shapes, verified by bisection (observer removal alone clears it).
 	useEffect(() => {
 		const cleanup: Array<() => void> = [];
 
@@ -133,9 +133,8 @@ export default function BlogLinks() {
 
 		return () => {
 			clearTimeout(leaveTimer.current);
-			cleanup.forEach((fn) => {
-				fn();
-			});
+			for (const dispose of cleanup) dispose();
+			if (warmObserver) warmObserver.disconnect();
 		};
 	}, []);
 
