@@ -14,6 +14,7 @@ export function getStaticPaths() {
 const { folder } = Astro.props;
 const photoCount = folder.photos.length;
 ---
+{/* astro-doctor-ignore-file astro/prefer-astro-image -- config-driven photo data carries no dims; lazy + async present */}
 
 <PageLayout title={folder.name} description={`Photos from ${folder.name}.`}>
   <div class="pb-16">

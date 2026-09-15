@@ -62,7 +62,12 @@
   observer.observe(document.documentElement, { attributes: true });
 
   // Also re-sync on Astro view transitions
-  document.addEventListener('astro:after-swap', syncGiscusTheme);
+  // Guarded: this inline block re-runs per navigation — one sync listener is enough.
+  var g = window;
+  if (!g.__giscusSyncBound) {
+    g.__giscusSyncBound = true;
+    document.addEventListener('astro:after-swap', syncGiscusTheme);
+  }
 </script>
 
 <style>

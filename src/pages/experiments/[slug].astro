@@ -23,6 +23,7 @@ const chatPlatforms = (exp.gaiaUi?.variants.map((v) => v.anchor) ?? []).filter(
 	(a): a is ChatPlatform => (CHAT_PLATFORMS as string[]).includes(a)
 );
 ---
+{/* astro-doctor-ignore-file astro/no-island-in-map -- per-platform demo phones render distinct islands by design */}
 
 <PageLayout title={`${exp.title} - Experiments`} description={exp.description}>
   <BackLink href="/experiments" label="Back to Experiments" class="mb-8" />
@@ -48,20 +49,26 @@ const chatPlatforms = (exp.gaiaUi?.variants.map((v) => v.anchor) ?? []).filter(
   {exp.slug === "chat-demo" && (
   <div class="mb-10 flex flex-col items-center gap-10 animate-fade-in stagger-2">
     {chatPlatforms.map((p) => (
-      <ChatDemoInPhone platform={p} client:only="react" />
+      <ChatDemoInPhone platform={p} client:only="react">
+        <div slot="fallback" class="h-[300px] w-full max-w-[280px] rounded-[2rem] bg-[var(--muted-bg)] animate-pulse" aria-hidden="true" />
+      </ChatDemoInPhone>
     ))}
   </div>
   )}
   {exp.slug === "footer-glow" && (
   <div class="mb-10 flex flex-col gap-10 animate-fade-in stagger-2">
-    <FooterGlow text="GAIA" logoSrc="/images/experiments/gaia-footer/logo.webp" backgroundSrc="/images/experiments/footer-glow-wallpaper.jpg" fontClassName="gaia-ui-wordmark font-bold" className="rounded-2xl" client:only="react" />
+    <FooterGlow text="GAIA" logoSrc="/images/experiments/gaia-footer/logo.webp" backgroundSrc="/images/experiments/footer-glow-wallpaper.jpg" fontClassName="gaia-ui-wordmark font-bold" className="rounded-2xl" client:only="react">
+      <div slot="fallback" class="w-full rounded-2xl bg-[var(--muted-bg)] animate-pulse" style="aspect-ratio:16/9" aria-hidden="true" />
+    </FooterGlow>
     <Tweet id="2095038928625733911" />
   </div>
   )}
   {exp.slug === "holo-card" && (
   <div class="mb-10 flex justify-center rounded-2xl bg-[var(--muted-bg)] py-14 animate-fade-in stagger-2">
     <div style="width:320px;height:448px" transition:name={`holo-${exp.slug}`}>
-      <HoloCardIsland data={DEMO_CARD} width={320} height={448} client:only="react" />
+      <HoloCardIsland data={DEMO_CARD} width={320} height={448} client:only="react">
+        <div slot="fallback" style="width:320px;height:448px" class="rounded-2xl bg-[var(--muted-bg)] animate-pulse" aria-hidden="true" />
+      </HoloCardIsland>
     </div>
   </div>
   )}

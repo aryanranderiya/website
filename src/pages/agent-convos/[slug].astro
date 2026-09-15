@@ -20,27 +20,34 @@ import { formatDate } from '@/lib/utils';
 import { slugOf } from '@/utils/content';
 
 export async function getStaticPaths() {
-	const convos = await getCollection('agent-convos');
-	return convos.map((convo) => ({
-		params: { slug: slugOf(convo) },
-		props: { convo },
-	}));
+	// Neighbors computed once here (newest first): a top-level getCollection
+	// per page would re-parse the collection on every generated page.
+	const ordered = (await getCollection('agent-convos')).toSorted(
+		(a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+	);
+	return ordered.map((convo, i) => {
+		const prev = ordered[(i - 1 + ordered.length) % ordered.length];
+		const next = ordered[(i + 1) % ordered.length];
+		return {
+			params: { slug: slugOf(convo) },
+			props: {
+				convo,
+				prev: { slug: slugOf(prev), title: prev.data.title },
+				next: { slug: slugOf(next), title: next.data.title },
+			},
+		};
+	});
 }
 
 interface Props {
 	convo: CollectionEntry<'agent-convos'>;
+	prev: { slug: string; title: string };
+	next: { slug: string; title: string };
 }
 
-const { convo } = Astro.props;
+const { convo, prev, next } = Astro.props;
 const { Content, headings } = await render(convo);
 const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
-
-// Cycling prev/next through all conversations (newest first).
-const allConvos = await getCollection('agent-convos');
-const orderedConvos = allConvos.toSorted((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const ci = orderedConvos.findIndex((c) => slugOf(c) === slugOf(convo));
-const prevConvo = orderedConvos[(ci - 1 + orderedConvos.length) % orderedConvos.length];
-const nextConvo = orderedConvos[(ci + 1) % orderedConvos.length];
 
 const platformLabels: Record<string, string> = {
 	'claude-code': 'Claude Code',
@@ -210,10 +217,10 @@ const metaIconColor = 'var(--text-ghost)';
       <PostNav
         backHref="/agent-convos"
         backLabel="Back to Agent Conversations"
-        prevHref={`/agent-convos/${slugOf(prevConvo)}`}
-        nextHref={`/agent-convos/${slugOf(nextConvo)}`}
-        prevLabel={prevConvo.data.title}
-        nextLabel={nextConvo.data.title}
+        prevHref={`/agent-convos/${prev.slug}`}
+        nextHref={`/agent-convos/${next.slug}`}
+        prevLabel={prev.title}
+        nextLabel={next.title}
       />
     </div>
   </article>

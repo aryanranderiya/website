@@ -30,7 +30,10 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
           {/* live preview - scaled iPhone so it fits the card; layout matches the scaled size but paint (shadow) is unclipped */}
           <div class="pointer-events-none h-[375px] w-[179px] transition-transform duration-300 ease-out group-hover:scale-[1.04]">
             <div class="origin-top-left scale-[0.46]">
-              <ChatDemoInPhone platform="imessage" client:only="react" />
+              {/* astro-doctor-ignore-next-line astro/no-island-in-map -- demo index maps distinct showcase islands by design */}
+              <ChatDemoInPhone platform="imessage" client:only="react">
+              <div slot="fallback" class="h-[375px] w-[179px] rounded-[2rem] bg-[var(--muted-bg)] animate-pulse" aria-hidden="true" />
+            </ChatDemoInPhone>
             </div>
           </div>
         </a>
@@ -43,7 +46,10 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
         >
           {/* live preview - natural glow height, root rounds itself; clicks open the detail */}
           <div class="pointer-events-none w-full">
-            <FooterGlow text="GAIA" logoSrc="/images/experiments/gaia-footer/logo.webp" backgroundSrc="/images/experiments/footer-glow-wallpaper.jpg" fontClassName="gaia-ui-wordmark font-bold" className="rounded-2xl" client:only="react" />
+            {/* astro-doctor-ignore-next-line astro/no-island-in-map -- demo index maps distinct showcase islands by design */}
+            <FooterGlow text="GAIA" logoSrc="/images/experiments/gaia-footer/logo.webp" backgroundSrc="/images/experiments/footer-glow-wallpaper.jpg" fontClassName="gaia-ui-wordmark font-bold" className="rounded-2xl" client:only="react">
+              <div slot="fallback" class="w-full rounded-2xl bg-[var(--muted-bg)] animate-pulse" style="aspect-ratio:16/9" aria-hidden="true" />
+            </FooterGlow>
           </div>
         </a>
         ) : (
@@ -66,7 +72,9 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
                   width={320}
                   height={446}
                   client:only="react"
-                />
+                >
+                  <div slot="fallback" style="width:320px;height:446px" class="rounded-2xl bg-[var(--muted-bg)] animate-pulse" aria-hidden="true" />
+                </HoloCardIsland>
               )}
             </div>
           </div>

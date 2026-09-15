@@ -103,6 +103,7 @@ const commandKProjects = sortProjects(await getCollection('projects')).map((p) =
     <meta name="twitter:image:alt" content={metaTitle} />
 
     <!-- Theme -->
+    <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff" />
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0a0a" />
 
@@ -200,15 +201,22 @@ const commandKProjects = sortProjects(await getCollection('projects')).map((p) =
 
     <!-- Theme init - light by default, dark only if explicitly stored -->
     <script is:inline>
+      function safeGet(key) {
+        try {
+          return localStorage.getItem(key);
+        } catch {
+          return null; // storage blocked (private mode): fall back to defaults
+        }
+      }
       function applyTheme() {
-        var theme = localStorage.getItem('theme');
+        var theme = safeGet('theme');
         var root = document.documentElement;
         root.classList.remove('dark');
         if (theme === 'dark') {
           root.classList.add('dark');
         } else if (theme === 'random') {
-          var hue = parseInt(localStorage.getItem('randomHue') || '200', 10);
-          var sat = parseInt(localStorage.getItem('randomSat') || '38', 10);
+          var hue = parseInt(safeGet('randomHue') || '200', 10);
+          var sat = parseInt(safeGet('randomSat') || '38', 10);
           var l = Math.max(88, Math.round(96 - (sat - 25) * 0.23));
           var card_s = Math.round(sat * 0.7);
           var card_l = Math.min(l + 2, 98);
@@ -223,7 +231,7 @@ const commandKProjects = sortProjects(await getCollection('projects')).map((p) =
           root.style.setProperty('--glass-bg',            'hsla(' + hue + ', ' + sat + '%, ' + l + '%, 0.85)');
           root.style.setProperty('--accent-blue',         'hsl(' + hue + ', 72%, 52%)');
         }
-        var typography = localStorage.getItem('typography');
+        var typography = safeGet('typography');
         if (typography && typography !== 'helvetica') {
           var fontMap = {
             inter:     "'Inter var', Inter, sans-serif",
@@ -345,6 +353,9 @@ const commandKProjects = sortProjects(await getCollection('projects')).map((p) =
           import('react-dom/client'),
         ]).then(function([{ default: AIChat }, React, { createRoot }]) {
           createRoot(mount!).render(React.createElement(AIChat, {}));
+        }).catch(function() {
+          // Chat is enhancement-only; a failed chunk must not break the page.
+          if (mount) delete mount.dataset.loaded;
         });
       })();
     </script>
