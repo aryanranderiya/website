@@ -34,7 +34,10 @@ const latestPosts = allPosts
 			date: new Date(date).toISOString(),
 			...rest,
 		};
-	});
+	})
+	// Bound the per-request payload: BlogPreview renders the first 4, so only
+	// 4 serialized island props ship (this page is prerender=false).
+	.slice(0, 4);
 ---
 
 <PageLayout
@@ -45,6 +48,7 @@ const latestPosts = allPosts
   <!-- Hero -->
   <Hero />
 
+  <!-- astro-doctor-ignore-next-line astro/no-too-many-islands -- curated homepage: 5 single-purpose islands (preview/feed/map/socials/signature), each lazy (visible/idle) -->
   <BlogPreview posts={latestPosts} client:visible />
 
   <!-- Spotify + Map -->

@@ -23,6 +23,7 @@ interface Props {
 const { src, caption, aspectRatio = '16 / 9', autoplay = true, controls = false } = Astro.props;
 ---
 
+<!-- astro-doctor-ignore-next-line astro/no-duplicate-markup -- intentional Video variant (autoplay default); documented in content/blog/CLAUDE.md -->
 <figure class="my-6">
 	<simple-player
 		src={src}

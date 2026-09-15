@@ -46,7 +46,9 @@ const id = toc ? `img-${slugify(label || src)}` : undefined;
   data-toc-mode={toc ? tocMode : undefined}
   data-toc-thumb={toc ? src : undefined}
 >
+  <!-- astro-doctor-ignore-next-line astro/prefer-astro-image -- CMS image dims unknown at build; lazy + aspect handled by CSS -->
   <img src={src} alt={alt} loading="lazy" />
+  <!-- astro-doctor-ignore-next-line astro/no-unsafe-set-html -- authored markdown caption only, never user input -->
   {caption && <figcaption set:html={caption} />}
 </figure>
 

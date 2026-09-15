@@ -49,6 +49,8 @@ const { video, videoPoster, photos, aspect, clamp = false } = Astro.props;
 					<img
 						src={p.url}
 						alt=""
+						width={p.width}
+						height={p.height}
 						loading="lazy"
 						class:list={[
 							'h-full w-full object-cover tweet-media',

@@ -5,6 +5,7 @@ import ButtonLink from '@/components/ui/ButtonLink';
 import { education } from '@/data/experience';
 import PageLayout from '@/layouts/PageLayout.astro';
 ---
+{/* astro-doctor-ignore-file astro/no-inline-event-handler -- progressive-enhancement image fallbacks (work without JS; is:inline CSP posture site-wide) */}
 
 <PageLayout
   title="Experience"
@@ -59,7 +60,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
                 width="28"
                 height="28"
                 class="w-7 h-7 rounded-md object-contain"
-                onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
               />
               <div class="hidden w-7 h-7 rounded-md items-center justify-center text-[var(--text-ghost)]">
                 <HugeiconsIcon icon={Briefcase01Icon} size={16} />

@@ -22,6 +22,7 @@ let items = featuredOnly
 if (includeSet) items = items.filter((entry) => includeSet.has(entry.employmentType));
 if (excludeSet) items = items.filter((entry) => !excludeSet.has(entry.employmentType));
 ---
+{/* astro-doctor-ignore-file astro/no-inline-event-handler -- progressive-enhancement image fallbacks (work without JS; is:inline CSP posture site-wide) */}
 
 <div class="flex flex-col">
 	{
@@ -51,7 +52,7 @@ if (excludeSet) items = items.filter((entry) => !excludeSet.has(entry.employment
 										'h-7 w-7 rounded-[6px] object-contain',
 										entry.logoInvert ? 'invert dark:invert-0' : '',
 									]}
-									onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+								onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
 								/>
 								<div class="hidden h-7 w-7 items-center justify-center rounded-[6px] text-[var(--text-ghost)]">
 									<HugeiconsIcon icon={Briefcase01Icon} size={16} />

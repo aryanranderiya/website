@@ -273,6 +273,7 @@ if (data && tweet?.user?.screen_name) {
 	data.retweets = fx.retweets;
 }
 ---
+{/* astro-doctor-ignore-file astro/no-huge-file, astro/no-complex-frontmatter, astro/no-unsafe-set-html -- self-contained tweet embed (parser + markup + styles); splitting risks drift */}
 
 {
 	data ? (
@@ -334,7 +335,9 @@ if (data && tweet?.user?.screen_name) {
 
 			{/* Body — remainder expands inline via "Show more" below */}
 			<p class="tweet-text mt-3 whitespace-pre-wrap text-[14px] leading-[1.6] text-[var(--text-secondary)]">
+				{/* astro-doctor-ignore-next-line astro/no-unsafe-set-html x2 -- escapeHtml-then-linkify builder (sanitized by construction) */}
 				<span set:html={data.textHtml} />
+				{/* astro-doctor-ignore-next-line astro/no-unsafe-set-html -- escapeHtml-then-linkify builder (sanitized by construction) */}
 				{data.moreHtml && <span data-tweet-more hidden set:html={data.moreHtml} />}
 			</p>
 			{data.moreHtml && (
@@ -517,7 +520,12 @@ if (data && tweet?.user?.screen_name) {
 				});
 			});
 		}
-		document.addEventListener('astro:page-load', bind);
+		// Guarded: inline block re-runs per navigation; bind() is idempotent
+		// per button, but one page-load listener is enough.
+		if (!window.__tweetBindBound) {
+			window.__tweetBindBound = true;
+			document.addEventListener('astro:page-load', bind);
+		}
 		if (document.readyState === 'loading') {
 			document.addEventListener('DOMContentLoaded', bind, { once: true });
 		} else {
