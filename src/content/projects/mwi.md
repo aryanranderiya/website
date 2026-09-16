@@ -25,7 +25,6 @@ images:
   - /images/projects/mwi/13.webp
   - /images/projects/mwi/14.webp
 order: 31
-url: https://mwi.gg
 ---
 
 Really cool project where i had the freedom to creatively explore and there was so much to do, so many different sub divisions of their organisations so a lot of different pages to experiment with!

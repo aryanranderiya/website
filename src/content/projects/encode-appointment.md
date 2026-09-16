@@ -16,7 +16,6 @@ images:
   - /images/projects/encode-appointment/encode-5.webp
   - /images/projects/encode-appointment/encode-6.webp
 order: 35
-url: https://encode-aryan.vercel.app
 github: https://github.com/aryanranderiya/encode-assignment
 ---
 
