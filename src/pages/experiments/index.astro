@@ -11,68 +11,79 @@ import PageLayout from '@/layouts/PageLayout.astro';
 const WIDE = new Set(['footer-glow']);
 const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number(WIDE.has(b.slug)));
 ---
+{/* astro-doctor-ignore-file astro/no-island-in-map -- demo index maps distinct showcase islands by design */}
 
-<PageLayout title="Experiments" description="A grid of small interactive component experiments.">
+<PageLayout
+  title="Experiments"
+  description="A grid of small interactive component experiments."
+>
   <div class="mb-12">
     <h1 class="text-heading-1 animate-fade-in stagger-1">Experiments</h1>
   </div>
 
   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
     {
-      ordered.map((exp, i) => (
+      ordered.map((exp, i) =>
         exp.slug === "chat-demo" ? (
-        <a
-          href={`/experiments/${exp.slug}`}
-          class="group flex cursor-pointer items-center justify-center rounded-2xl bg-[var(--muted-bg)] px-6 py-10 animate-fade-in"
-          style={`animation-delay:${0.15 + i * 0.07}s`}
-          aria-label={exp.title}
-        >
-          {/* live preview - scaled iPhone so it fits the card; layout matches the scaled size but paint (shadow) is unclipped */}
-          <div class="pointer-events-none h-[375px] w-[179px] transition-transform duration-300 ease-out group-hover:scale-[1.04]">
-            <div class="origin-top-left scale-[0.46]">
-              <ChatDemoInPhone platform="imessage" client:only="react" />
-            </div>
-          </div>
-        </a>
-        ) : exp.slug === "footer-glow" ? (
-        <a
-          href={`/experiments/${exp.slug}`}
-          class="group block cursor-pointer rounded-2xl bg-[var(--muted-bg)] animate-fade-in sm:col-span-2"
-          style={`animation-delay:${0.15 + i * 0.07}s`}
-          aria-label={exp.title}
-        >
-          {/* live preview - natural glow height, root rounds itself; clicks open the detail */}
-          <div class="pointer-events-none w-full">
-            <FooterGlow text="GAIA" logoSrc="/images/experiments/gaia-footer/logo.webp" backgroundSrc="/images/experiments/footer-glow-wallpaper.jpg" fontClassName="gaia-ui-wordmark font-bold" className="rounded-2xl" client:only="react" />
-          </div>
-        </a>
-        ) : (
-        <a
-          href={`/experiments/${exp.slug}`}
-          class="group flex cursor-pointer items-center justify-center rounded-2xl bg-[var(--muted-bg)] py-10 animate-fade-in"
-          style={`animation-delay:${0.15 + i * 0.07}s`}
-          aria-label={exp.title}
-        >
-          {/* static preview - scaled full-size card so all proportions hold; clicks open the detail */}
-          <div
-            class="pointer-events-none h-[312px] w-[224px] transition-transform duration-300 ease-out group-hover:scale-[1.04]"
-            transition:name={`holo-${exp.slug}`}
+          <a
+            href={`/experiments/${exp.slug}`}
+            class="group flex cursor-pointer items-center justify-center rounded-2xl bg-[var(--muted-bg)] px-6 py-10 animate-fade-in"
+            style={`animation-delay:${0.15 + i * 0.07}s`}
+            aria-label={exp.title}
           >
-            <div class="origin-top-left scale-[0.7]">
-              {exp.slug === "holo-card" && (
-                <HoloCardIsland
-                  data={DEMO_CARD}
-                  forceSide="front"
-                  width={320}
-                  height={446}
-                  client:only="react"
-                />
-              )}
+            {/* live preview - scaled iPhone so it fits the card; layout matches the scaled size but paint (shadow) is unclipped */}
+            <div class="pointer-events-none h-[375px] w-[179px] transition-transform duration-300 ease-out group-hover:scale-[1.04]">
+              <div class="origin-top-left scale-[0.46]">
+                <ChatDemoInPhone platform="imessage" client:only="react" />
+              </div>
             </div>
-          </div>
-        </a>
-        )
-      ))
+          </a>
+        ) : exp.slug === "footer-glow" ? (
+          <a
+            href={`/experiments/${exp.slug}`}
+            class="group block cursor-pointer rounded-2xl bg-[var(--muted-bg)] animate-fade-in sm:col-span-2"
+            style={`animation-delay:${0.15 + i * 0.07}s`}
+            aria-label={exp.title}
+          >
+            {/* live preview - natural glow height, root rounds itself; clicks open the detail */}
+            <div class="pointer-events-none w-full">
+              <FooterGlow
+                text="GAIA"
+                logoSrc="/images/experiments/gaia-footer/logo.webp"
+                backgroundSrc="/images/experiments/footer-glow-wallpaper.jpg"
+                fontClassName="gaia-ui-wordmark font-bold"
+                className="rounded-2xl"
+                client:only="react"
+              />
+            </div>
+          </a>
+        ) : (
+          <a
+            href={`/experiments/${exp.slug}`}
+            class="group flex cursor-pointer items-center justify-center rounded-2xl bg-[var(--muted-bg)] py-10 animate-fade-in"
+            style={`animation-delay:${0.15 + i * 0.07}s`}
+            aria-label={exp.title}
+          >
+            {/* static preview - scaled full-size card so all proportions hold; clicks open the detail */}
+            <div
+              class="pointer-events-none h-[312px] w-[224px] transition-transform duration-300 ease-out group-hover:scale-[1.04]"
+              transition:name={`holo-${exp.slug}`}
+            >
+              <div class="origin-top-left scale-[0.7]">
+                {exp.slug === "holo-card" && (
+                  <HoloCardIsland
+                    data={DEMO_CARD}
+                    forceSide="front"
+                    width={320}
+                    height={446}
+                    client:only="react"
+                  />
+                )}
+              </div>
+            </div>
+          </a>
+        ),
+      )
     }
   </div>
 </PageLayout>

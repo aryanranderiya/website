@@ -82,6 +82,7 @@ const projIndex = allProjects.findIndex((e) => slugOf(e) === slugOf(entry));
 const prevProject = allProjects[(projIndex - 1 + allProjects.length) % allProjects.length];
 const nextProject = allProjects[(projIndex + 1) % allProjects.length];
 ---
+{/* astro-doctor-ignore-file astro/prefer-astro-image -- dynamic CMS gallery dims unknown at build; lazy present */}
 
 <PageLayout title={p.title} description={p.description} ogImage={heroImage}>
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
