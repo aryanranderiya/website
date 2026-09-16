@@ -24,6 +24,7 @@ images:
   - /images/projects/rezrek/10.webp
   - /images/projects/rezrek/11.webp
 order: 3
+url: https://rezrek.com
 ---
 
 One of my very first freelance projects working with siblings Aditya and Khevna Gandhi. Really amazing human beings and people to work with. I learnt so much working with them and on this project and still turn to Aditya for advice running my own startup. They are such wonderful people and gave me so much creative freedom to work on this. Pics below for when we met for the first time and they were in a rush to catch the metro so we had to rush and drive three seater on a scooty 😭

@@ -14,6 +14,7 @@ images:
   - /images/projects/os-mini-project/producer-consumer.png
   - /images/projects/os-mini-project/sstf.png
 order: 19
+url: https://osproject.vercel.app
 github: https://github.com/aryanranderiya/OSMiniProject
 ---
 

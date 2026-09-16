@@ -12,6 +12,7 @@ images:
   - /images/projects/odoo-expense/screenshot-1.webp
   - /images/projects/odoo-expense/screenshot-2.webp
 order: 27
+url: https://odoow25video.aryanranderiya.com
 github: https://github.com/aryanranderiya/OdooW25
 ---
 

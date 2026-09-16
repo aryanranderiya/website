@@ -21,6 +21,7 @@ images:
   - /images/projects/lyfelane/2024-11-22_22-24_2.webp
   - /images/projects/lyfelane/2024-11-22_22-24_3.webp
 order: 32
+url: https://lyfelane.com
 ---
 
 LyfeLane is a greeting card platform where you design, personalize, and send cards digitally. The landing page showcases a collage of beautifully designed cards and walks you through a five-step process - pick a template, customize it in the editor, add your message and photos, preview, and send.

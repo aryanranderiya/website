@@ -15,6 +15,7 @@ images:
   - /images/projects/technova/screenshot-4.webp
   - /images/projects/technova/screenshot-5.webp
 order: 25
+url: https://tech-nova-hackathon.vercel.app
 github: https://github.com/aryanranderiya/TechNovaHackathon
 ---
 
