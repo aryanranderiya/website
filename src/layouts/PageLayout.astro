@@ -62,13 +62,18 @@ const isHome = Astro.url.pathname === '/';
 				else body.classList.add('has-sidebar-avatar');
 			};
 			apply(document.body, isHome);
-			document.addEventListener('astro:before-swap', (e) => {
+			// Guarded: this inline block re-runs per navigation (isHome differs
+			// per page), but a single before-swap patcher covers all swaps.
+			if (!window.__avatarSwapBound) {
+				window.__avatarSwapBound = true;
+				document.addEventListener('astro:before-swap', (e) => {
 				const newDoc = e.newDocument;
 				const dest = e.to;
 				const home = (dest && dest.pathname) === '/';
 				apply(document.body, home);
 				if (newDoc) apply(newDoc.body, home);
-			});
+				});
+			}
 		})();
 	</script>
 

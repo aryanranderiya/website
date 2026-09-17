@@ -34,7 +34,9 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
             {/* live preview - scaled iPhone so it fits the card; layout matches the scaled size but paint (shadow) is unclipped */}
             <div class="pointer-events-none h-[375px] w-[179px] transition-transform duration-300 ease-out group-hover:scale-[1.04]">
               <div class="origin-top-left scale-[0.46]">
-                <ChatDemoInPhone platform="imessage" client:only="react" />
+                <ChatDemoInPhone platform="imessage" client:only="react">
+                <div slot="fallback" class="h-[375px] w-[179px] rounded-[2rem] bg-[var(--muted-bg)] animate-pulse" aria-hidden="true" />
+              </ChatDemoInPhone>
               </div>
             </div>
           </a>
@@ -54,7 +56,9 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
                 fontClassName="gaia-ui-wordmark font-bold"
                 className="rounded-2xl"
                 client:only="react"
-              />
+              >
+                <div slot="fallback" class="w-full rounded-2xl bg-[var(--muted-bg)] animate-pulse" style="aspect-ratio:16/9" aria-hidden="true" />
+              </FooterGlow>
             </div>
           </a>
         ) : (

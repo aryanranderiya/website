@@ -34,7 +34,10 @@ const latestPosts = allPosts
 			date: new Date(date).toISOString(),
 			...rest,
 		};
-	});
+	})
+	// Bound the per-request payload: BlogPreview renders the first 4, so only
+	// 4 serialized island props ship (this page is prerender=false).
+	.slice(0, 4);
 ---
 
 <PageLayout

@@ -84,6 +84,7 @@ const breadcrumbJsonLd = JSON.stringify({
 	],
 });
 ---
+{/* astro-doctor-ignore-file astro/prefer-astro-image -- dynamic CMS cover path: dims unknowable at build (eager LCP loading set explicitly) */}
 
 <PageLayout
   title={title}
@@ -99,9 +100,13 @@ const breadcrumbJsonLd = JSON.stringify({
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
 
   <script is:inline>
-    document.addEventListener("DOMContentLoaded", () => {
+    // astro:page-load (not DOMContentLoaded): this inline script re-runs on
+    // every ClientRouter navigation, and DOMContentLoaded never refires.
+    function setupFootnoteTooltips() {
       const refs = document.querySelectorAll(".prose a[data-footnote-ref]");
       refs.forEach((ref) => {
+        if (ref.dataset.fnBound) return;
+        ref.dataset.fnBound = "1";
         const id = (ref.getAttribute("href") || "").slice(1);
         const fnEl = id ? document.getElementById(id) : null;
         if (!fnEl) return;
@@ -149,7 +154,16 @@ const breadcrumbJsonLd = JSON.stringify({
           }, 80);
         });
       });
-    });
+    }
+
+    setupFootnoteTooltips();
+    // Guarded: this inline block re-runs per navigation, but one page-load
+    // listener is enough (the handler itself is idempotent per ref).
+    var w = window;
+    if (!w.__fnTipsBound) {
+      w.__fnTipsBound = true;
+      document.addEventListener("astro:page-load", setupFootnoteTooltips);
+    }
   </script>
 
   <div
@@ -164,6 +178,9 @@ const breadcrumbJsonLd = JSON.stringify({
           <img
             src={cover}
             alt={title}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
             class="blog-cover w-full object-contain rounded-xl mb-10"
           />
         )
@@ -254,7 +271,12 @@ const breadcrumbJsonLd = JSON.stringify({
         }
 
         setupProseImages();
-        document.addEventListener("astro:after-swap", setupProseImages);
+        // Guarded: inline block re-runs per navigation; setup is idempotent
+        // per image, but one after-swap listener is enough.
+        if (!window.__proseImgBound) {
+          window.__proseImgBound = true;
+          document.addEventListener("astro:after-swap", setupProseImages);
+        }
       })();
     </script>
 

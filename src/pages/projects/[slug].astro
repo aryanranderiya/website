@@ -13,18 +13,31 @@ import { normalizeImages, sortProjects } from '@/utils/projects';
 import { getTechIconUrl } from '@/utils/techIcons';
 
 export async function getStaticPaths() {
-	const projects = await getCollection('projects');
-	return projects.map((entry) => ({
-		params: { slug: slugOf(entry) },
-		props: { entry },
-	}));
+	// Neighbors are computed once here (not per page below): with N project
+	// pages, a top-level getCollection per page re-parses the collection N
+	// extra times at build. Only {slug,title} cross the props boundary.
+	const projects = sortProjects(await getCollection('projects'));
+	return projects.map((entry, i) => {
+		const prev = projects[(i - 1 + projects.length) % projects.length];
+		const next = projects[(i + 1) % projects.length];
+		return {
+			params: { slug: slugOf(entry) },
+			props: {
+				entry,
+				prev: { slug: slugOf(prev), title: prev.data.title },
+				next: { slug: slugOf(next), title: next.data.title },
+			},
+		};
+	});
 }
 
 interface Props {
 	entry: CollectionEntry<'projects'>;
+	prev: { slug: string; title: string };
+	next: { slug: string; title: string };
 }
 
-const { entry } = Astro.props;
+const { entry, prev, next } = Astro.props;
 const { Content } = await render(entry);
 const p = entry.data;
 
@@ -75,14 +88,7 @@ const projectJsonLd = JSON.stringify({
 const heroImage = p.coverImage || allImages[0]?.src;
 const galleryImages = allImages;
 const videoAspect = p.videoAspectRatio ?? '16 / 9';
-
-// Cycling prev/next through all projects in their sorted order.
-const allProjects = sortProjects(await getCollection('projects'));
-const projIndex = allProjects.findIndex((e) => slugOf(e) === slugOf(entry));
-const prevProject = allProjects[(projIndex - 1 + allProjects.length) % allProjects.length];
-const nextProject = allProjects[(projIndex + 1) % allProjects.length];
 ---
-{/* astro-doctor-ignore-file astro/prefer-astro-image -- dynamic CMS gallery dims unknown at build; lazy present */}
 
 <PageLayout title={p.title} description={p.description} ogImage={heroImage}>
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />
@@ -244,10 +250,10 @@ const nextProject = allProjects[(projIndex + 1) % allProjects.length];
     class="mt-16 pt-10 border-t border-[var(--border)]"
     backHref="/projects"
     backLabel="Back to Projects"
-    prevHref={`/projects/${slugOf(prevProject)}`}
-    nextHref={`/projects/${slugOf(nextProject)}`}
-    prevLabel={prevProject.data.title}
-    nextLabel={nextProject.data.title}
+    prevHref={`/projects/${prev.slug}`}
+    nextHref={`/projects/${next.slug}`}
+    prevLabel={prev.title}
+    nextLabel={next.title}
   />
 </PageLayout>
 

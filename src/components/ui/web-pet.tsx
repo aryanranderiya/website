@@ -114,8 +114,6 @@ const DEFAULT_SPEECH_CONFIG: ResolvedSpeechConfig = {
 
 const BUBBLE_GAP_PX = 6;
 
-const WEB_PET_ACTIONS = DEFAULT_BEHAVIOR.actions;
-
 const WEB_PET_SPEEDS: Record<string, number> = {
 	bear: 3.9,
 	cat: 4.6,

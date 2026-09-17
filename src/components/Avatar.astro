@@ -128,8 +128,24 @@ const { inline = false } = Astro.props;
   const DEFAULT_SRC = '/images/site/avatar.webp';
   const ALT_SRC = '/images/site/avatar-original.webp';
 
+  function storageGet(key: string): string | null {
+    try {
+      return sessionStorage.getItem(key);
+    } catch {
+      return null; // storage blocked: fall back to the default avatar
+    }
+  }
+
+  function storageSet(key: string, value: string): void {
+    try {
+      sessionStorage.setItem(key, value);
+    } catch {
+      /* storage blocked — variant simply won't persist */
+    }
+  }
+
   function currentSrc(): string {
-    return sessionStorage.getItem(VARIANT_KEY) === 'original' ? ALT_SRC : DEFAULT_SRC;
+    return storageGet(VARIANT_KEY) === 'original' ? ALT_SRC : DEFAULT_SRC;
   }
 
   function syncAvatar() {
@@ -144,8 +160,8 @@ const { inline = false } = Astro.props;
       if (btn.dataset.bound === 'true') return;
       btn.dataset.bound = 'true';
       btn.addEventListener('click', () => {
-        const next = sessionStorage.getItem(VARIANT_KEY) === 'original' ? 'default' : 'original';
-        sessionStorage.setItem(VARIANT_KEY, next);
+        const next = storageGet(VARIANT_KEY) === 'original' ? 'default' : 'original';
+        storageSet(VARIANT_KEY, next);
         syncAvatar();
       });
     });
