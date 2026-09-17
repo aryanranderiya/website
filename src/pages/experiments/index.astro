@@ -12,6 +12,7 @@ const WIDE = new Set(['footer-glow']);
 const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number(WIDE.has(b.slug)));
 ---
 {/* astro-doctor-ignore-file astro/no-island-in-map -- demo index maps distinct showcase islands by design */}
+{/* astro-doctor-ignore-file astro/no-island-in-map -- demo index maps distinct showcase islands by design */}
 
 <PageLayout
   title="Experiments"
@@ -81,7 +82,9 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
                     width={320}
                     height={446}
                     client:only="react"
-                  />
+                  >
+                    <div slot="fallback" style="width:320px;height:446px" class="rounded-2xl bg-[var(--muted-bg)] animate-pulse" aria-hidden="true" />
+                  </HoloCardIsland>
                 )}
               </div>
             </div>

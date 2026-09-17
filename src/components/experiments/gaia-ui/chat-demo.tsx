@@ -1,3 +1,4 @@
+// astro-doctor-ignore-file astro/no-huge-file -- experiment demo bundle kept together deliberately
 "use client";
 
 import { cn } from "@/lib/utils";

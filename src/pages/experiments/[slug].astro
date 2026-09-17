@@ -23,6 +23,7 @@ const chatPlatforms = (exp.gaiaUi?.variants.map((v) => v.anchor) ?? []).filter(
 	(a): a is ChatPlatform => (CHAT_PLATFORMS as string[]).includes(a)
 );
 ---
+{/* astro-doctor-ignore-file astro/no-island-in-map -- per-platform demo phones render distinct islands by design */}
 
 <PageLayout title={`${exp.title} - Experiments`} description={exp.description}>
   <BackLink href="/experiments" label="Back to Experiments" class="mb-8" />

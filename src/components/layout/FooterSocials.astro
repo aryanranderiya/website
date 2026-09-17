@@ -20,7 +20,8 @@ const SOCIAL_SVGS: Record<string, string> = {
       aria-label={link.label}
       class="text-[var(--text-ghost)] no-underline flex items-center transition-colors duration-150 hover:text-[var(--text-muted)]"
     >
-      <span aria-hidden="true" set:html={SOCIAL_SVGS[link.label]} />
+      <!-- astro-doctor-ignore-next-line astro/no-unsafe-set-html -- authored SVG sprite constants -->
+<span aria-hidden="true" set:html={SOCIAL_SVGS[link.label]} />
     </a>
   ))}
 </div>

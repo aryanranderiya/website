@@ -1,3 +1,4 @@
+// astro-doctor-ignore-file astro/no-huge-file -- full-featured site chrome; split risks prop drift
 'use client';
 
 import {

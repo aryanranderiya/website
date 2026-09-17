@@ -214,6 +214,7 @@ const sections = [
 
 const tocHeadings = sections.map((s) => ({ depth: 2, slug: s.id, text: s.label }));
 ---
+{/* astro-doctor-ignore-file astro/no-huge-file -- deliberate style-guide kitchen sink */}
 
 <PageLayout
   title="Colophon"
@@ -287,11 +288,11 @@ const tocHeadings = sections.map((s) => ({ depth: 2, slug: s.id, text: s.label }
         </p>
 
         <div class="flex flex-wrap items-center gap-2 animate-fade-in" style="animation-delay:0.15s">
-          <ButtonLink href="#" label="Default" icon="arrow-right" size="sm" client:load />
-          <ButtonLink href="#" label="Secondary" icon="folder" variant="secondary" size="sm" client:load />
-          <ButtonLink href="#" label="Accent" icon="arrow-right" variant="accent" size="sm" client:load />
-          <ButtonLink href="#" label="Outline" icon="download" variant="outline" size="sm" client:load />
-          <ButtonLink href="#" label="Ghost" icon="mail" variant="ghost" size="sm" client:load />
+          <ButtonLink href="#" label="Default" icon="arrow-right" size="sm" />
+          <ButtonLink href="#" label="Secondary" icon="folder" variant="secondary" size="sm" />
+          <ButtonLink href="#" label="Accent" icon="arrow-right" variant="accent" size="sm" />
+          <ButtonLink href="#" label="Outline" icon="download" variant="outline" size="sm" />
+          <ButtonLink href="#" label="Ghost" icon="mail" variant="ghost" size="sm" />
         </div>
       </section>
 
@@ -427,7 +428,6 @@ const tocHeadings = sections.map((s) => ({ depth: 2, slug: s.id, text: s.label }
             target="_blank"
             rel="noopener noreferrer"
             size="sm"
-            client:load
           />
           <ButtonLink
             href="mailto:aryan@heygaia.io"
@@ -435,7 +435,6 @@ const tocHeadings = sections.map((s) => ({ depth: 2, slug: s.id, text: s.label }
             icon="mail"
             variant="secondary"
             size="sm"
-            client:load
           />
         </div>
       </section>

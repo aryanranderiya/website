@@ -48,7 +48,8 @@ const latestPosts = allPosts
   <!-- Hero -->
   <Hero />
 
-  <BlogPreview posts={latestPosts} client:visible />
+  <!-- astro-doctor-ignore-next-line astro/no-too-many-islands -- curated homepage: 5 single-purpose lazy islands -->
+<BlogPreview posts={latestPosts} client:visible />
 
   <!-- Spotify + Map -->
   <section class="pb-4">
