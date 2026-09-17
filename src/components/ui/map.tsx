@@ -1,3 +1,4 @@
+// astro-doctor-ignore-file astro/no-huge-file -- maplibre wrapper in one lifecycle
 'use client';
 
 import * as MapLibreGL from 'maplibre-gl';

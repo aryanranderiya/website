@@ -89,6 +89,7 @@ const heroImage = p.coverImage || allImages[0]?.src;
 const galleryImages = allImages;
 const videoAspect = p.videoAspectRatio ?? '16 / 9';
 ---
+{/* astro-doctor-ignore-file astro/prefer-astro-image -- dynamic CMS gallery dims unknown at build; lazy present */}
 
 <PageLayout title={p.title} description={p.description} ogImage={heroImage}>
   <script is:inline type="application/ld+json" set:html={breadcrumbJsonLd} />

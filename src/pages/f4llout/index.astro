@@ -3,6 +3,7 @@ import PageLayout from '@/layouts/PageLayout.astro';
 
 const images = Array.from({ length: 9 }, (_, i) => `/images/games/fallout/${i + 1}.webp`);
 ---
+{/* astro-doctor-ignore-file astro/prefer-astro-image -- static string list without dims; eager/lazy + async present */}
 
 <PageLayout
   title="F4LLOUT Esports"
