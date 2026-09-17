@@ -14,7 +14,7 @@ images:
 order: 39
 github: https://github.com/aryanranderiya/scratch
 ---
-<img src="/images/projects/scratch/icon.png" alt="Scratch app icon" width="72" height="72" style="border-radius:18px" />
+<img src="/images/projects/scratch/icon.png" alt="Scratch app icon" width="72" height="72" style="border-radius:18px;width:72px;height:72px" />
 
 A minimal markdown scratchpad that lives in the corner of your screen — between heavy tools like Obsidian and macOS Stickies, which has neither markdown nor sync.
 
