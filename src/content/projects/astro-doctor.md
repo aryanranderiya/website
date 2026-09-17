@@ -13,13 +13,20 @@ images:
 order: 38
 github: https://github.com/aryanranderiya/astro-doctor
 ---
+Your agent writes bad Astro. astro-doctor catches it — deterministically, with no LLM and no network.
 
-Your agent writes bad Astro. astro-doctor catches it.
+## Features
 
-astro-doctor deterministically scans an Astro codebase for issues across islands and hydration, data-fetching and prerendering, performance, security, correctness, and maintainability. It exists for the exact failure mode AI coding agents produce: confident, plausible Astro that silently misuses `client:*` directives, leaks server-only code to the browser, or breaks under ClientRouter navigation. No LLM judging, no network calls — 42 AST/regex rules, each emitting file, line, and a fix recipe.
+- 42 rules across islands/hydration, data-fetching, SSR, performance, security, and maintainability
+- Every finding ships file, line, and a fix recipe — built for agent fix-loops
+- CLI (`--json`, `--verbose`), programmatic API, and a CI gate (exit 1 on errors)
+- Agent skill bundle for Claude Code, Cursor, Codex, and OpenCode
+- Config file, per-line suppressions with reasons, health score + top offenders
 
-It runs three ways: a CLI (`astro-doctor [dir]`, with `--json` for machines, `--fast` and `--cache` for iteration), a programmatic API (`scanDir`), and a CI gate (`astro-doctor ci install` writes the GitHub Actions workflow; exit code 1 on any error). A `doctor.config.mjs` tunes severities and ignore globs, and findings suppress explicitly with reasoned comments — no allowlists. It also ships an agent skill (`skills/astro-doctor/SKILL.md`) so Claude Code, Cursor, Codex, or OpenCode can run it, read the JSON, and apply fixes in a loop.
+## How it's built
 
-Under the hood, template structure comes from a compiler-backed Document IR (`@astrojs/compiler`, with a quote-aware scanner fallback), frontmatter JavaScript goes through a single-pass lexer, and correctness is enforced structurally: length-preservation invariants, a 200-mutant fuzz run over every rule, CLI exit-code and JSON-shape tests, and compiler/scanner agreement plus metamorphic property suites. On my own portfolio it went from 16 errors and 41 warnings to a clean 100/100 — and along the way caught two production 404s (a default social image and a manifest icon that didn't exist).
+Template structure comes from a compiler-backed Document IR (`@astrojs/compiler`, scanner fallback); frontmatter JavaScript goes through a single-pass lexer. Correctness is enforced structurally: length-preservation invariants, a 200-mutant fuzz run over every rule, and agreement + metamorphic property suites.
 
-The cover above reproduces its actual first run on this site: 16 errors, 41 warnings, score 26/100.
+## Notes
+
+The cover reproduces its real first run on this site (16 errors, 41 warnings) — which became the 100/100 cleanup documented across the following releases.

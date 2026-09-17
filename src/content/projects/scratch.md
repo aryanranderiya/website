@@ -11,13 +11,21 @@ coverImage: /images/projects/scratch/notes.webp
 images:
   - /images/projects/scratch/notes.webp
   - /images/projects/scratch/kanban.webp
-  - /images/projects/scratch/icon.png
 order: 39
 github: https://github.com/aryanranderiya/scratch
 ---
+<img src="/images/projects/scratch/icon.png" alt="Scratch app icon" width="72" height="72" style="border-radius:18px;width:72px;height:72px" />
 
-Scratch sits between heavy tools like Obsidian or Notion and macOS Stickies (no markdown, no sync): a small, flat, Apple-clean desktop window for thoughts, todos, and PR notes. Notes are plain `.md` files with YAML frontmatter in a local git vault (`~/Scratch` by default, optionally in iCloud Drive), so they stay grep-able and portable even without the app. Every few minutes the vault is committed, fast-forwarded, and pushed to your own private `scratch-notes` repo.
+A minimal markdown scratchpad that lives in the corner of your screen — between heavy tools like Obsidian and macOS Stickies, which has neither markdown nor sync.
 
-Its differentiator is GitHub PR integration: `@`-mention search over open PRs across your repos and orgs, sorted by readiness (passing CI first, drafts last), with linked PRs showing reference cards. One click inserts a PR QA checklist (tested autonomously, files reviewed, manually tested), and a kanban triage board with custom columns, drag and drop, and repo filtering turns review queues into something glanceable.
+## Features
 
-The editor is Notion-like block markdown (`/` commands, headings, callouts, task lists, PR cards) built on TipTap, with React 19, Tailwind v4, and Zustand up front and a Tauri v2 + Rust backend (`git2` for sync, `reqwest` for the GitHub API). Light and dark mode, SF Pro, macOS segmented tabs — and cross-platform installers (macOS dmg, Linux AppImage/deb, Windows msi/nsis) built by CI on every git tag, with Playwright end-to-end tests over mocked Tauri IPC and `cargo test` on the backend.
+- Notion-style block editor (`/` commands, headings, callouts, task lists) via TipTap
+- `@`-mention search over open PRs across your repos and orgs, sorted by CI readiness
+- One-click PR QA checklists and a kanban triage board with drag and drop
+- Plain `.md` vault with YAML frontmatter — grep-able, portable, no lock-in
+- Auto git sync: commit, fast-forward, and push to your own repo every few minutes
+
+## Stack
+
+React 19, TypeScript, Tailwind v4, Zustand up front; Tauri v2 + Rust (`git2`, `reqwest`) behind. Tested with Playwright (mocked IPC) and `cargo test`; installers built by CI per git tag.
