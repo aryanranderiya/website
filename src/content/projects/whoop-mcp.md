@@ -12,9 +12,19 @@ images:
 order: 42
 github: https://github.com/aryanranderiya/whoop-mcp
 ---
+A Model Context Protocol server that gives LLM agents read-only, curated access to WHOOP recovery, sleep, strain, and workout data — OAuth included.
 
-`whoop-mcp` is a Model Context Protocol server that exposes WHOOP wearable data — recovery, sleep, strain, workouts, profile and body metrics — to LLM agents. It is deliberately not a 1:1 REST wrapper: one major context tool (`whoop_overview`) returns a whole snapshot, responses are trimmed and unit-converted (minutes and hours instead of raw seconds, kcal where it matters), inputs and outputs carry strict Zod schemas, and internal pagination stays hidden to save round-trips and context.
+## Tools
 
-History tools take `days` or explicit ISO-8601 `start`/`end` plus `limit` (max 25): recovery percentage with HRV, resting HR, SpO2 and skin temperature; sleep performance, efficiency and consistency with stage minutes and respiratory rate; daily strain on the 0–21 scale with heart-rate zones; workouts with sport, strain, distance, and calories. Detail tools cover profile, single cycles, sleeps, and workouts.
+- `whoop_overview`: one-call snapshot (recovery + last sleep + today's strain + profile)
+- `whoop_recovery`, `whoop_sleep`, `whoop_strain`, `whoop_workouts`: history with trimmed, unit-converted values
+- Detail tools for profile, single cycles, sleeps, and workouts
+- Strict Zod schemas, hidden pagination, `days` or ISO-8601 ranges (max 25)
 
-Authentication bridges WHOOP's OAuth 2.0 (which lacks dynamic client registration and PKCE-S256) through an OAuth proxy with compliant metadata, staying stateless with no token store. The transform layer carries unit tests (`vitest`), strict `tsc --noEmit`, and an `/inspector` dev UI — and it's deployable to Manufact Cloud, where it also runs live.
+## Design notes
+
+Deliberately not a 1:1 REST wrapper: token-efficient responses, no token store (stateless OAuth proxy for WHOOP's limited OAuth 2.0), transform-layer unit tests, strict `tsc --noEmit`, dev inspector UI. Deployable to Manufact Cloud.
+
+## Stack
+
+TypeScript, MCP, Zod, Vitest.
