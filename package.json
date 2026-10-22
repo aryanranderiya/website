@@ -23,7 +23,8 @@
 		"unused-assets": "node scripts/find-unused-assets.mjs",
 		"validate-media": "node scripts/validate-media.mjs",
 		"image-budget": "node scripts/image-budget.mjs",
-		"doctor": "react-doctor"
+		"doctor": "react-doctor",
+		"spotify:reauth": "node scripts/spotify-reauth.mjs"
 	},
 	"dependencies": {
 		"@astrojs/cloudflare": "^14.3.1",
