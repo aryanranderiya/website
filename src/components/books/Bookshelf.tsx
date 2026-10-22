@@ -95,7 +95,7 @@ function Shelf({
 
 	return (
 		<div className="pt-12 first:pt-1">
-			<div className="mb-3 px-1 text-center text-[13px] text-[var(--text-secondary)] tracking-[-0.01em]">
+			<div className="mb-3 px-1 text-center text-[13px] tracking-[-0.01em] text-[var(--text-secondary)]">
 				{label}
 			</div>
 			{rows.map((row, ri) => (

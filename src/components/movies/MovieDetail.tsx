@@ -38,7 +38,7 @@ function RatingDots({ rating, max = 10 }: { rating: number; max?: number }) {
 					/>
 				))}
 			</div>
-			<span className="font-semibold text-[13px] text-white/90 tracking-[-0.02em]">
+			<span className="text-[13px] font-semibold tracking-[-0.02em] text-white/90">
 				{rating}/10
 			</span>
 		</div>
@@ -105,7 +105,7 @@ export default function MovieDetail({
 										)}
 										<div
 											className="absolute inset-0"
-											// biome-ignore lint/nursery/noInlineStyles: dynamic gradient based on movie.cover presence
+											// biome-ignore lint/style/noInlineStyles: dynamic gradient based on movie.cover presence
 											style={{
 												background: movie.cover
 													? 'linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.75) 100%)'
@@ -128,10 +128,10 @@ export default function MovieDetail({
 
 											{/* Title & meta */}
 											<div className="min-w-0 flex-1 pb-1">
-												<h2 className="m-0 mb-1 font-bold text-[20px] text-white/95 leading-[1.2] tracking-[-0.03em]">
+												<h2 className="m-0 mb-1 text-[20px] leading-[1.2] font-bold tracking-[-0.03em] text-white/95">
 													{movie.title}
 												</h2>
-												<div className="mb-2 text-[12px] text-white/50 tracking-[-0.01em]">
+												<div className="mb-2 text-[12px] tracking-[-0.01em] text-white/50">
 													{movie.year}
 													{movie.director && ` · ${movie.director}`}
 												</div>
@@ -148,7 +148,7 @@ export default function MovieDetail({
 												{movie.genre.map((g) => (
 													<span
 														key={g}
-														className="rounded-full bg-[var(--muted)] px-[10px] py-[3px] font-medium text-[11px] text-[var(--muted-foreground)] capitalize"
+														className="rounded-full bg-[var(--muted)] px-[10px] py-[3px] text-[11px] font-medium text-[var(--muted-foreground)] capitalize"
 													>
 														{g}
 													</span>
@@ -159,10 +159,10 @@ export default function MovieDetail({
 										{/* Review */}
 										{movie.review && (
 											<div>
-												<div className="mb-2 font-medium text-[10px] text-[var(--muted-foreground)] uppercase tracking-[0.08em] opacity-60">
+												<div className="mb-2 text-[10px] font-medium tracking-[0.08em] text-[var(--muted-foreground)] uppercase opacity-60">
 													My Review
 												</div>
-												<p className="m-0 text-[13px] text-[var(--foreground)] leading-[1.65] tracking-[-0.01em] opacity-75">
+												<p className="m-0 text-[13px] leading-[1.65] tracking-[-0.01em] text-[var(--foreground)] opacity-75">
 													{movie.review}
 												</p>
 											</div>
@@ -171,10 +171,10 @@ export default function MovieDetail({
 										{/* Pre-watch thoughts */}
 										{movie.thoughts && (
 											<div>
-												<div className="mb-2 font-medium text-[10px] text-[var(--muted-foreground)] uppercase tracking-[0.08em] opacity-60">
+												<div className="mb-2 text-[10px] font-medium tracking-[0.08em] text-[var(--muted-foreground)] uppercase opacity-60">
 													Why I Want to Watch
 												</div>
-												<p className="m-0 text-[13px] text-[var(--foreground)] leading-[1.65] tracking-[-0.01em] opacity-75">
+												<p className="m-0 text-[13px] leading-[1.65] tracking-[-0.01em] text-[var(--foreground)] opacity-75">
 													{movie.thoughts}
 												</p>
 											</div>
@@ -183,14 +183,14 @@ export default function MovieDetail({
 										{/* Favourite characters */}
 										{movie.favCharacters.length > 0 && (
 											<div>
-												<div className="mb-2 font-medium text-[10px] text-[var(--muted-foreground)] uppercase tracking-[0.08em] opacity-60">
+												<div className="mb-2 text-[10px] font-medium tracking-[0.08em] text-[var(--muted-foreground)] uppercase opacity-60">
 													Favourite Characters
 												</div>
 												<div className="flex flex-wrap gap-1.5">
 													{movie.favCharacters.map((char) => (
 														<span
 															key={char}
-															className="rounded-full bg-[var(--muted)] px-3 py-1 font-medium text-[12px] text-[var(--foreground)] opacity-80"
+															className="rounded-full bg-[var(--muted)] px-3 py-1 text-[12px] font-medium text-[var(--foreground)] opacity-80"
 														>
 															{char}
 														</span>
@@ -205,7 +205,7 @@ export default function MovieDetail({
 												href={`https://www.imdb.com/title/${movie.imdbId}`}
 												target="_blank"
 												rel="noopener noreferrer"
-												className="inline-flex items-center gap-1 rounded-[6px] bg-[#f5c518] px-3 py-[5px] font-bold text-[11px] text-black tracking-[0.02em] no-underline opacity-90 transition-opacity duration-150 hover:opacity-100"
+												className="inline-flex items-center gap-1 rounded-[6px] bg-[#f5c518] px-3 py-[5px] text-[11px] font-bold tracking-[0.02em] text-black no-underline opacity-90 transition-opacity duration-150 hover:opacity-100"
 											>
 												IMDB ↗
 											</a>

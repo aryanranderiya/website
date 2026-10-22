@@ -135,7 +135,7 @@ function PlatformIcon({ platform, model }: { platform: string; model: string }) 
       `}</style>
 			{tooltipPos && (
 				<span
-					// biome-ignore lint/nursery/noInlineStyles: dynamic position from mouse coordinates
+					// biome-ignore lint/style/noInlineStyles: dynamic position from mouse coordinates
 					style={{
 						position: 'fixed',
 						left: tooltipPos.x,
@@ -158,7 +158,7 @@ function PlatformIcon({ platform, model }: { platform: string; model: string }) 
 					{label}
 					<span className="mx-[4px] opacity-30">/</span>
 					<span
-						// biome-ignore lint/nursery/noInlineStyles: fontFamily/fontSize have no Tailwind equivalent for var(--font-mono)
+						// biome-ignore lint/style/noInlineStyles: fontFamily/fontSize have no Tailwind equivalent for var(--font-mono)
 						style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', opacity: 0.8 }}
 					>
 						{model}
@@ -247,7 +247,7 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 						.agent-convos-col-date { width: 24%; }
 					}
 				`}</style>
-				<table className="dim-list w-full border-collapse [table-layout:fixed]">
+				<table className="dim-list w-full [table-layout:fixed] border-collapse">
 					<colgroup>
 						<col className="agent-convos-col-title w-[72%]" />
 						<col className="agent-convos-col-tokens w-[13%]" />
@@ -264,14 +264,14 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 							).map(([key, label]) => (
 								<th
 									key={key}
-									// biome-ignore lint/nursery/noInlineStyles: cell layout styles for the sort header
+									// biome-ignore lint/style/noInlineStyles: cell layout styles for the sort header
 									style={colCellStyle}
 								>
 									<button
 										type="button"
 										onClick={() => handleSort(key)}
 										aria-label={`Sort by ${label}`}
-										// biome-ignore lint/nursery/noInlineStyles: dynamic styles based on sort state
+										// biome-ignore lint/style/noInlineStyles: dynamic styles based on sort state
 										style={colButtonStyle(key)}
 									>
 										<span className="inline-flex items-center">
@@ -304,13 +304,13 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 								}}
 							>
 								{/* Title with platform icon -- no overflow:hidden on td so tooltip can escape */}
-								<td className="border-[var(--border)] border-b py-[9px] pr-[16px]">
+								<td className="border-b border-[var(--border)] py-[9px] pr-[16px]">
 									<span className="flex min-w-0 items-center gap-[7px]">
 										<PlatformIcon platform={convo.platform} model={convo.model} />
 										<a
 											href={`/agent-convos/${convo.slug}`}
-											className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap text-[13px] text-[var(--text-primary)] no-underline"
-											// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent; view-transition-name must be unique per slug
+											className="min-w-0 flex-1 overflow-hidden text-[13px] text-ellipsis whitespace-nowrap text-[var(--text-primary)] no-underline"
+											// biome-ignore lint/style/noInlineStyles: fontVariationSettings has no Tailwind equivalent; view-transition-name must be unique per slug
 											style={{
 												fontVariationSettings: '"wght" 480',
 												letterSpacing: '-0.012em',
@@ -324,10 +324,10 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 								</td>
 
 								{/* Tokens */}
-								<td className="whitespace-nowrap border-[var(--border)] border-b py-[9px] pr-[12px]">
+								<td className="border-b border-[var(--border)] py-[9px] pr-[12px] whitespace-nowrap">
 									<span
 										className="text-[11px] tracking-[-0.02em]"
-										// biome-ignore lint/nursery/noInlineStyles: dynamic color based on token availability; fontFamily is var(--font-mono)
+										// biome-ignore lint/style/noInlineStyles: dynamic color based on token availability; fontFamily is var(--font-mono)
 										style={{
 											color:
 												convo.tokens || convo.tokenCount
@@ -341,11 +341,11 @@ export default function AgentConvosList({ convos }: { convos: ConvoEntry[] }) {
 								</td>
 
 								{/* Date */}
-								<td className="whitespace-nowrap border-[var(--border)] border-b py-[9px]">
+								<td className="border-b border-[var(--border)] py-[9px] whitespace-nowrap">
 									<time
 										dateTime={convo.date}
 										className="text-[11px] text-[var(--text-ghost)]"
-										// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
+										// biome-ignore lint/style/noInlineStyles: fontVariationSettings has no Tailwind equivalent
 										style={{ fontVariationSettings: '"wght" 400' }}
 									>
 										{formatDate(convo.date)}

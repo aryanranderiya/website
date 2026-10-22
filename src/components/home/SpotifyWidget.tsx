@@ -73,7 +73,7 @@ function ShimmerBlock({ w, h, r = 6 }: { w: string | number; h: number; r?: numb
 	return (
 		<div
 			className="shrink-0 animate-[shimmer_1.4s_ease-in-out_infinite] bg-[length:200%_100%] bg-[linear-gradient(90deg,var(--border)_25%,var(--border-strong)_50%,var(--border)_75%)]"
-			// biome-ignore lint/nursery/noInlineStyles: dynamic dimensions from props
+			// biome-ignore lint/style/noInlineStyles: dynamic dimensions from props
 			style={{ width: w, height: h, borderRadius: r }}
 		/>
 	);
@@ -139,7 +139,7 @@ function WidgetHeader({ isPlaying }: { isPlaying: boolean }) {
 						className="flex items-center gap-[5px]"
 					>
 						<MusicBars />
-						<span className="font-medium text-[9px] text-[var(--text-ghost)] uppercase tracking-[0.07em]">
+						<span className="text-[9px] font-medium tracking-[0.07em] text-[var(--text-ghost)] uppercase">
 							Now Playing
 						</span>
 					</m.div>
@@ -167,7 +167,7 @@ function TrackArt({ track, previewPlaying, showVinyl, onTogglePreview }: TrackAr
 				aria-label={previewPlaying ? 'Pause preview' : 'Play preview'}
 				aria-pressed={previewPlaying}
 				title={previewPlaying ? 'Pause preview' : 'Play preview'}
-				className="relative block h-[55px] w-16 shrink-0 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1DB954]"
+				className="relative block h-[55px] w-16 shrink-0 cursor-pointer focus-visible:ring-2 focus-visible:ring-[#1DB954] focus-visible:outline-none"
 			>
 				<VinylDisk isPlaying={previewPlaying} spinDuration={4000} className="h-[55px] w-16" />
 				<img
@@ -254,15 +254,15 @@ function WidgetMain({
 								href={track.songUrl}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="block overflow-hidden text-ellipsis whitespace-nowrap font-semibold text-[13px] text-[var(--text-primary)] leading-[1.3] tracking-[-0.02em] no-underline transition-colors duration-150 hover:text-[#1DB954]"
+								className="block overflow-hidden text-[13px] leading-[1.3] font-semibold tracking-[-0.02em] text-ellipsis whitespace-nowrap text-[var(--text-primary)] no-underline transition-colors duration-150 hover:text-[#1DB954]"
 							>
 								{track.title}
 							</a>
-							<span className="overflow-hidden text-ellipsis whitespace-nowrap text-[var(--text-secondary)] text-xs tracking-[-0.01em]">
+							<span className="overflow-hidden text-xs tracking-[-0.01em] text-ellipsis whitespace-nowrap text-[var(--text-secondary)]">
 								{track.artist}
 							</span>
 							{track.album && (
-								<span className="mt-0.5 overflow-hidden text-ellipsis whitespace-nowrap text-[11px] text-[var(--text-ghost)]">
+								<span className="mt-0.5 overflow-hidden text-[11px] text-ellipsis whitespace-nowrap text-[var(--text-ghost)]">
 									{track.album}
 								</span>
 							)}
@@ -275,7 +275,7 @@ function WidgetMain({
 						animate={{ opacity: 1 }}
 						className="flex flex-col gap-[3px]"
 					>
-						<span className="font-medium text-[13px] text-[var(--text-secondary)] tracking-[-0.01em]">
+						<span className="text-[13px] font-medium tracking-[-0.01em] text-[var(--text-secondary)]">
 							Not playing
 						</span>
 						<span className="text-[11px] text-[var(--text-ghost)]">Nothing in queue</span>
@@ -302,10 +302,10 @@ function WidgetProgress({
 				{isPlaying && duration ? (
 					<m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 						<div className="mb-[5px] flex justify-between">
-							<span className="text-[9px] text-[var(--text-ghost)] tracking-[0.02em]">
+							<span className="text-[9px] tracking-[0.02em] text-[var(--text-ghost)]">
 								{formatTime(liveProgress)}
 							</span>
-							<span className="text-[9px] text-[var(--text-ghost)] tracking-[0.02em]">
+							<span className="text-[9px] tracking-[0.02em] text-[var(--text-ghost)]">
 								{formatTime(duration)}
 							</span>
 						</div>

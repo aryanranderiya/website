@@ -239,7 +239,7 @@ const WebPetContainer = forwardRef<HTMLDivElement, WebPetContainerProps>(
 			role={onClick ? 'button' : undefined}
 			aria-label={onClick ? ariaLabel : undefined}
 			tabIndex={onClick ? 0 : undefined}
-			// biome-ignore lint/nursery/noInlineStyles: dynamic position/size/zIndex/pointerEvents from props
+			// biome-ignore lint/style/noInlineStyles: dynamic position/size/zIndex/pointerEvents from props
 			style={{
 				position,
 				top: '0px',
@@ -279,7 +279,7 @@ function WebPetSpeechBubble({
 
 	return (
 		<div
-			// biome-ignore lint/nursery/noInlineStyles: dynamic position/size/transform from props; fontFamily/boxShadow are CSS vars
+			// biome-ignore lint/style/noInlineStyles: dynamic position/size/transform from props; fontFamily/boxShadow are CSS vars
 			style={{
 				position: 'absolute',
 				left: '50%',
@@ -303,7 +303,7 @@ function WebPetSpeechBubble({
 			{text}
 			<div
 				aria-hidden
-				// biome-ignore lint/nursery/noInlineStyles: CSS triangle via border trick has no Tailwind equivalent
+				// biome-ignore lint/style/noInlineStyles: CSS triangle via border trick has no Tailwind equivalent
 				style={{
 					position: 'absolute',
 					top: '100%',
@@ -318,7 +318,7 @@ function WebPetSpeechBubble({
 			/>
 			<div
 				aria-hidden
-				// biome-ignore lint/nursery/noInlineStyles: CSS triangle via border trick has no Tailwind equivalent
+				// biome-ignore lint/style/noInlineStyles: CSS triangle via border trick has no Tailwind equivalent
 				style={{
 					position: 'absolute',
 					top: '100%',
@@ -342,7 +342,7 @@ type WebPetSpriteProps = {
 const WebPetSprite = forwardRef<HTMLDivElement, WebPetSpriteProps>(({ initialGif }, ref) => (
 	<div
 		ref={ref}
-		// biome-ignore lint/nursery/noInlineStyles: dynamic backgroundImage from props; imageRendering/backgroundPosition have no Tailwind equivalent
+		// biome-ignore lint/style/noInlineStyles: dynamic backgroundImage from props; imageRendering/backgroundPosition have no Tailwind equivalent
 		style={{
 			height: '100%',
 			width: '100%',

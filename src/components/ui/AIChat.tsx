@@ -313,7 +313,7 @@ function AssistantBubble({
 								type="button"
 								key={q}
 								onClick={() => onFollowUp?.(q)}
-								className="cursor-pointer rounded-full border-[1.5px] border-[rgba(0,0,0,0.22)] border-dashed px-2.5 py-1 text-[11px] text-[rgba(0,0,0,0.5)] leading-[1.4] tracking-[-0.01em] transition-colors hover:bg-black/5"
+								className="cursor-pointer rounded-full border-[1.5px] border-dashed border-[rgba(0,0,0,0.22)] px-2.5 py-1 text-[11px] leading-[1.4] tracking-[-0.01em] text-[rgba(0,0,0,0.5)] transition-colors hover:bg-black/5"
 							>
 								{q}
 							</button>
@@ -337,13 +337,13 @@ function ChatHeader({
 	onClose: () => void;
 }) {
 	return (
-		<div className="flex shrink-0 items-center justify-between border-[rgba(0,0,0,0.06)] border-b px-4 py-3">
+		<div className="flex shrink-0 items-center justify-between border-b border-[rgba(0,0,0,0.06)] px-4 py-3">
 			<div className="flex items-center gap-2">
 				<div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#00bbff]">
 					<HugeiconsIcon icon={ChatBotIcon} size={14} color="white" />
 				</div>
 				<div>
-					<p className="font-[550] text-[13px] text-[var(--foreground)] leading-none tracking-[-0.02em]">
+					<p className="text-[13px] leading-none font-[550] tracking-[-0.02em] text-[var(--foreground)]">
 						Ask about Aryan
 					</p>
 					<p className="mt-0.5 text-[11px] text-[rgba(0,0,0,0.35)]">
@@ -391,7 +391,7 @@ function MessageList({
 	}, []);
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden px-5 py-3">
+		<div className="flex min-h-0 flex-1 flex-col overflow-x-hidden overflow-y-auto px-5 py-3">
 			{messages.map((msg: Message) => (
 				<m.div
 					key={msg.id}
@@ -422,7 +422,7 @@ function MessageList({
 					<div className="imessage-bubble imessage-from-them max-w-[85%]">
 						<div className="mb-1.5 flex items-center gap-2">
 							<m.div
-								className="h-3 w-3 shrink-0 rounded-full border-[#00bbff] border-[1.5px] border-t-transparent"
+								className="h-3 w-3 shrink-0 rounded-full border-[1.5px] border-[#00bbff] border-t-transparent"
 								animate={{ rotate: 360 }}
 								transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
 							/>
@@ -480,7 +480,7 @@ function SuggestionChips({
 							type="button"
 							key={q}
 							onClick={() => onSelect(q)}
-							className="cursor-pointer rounded-full border-[1.5px] border-[rgba(0,0,0,0.22)] border-dashed px-2.5 py-1 text-[11.5px] text-[rgba(0,0,0,0.55)] leading-[1.4] tracking-[-0.01em] transition-colors hover:bg-black/5"
+							className="cursor-pointer rounded-full border-[1.5px] border-dashed border-[rgba(0,0,0,0.22)] px-2.5 py-1 text-[11.5px] leading-[1.4] tracking-[-0.01em] text-[rgba(0,0,0,0.55)] transition-colors hover:bg-black/5"
 						>
 							{q}
 						</button>
@@ -516,7 +516,7 @@ function ChatInput({
 	const canSend = input.trim().length > 0 && modelReady && !streaming;
 
 	return (
-		<div className="shrink-0 border-[rgba(0,0,0,0.06)] border-t px-3 pt-2 pb-3">
+		<div className="shrink-0 border-t border-[rgba(0,0,0,0.06)] px-3 pt-2 pb-3">
 			<form
 				onSubmit={handleSubmit}
 				className="relative flex items-center rounded-full bg-[rgba(0,0,0,0.05)]"
@@ -528,7 +528,7 @@ function ChatInput({
 					onChange={(e) => setInput(e.target.value)}
 					placeholder={modelReady ? 'Ask anything...' : 'Loading model...'}
 					disabled={!modelReady || streaming}
-					className="w-full rounded-full border-none bg-transparent py-2.5 pr-11 pl-4 text-[13px] text-[var(--foreground)] tracking-[-0.01em] shadow-none outline-none transition-opacity focus:outline-none focus:ring-0 focus-visible:outline-none disabled:opacity-40"
+					className="w-full rounded-full border-none bg-transparent py-2.5 pr-11 pl-4 text-[13px] tracking-[-0.01em] text-[var(--foreground)] shadow-none transition-opacity outline-none focus:ring-0 focus:outline-none focus-visible:outline-none disabled:opacity-40"
 				/>
 				<m.button
 					type="submit"

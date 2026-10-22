@@ -38,7 +38,7 @@ function ToolIcon({ src, name, size = 40 }: { src: string; name: string; size?: 
 		return (
 			<div
 				className="flex items-center justify-center bg-[var(--muted-bg)] font-semibold text-[var(--text-ghost)]"
-				// biome-ignore lint/nursery/noInlineStyles: dynamic size/borderRadius/fontSize computed from prop
+				// biome-ignore lint/style/noInlineStyles: dynamic size/borderRadius/fontSize computed from prop
 				style={{ width: size, height: size, borderRadius: size * 0.225, fontSize: size * 0.4 }}
 			>
 				{name[0]}
@@ -54,7 +54,7 @@ function ToolIcon({ src, name, size = 40 }: { src: string; name: string; size?: 
 			height={size}
 			onError={() => setErrored(true)}
 			className="block shrink-0 object-cover"
-			// biome-ignore lint/nursery/noInlineStyles: dynamic borderRadius computed from prop
+			// biome-ignore lint/style/noInlineStyles: dynamic borderRadius computed from prop
 			style={{ borderRadius: size * 0.225 }}
 		/>
 	);
@@ -112,13 +112,13 @@ function ToolDrawer({
 										{/* Icon centered at top */}
 										<div className="mb-5 flex flex-col items-center">
 											<ToolIcon src={tool.icon} name={tool.name} size={64} />
-											<h2 className="mt-3 mb-1.5 text-center font-semibold text-[20px] text-[var(--text-primary)] leading-[1.2] tracking-[-0.03em]">
+											<h2 className="mt-3 mb-1.5 text-center text-[20px] leading-[1.2] font-semibold tracking-[-0.03em] text-[var(--text-primary)]">
 												{tool.name}
 											</h2>
 											<div className="mb-4 flex items-center gap-1.5">
 												<span
-													className="rounded-full px-2 py-[2px] font-medium text-[10px] tracking-[0.02em]"
-													// biome-ignore lint/nursery/noInlineStyles: dynamic category-based colors from lookup table
+													className="rounded-full px-2 py-[2px] text-[10px] font-medium tracking-[0.02em]"
+													// biome-ignore lint/style/noInlineStyles: dynamic category-based colors from lookup table
 													style={{
 														background: CATEGORY_COLORS[tool.category],
 														color: CATEGORY_TEXT[tool.category],
@@ -126,7 +126,7 @@ function ToolDrawer({
 												>
 													{tool.category}
 												</span>
-												<span className="text-[11px] text-[var(--text-ghost)] tracking-[-0.01em]">
+												<span className="text-[11px] tracking-[-0.01em] text-[var(--text-ghost)]">
 													{tool.tagline}
 												</span>
 											</div>
@@ -136,7 +136,7 @@ function ToolDrawer({
 												href={tool.website}
 												target="_blank"
 												rel="noopener noreferrer"
-												className="inline-flex items-center gap-[5px] text-[12px] text-[var(--text-muted)] tracking-[-0.01em] no-underline transition-colors duration-150 hover:text-[var(--text-primary)]"
+												className="inline-flex items-center gap-[5px] text-[12px] tracking-[-0.01em] text-[var(--text-muted)] no-underline transition-colors duration-150 hover:text-[var(--text-primary)]"
 											>
 												{tool.website.replace(/^https?:\/\//, '')}
 												<HugeiconsIcon icon={LinkSquare02Icon} size={11} />
@@ -147,10 +147,10 @@ function ToolDrawer({
 										<div className="mb-5 h-px bg-[var(--border)]" />
 
 										{/* Thoughts */}
-										<div className="mb-2.5 font-medium text-[10px] text-[var(--text-ghost)] uppercase tracking-[0.07em]">
+										<div className="mb-2.5 text-[10px] font-medium tracking-[0.07em] text-[var(--text-ghost)] uppercase">
 											My thoughts
 										</div>
-										<p className="m-0 text-[13px] text-[var(--text-muted)] leading-[1.7]">
+										<p className="m-0 text-[13px] leading-[1.7] text-[var(--text-muted)]">
 											{tool.thoughts}
 										</p>
 									</div>
@@ -188,7 +188,7 @@ export default function ToolsGrid() {
 							key={cat}
 							onClick={() => setActiveCategory(cat)}
 							className="cursor-pointer rounded-full border px-[10px] py-[3px] text-[11px] tracking-[0.01em] transition-colors duration-150"
-							// biome-ignore lint/nursery/noInlineStyles: dynamic background/color/borderColor based on active category
+							// biome-ignore lint/style/noInlineStyles: dynamic background/color/borderColor based on active category
 							style={{
 								background: activeCategory === cat ? 'var(--foreground)' : 'transparent',
 								color: activeCategory === cat ? 'var(--background)' : 'var(--text-ghost)',
@@ -201,7 +201,7 @@ export default function ToolsGrid() {
 				</div>
 
 				{/* Grid */}
-				<div className="grid gap-x-4 gap-y-6 [grid-template-columns:repeat(auto-fill,minmax(80px,1fr))]">
+				<div className="grid [grid-template-columns:repeat(auto-fill,minmax(80px,1fr))] gap-x-4 gap-y-6">
 					<AnimatePresence mode="popLayout">
 						{filtered.map((tool, i) => (
 							<m.button
@@ -217,7 +217,7 @@ export default function ToolsGrid() {
 								className="flex cursor-pointer flex-col items-center gap-2 rounded-[10px] bg-transparent px-1 py-2"
 							>
 								<ToolIcon src={tool.icon} name={tool.name} size={44} />
-								<span className="max-w-[72px] text-center text-[11px] text-[var(--text-muted)] leading-[1.2] tracking-[-0.01em]">
+								<span className="max-w-[72px] text-center text-[11px] leading-[1.2] tracking-[-0.01em] text-[var(--text-muted)]">
 									{tool.name}
 								</span>
 							</m.button>

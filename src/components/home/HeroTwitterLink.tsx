@@ -64,7 +64,7 @@ export default function HeroTwitterLink() {
 				className="group inline"
 			>
 				<TwitterBirdLogo />{' '}
-				<span className="font-medium! underline decoration-dotted underline-offset-4 transition group-hover:text-foreground decoration-muted-foreground/30">
+				<span className="group-hover:text-foreground decoration-muted-foreground/30 font-medium! underline decoration-dotted underline-offset-4 transition">
 					twitter
 				</span>
 			</a>
@@ -76,15 +76,14 @@ export default function HeroTwitterLink() {
 						className="fixed z-[300]"
 						onMouseEnter={show}
 						onMouseLeave={hideFromCard}
-						// biome-ignore lint/nursery/noInlineStyles: dynamic position from anchor rect
+						// biome-ignore lint/style/noInlineStyles: dynamic position from anchor rect
 						style={{
 							top: above ? rect.top : rect.bottom,
 							left: rect.left + rect.width / 2,
 							transform: `translateX(-50%) translateY(${above ? 'calc(-100% - 8px)' : '8px'}) scale(${hovered ? 1 : 0.97})`,
 							opacity: hovered ? 1 : 0,
 							pointerEvents: hovered ? 'auto' : 'none',
-							transition:
-								'opacity 0.15s ease-out, transform 0.2s cubic-bezier(0.19,1,0.22,1)',
+							transition: 'opacity 0.15s ease-out, transform 0.2s cubic-bezier(0.19,1,0.22,1)',
 							transformOrigin: above ? 'bottom center' : 'top center',
 						}}
 					>

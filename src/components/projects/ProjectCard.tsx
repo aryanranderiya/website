@@ -79,29 +79,29 @@ export default function ProjectCard({
 				setHovered(false);
 				onHoverChange?.(null);
 			}}
-			// biome-ignore lint/nursery/noInlineStyles: per-row stagger delay is computed from the list index
+			// biome-ignore lint/style/noInlineStyles: per-row stagger delay is computed from the list index
 			style={{ animationDelay: enterDelay }}
-			className={`dim-list-row flex min-w-0 animate-fade-in-up cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] no-underline transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
+			className={`dim-list-row animate-fade-in-up flex min-w-0 cursor-pointer items-center gap-3 rounded-[10px] px-3 py-[9px] no-underline transition-[background] duration-[120ms] ${hovered ? 'bg-[var(--muted-bg)]' : 'bg-transparent'}`}
 		>
 			{/* Left: title + single chip — folder chip takes priority over type */}
 			<div className="flex min-w-0 shrink-0 items-center gap-1.5">
 				<span
-					// biome-ignore lint/nursery/noInlineStyles: view-transition-name must be unique per slug
+					// biome-ignore lint/style/noInlineStyles: view-transition-name must be unique per slug
 					style={{ viewTransitionName: `project-title-${project.slug}` }}
-					className={`truncate font-medium text-[13px] tracking-[-0.02em] transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
+					className={`truncate text-[13px] font-medium tracking-[-0.02em] transition-colors duration-[120ms] ${hovered ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'}`}
 				>
 					{project.title}
 				</span>
 				{chip ? (
 					<span
-						className="shrink-0 rounded-full px-2 py-[2px] font-medium text-[10px] tracking-[0.01em]"
-						// biome-ignore lint/nursery/noInlineStyles: dynamic chip background and color from data
+						className="shrink-0 rounded-full px-2 py-[2px] text-[10px] font-medium tracking-[0.01em]"
+						// biome-ignore lint/style/noInlineStyles: dynamic chip background and color from data
 						style={{ background: chip.bg, color: chip.color }}
 					>
 						{chip.label}
 					</span>
 				) : (
-					<span className="shrink-0 rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] text-[var(--text-ghost)] tracking-[0.01em]">
+					<span className="shrink-0 rounded-full bg-[var(--muted-bg)] px-[7px] py-[2px] text-[10px] tracking-[0.01em] text-[var(--text-ghost)]">
 						{typeLabel}
 					</span>
 				)}
@@ -111,12 +111,12 @@ export default function ProjectCard({
 			{(project.shortDescription || project.date) && (
 				<div className="flex min-w-0 flex-1 items-center justify-end gap-3">
 					{project.shortDescription && (
-						<span className="truncate text-right text-[13px] text-[var(--text-ghost)] tracking-[-0.01em]">
+						<span className="truncate text-right text-[13px] tracking-[-0.01em] text-[var(--text-ghost)]">
 							{project.shortDescription}
 						</span>
 					)}
 					{project.date && (
-						<span className="shrink-0 text-[13px] text-[var(--text-ghost)] tabular-nums tracking-[-0.01em]">
+						<span className="shrink-0 text-[13px] tracking-[-0.01em] text-[var(--text-ghost)] tabular-nums">
 							{formatMonthShort(project.date)}
 						</span>
 					)}

@@ -11,6 +11,13 @@
   "project": [
     "src/**/*.{astro,ts,tsx,js,jsx}"
   ],
+  // Data-contract types (e.g. GaiaUiVariant, Sticker) are referenced by other
+  // exported types in the same file. Knip only counts cross-file usage, so
+  // without this it reports live model types as unused.
+  "ignoreExportsUsedInFile": true,
+  // System binaries (brew-installed, not npm): cloudflared for the Spotify
+  // re-auth tunnel, ffprobe for media validation.
+  "ignoreBinaries": ["cloudflared", "ffprobe"],
   "ignore": [
     "src/env.d.ts",
     ".astro/**"

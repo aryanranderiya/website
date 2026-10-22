@@ -79,7 +79,7 @@ function PreviewCardMeta({ preview, isMailto }: { preview: LinkPreview; isMailto
 				)
 			)}
 			{preview.name && (
-				<span className="truncate font-medium text-[11px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover:text-[var(--text-primary)]">
+				<span className="truncate text-[11px] font-medium tracking-[-0.01em] text-[var(--text-secondary)] transition-colors duration-150 group-hover:text-[var(--text-primary)]">
 					{preview.name}
 				</span>
 			)}
@@ -98,7 +98,7 @@ function PreviewCardHost({
 }) {
 	if (isMailto || displayHost === previewTitle) return null;
 	return (
-		<div className="mt-2 truncate text-[10px] text-[var(--text-ghost)] tracking-[0.01em] transition-colors duration-150 group-hover:text-[var(--text-muted)]">
+		<div className="mt-2 truncate text-[10px] tracking-[0.01em] text-[var(--text-ghost)] transition-colors duration-150 group-hover:text-[var(--text-muted)]">
 			{displayHost}
 		</div>
 	);
@@ -155,7 +155,7 @@ export function PreviewCard({
 			className="fixed z-[300]"
 			onMouseEnter={onMouseEnter}
 			onMouseLeave={onMouseLeave}
-			// biome-ignore lint/nursery/noInlineStyles: dynamic position from anchor rect
+			// biome-ignore lint/style/noInlineStyles: dynamic position from anchor rect
 			style={{
 				top: anchorY,
 				left: anchorX,
@@ -171,19 +171,19 @@ export function PreviewCard({
 				target={isExternal ? '_blank' : undefined}
 				rel={isExternal ? 'noopener noreferrer' : undefined}
 				aria-label={preview.title ?? preview.name ?? displayHost}
-				className="group block w-[280px] cursor-pointer overflow-hidden rounded-xl border border-[var(--border)] bg-popover p-2.5 text-inherit no-underline shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.05)]"
+				className="group bg-popover block w-[280px] cursor-pointer overflow-hidden rounded-xl border border-[var(--border)] p-2.5 text-inherit no-underline shadow-[0_8px_32px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.05)]"
 			>
 				<PreviewCardImage preview={preview} />
 				<PreviewCardMeta preview={preview} isMailto={isMailto} />
 
 				{preview.title && (
-					<div className="mb-0.5 line-clamp-2 overflow-hidden font-semibold text-[12px] text-[var(--text-primary)] leading-[1.35] tracking-[-0.01em]">
+					<div className="mb-0.5 line-clamp-2 overflow-hidden text-[12px] leading-[1.35] font-semibold tracking-[-0.01em] text-[var(--text-primary)]">
 						{preview.title}
 					</div>
 				)}
 
 				{preview.description && (
-					<p className="m-0 line-clamp-3 text-[11px] text-[var(--text-muted)] leading-[1.5]">
+					<p className="m-0 line-clamp-3 text-[11px] leading-[1.5] text-[var(--text-muted)]">
 						{preview.description}
 					</p>
 				)}
@@ -202,7 +202,7 @@ function MailtoStatusIcon({ copied, hovered }: { copied: boolean; hovered: boole
 	return (
 		<span
 			className="relative ml-1 inline-block align-middle leading-none"
-			// biome-ignore lint/nursery/noInlineStyles: dynamic opacity driven by hovered/copied state
+			// biome-ignore lint/style/noInlineStyles: dynamic opacity driven by hovered/copied state
 			style={{
 				width: 14,
 				height: 14,
@@ -212,7 +212,7 @@ function MailtoStatusIcon({ copied, hovered }: { copied: boolean; hovered: boole
 		>
 			<span
 				className="absolute inset-0 flex items-center justify-center text-[var(--text-muted)]"
-				// biome-ignore lint/nursery/noInlineStyles: blur/scale cross-fade on copy→tick transition
+				// biome-ignore lint/style/noInlineStyles: blur/scale cross-fade on copy→tick transition
 				style={{
 					opacity: copied ? 0 : 1,
 					filter: copied ? 'blur(4px)' : 'blur(0px)',
@@ -225,7 +225,7 @@ function MailtoStatusIcon({ copied, hovered }: { copied: boolean; hovered: boole
 			</span>
 			<span
 				className="absolute inset-0 flex items-center justify-center text-[#00bbff]"
-				// biome-ignore lint/nursery/noInlineStyles: blur/scale cross-fade on copy→tick transition
+				// biome-ignore lint/style/noInlineStyles: blur/scale cross-fade on copy→tick transition
 				style={{
 					opacity: copied ? 1 : 0,
 					filter: copied ? 'blur(0px)' : 'blur(4px)',
@@ -270,7 +270,7 @@ function DefaultLinkContent({
 			)}
 			{logo && ' '}
 			<span
-				className={`font-medium! underline decoration-dotted underline-offset-4 transition group-hover:text-foreground ${hoverTextClass ?? ''} decoration-muted-foreground/30`}
+				className={`group-hover:text-foreground font-medium! underline decoration-dotted underline-offset-4 transition ${hoverTextClass ?? ''} decoration-muted-foreground/30`}
 			>
 				{name}
 			</span>

@@ -52,6 +52,7 @@ export default function Book3D({
 					type="button"
 					onClick={onClick}
 					className="relative block cursor-pointer rounded-[3px] border-none bg-transparent p-0 transition-transform duration-200 ease-out group-hover:-translate-y-1"
+					// biome-ignore lint/style/noInlineStyles: height computed from cover aspect ratio at runtime
 					style={{ height: bookH }}
 					aria-label={`${title} by ${author}`}
 				>
@@ -66,11 +67,16 @@ export default function Book3D({
 				{/* reflection — flipped cover, absolutely placed BELOW the book so it overlaps the
 				    shelf's lit top surface (the book itself stays put). Fades out smoothly. */}
 				<div
-					className="absolute inset-x-0 top-full overflow-hidden opacity-50 transition-transform duration-200 ease-out [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)] group-hover:translate-y-1"
+					className="absolute inset-x-0 top-full overflow-hidden [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)] opacity-50 transition-transform duration-200 ease-out [-webkit-mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.9),transparent_72%)] group-hover:translate-y-1"
+					// biome-ignore lint/style/noInlineStyles: height derived from bookH at runtime
 					style={{ height: reflectionH }}
 					aria-hidden="true"
 				>
-					<div className="absolute inset-x-0 top-0 -scale-y-100" style={{ height: bookH }}>
+					<div
+						className="absolute inset-x-0 top-0 -scale-y-100"
+						// biome-ignore lint/style/noInlineStyles: height computed from cover aspect ratio at runtime
+						style={{ height: bookH }}
+					>
 						<BookCover
 							title={title}
 							author={author}

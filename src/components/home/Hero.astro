@@ -1,17 +1,17 @@
 ---
-import Avatar from "@/components/Avatar.astro";
-import ButtonLink from "@/components/ui/ButtonLink";
-import PreviewLink from "@/components/ui/PreviewLink";
-import HeroTwitterLink from "@/components/home/HeroTwitterLink";
-import ogPreviews from "@/data/og-previews.json";
+import Avatar from '@/components/Avatar.astro';
+import HeroTwitterLink from '@/components/home/HeroTwitterLink';
+import ButtonLink from '@/components/ui/ButtonLink';
+import PreviewLink from '@/components/ui/PreviewLink';
+import ogPreviews from '@/data/og-previews.json';
 
 // OG previews are scraped once by `scripts/fetch-og-previews.mjs` and committed
 // to src/data/og-previews.json. The homepage renders on demand, so the preview
 // payload must be baked at build time — a live scrape here would run per request.
 const [experienceCompanyOg, gaiaOg, spotifyOg] = [
-	ogPreviews["https://experience.heygaia.io"],
-	ogPreviews["https://heygaia.io"],
-	ogPreviews["https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"],
+	ogPreviews['https://experience.heygaia.io'],
+	ogPreviews['https://heygaia.io'],
+	ogPreviews['https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH'],
 ];
 ---
 
@@ -48,8 +48,7 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 	class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-5 max-w-2xl animate-fade-in"
 	style="animation-delay:0.19s"
 >
-	I'm a product guy but a developer and designer by heart. During my days at
-	uni I used to freelance design and building software. I briefly ran an
+	I'm a product guy but a developer and designer by heart. I briefly ran an
 	eSports team called
 
 	<PreviewLink
@@ -65,7 +64,7 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 			description: "Esports team I ran in high school.",
 		}}
 	/> when I was 14 where we won a couple tournaments, built a massive community
-	that I was proud of, learnt a lot about social media and my love for design started
+	that I was proud of, learnt a lot about social media, and my love for design started
 	out from the gaming industry.
 </p>
 
@@ -79,11 +78,11 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 		client:visible
 		href="/projects"
 		name="here"
-	/>), won a few hackathons with my friends, tried out open-source work (even
-	applied to GSoC!), worked at a Peak XV backed AI Fintech startup which
-	raised $4 Million USD, slept for 4 hours a day grinding kinda working 2
-	shifts lol, but shortly left because I wanted to pursue something of my own
-	full-time.
+	/>), I also used to freelance design and building software for people, won a
+	few hackathons with my friends, tried out open-source work (even applied to
+	GSoC!), worked at a Peak XV backed AI Fintech startup which raised $4
+	Million USD, slept for 4 hours a day grinding kinda working 2 shifts lol,
+	but shortly left because I wanted to pursue something of my own full-time.
 </p>
 
 <p

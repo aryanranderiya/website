@@ -39,8 +39,8 @@ function EmojiSticker({
 	return (
 		<span
 			aria-hidden="true"
-			className="emoji-sticker pointer-events-none absolute select-none text-[24px] leading-none"
-			// biome-ignore lint/nursery/noInlineStyles: per-sticker placement + rotation come from config
+			className="emoji-sticker pointer-events-none absolute text-[24px] leading-none select-none"
+			// biome-ignore lint/style/noInlineStyles: per-sticker placement + rotation come from config
 			style={{ ...style, transform: `${style?.transform ?? ''} rotate(${rotate}deg)` }}
 		>
 			{emoji}
@@ -93,7 +93,6 @@ function FolderCard({ folder }: { folder: PhotoFolder }) {
 							<m.div
 								key={photo.url}
 								className="absolute top-[-6px] left-1/2 aspect-square rounded-[7px] bg-white p-[3px] shadow-[0_4px_9px_-3px_rgba(0,0,0,0.28),0_10px_18px_-9px_rgba(0,0,0,0.2)]"
-								// biome-ignore lint/nursery/noInlineStyles: per-photo z-order + size come from the rest-fan config
 								style={{ zIndex: i + 1, width: `${s.size}%` }}
 								animate={{
 									rotate: hovered ? hovRot : restRot,
@@ -117,8 +116,8 @@ function FolderCard({ folder }: { folder: PhotoFolder }) {
 					    photos. The clipped div blurs + tints whatever sits behind it (the photos);
 					    the SVG draws the crisp folder edge on top. */}
 					<div
-						className="absolute inset-0 z-10 [-webkit-backdrop-filter:blur(30px)_saturate(1.6)] [backdrop-filter:blur(30px)_saturate(1.6)]"
-						// biome-ignore lint/nursery/noInlineStyles: clip-path url() + layered sheen/milky fill have no Tailwind equivalent
+						className="absolute inset-0 z-10 [backdrop-filter:blur(30px)_saturate(1.6)] [-webkit-backdrop-filter:blur(30px)_saturate(1.6)]"
+						// biome-ignore lint/style/noInlineStyles: clip-path url() + layered sheen/milky fill have no Tailwind equivalent
 						style={{
 							clipPath: 'url(#folder-clip)',
 							WebkitClipPath: 'url(#folder-clip)',
@@ -160,10 +159,10 @@ function FolderCard({ folder }: { folder: PhotoFolder }) {
 
 			{/* ── LABEL + COUNT ── */}
 			<div className="mt-3 flex flex-col items-center gap-[5px]">
-				<span className="font-medium text-[13px] text-[var(--text-primary)] tracking-[-0.01em]">
+				<span className="text-[13px] font-medium tracking-[-0.01em] text-[var(--text-primary)]">
 					{folder.name}
 				</span>
-				<span className="rounded-full bg-[rgba(139,146,155,0.15)] px-[9px] py-[2px] text-[10.5px] text-[var(--text-muted)] tracking-[0.01em]">
+				<span className="rounded-full bg-[rgba(139,146,155,0.15)] px-[9px] py-[2px] text-[10.5px] tracking-[0.01em] text-[var(--text-muted)]">
 					{count} {count === 1 ? 'photo' : 'photos'}
 				</span>
 			</div>

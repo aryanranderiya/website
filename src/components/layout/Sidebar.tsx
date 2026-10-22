@@ -189,8 +189,8 @@ function HoverReveal({
 }) {
 	return (
 		<span
-			className="inline-block whitespace-nowrap text-[11px]"
-			// biome-ignore lint/nursery/noInlineStyles: dynamic opacity/transform/textDecoration based on hover state
+			className="inline-block text-[11px] whitespace-nowrap"
+			// biome-ignore lint/style/noInlineStyles: dynamic opacity/transform/textDecoration based on hover state
 			style={{
 				opacity: visible ? 1 : 0,
 				transform: visible
@@ -229,10 +229,10 @@ function CustomizePanel({
 				<span
 					className={
 						compact
-							? 'text-[10px] text-[var(--foreground)] tracking-[-0.01em]'
-							: 'text-[11px] text-[var(--foreground)] tracking-[-0.01em]'
+							? 'text-[10px] tracking-[-0.01em] text-[var(--foreground)]'
+							: 'text-[11px] tracking-[-0.01em] text-[var(--foreground)]'
 					}
-					// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+					// biome-ignore lint/style/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
 					style={{
 						fontVariationSettings: '"wght" 560',
 						fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
@@ -243,7 +243,7 @@ function CustomizePanel({
 				<button
 					type="button"
 					onClick={onClose}
-					className="flex cursor-pointer border-0 bg-transparent p-0 text-[var(--muted-foreground)] leading-none transition-colors duration-150 hover:text-[var(--foreground)]"
+					className="flex cursor-pointer border-0 bg-transparent p-0 leading-none text-[var(--muted-foreground)] transition-colors duration-150 hover:text-[var(--foreground)]"
 					aria-label="Close"
 				>
 					<HugeiconsIcon icon={Cancel01Icon} size={compact ? 12 : 13} color="currentColor" />
@@ -251,8 +251,8 @@ function CustomizePanel({
 			</div>
 
 			<p
-				className="mt-0 mb-1.5 text-[9px] text-[var(--muted-foreground)] uppercase tracking-[0.08em]"
-				// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+				className="mt-0 mb-1.5 text-[9px] tracking-[0.08em] text-[var(--muted-foreground)] uppercase"
+				// biome-ignore lint/style/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
 				style={{
 					fontVariationSettings: '"wght" 600',
 					fontFamily: "'Inter var', Inter, sans-serif",
@@ -267,9 +267,9 @@ function CustomizePanel({
 				className={
 					compact
 						? 'flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2 py-1.5 text-[11px] text-[var(--foreground)] transition-opacity duration-150 hover:opacity-65'
-						: 'flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2.5 py-2 text-[var(--foreground)] text-xs transition-opacity duration-150 hover:opacity-65'
+						: 'flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2.5 py-2 text-xs text-[var(--foreground)] transition-opacity duration-150 hover:opacity-65'
 				}
-				// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+				// biome-ignore lint/style/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
 				style={{
 					fontVariationSettings: '"wght" 480',
 					fontFamily: "'Inter var', Inter, sans-serif",
@@ -280,8 +280,8 @@ function CustomizePanel({
 			</button>
 
 			<p
-				className="mt-3 mb-1.5 text-[9px] text-[var(--muted-foreground)] uppercase tracking-[0.08em]"
-				// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+				className="mt-3 mb-1.5 text-[9px] tracking-[0.08em] text-[var(--muted-foreground)] uppercase"
+				// biome-ignore lint/style/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
 				style={{
 					fontVariationSettings: '"wght" 600',
 					fontFamily: "'Inter var', Inter, sans-serif",
@@ -296,9 +296,9 @@ function CustomizePanel({
 				className={
 					compact
 						? 'flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2 py-1.5 text-[11px] text-[var(--foreground)] transition-opacity duration-150 hover:opacity-65'
-						: 'flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2.5 py-2 text-[var(--foreground)] text-xs transition-opacity duration-150 hover:opacity-65'
+						: 'flex w-full cursor-pointer items-center gap-1.5 rounded-md border-0 bg-[var(--muted-bg)] px-2.5 py-2 text-xs text-[var(--foreground)] transition-opacity duration-150 hover:opacity-65'
 				}
-				// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
+				// biome-ignore lint/style/noInlineStyles: fontVariationSettings/fontFamily have no Tailwind equivalent
 				style={{
 					fontVariationSettings: '"wght" 480',
 					fontFamily: "'Helvetica Neue', Helvetica, Arial, sans-serif",
@@ -311,7 +311,7 @@ function CustomizePanel({
 			{/* Current font preview */}
 			<div
 				className="mt-1.5 text-[var(--muted-foreground)]"
-				// biome-ignore lint/nursery/noInlineStyles: dynamic fontFamily/fontSize/letterSpacing based on typography selection
+				// biome-ignore lint/style/noInlineStyles: dynamic fontFamily/fontSize/letterSpacing based on typography selection
 				style={{
 					fontFamily: currentTypography?.family,
 					fontSize:
@@ -369,8 +369,8 @@ function DesktopSidebar({
 					>
 						{group.label && (
 							<div
-								className="mt-4 mb-1 text-[10px] text-[var(--text-ghost)] uppercase tracking-[0.07em]"
-								// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
+								className="mt-4 mb-1 text-[10px] tracking-[0.07em] text-[var(--text-ghost)] uppercase"
+								// biome-ignore lint/style/noInlineStyles: fontVariationSettings has no Tailwind equivalent
 								style={{ fontVariationSettings: '"wght" 500' }}
 							>
 								{group.label}
@@ -382,7 +382,7 @@ function DesktopSidebar({
 									key={item.href}
 									href={item.href}
 									data-nav
-									className={`nav-link flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-[3px] text-[12px] tracking-[-0.01em] no-underline outline-none ${isActive(item.href) ? 'nav-link--active' : ''}`}
+									className={`nav-link flex items-center gap-1.5 rounded-md px-2 py-[3px] text-[12px] tracking-[-0.01em] whitespace-nowrap no-underline outline-none ${isActive(item.href) ? 'nav-link--active' : ''}`}
 								>
 									<HugeiconsIcon
 										icon={item.icon}
@@ -408,7 +408,7 @@ function DesktopSidebar({
 						onMouseLeave={() => setHoveredAction(null)}
 						className="nav-link -mx-2 flex w-[calc(100%+16px)] cursor-pointer items-center gap-1.5 rounded-md border-0 bg-transparent px-2 py-[3px] text-left text-[12px]"
 					>
-						<kbd className="inline-flex h-[15px] min-w-[15px] shrink-0 items-center justify-center rounded-[4px] bg-[var(--muted-bg)] px-[4px] font-[inherit] text-[10px] text-[var(--text-muted)] leading-none tracking-[0]">
+						<kbd className="inline-flex h-[15px] min-w-[15px] shrink-0 items-center justify-center rounded-[4px] bg-[var(--muted-bg)] px-[4px] font-[inherit] text-[10px] leading-none tracking-[0] text-[var(--text-muted)]">
 							⌘K
 						</kbd>
 						<HoverReveal visible={hoveredAction === 'cmdk'}>Command palette</HoverReveal>
@@ -503,7 +503,7 @@ function DesktopSidebar({
 						rel="noopener noreferrer"
 						aria-label="View source on GitHub"
 						className="flex items-center gap-1.5 py-[2px] text-[12px] text-[var(--text-ghost)] no-underline transition-colors duration-150 hover:text-[var(--text-secondary)]"
-						// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
+						// biome-ignore lint/style/noInlineStyles: fontVariationSettings has no Tailwind equivalent
 						style={{ fontVariationSettings: '"wght" 450' }}
 						onMouseEnter={() => setHoveredAction('github')}
 						onMouseLeave={() => setHoveredAction(null)}
@@ -651,8 +651,8 @@ function MobileMenu({
 							>
 								{group.label && (
 									<div
-										className="mt-4 mb-1 text-[10px] text-[var(--text-ghost)] uppercase tracking-[0.07em]"
-										// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
+										className="mt-4 mb-1 text-[10px] tracking-[0.07em] text-[var(--text-ghost)] uppercase"
+										// biome-ignore lint/style/noInlineStyles: fontVariationSettings has no Tailwind equivalent
 										style={{ fontVariationSettings: '"wght" 500' }}
 									>
 										{group.label}
@@ -664,7 +664,7 @@ function MobileMenu({
 											key={item.href}
 											href={item.href}
 											data-nav
-											className={`nav-link flex items-center gap-1.5 whitespace-nowrap rounded-md px-2 py-[3px] text-[12px] tracking-[-0.01em] no-underline outline-none ${isActive(item.href) ? 'nav-link--active' : ''}`}
+											className={`nav-link flex items-center gap-1.5 rounded-md px-2 py-[3px] text-[12px] tracking-[-0.01em] whitespace-nowrap no-underline outline-none ${isActive(item.href) ? 'nav-link--active' : ''}`}
 											onClick={onClose}
 										>
 											<HugeiconsIcon
@@ -695,7 +695,7 @@ function MobileMenu({
 							aria-label="Open command palette (⌘K / Ctrl+K)"
 							className="nav-link -mx-2 flex w-[calc(100%+16px)] cursor-pointer items-center gap-1.5 rounded-md border-0 bg-transparent px-2 py-[3px] text-left text-[12px]"
 						>
-							<kbd className="inline-flex h-[15px] min-w-[15px] shrink-0 items-center justify-center rounded-[4px] bg-[var(--muted-bg)] px-[4px] font-[inherit] text-[10px] text-[var(--text-muted)] leading-none tracking-[0]">
+							<kbd className="inline-flex h-[15px] min-w-[15px] shrink-0 items-center justify-center rounded-[4px] bg-[var(--muted-bg)] px-[4px] font-[inherit] text-[10px] leading-none tracking-[0] text-[var(--text-muted)]">
 								⌘K
 							</kbd>
 							<span className="text-[11px]">Command palette</span>
