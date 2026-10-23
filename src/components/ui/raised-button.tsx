@@ -8,8 +8,8 @@ import { getContrastColor, getLuminance, parseColor } from '@/lib/utils/colors';
 
 const buttonVariants = cva(
 	[
-		'inline-flex items-center justify-center overflow-hidden whitespace-nowrap rounded-full font-medium text-sm',
-		'transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+		'inline-flex items-center justify-center overflow-hidden rounded-full text-sm font-medium whitespace-nowrap',
+		'transition-all focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none',
 		'relative cursor-pointer disabled:pointer-events-none disabled:opacity-50',
 		'border subpixel-antialiased',
 		'transition-transform duration-150 hover:scale-[0.98] active:scale-[0.96]',
@@ -17,10 +17,10 @@ const buttonVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: ['!text-white border-[#111113] bg-gradient-to-b from-[#444] to-black'],
+				default: ['border-[#111113] bg-gradient-to-b from-[#444] to-black !text-white'],
 				accent: [
 					'border-[rgba(0,187,255,0.5)] text-white',
-					'before:absolute before:inset-0 before:rounded-full before:border-white/30 before:border-t',
+					'before:absolute before:inset-0 before:rounded-full before:border-t before:border-white/30',
 					'before:pointer-events-none before:bg-gradient-to-b before:from-white/15 before:to-transparent',
 					'shadow-md',
 				],
@@ -34,7 +34,7 @@ const buttonVariants = cva(
 					'hover:bg-zinc-50 dark:hover:bg-zinc-800/50',
 				],
 				secondary: [
-					'!text-[rgba(0,0,0,0.7)] border-[rgba(0,0,0,0.09)] bg-white',
+					'border-[rgba(0,0,0,0.09)] bg-white !text-[rgba(0,0,0,0.7)]',
 					'shadow-[0_1px_2px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)]',
 					'hover:bg-[#f7f7f7]',
 				],

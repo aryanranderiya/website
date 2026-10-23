@@ -176,7 +176,7 @@ export default function CommandK({ projects = [] }: { projects?: ProjectLink[] }
 
 							<Dialog.Content asChild>
 								<m.div
-									className="fixed top-[20%] left-1/2 z-[101] w-full max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl bg-card shadow-2xl outline-none"
+									className="bg-card fixed top-[20%] left-1/2 z-[101] w-full max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl shadow-2xl outline-none"
 									initial={{ opacity: 0, scale: 0.96, y: -8 }}
 									animate={{ opacity: 1, scale: 1, y: 0 }}
 									exit={{ opacity: 0, scale: 0.96, y: -8 }}
@@ -201,7 +201,7 @@ export default function CommandK({ projects = [] }: { projects?: ProjectLink[] }
 												onValueChange={setQuery}
 												placeholder="Search pages, actions, people..."
 												aria-label="Search pages and actions"
-												className="flex-1 border-none bg-transparent py-4 text-foreground text-sm caret-foreground shadow-none outline-none ring-0 placeholder:text-[var(--muted-foreground)] focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0"
+												className="text-foreground caret-foreground flex-1 border-none bg-transparent py-4 text-sm shadow-none ring-0 outline-none placeholder:text-[var(--muted-foreground)] focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none"
 											/>
 											<button
 												type="button"
@@ -214,8 +214,8 @@ export default function CommandK({ projects = [] }: { projects?: ProjectLink[] }
 										</div>
 
 										{/* Results list */}
-										<Command.List className="max-h-80 overflow-y-auto py-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:text-[0.7rem] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.08em] [&_[cmdk-item]:hover]:bg-[var(--muted)] [&_[cmdk-item][aria-selected='true']]:bg-[var(--muted)] [&_[cmdk-item]]:flex [&_[cmdk-item]]:cursor-pointer [&_[cmdk-item]]:items-center [&_[cmdk-item]]:gap-2.5 [&_[cmdk-item]]:rounded-lg [&_[cmdk-item]]:px-3 [&_[cmdk-item]]:py-[7px] [&_[cmdk-item]]:text-[13px] [&_[cmdk-item]]:text-[var(--foreground)] [&_[cmdk-item]]:outline-none [&_[cmdk-item]]:transition-colors">
-											<Command.Empty className="py-8 text-center text-muted-foreground text-sm">
+										<Command.List className="max-h-80 overflow-y-auto py-2 [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:pt-2 [&_[cmdk-group-heading]]:pb-1 [&_[cmdk-group-heading]]:text-[0.7rem] [&_[cmdk-group-heading]]:font-semibold [&_[cmdk-group-heading]]:tracking-[0.08em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-item]]:flex [&_[cmdk-item]]:cursor-pointer [&_[cmdk-item]]:items-center [&_[cmdk-item]]:gap-2.5 [&_[cmdk-item]]:rounded-lg [&_[cmdk-item]]:px-3 [&_[cmdk-item]]:py-[7px] [&_[cmdk-item]]:text-[13px] [&_[cmdk-item]]:text-[var(--foreground)] [&_[cmdk-item]]:transition-colors [&_[cmdk-item]]:outline-none [&_[cmdk-item]:hover]:bg-[var(--muted)] [&_[cmdk-item][aria-selected='true']]:bg-[var(--muted)]">
+											<Command.Empty className="text-muted-foreground py-8 text-center text-sm">
 												No results found.
 											</Command.Empty>
 

@@ -1,5 +1,6 @@
 ---
 import Avatar from '@/components/Avatar.astro';
+import HeroTwitterLink from '@/components/home/HeroTwitterLink';
 import ButtonLink from '@/components/ui/ButtonLink';
 import PreviewLink from '@/components/ui/PreviewLink';
 import ogPreviews from '@/data/og-previews.json';
@@ -47,16 +48,57 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 	class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-5 max-w-2xl animate-fade-in"
 	style="animation-delay:0.19s"
 >
-	Currently building{" "}
+	I'm a product guy but a developer and designer by heart. I briefly ran an
+	eSports team called
+
+	<PreviewLink
+		client:visible
+		href="/f4llout"
+		logo="/images/site/f4llout-logo.webp"
+		name="F4LLOUT"
+		preview={{
+			image: "/images/site/f4llout-header.webp",
+			favicon: "/images/site/f4llout-logo.webp",
+			name: "F4LLOUT",
+			title: "F4LLOUT Esports",
+			description: "Esports team I ran in high school.",
+		}}
+	/> when I was 14 where we won a couple tournaments, built a massive community
+	that I was proud of, learnt a lot about social media, and my love for design started
+	out from the gaming industry.
+</p>
+
+<p
+	class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-5 max-w-2xl animate-fade-in"
+	style="animation-delay:0.19s"
+>
+	During my CS degree I worked on a TON of stuff because I was just having so
+	much fun coding pre-LLMs and early-LLMs and wanted to experiment with
+	different technologies (read more about them <PreviewLink
+		client:visible
+		href="/projects"
+		name="here"
+	/>), I also used to freelance design and building software for people, won a
+	few hackathons with my friends, tried out open-source work (even applied to
+	GSoC!), worked at a Peak XV backed AI Fintech startup which raised $4
+	Million USD, slept for 4 hours a day grinding kinda working 2 shifts lol,
+	but shortly left because I wanted to pursue something of my own full-time.
+</p>
+
+<p
+	class="text-[14px] text-[var(--text-muted)] leading-[1.65] m-0 mb-5 max-w-2xl animate-fade-in"
+	style="animation-delay:0.19s"
+>
+	I left that job straight out of Uni to build {" "}
 	<PreviewLink
 		client:visible
 		href="https://heygaia.io"
 		logo="/images/site/gaia-logo.webp"
 		name="GAIA"
 		preview={gaiaOg ?? undefined}
-	/>
-	, a proactive personal AI assistant that acts before you even need to ask. The
-	goal: every person in the world should have their own truly intelligent assistant.
+	/> which I was working on during my final year (I almost dropped out but people
+	convinced me to push through :P), a proactive personal AI assistant for daily
+	life. The goal is to build the assistant that everyone on earth to use.
 </p>
 
 <p
@@ -74,7 +116,8 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 			description:
 				"Say hi! I try to respond to all my emails within reason.",
 		}}
-	/>
+	/> or on
+	<HeroTwitterLink client:visible />
 </p>
 
 <p
@@ -99,8 +142,7 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 		height="16"
 		class="inline align-middle w-auto h-[1.3em] mb-[1px]"
 	/>
-	India. I love building products; I'm a product guy but a developer and designer
-	by heart. I love music (I have a{" "}
+	India. I love building cool things; I love music (I have a{" "}
 	<PreviewLink
 		client:visible
 		href="https://open.spotify.com/playlist/1kDa0wKgm0baT3550xsURH"
@@ -109,17 +151,18 @@ const [experienceCompanyOg, gaiaOg, spotifyOg] = [
 		rounded={false}
 		preview={spotifyOg ?? undefined}
 	/>
-	{" "}with 2000+ songs), movies, and food. I love tinkering around with code,
-	shipping things, and exploring new ideas. Maybe that's just my ADHD lol
+	{" "}with 2000+ songs), movies, and food. I just love tinkering around with
+	code, shipping things, and exploring new ideas. Maybe that's just my ADHD
+	lol
 </p>
 
 <p
 	class="text-[14px] text-(--text-muted) leading-[1.65] m-0 mb-7 max-w-2xl animate-fade-in"
 	style="animation-delay:0.33s"
 >
-	Some things I would like to explore in the future by myself and with my
-	company: Hardware programming, household robotics, personal companions,
-	smart wearables & ar/vr
+	Some things I'd love to explore in the future: Hardware programming,
+	household robotics, private space sector, sustainable energy, smart
+	wearables, ar/vr and a bunch of other stuff
 </p>
 
 <div

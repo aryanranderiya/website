@@ -92,7 +92,14 @@ function readEnv(): SpotifyEnv {
 
 async function getAccessToken(env: SpotifyEnv): Promise<string | null> {
 	const { SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET, SPOTIFY_REFRESH_TOKEN } = env;
-	if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET || !SPOTIFY_REFRESH_TOKEN) return null;
+	if (!SPOTIFY_CLIENT_ID || !SPOTIFY_CLIENT_SECRET || !SPOTIFY_REFRESH_TOKEN) {
+		console.error('[spotify] missing env', {
+			hasClientId: !!SPOTIFY_CLIENT_ID,
+			hasClientSecret: !!SPOTIFY_CLIENT_SECRET,
+			hasRefreshToken: !!SPOTIFY_REFRESH_TOKEN,
+		});
+		return null;
+	}
 
 	// btoa is available in the Workers runtime; Buffer is not.
 	const basic = btoa(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`);
@@ -109,10 +116,16 @@ async function getAccessToken(env: SpotifyEnv): Promise<string | null> {
 				refresh_token: SPOTIFY_REFRESH_TOKEN,
 			}),
 		});
-		if (!res.ok) return null;
+		if (!res.ok) {
+			// Error bodies are safe to log (error codes only, no secrets).
+			const body = await res.text().catch(() => '');
+			console.error(`[spotify] token refresh failed: ${res.status}`, body.slice(0, 200));
+			return null;
+		}
 		const data = (await res.json()) as { access_token?: string };
 		return data.access_token ?? null;
-	} catch {
+	} catch (e) {
+		console.error('[spotify] token refresh threw', String(e).slice(0, 200));
 		return null;
 	}
 }
@@ -130,11 +143,13 @@ export const GET: APIRoute = async () => {
 		res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
 			headers: { Authorization: `Bearer ${token}` },
 		});
-	} catch {
+	} catch (e) {
+		console.error('[spotify] currently-playing fetch threw', String(e).slice(0, 200));
 		return new Response(NOT_PLAYING, { status: 200, headers: RESPONSE_HEADERS });
 	}
 
 	if (res.status !== 200) {
+		console.error(`[spotify] currently-playing status: ${res.status}`);
 		return new Response(NOT_PLAYING, { status: 200, headers: RESPONSE_HEADERS });
 	}
 

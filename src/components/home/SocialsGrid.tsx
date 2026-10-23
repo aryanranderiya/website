@@ -57,7 +57,7 @@ function TwitterLogo({ size = 18 }: { size?: number }) {
 			xmlns="http://www.w3.org/2000/svg"
 			aria-hidden="true"
 		>
-			<path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.742l7.732-8.835L1.254 2.25H8.08l4.259 5.63 5.905-5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+			<path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.975 13.975 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
 		</svg>
 	);
 }
@@ -113,12 +113,12 @@ function GitHubPreview() {
 					className="h-10 w-10 shrink-0 rounded-full border-2 border-[#30363d]"
 				/>
 				<div className="min-w-0">
-					<div className="font-semibold text-[#e6edf3] text-sm leading-tight">Aryan</div>
-					<div className="text-[#8b949e] text-xs leading-tight">@aryanranderiya</div>
+					<div className="text-sm leading-tight font-semibold text-[#e6edf3]">Aryan</div>
+					<div className="text-xs leading-tight text-[#8b949e]">@aryanranderiya</div>
 				</div>
 			</div>
 
-			<p className="mb-2 text-[#8b949e] text-xs leading-relaxed">
+			<p className="mb-2 text-xs leading-relaxed text-[#8b949e]">
 				founder &amp; ceo <span className="text-[#58a6ff]">@theexperiencecompany</span>
 			</p>
 
@@ -126,10 +126,10 @@ function GitHubPreview() {
 				<span className="flex items-center text-[#8b949e]">
 					<HugeiconsIcon icon={Location01Icon} size={12} />
 				</span>
-				<span className="text-[#8b949e] text-xs">Ahmedabad, India</span>
+				<span className="text-xs text-[#8b949e]">Ahmedabad, India</span>
 			</div>
 
-			<div className="mb-3 flex gap-4 border-[#21262d] border-b pb-3 text-xs">
+			<div className="mb-3 flex gap-4 border-b border-[#21262d] pb-3 text-xs">
 				<div className="flex items-center gap-1">
 					<span className="flex items-center text-[#8b949e]">
 						<HugeiconsIcon icon={RepositoryIcon} size={13} />
@@ -151,8 +151,8 @@ function GitHubPreview() {
 			</div>
 
 			<div className="mb-2 flex min-h-[18px] items-center justify-between">
-				<div className="text-[#8b949e] text-[11px]">Contributions this year</div>
-				<div className="font-semibold text-[#e6edf3] text-sm tracking-[-0.02em] [font-variant-numeric:tabular-nums]">
+				<div className="text-[11px] text-[#8b949e]">Contributions this year</div>
+				<div className="text-sm font-semibold tracking-[-0.02em] text-[#e6edf3] [font-variant-numeric:tabular-nums]">
 					{total !== undefined ? total.toLocaleString() : '\u00A0'}
 				</div>
 			</div>
@@ -161,7 +161,7 @@ function GitHubPreview() {
 	);
 }
 
-function TwitterPreview() {
+export function TwitterPreview() {
 	return (
 		<div className="w-[280px] overflow-hidden rounded-xl border border-[#2f3336] bg-black font-sans text-[#e7e9ea] shadow-2xl">
 			{/* Banner */}
@@ -180,19 +180,19 @@ function TwitterPreview() {
 					className="absolute -top-[22px] left-4 h-11 w-11 shrink-0 rounded-full border-[3px] border-black"
 				/>
 				<div className="pt-7">
-					<div className="font-bold text-[#e7e9ea] text-[15px] leading-tight">aryan</div>
-					<div className="mb-2 text-[#71767b] text-xs">@aryanranderiya · 13.8K posts</div>
-					<p className="mb-3 text-[#e7e9ea] text-[13px] leading-relaxed">
+					<div className="text-[15px] leading-tight font-bold text-[#e7e9ea]">aryan</div>
+					<div className="mb-2 text-xs text-[#71767b]">@aryanranderiya · 13.8K posts</div>
+					<p className="mb-3 text-[13px] leading-relaxed text-[#e7e9ea]">
 						founder &amp; ceo <span className="text-[#1d9bf0]">@madebyexp</span>. building{' '}
 						<span className="text-[#1d9bf0]">@trygaia</span>
 					</p>
-					<div className="flex gap-4 border-[#2f3336] border-t pt-2.5 text-xs">
+					<div className="flex gap-4 border-t border-[#2f3336] pt-2.5 text-xs">
 						<div>
-							<span className="font-bold text-[#e7e9ea] text-[13px]">767 </span>
+							<span className="text-[13px] font-bold text-[#e7e9ea]">767 </span>
 							<span className="text-[#71767b]">Following</span>
 						</div>
 						<div>
-							<span className="font-bold text-[#e7e9ea] text-[13px]">952 </span>
+							<span className="text-[13px] font-bold text-[#e7e9ea]">952 </span>
 							<span className="text-[#71767b]">Followers</span>
 						</div>
 					</div>
@@ -216,22 +216,22 @@ function LinkedInPreview() {
 					alt="avatar"
 					width={48}
 					height={48}
-					className="absolute -top-6 left-4 h-12 w-12 rounded-full border-[#1b1f23] border-[3px]"
+					className="absolute -top-6 left-4 h-12 w-12 rounded-full border-[3px] border-[#1b1f23]"
 				/>
 				<div className="pt-8">
-					<div className="mb-0.5 font-bold text-[#e7e9ea] text-sm">Aryan Randeriya</div>
-					<div className="text-[#a8a8a8] text-xs leading-snug">
+					<div className="mb-0.5 text-sm font-bold text-[#e7e9ea]">Aryan Randeriya</div>
+					<div className="text-xs leading-snug text-[#a8a8a8]">
 						Founder &amp; CEO · The Experience Company
 					</div>
-					<div className="mt-2.5 border-[#283339] border-t pt-2.5">
-						<div className="text-[#a8a8a8] text-xs leading-relaxed">
+					<div className="mt-2.5 border-t border-[#283339] pt-2.5">
+						<div className="text-xs leading-relaxed text-[#a8a8a8]">
 							I design and build cool stuff · heygaia.io · aryanranderiya.com
 						</div>
 					</div>
 				</div>
 			</div>
-			<div className="border-[#283339] border-t bg-[rgba(0,119,181,0.08)] px-4 py-2.5">
-				<span className="font-semibold text-[#0077b5] text-xs">View full profile</span>
+			<div className="border-t border-[#283339] bg-[rgba(0,119,181,0.08)] px-4 py-2.5">
+				<span className="text-xs font-semibold text-[#0077b5]">View full profile</span>
 			</div>
 		</div>
 	);
@@ -253,12 +253,12 @@ function InstagramPreview() {
 					</div>
 				</div>
 				<div className="min-w-0">
-					<div className="font-semibold text-[#f5f5f5] text-sm leading-tight">aryanranderiya</div>
-					<div className="text-[#a8a8a8] text-xs leading-tight">A'</div>
+					<div className="text-sm leading-tight font-semibold text-[#f5f5f5]">aryanranderiya</div>
+					<div className="text-xs leading-tight text-[#a8a8a8]">A'</div>
 				</div>
 			</div>
-			<p className="mb-3 text-[#f5f5f5] text-xs leading-relaxed">the world is yours</p>
-			<div className="flex border-[#262626] border-t pt-3">
+			<p className="mb-3 text-xs leading-relaxed text-[#f5f5f5]">the world is yours</p>
+			<div className="flex border-t border-[#262626] pt-3">
 				{[
 					{ value: '1', label: 'post' },
 					{ value: '543', label: 'followers' },
@@ -266,10 +266,10 @@ function InstagramPreview() {
 				].map((stat) => (
 					<div
 						key={stat.label}
-						className={`flex-1 text-center ${stat.label !== 'following' ? 'border-[#262626] border-r' : ''}`}
+						className={`flex-1 text-center ${stat.label !== 'following' ? 'border-r border-[#262626]' : ''}`}
 					>
-						<div className="font-bold text-[#f5f5f5] text-sm">{stat.value}</div>
-						<div className="text-[#a8a8a8] text-[11px]">{stat.label}</div>
+						<div className="text-sm font-bold text-[#f5f5f5]">{stat.value}</div>
+						<div className="text-[11px] text-[#a8a8a8]">{stat.label}</div>
 					</div>
 				))}
 			</div>
@@ -324,7 +324,7 @@ function MonkeytypePreview() {
 	return (
 		<div
 			className="w-[360px] rounded-xl border border-[#2c2e31] bg-[#323437] p-4 text-[#d1d0c5] shadow-2xl"
-			// biome-ignore lint/nursery/noInlineStyles: fontFamily with fallbacks has no Tailwind equivalent
+			// biome-ignore lint/style/noInlineStyles: fontFamily with fallbacks has no Tailwind equivalent
 			style={{ fontFamily: '"Roboto Mono", "Courier New", monospace' }}
 		>
 			{/* Header */}
@@ -332,27 +332,27 @@ function MonkeytypePreview() {
 				<div className="flex items-center gap-2.5">
 					<HugeiconsIcon icon={KeyboardIcon} size={20} />
 					<div>
-						<div className="font-bold text-[#e2b714] text-[17px] leading-none tracking-tight">
+						<div className="text-[17px] leading-none font-bold tracking-tight text-[#e2b714]">
 							monkeytype
 						</div>
-						<div className="mt-1 text-[#646669] text-[13px]">aryanranderiya</div>
+						<div className="mt-1 text-[13px] text-[#646669]">aryanranderiya</div>
 					</div>
 				</div>
 				{!isLoading && data?.streak != null && (
 					<div className="text-right">
-						<div className="font-bold text-2xl text-[#e2b714]">{data.streak}d</div>
-						<div className="text-[#646669] text-[12px]">streak</div>
+						<div className="text-2xl font-bold text-[#e2b714]">{data.streak}d</div>
+						<div className="text-[12px] text-[#646669]">streak</div>
 					</div>
 				)}
 			</div>
 
 			{/* PB table */}
-			<div className="mb-3 border-[#2c2e31] border-t pt-2">
+			<div className="mb-3 border-t border-[#2c2e31] pt-2">
 				<div className="mb-1 grid grid-cols-4 gap-2">
 					{['mode', 'wpm', 'raw', 'acc'].map((h) => (
 						<div
 							key={h}
-							className="text-center text-[#646669] text-[12px] uppercase tracking-wider first:text-left"
+							className="text-center text-[12px] tracking-wider text-[#646669] uppercase first:text-left"
 						>
 							{h}
 						</div>
@@ -362,7 +362,7 @@ function MonkeytypePreview() {
 					? [0, 1, 2].map((i) => (
 							<div key={i} className="grid grid-cols-4 gap-2 py-2">
 								{[0, 1, 2, 3].map((j) => (
-									<div key={j} className="text-center text-[#646669] text-[14px] first:text-left">
+									<div key={j} className="text-center text-[14px] text-[#646669] first:text-left">
 										···
 									</div>
 								))}
@@ -371,16 +371,16 @@ function MonkeytypePreview() {
 					: data?.modes.map(({ label, pb }) => (
 							<div
 								key={label}
-								className="grid grid-cols-4 gap-2 border-[#2c2e31] border-b py-1.5 last:border-0"
+								className="grid grid-cols-4 gap-2 border-b border-[#2c2e31] py-1.5 last:border-0"
 							>
-								<div className="text-[#646669] text-[14px]">{label}</div>
-								<div className="text-center font-bold text-[#e2b714] text-[17px]">
+								<div className="text-[14px] text-[#646669]">{label}</div>
+								<div className="text-center text-[17px] font-bold text-[#e2b714]">
 									{pb ? Math.round(pb.wpm) : '-'}
 								</div>
-								<div className="text-center text-[#d1d0c5] text-[14px]">
+								<div className="text-center text-[14px] text-[#d1d0c5]">
 									{pb ? Math.round(pb.raw) : '-'}
 								</div>
-								<div className="text-center text-[#d1d0c5] text-[14px]">
+								<div className="text-center text-[14px] text-[#d1d0c5]">
 									{pb ? `${Math.round(pb.acc)}%` : '-'}
 								</div>
 							</div>
@@ -388,7 +388,7 @@ function MonkeytypePreview() {
 			</div>
 
 			{/* Footer stats */}
-			<div className="grid grid-cols-3 gap-2 border-[#2c2e31] border-t pt-2">
+			<div className="grid grid-cols-3 gap-2 border-t border-[#2c2e31] pt-2">
 				{[
 					{ label: 'tests', value: isLoading ? '···' : (data?.tests?.toLocaleString() ?? '-') },
 					{
@@ -401,8 +401,8 @@ function MonkeytypePreview() {
 					},
 				].map((s) => (
 					<div key={s.label} className="text-center">
-						<div className="font-bold text-[#d1d0c5] text-[17px] leading-tight">{s.value}</div>
-						<div className="mt-1 text-[#646669] text-[12px]">{s.label}</div>
+						<div className="text-[17px] leading-tight font-bold text-[#d1d0c5]">{s.value}</div>
+						<div className="mt-1 text-[12px] text-[#646669]">{s.label}</div>
 					</div>
 				))}
 			</div>
@@ -479,7 +479,7 @@ function PreviewCard({ visible, rect, children, onMouseEnter, onMouseLeave }: Pr
 			className="fixed z-[200]"
 			onMouseEnter={onMouseEnter}
 			onMouseLeave={onMouseLeave}
-			// biome-ignore lint/nursery/noInlineStyles: dynamic tooltip position and visibility from mouse coordinates
+			// biome-ignore lint/style/noInlineStyles: dynamic tooltip position and visibility from mouse coordinates
 			style={{
 				top: anchorY,
 				left: anchorX,

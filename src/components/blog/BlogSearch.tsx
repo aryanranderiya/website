@@ -65,7 +65,7 @@ export default function BlogSearch({ posts }: { posts: Post[] }) {
 			>
 				{/* Header row: title left, search right */}
 				<div className="mb-6 flex items-center justify-between">
-					<h1 className="m-0 text-heading-1">Blog</h1>
+					<h1 className="text-heading-1 m-0">Blog</h1>
 
 					{/* Pill search */}
 					<div className="relative shrink-0">
@@ -80,11 +80,11 @@ export default function BlogSearch({ posts }: { posts: Post[] }) {
 							onFocus={() => setFocused(true)}
 							onBlur={() => setFocused(false)}
 							placeholder="Search..."
-							className={`w-[140px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none ${!focused && !query ? 'pr-9' : 'pr-3.5'}`}
+							className={`w-[140px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] tracking-[-0.01em] text-[var(--text-primary)] outline-none ${!focused && !query ? 'pr-9' : 'pr-3.5'}`}
 							aria-label="Search blog posts"
 						/>
 						{!focused && !query && (
-							<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
+							<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] tracking-[0] text-[var(--text-ghost)]">
 								⌘F
 							</kbd>
 						)}

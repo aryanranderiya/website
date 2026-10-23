@@ -41,7 +41,7 @@ function PlainImg({
 			fetchPriority={eager ? 'high' : 'auto'}
 			decoding="async"
 			className={className}
-			// biome-ignore lint/nursery/noInlineStyles: style prop passed from parent for dynamic overrides
+			// biome-ignore lint/style/noInlineStyles: style prop passed from parent for dynamic overrides
 			style={imgStyle}
 			onClick={onClick}
 			onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
@@ -111,7 +111,7 @@ export default function ProgressiveImg({
 			onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
 			role={onClick ? 'button' : undefined}
 			tabIndex={onClick ? 0 : undefined}
-			// biome-ignore lint/nursery/noInlineStyles: style prop passed from parent for dynamic overrides
+			// biome-ignore lint/style/noInlineStyles: style prop passed from parent for dynamic overrides
 			style={style}
 		>
 			{/* Thumbhash placeholder - visible until real image loads */}
@@ -142,7 +142,7 @@ export default function ProgressiveImg({
 				className={cn('relative z-[1] h-full w-full object-cover', imgClassName)}
 				onLoad={() => setLoaded(true)}
 				onTransitionEnd={() => setFaded(true)}
-				// biome-ignore lint/nursery/noInlineStyles: dynamic opacity/transition based on load state plus imgStyle spread
+				// biome-ignore lint/style/noInlineStyles: dynamic opacity/transition based on load state plus imgStyle spread
 				style={{
 					opacity: loaded ? 1 : 0,
 					// Only set transition during the fade-in. Once faded, remove it so

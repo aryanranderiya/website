@@ -109,7 +109,7 @@ export default function BookDetail({
 											/>
 										</div>
 										<div className="flex min-w-0 flex-1 flex-col items-end pt-1 text-right">
-											<h2 className="m-0 font-semibold text-[19px] text-[var(--text-primary)] leading-snug tracking-[-0.02em]">
+											<h2 className="m-0 text-[19px] leading-snug font-semibold tracking-[-0.02em] text-[var(--text-primary)]">
 												{book.title}
 											</h2>
 											<div className="mt-1 text-[13px] text-[var(--text-secondary)]">
@@ -121,12 +121,12 @@ export default function BookDetail({
 												</div>
 											) : null}
 											{meta.length > 0 && (
-												<div className="mt-4 text-[12px] text-[var(--text-ghost)] tracking-[-0.01em]">
+												<div className="mt-4 text-[12px] tracking-[-0.01em] text-[var(--text-ghost)]">
 													{meta.join('  ·  ')}
 												</div>
 											)}
 											{book.review && (
-												<p className="mt-3 text-[13px] text-[var(--text-secondary)] leading-relaxed">
+												<p className="mt-3 text-[13px] leading-relaxed text-[var(--text-secondary)]">
 													{book.review}
 												</p>
 											)}

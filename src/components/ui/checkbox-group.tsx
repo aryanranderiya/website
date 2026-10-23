@@ -146,7 +146,7 @@ const CheckboxGroup = forwardRef<HTMLDivElement, CheckboxGroupProps>(
 						}
 					}}
 					role="group"
-					className={cn('relative flex w-full max-w-full select-none flex-col gap-0.5', className)}
+					className={cn('relative flex w-full max-w-full flex-col gap-0.5 select-none', className)}
 					{...props}
 				>
 					<LazyMotion features={loadMaxFeatures}>
@@ -356,7 +356,7 @@ const CheckboxItem = forwardRef<HTMLDivElement, CheckboxItemProps>(
 						'flex flex-1 items-center gap-[7px] text-[12px] tracking-[-0.01em] transition-[color,font-variation-settings] duration-100',
 						checked || isActive ? 'text-[var(--text-primary)]' : 'text-[var(--text-secondary)]'
 					)}
-					// biome-ignore lint/nursery/noInlineStyles: fontVariationSettings has no Tailwind equivalent
+					// biome-ignore lint/style/noInlineStyles: fontVariationSettings has no Tailwind equivalent
 					style={{
 						fontVariationSettings: checked ? fontWeights.semibold : fontWeights.normal,
 					}}

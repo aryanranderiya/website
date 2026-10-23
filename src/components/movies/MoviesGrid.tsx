@@ -23,7 +23,7 @@ interface Movie {
 function SectionHeader({ label, count }: { label: string; count: number }) {
 	return (
 		<div className="mb-7 flex items-center gap-3">
-			<span className="whitespace-nowrap font-medium text-[11px] text-[var(--muted-foreground)] uppercase tracking-[0.08em] opacity-60">
+			<span className="text-[11px] font-medium tracking-[0.08em] whitespace-nowrap text-[var(--muted-foreground)] uppercase opacity-60">
 				{label}: {count}
 			</span>
 			<div className="h-px flex-1 bg-[var(--border)]" />

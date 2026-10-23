@@ -93,20 +93,20 @@ function ContributionCell({
 				}}
 				onMouseLeave={() => setTooltip(null)}
 				className={`h-full w-full cursor-default rounded-[2px] ${animated ? 'github-cell' : ''}`}
-				// biome-ignore lint/nursery/noInlineStyles: per-cell color from data
+				// biome-ignore lint/style/noInlineStyles: per-cell color from data
 				style={{ backgroundColor: LEVEL_COLORS[day.level] }}
 			/>
 			{tooltip && (
 				<div
 					className="pointer-events-none fixed z-[9999]"
-					// biome-ignore lint/nursery/noInlineStyles: dynamic position from mouse coordinates
+					// biome-ignore lint/style/noInlineStyles: dynamic position from mouse coordinates
 					style={{
 						left: tooltip.x,
 						top: tooltip.y - 8,
 						transform: 'translate(-50%, -100%)',
 					}}
 				>
-					<div className="whitespace-nowrap rounded-[6px] bg-[#111] px-[10px] py-[6px] text-[#fdfdfc] text-[11px] leading-[1.5] tracking-[-0.01em]">
+					<div className="rounded-[6px] bg-[#111] px-[10px] py-[6px] text-[11px] leading-[1.5] tracking-[-0.01em] whitespace-nowrap text-[#fdfdfc]">
 						<div className="font-semibold">
 							{day.count === 0
 								? 'No contributions'
@@ -135,7 +135,7 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 		<div className="w-full">
 			{isLoading ? (
 				// Skeleton - full width grid
-				<div className="grid w-full gap-[3px] [grid-template-columns:repeat(52,1fr)]">
+				<div className="grid w-full [grid-template-columns:repeat(52,1fr)] gap-[3px]">
 					{Array.from({ length: 52 }).map((_, i) => (
 						<div
 							// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
@@ -160,8 +160,8 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 							{monthLabels.map(({ label, index }) => (
 								<span
 									key={label + index}
-									className="absolute text-[10px] text-[var(--text-muted)] leading-none tracking-[0.02em]"
-									// biome-ignore lint/nursery/noInlineStyles: dynamic computed left position
+									className="absolute text-[10px] leading-none tracking-[0.02em] text-[var(--text-muted)]"
+									// biome-ignore lint/style/noInlineStyles: dynamic computed left position
 									style={{ left: `${(index / 52) * 100}%` }}
 								>
 									{label}
@@ -171,7 +171,7 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 					)}
 
 					{/* Grid */}
-					<div className="grid w-full gap-[3px] [grid-template-columns:repeat(52,1fr)]">
+					<div className="grid w-full [grid-template-columns:repeat(52,1fr)] gap-[3px]">
 						{weeks.map((week, wi) => (
 							<div
 								// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes
@@ -201,26 +201,26 @@ function GithubGraphInner({ compact = false }: { compact?: boolean }) {
 			<div className="mb-4 flex min-h-[42px] items-center justify-between">
 				<div className="section-header mb-0">GitHub Contributions</div>
 				<div className="text-right">
-					<div className="font-bold text-2xl tracking-[-0.03em] [font-variant-numeric:tabular-nums]">
+					<div className="text-2xl font-bold tracking-[-0.03em] [font-variant-numeric:tabular-nums]">
 						{isLoading ? '\u00A0' : totalContributions.toLocaleString()}
 					</div>
-					<div className="text-[var(--text-muted)] text-xs">contributions this year</div>
+					<div className="text-xs text-[var(--text-muted)]">contributions this year</div>
 				</div>
 			</div>
 
 			{graph}
 
 			<div className="mt-3 flex items-center justify-end gap-2">
-				<span className="text-[var(--text-muted)] text-xs">Less</span>
+				<span className="text-xs text-[var(--text-muted)]">Less</span>
 				{[0, 1, 2, 3, 4].map((level) => (
 					<div
 						key={level}
 						className="h-[10px] w-[10px] rounded-[2px]"
-						// biome-ignore lint/nursery/noInlineStyles: dynamic background from level color lookup
+						// biome-ignore lint/style/noInlineStyles: dynamic background from level color lookup
 						style={{ background: LEVEL_COLORS[level] }}
 					/>
 				))}
-				<span className="text-[var(--text-muted)] text-xs">More</span>
+				<span className="text-xs text-[var(--text-muted)]">More</span>
 			</div>
 		</section>
 	);
@@ -232,7 +232,7 @@ function GithubGraphFixture({ compact = false }: { compact?: boolean }) {
 	// random contribution levels.
 	const grid = (
 		<div className="github-graph-shimmer relative w-full">
-			<div className="grid w-full gap-[3px] [grid-template-columns:repeat(52,1fr)]">
+			<div className="grid w-full [grid-template-columns:repeat(52,1fr)] gap-[3px]">
 				{Array.from({ length: 52 }).map((_, i) => (
 					<div
 						// biome-ignore lint/suspicious/noArrayIndexKey: static array, order never changes

@@ -32,7 +32,9 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
         with:
-          bun-version: latest
+          # Pinned: floating versions rewrite bun.lock's format and drift
+          # tool behavior. Keep in sync with .mise.toml.
+          bun-version: 1.4.3
 
       - name: Install dependencies
         run: bun install --frozen-lockfile

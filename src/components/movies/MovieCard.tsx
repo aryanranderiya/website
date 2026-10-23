@@ -74,7 +74,7 @@ export default function MovieCard({
 					{movie.myRating && (
 						<div className="absolute bottom-2 left-2 flex items-center gap-1 rounded-md bg-black/[0.72] px-1.5 py-0.5 backdrop-blur-[6px]">
 							<HugeiconsIcon icon={StarIcon} size={9} color="rgba(255,255,255,0.7)" />
-							<span className="font-semibold text-[10px] text-white/90 tracking-[-0.01em]">
+							<span className="text-[10px] font-semibold tracking-[-0.01em] text-white/90">
 								{movie.myRating}
 							</span>
 						</div>
@@ -84,7 +84,7 @@ export default function MovieCard({
 					<div
 						className={`absolute inset-0 flex items-end justify-center bg-[linear-gradient(to_top,rgba(0,0,0,0.65)_0%,transparent_55%)] pb-7 transition-opacity duration-200 ${hovered ? 'opacity-100' : 'opacity-0'}`}
 					>
-						<span className="font-medium text-[11px] text-white/85 uppercase tracking-[0.03em]">
+						<span className="text-[11px] font-medium tracking-[0.03em] text-white/85 uppercase">
 							View details
 						</span>
 					</div>
@@ -92,7 +92,7 @@ export default function MovieCard({
 
 				{/* Info */}
 				<div className="space-y-0.5">
-					<h2 className="truncate font-semibold text-[12px] text-[var(--foreground)] leading-[1.3] tracking-[-0.02em]">
+					<h2 className="truncate text-[12px] leading-[1.3] font-semibold tracking-[-0.02em] text-[var(--foreground)]">
 						{movie.title}
 					</h2>
 					<div className="text-[11px] text-[var(--muted-foreground)] opacity-60">{movie.year}</div>

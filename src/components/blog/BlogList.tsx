@@ -30,7 +30,7 @@ export default function BlogList({
 	animateDelay?: boolean;
 }) {
 	if (posts.length === 0) {
-		return <p className="mt-8 text-[var(--text-muted)] text-sm">No posts yet. Check back soon.</p>;
+		return <p className="mt-8 text-sm text-[var(--text-muted)]">No posts yet. Check back soon.</p>;
 	}
 
 	return (
@@ -50,25 +50,25 @@ export default function BlogList({
 					>
 						<a
 							href={`/${post.slug}`}
-							className="dim-list-row group/item -mx-2 flex items-center gap-[14px] border-[var(--border)] border-b px-2 py-[10px] no-underline"
+							className="dim-list-row group/item -mx-2 flex items-center gap-[14px] border-b border-[var(--border)] px-2 py-[10px] no-underline"
 						>
 							<div className="flex min-w-0 flex-1 items-center gap-2">
 								<span
-									// biome-ignore lint/nursery/noInlineStyles: view-transition-name must be unique per slug
+									// biome-ignore lint/style/noInlineStyles: view-transition-name must be unique per slug
 									style={{ viewTransitionName: `blog-title-${post.slug}` }}
-									className="truncate font-medium text-[13px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-150 group-hover/item:text-[var(--text-primary)]"
+									className="truncate text-[13px] font-medium tracking-[-0.01em] text-[var(--text-secondary)] transition-colors duration-150 group-hover/item:text-[var(--text-primary)]"
 								>
 									{post.title}
 								</span>
 								{post.featured && (
-									<span className="shrink-0 rounded-full bg-[var(--muted-bg)] px-1.5 py-[2px] font-normal text-[10px] text-[var(--text-ghost)] tracking-[0.02em]">
+									<span className="shrink-0 rounded-full bg-[var(--muted-bg)] px-1.5 py-[2px] text-[10px] font-normal tracking-[0.02em] text-[var(--text-ghost)]">
 										Featured
 									</span>
 								)}
 							</div>
 
 							<time
-								// biome-ignore lint/nursery/noInlineStyles: view-transition-name must be unique per slug
+								// biome-ignore lint/style/noInlineStyles: view-transition-name must be unique per slug
 								style={{ viewTransitionName: `blog-date-${post.slug}` }}
 								className="shrink-0 text-[13px] text-[var(--text-ghost)]"
 							>

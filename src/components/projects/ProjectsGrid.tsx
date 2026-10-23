@@ -225,10 +225,10 @@ function ProjectsSearchInput({
 				onFocus={() => onFocusChange(true)}
 				onBlur={() => onFocusChange(false)}
 				placeholder="Search..."
-				className={`w-[160px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none transition-shadow duration-150 focus:ring-1 focus:ring-[var(--text-ghost)]/40 focus:ring-offset-0 focus-visible:outline-none ${!focused && !search ? 'pr-9' : 'pr-3.5'}`}
+				className={`w-[160px] rounded-full bg-[var(--muted-bg)] py-[5px] pl-7 text-[12px] tracking-[-0.01em] text-[var(--text-primary)] transition-shadow duration-150 outline-none focus:ring-1 focus:ring-[var(--text-ghost)]/40 focus:ring-offset-0 focus-visible:outline-none ${!focused && !search ? 'pr-9' : 'pr-3.5'}`}
 			/>
 			{!focused && !search && (
-				<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] text-[var(--text-ghost)] tracking-[0]">
+				<kbd className="pointer-events-none absolute top-1/2 right-2.5 -translate-y-1/2 font-[inherit] text-[10px] tracking-[0] text-[var(--text-ghost)]">
 					⌘F
 				</kbd>
 			)}
@@ -328,7 +328,7 @@ function TagFilterPopover({
 						value={tagSearch}
 						onChange={(e) => onTagSearchChange(e.target.value)}
 						placeholder="Search tech…"
-						className="w-full rounded-lg bg-[var(--muted-bg)] py-[5px] pr-2 pl-7 text-[12px] text-[var(--text-primary)] tracking-[-0.01em] outline-none placeholder:text-[var(--text-ghost)]"
+						className="w-full rounded-lg bg-[var(--muted-bg)] py-[5px] pr-2 pl-7 text-[12px] tracking-[-0.01em] text-[var(--text-primary)] outline-none placeholder:text-[var(--text-ghost)]"
 					/>
 				</div>
 
@@ -411,7 +411,7 @@ function ActiveTechChips({
 						type="button"
 						key={`tech-${tech}`}
 						onClick={() => onToggle(tech)}
-						className="group/chip inline-flex shrink-0 cursor-pointer items-center gap-[5px] rounded-full border-none bg-[var(--muted-bg-strong,var(--muted-bg))] px-[8px] py-[3px] text-[11px] text-[var(--text-primary)] tracking-[-0.01em] transition-colors duration-100 hover:bg-[var(--muted-bg)]"
+						className="group/chip inline-flex shrink-0 cursor-pointer items-center gap-[5px] rounded-full border-none bg-[var(--muted-bg-strong,var(--muted-bg))] px-[8px] py-[3px] text-[11px] tracking-[-0.01em] text-[var(--text-primary)] transition-colors duration-100 hover:bg-[var(--muted-bg)]"
 						aria-label={`Remove filter ${tech}`}
 					>
 						{iconUrl && (
@@ -437,7 +437,7 @@ function ActiveTechChips({
 			<button
 				type="button"
 				onClick={onClear}
-				className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border-none bg-transparent px-[8px] py-[3px] text-[11px] text-[var(--text-ghost)] tracking-[-0.01em] transition-colors duration-100 hover:text-[var(--text-secondary)]"
+				className="inline-flex shrink-0 cursor-pointer items-center gap-1 rounded-full border-none bg-transparent px-[8px] py-[3px] text-[11px] tracking-[-0.01em] text-[var(--text-ghost)] transition-colors duration-100 hover:text-[var(--text-secondary)]"
 			>
 				<HugeiconsIcon icon={Delete02Icon} size={11} color="currentColor" />
 				Clear all
@@ -467,7 +467,7 @@ function ProjectsList({
 					<button
 						type="button"
 						onClick={onClearAll}
-						className="inline-flex cursor-pointer items-center rounded-full border-none bg-[var(--muted-bg)] px-3 py-[5px] text-[11px] text-[var(--text-secondary)] tracking-[-0.01em] transition-colors duration-100 hover:text-[var(--text-primary)]"
+						className="inline-flex cursor-pointer items-center rounded-full border-none bg-[var(--muted-bg)] px-3 py-[5px] text-[11px] tracking-[-0.01em] text-[var(--text-secondary)] transition-colors duration-100 hover:text-[var(--text-primary)]"
 					>
 						Clear all filters
 					</button>
@@ -523,7 +523,7 @@ function HoverPreviewPortal({
 						className="block aspect-video h-auto w-full object-cover"
 					/>
 					<div className="bg-[var(--background)] px-[10px] pt-[8px] pb-[10px]">
-						<p className="m-0 text-[10px] text-[var(--text-muted)] leading-[1.5] tracking-[-0.01em]">
+						<p className="m-0 text-[10px] leading-[1.5] tracking-[-0.01em] text-[var(--text-muted)]">
 							{hovered.project.description}
 						</p>
 					</div>
@@ -632,7 +632,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 			<div className="animate-fade-in">
 				{/* Header row: title left, search right — same pattern as the blog page */}
 				<div className="mb-3 flex items-center justify-between gap-3">
-					<h1 className="m-0 text-heading-1">Projects</h1>
+					<h1 className="text-heading-1 m-0">Projects</h1>
 
 					{/* Pill search */}
 					<ProjectsSearchInput
@@ -645,7 +645,7 @@ export default function ProjectsGrid({ projects: rawProjects }: { projects: Proj
 				</div>
 
 				{/* Subtitle */}
-				<p className="m-0 mb-6 text-body">A collection of things I have built!</p>
+				<p className="text-body m-0 mb-6">A collection of things I have built!</p>
 
 				{/* Type filter chips + tag filter — one row */}
 				<div className="mb-7 flex flex-wrap items-center gap-[6px]">

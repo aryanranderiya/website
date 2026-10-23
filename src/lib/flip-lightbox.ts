@@ -428,7 +428,7 @@ export function bindSelector(selector: string) {
 			e.preventDefault();
 			const list = matches();
 			const idx = list.indexOf(img);
-			openGroup(list, idx < 0 ? 0 : idx);
+			openGroup(list, Math.max(idx, 0));
 		});
 	});
 }

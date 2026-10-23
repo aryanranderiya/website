@@ -45,7 +45,7 @@ function useIsDark() {
 
 function AvatarMarker() {
 	return (
-		<div className="h-11 w-11 cursor-default rounded-full border-[2.5px] border-white bg-[url('/images/site/memoji.webp')] bg-center bg-cover shadow-[0_2px_8px_rgba(0,0,0,0.25)]" />
+		<div className="h-11 w-11 cursor-default rounded-full border-[2.5px] border-white bg-[url('/images/site/memoji.webp')] bg-cover bg-center shadow-[0_2px_8px_rgba(0,0,0,0.25)]" />
 	);
 }
 

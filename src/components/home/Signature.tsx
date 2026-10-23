@@ -212,7 +212,7 @@ export default function Signature() {
 					return (
 						<div
 							key={key}
-							// biome-ignore lint/nursery/noInlineStyles: dynamic margin from letter data
+							// biome-ignore lint/style/noInlineStyles: dynamic margin from letter data
 							style={{ margin: item.margin }}
 						>
 							<svg
@@ -229,7 +229,7 @@ export default function Signature() {
 									strokeWidth={1}
 									strokeLinecap="round"
 									strokeLinejoin="round"
-									// biome-ignore lint/nursery/noInlineStyles: dynamic SVG stroke dash animation
+									// biome-ignore lint/style/noInlineStyles: dynamic SVG stroke dash animation
 									style={{
 										strokeDasharray: item.dasharray,
 										strokeDashoffset: animate ? 0 : item.dasharray,

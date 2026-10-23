@@ -116,17 +116,17 @@ export default function BookCover({
 	const color = bookColor(title);
 
 	return (
-		// biome-ignore lint/nursery/noInlineStyles: caller sizes the box (e.g. height from cover aspect)
+		// biome-ignore lint/style/noInlineStyles: caller sizes the box (e.g. height from cover aspect)
 		<div className={`isolate overflow-hidden rounded-[3px] ${className}`} style={style}>
 			{/* colored card — ONLY a fallback for books with no cover image (or a load error) */}
 			{!hasImage && (
 				<div
 					className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 rounded-[3px] px-2 py-3 text-center"
-					// biome-ignore lint/nursery/noInlineStyles: dynamic per-title gradient from props
+					// biome-ignore lint/style/noInlineStyles: dynamic per-title gradient from props
 					style={{ background: `linear-gradient(150deg, ${color} 0%, ${color}cc 100%)` }}
 				>
 					<div className="h-px w-[46%] bg-white/20" />
-					<span className="font-semibold text-[10px] text-white/90 leading-[1.3]">{title}</span>
+					<span className="text-[10px] leading-[1.3] font-semibold text-white/90">{title}</span>
 					<div className="h-px w-[32%] bg-white/15" />
 					<span className="text-[7.5px] text-white/55">{author}</span>
 				</div>
@@ -154,15 +154,15 @@ export default function BookCover({
 					onLoad={() => setLoaded(true)}
 					onError={() => setImgError(true)}
 					className="absolute inset-0 h-full w-full rounded-[3px] object-cover transition-opacity duration-300 ease-out"
-					// biome-ignore lint/nursery/noInlineStyles: fade-in opacity driven by load state
+					// biome-ignore lint/style/noInlineStyles: fade-in opacity driven by load state
 					style={{ opacity: loaded ? 1 : 0 }}
 				/>
 			)}
 			{/* bevel + gloss: lit top-centre, shaded edges, inner white rim */}
-			<div className="absolute inset-0 rounded-[3px] [background:radial-gradient(110%_97%_at_50%_0%,rgba(255,255,255,0.33)_0%,rgba(0,0,0,0.35)_100%)] [box-shadow:inset_0_0_0_2px_rgba(255,255,255,0.5)] [mix-blend-mode:overlay]" />
+			<div className="absolute inset-0 rounded-[3px] [mix-blend-mode:overlay] [box-shadow:inset_0_0_0_2px_rgba(255,255,255,0.5)] [background:radial-gradient(110%_97%_at_50%_0%,rgba(255,255,255,0.33)_0%,rgba(0,0,0,0.35)_100%)]" />
 			{/* spine — a SOFT crease (gradient, not a hard bar) + a faint light highlight */}
 			<div className="absolute inset-y-0 left-0 w-[11px] [background:linear-gradient(90deg,rgba(0,0,0,0.32)_0%,rgba(0,0,0,0.05)_55%,transparent_100%)]" />
-			<div className="absolute inset-y-0 left-[5px] w-[5px] [background:linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.5)_50%,transparent_100%)] [mix-blend-mode:overlay]" />
+			<div className="absolute inset-y-0 left-[5px] w-[5px] [mix-blend-mode:overlay] [background:linear-gradient(90deg,transparent_0%,rgba(255,255,255,0.5)_50%,transparent_100%)]" />
 			{/* outline */}
 			<div className="absolute inset-0 rounded-[3px] [box-shadow:inset_0_0_0_1px_rgba(0,0,0,0.15)]" />
 		</div>

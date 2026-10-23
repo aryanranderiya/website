@@ -219,19 +219,19 @@ export function PetLauncher() {
 			)}
 
 			{open && (
-				// biome-ignore lint/nursery/noInlineStyles: dynamic position computed from pet coordinates
+				// biome-ignore lint/style/noInlineStyles: dynamic position computed from pet coordinates
 				<div ref={popoverRef} style={getPopoverStyle()}>
 					<div className="rounded-[18px] bg-[var(--card,#fafafa)] px-[10px] pt-[10px] pb-[8px] shadow-[0_4px_24px_rgba(0,0,0,0.10)]">
-						<p className="mb-[7px] font-medium text-[9px] text-[var(--text-ghost,rgba(0,0,0,0.3))] uppercase tracking-[0.06em]">
+						<p className="mb-[7px] text-[9px] font-medium tracking-[0.06em] text-[var(--text-ghost,rgba(0,0,0,0.3))] uppercase">
 							Choose pet
 						</p>
 
-						<div className="grid gap-[3px] [grid-template-columns:repeat(5,1fr)]">
+						<div className="grid [grid-template-columns:repeat(5,1fr)] gap-[3px]">
 							{/* No pet option */}
 							<PetButton isSelected={isNone} onClick={() => select(NO_PET)} title="None">
 								<span
 									className="flex h-[28px] w-[28px] items-center justify-center text-[16px]"
-									// biome-ignore lint/nursery/noInlineStyles: dynamic color based on selection state
+									// biome-ignore lint/style/noInlineStyles: dynamic color based on selection state
 									style={{
 										color: isNone
 											? 'var(--text-primary, rgba(0,0,0,0.7))'
@@ -240,7 +240,7 @@ export function PetLauncher() {
 								>
 									✕
 								</span>
-								{/* biome-ignore lint/nursery/noInlineStyles: dynamic label styles based on selection state */}
+								{/* biome-ignore lint/style/noInlineStyles: dynamic label styles based on selection state */}
 								<span style={labelStyle(isNone)}>None</span>
 							</PetButton>
 
@@ -260,7 +260,7 @@ export function PetLauncher() {
 											height={28}
 											className="h-7 w-7 shrink-0 object-contain [image-rendering:pixelated]"
 										/>
-										{/* biome-ignore lint/nursery/noInlineStyles: dynamic label styles based on selection state */}
+										{/* biome-ignore lint/style/noInlineStyles: dynamic label styles based on selection state */}
 										<span style={labelStyle(isSelected)}>{ANIMAL_MAP[animal]?.label}</span>
 									</PetButton>
 								);
@@ -319,7 +319,7 @@ function PetButton({
 			type="button"
 			onClick={onClick}
 			title={title}
-			className={`flex cursor-pointer flex-col items-center gap-[3px] rounded-[10px] border-none px-[4px] pt-[6px] pb-[5px] outline-none transition-[background] duration-[120ms] ${isSelected ? 'bg-[var(--muted-bg,rgba(0,0,0,0.06))]' : 'bg-transparent'}`}
+			className={`flex cursor-pointer flex-col items-center gap-[3px] rounded-[10px] border-none px-[4px] pt-[6px] pb-[5px] transition-[background] duration-[120ms] outline-none ${isSelected ? 'bg-[var(--muted-bg,rgba(0,0,0,0.06))]' : 'bg-transparent'}`}
 			onMouseEnter={(e) => {
 				if (!isSelected)
 					(e.currentTarget as HTMLElement).style.background = 'var(--muted-bg, rgba(0,0,0,0.04))';
