@@ -57,14 +57,6 @@ export interface Artwork {
 	src: string;
 }
 
-export interface StampCity {
-	slug: string;
-	name: string;
-	country: string;
-	url: string;
-	air: string;
-}
-
 export interface WeekDay {
 	you: number;
 	gaia: number;
@@ -108,31 +100,28 @@ export interface Edition {
 	assets: Record<string, string>;
 }
 
+export interface Row {
+	id: string;
+	label: string;
+}
+
 /** Everything the sidebar edits; edition.ts turns it into an Edition. */
 export interface Draft {
 	deck: string;
 	recipient: string;
 	/** ISO date */
 	date: string;
-	/** 24h "HH:MM" */
-	sentAt: string;
-	editionNo: number;
-	decisions: { id: string; verb: string; label: string }[];
-	today: { id: string; t24: string; label: string; note: string }[];
-	overnight: { id: string; t24: string; label: string }[];
-	running: { id: string; label: string }[];
-	figures: {
-		show: boolean;
-		you: number;
-		gaia: number;
-		mail: number;
-		focusMinutes: number;
-	};
+	/** Asks, verb first: "Approve the Q4 plan". */
+	decisions: Row[];
+	today: (Row & { t24: string })[];
+	overnight: Row[];
+	running: Row[];
+	stats: boolean;
 	week: {
 		days: WeekDay[];
-		ahead: { id: string; day: string; label: string }[];
-		shipped: { id: string; label: string }[];
-		handled: { id: string; label: string }[];
+		ahead: (Row & { day: string })[];
+		shipped: Row[];
+		handled: Row[];
 	};
 }
 

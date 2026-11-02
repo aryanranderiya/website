@@ -65,7 +65,7 @@ export function BriefingFrame({ draft, look, onTemplates, className }: Props) {
 					sandbox="allow-scripts allow-same-origin"
 					onLoad={handleLoad}
 					tabIndex={-1}
-					className="absolute top-0 left-0 origin-top-left transition-opacity duration-300"
+					className="pointer-events-none absolute top-0 left-0 origin-top-left transition-opacity duration-300"
 					// biome-ignore lint/style/noInlineStyles: dynamic canvas height and scale transform
 					style={{
 						width: CANVAS_PX,

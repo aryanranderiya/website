@@ -10,7 +10,8 @@
  * - public/vendor/briefing-editions/{fonts,art}/: assets.json decoded to files.
  * - public/vendor/briefing-editions/frame.html: the render harness, the
  *   browser twin of GAIA's explorer_render.py (fonts, EXPLORER shim, scripts).
- * - src/components/experiments/briefing/manifest.json: paintings, stamp cities.
+ * - src/components/experiments/briefing/manifest.json: the paintings.
+ * - src/data/stamp-cities.json: Air Mail's 85 city stamps (also the stamps experiment).
  */
 
 import { mkdir, readdir, readFile, rm, writeFile } from 'node:fs/promises';
@@ -20,6 +21,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = join(ROOT, 'public', 'vendor', 'briefing-editions');
 const MANIFEST = join(ROOT, 'src', 'components', 'experiments', 'briefing', 'manifest.json');
+const STAMP_CITIES = join(ROOT, 'src', 'data', 'stamp-cities.json');
 const PUBLIC_BASE = '/vendor/briefing-editions';
 
 // Mirrors explorer_render.py's _FONT_FACE_SPEC.
@@ -34,6 +36,50 @@ const FONTS = [
 const LABEL_PHRASES = new Set(['par avion', 'by air mail']);
 const ARTWORK_RE =
 	/Artwork\(\s*"(\w+)",\s*"([^"]+)",\s*"([^"]+)",\s*"([^"]+)",\s*(_OIL_ON_CANVAS|"[^"]+"),?\s*\)/g;
+
+// ISO 3166 alpha-2 code per countries.json name, for flag images (Intl region
+// names differ across runtimes, so the mapping is explicit). A new country fails loud.
+const COUNTRY_CODES = {
+	'Angola': 'ao',
+	'Argentina': 'ar',
+	'Bangladesh': 'bd',
+	'Brazil': 'br',
+	'Canada': 'ca',
+	'Chile': 'cl',
+	'China': 'cn',
+	'Colombia': 'co',
+	'DR Congo': 'cd',
+	'Egypt': 'eg',
+	'Ethiopia': 'et',
+	'France': 'fr',
+	'Hong Kong': 'hk',
+	'India': 'in',
+	'Indonesia': 'id',
+	'Iran': 'ir',
+	'Iraq': 'iq',
+	'Japan': 'jp',
+	'Malaysia': 'my',
+	'Mexico': 'mx',
+	'Myanmar': 'mm',
+	'Nigeria': 'ng',
+	'Pakistan': 'pk',
+	'Peru': 'pe',
+	'Philippines': 'ph',
+	'Russia': 'ru',
+	'Saudi Arabia': 'sa',
+	'Singapore': 'sg',
+	'South Africa': 'za',
+	'South Korea': 'kr',
+	'Spain': 'es',
+	'Sudan': 'sd',
+	'Taiwan': 'tw',
+	'Tanzania': 'tz',
+	'Thailand': 'th',
+	'Turkey': 'tr',
+	'United Kingdom': 'gb',
+	'United States': 'us',
+	'Vietnam': 'vn',
+};
 
 const slugify = (s) =>
 	s
@@ -141,10 +187,13 @@ async function main() {
 		.map((c) => {
 			const air = countries[c.country]?.air;
 			if (air === undefined) throw new Error(`countries.json: missing ${c.country}`);
+			const countryCode = COUNTRY_CODES[c.country];
+			if (!countryCode) throw new Error(`no ISO region code for ${c.country}`);
 			return {
 				slug: c.slug,
 				name: c.name,
 				country: c.country,
+				countryCode,
 				url: c.url,
 				air: LABEL_PHRASES.has(air.toLowerCase()) ? '' : air,
 			};
@@ -155,9 +204,9 @@ async function main() {
 	const manifest = {
 		base: PUBLIC_BASE,
 		artworks: artworks.map(({ key, ...a }) => ({ ...a, src: `${PUBLIC_BASE}/art/${slugify(a.title)}.jpg` })),
-		stamps,
 	};
 	await writeFile(MANIFEST, `${JSON.stringify(manifest, null, '\t')}\n`);
+	await writeFile(STAMP_CITIES, `${JSON.stringify(stamps, null, '\t')}\n`);
 	console.log(`synced ${templateFiles.length} templates, ${artworks.length} paintings, ${stamps.length} stamps`);
 }
 

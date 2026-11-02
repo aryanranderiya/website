@@ -5,11 +5,12 @@ import '@/components/experiments/gaia-ui/wordmark-font.css';
 import BriefingThumbnail from '@/components/experiments/briefing/BriefingThumbnail';
 import HoloCardIsland from '@/components/experiments/HoloCardIsland';
 import { DEMO_CARD } from '@/components/experiments/holo-card/demo';
+import StampCarousel from '@/components/experiments/stamps/StampCarousel';
 import { experiments } from '@/data/experiments';
 import PageLayout from '@/layouts/PageLayout.astro';
 
 // Single-column previews first so they pair up; full-width ones after.
-const WIDE = new Set(['footer-glow']);
+const WIDE = new Set(['footer-glow', 'briefing']);
 const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number(WIDE.has(b.slug)));
 ---
 {/* astro-doctor-ignore-file astro/no-island-in-map -- demo index maps distinct showcase islands by design */}
@@ -29,15 +30,25 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
         exp.slug === "briefing" ? (
           <a
             href={`/experiments/${exp.slug}`}
-            class="group relative block h-[455px] cursor-pointer overflow-hidden rounded-2xl bg-[var(--muted-bg)] px-10 pt-10 animate-fade-in"
+            class="group block h-[300px] cursor-pointer overflow-hidden animate-fade-in sm:col-span-2 [mask-image:linear-gradient(to_bottom,black_70%,transparent)]"
             style={`animation-delay:${0.15 + i * 0.07}s`}
             aria-label={exp.title}
           >
-            {/* live preview - the demo edition, scaled to the card and cut off at the fold */}
-            <div class="pointer-events-none transition-transform duration-300 ease-out group-hover:scale-[1.03]">
-              <BriefingThumbnail client:only="react">
-                <div slot="fallback" class="h-[400px] w-full rounded-xl bg-[var(--muted-bg)] animate-pulse" aria-hidden="true" />
-              </BriefingThumbnail>
+            {/* live preview - three editions side by side, cut off at the card's fold */}
+            <div class="pointer-events-none transition-transform duration-300 ease-out group-hover:-translate-y-2">
+              <BriefingThumbnail client:only="react" />
+            </div>
+          </a>
+        ) : exp.slug === "stamps" ? (
+          <a
+            href={`/experiments/${exp.slug}`}
+            class="group flex cursor-pointer items-center justify-center py-10 animate-fade-in"
+            style={`animation-delay:${0.15 + i * 0.07}s`}
+            aria-label={exp.title}
+          >
+            {/* live preview - the stamps rotate on their own; clicks open the detail */}
+            <div class="pointer-events-none w-[220px] transition-transform duration-300 ease-out group-hover:scale-[1.04]">
+              <StampCarousel controls={false} client:only="react" />
             </div>
           </a>
         ) : exp.slug === "chat-demo" ? (

@@ -3,7 +3,15 @@
 import { BriefingFrame } from './BriefingFrame';
 import { DEMO_DRAFT, DEMO_LOOK } from './demo';
 
-/** The demo edition, static, for the experiments grid. */
+// Light-paper editions side by side: the grid card shows the range, not one style.
+const CARD_FAMILIES = ['playfair', 'gradient', 'weekly'];
+
 export default function BriefingThumbnail() {
-	return <BriefingFrame draft={DEMO_DRAFT} look={DEMO_LOOK} />;
+	return (
+		<div className="grid grid-cols-3 gap-4">
+			{CARD_FAMILIES.map((family) => (
+				<BriefingFrame key={family} draft={DEMO_DRAFT} look={{ ...DEMO_LOOK, family }} />
+			))}
+		</div>
+	);
 }

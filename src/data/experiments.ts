@@ -26,11 +26,18 @@ export const experiments: Experiment[] = [
 	{
 		slug: 'briefing',
 		title: 'Configurable Briefing',
-		description:
-			'Every edition of the GAIA daily briefing, live: pick a style, tune its look, rewrite what it says.',
+		description: "Every edition of GAIA's daily briefing, restyled and rewritten live.",
 		bio: 'GAIA writes a briefing every morning and sets it in one of nineteen printed styles, from an air-mail letter to a boarding pass. These are the production templates, rendering the same data GAIA sends.',
 		date: '2026-11-02',
 		wide: true,
+	},
+	{
+		slug: 'stamps',
+		title: 'City Stamps',
+		description:
+			"The 85 city stamps GAIA's Air Mail briefing is posted with. Click the stamp for the next.",
+		bio: "Each morning's Air Mail edition draws a city from a shuffle bag and stamps the envelope with its art.",
+		date: '2026-11-02',
 	},
 	{
 		slug: 'chat-demo',

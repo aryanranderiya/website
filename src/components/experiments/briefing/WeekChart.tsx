@@ -72,8 +72,8 @@ export function WeekChart({
 	const set = (i: number, patch: Partial<WeekDay>) =>
 		onChange(days.map((d, j) => (j === i ? { ...d, ...patch } : d)));
 	return (
-		<div className="flex flex-col gap-2 rounded-xl bg-[var(--muted-bg)] p-3">
-			<div className="flex h-24 gap-2">
+		<div className="flex flex-col gap-1.5">
+			<div className="flex h-20 gap-2">
 				{days.map((day, i) => (
 					<div key={WEEKDAYS_SHORT[i]} className={cn('flex flex-1 gap-0.5', i > 4 && 'opacity-50')}>
 						{SERIES.map((s) => (
