@@ -30,11 +30,11 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
         exp.slug === "briefing" ? (
           <a
             href={`/experiments/${exp.slug}`}
-            class="group flex h-[455px] cursor-pointer justify-center overflow-hidden pt-10 animate-fade-in [mask-image:linear-gradient(to_bottom,black_75%,transparent)]"
+            class="group flex h-[455px] cursor-pointer justify-center overflow-hidden rounded-2xl bg-[var(--muted-bg)] px-10 pt-10 animate-fade-in"
             style={`animation-delay:${0.15 + i * 0.07}s`}
             aria-label={exp.title}
           >
-            {/* live preview - the demo edition, cut off at the card's fold */}
+            {/* live preview - the demo edition, cut off by the card */}
             <div class="pointer-events-none w-[260px] transition-transform duration-300 ease-out group-hover:-translate-y-2">
               <BriefingThumbnail client:only="react" />
             </div>
@@ -42,12 +42,12 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
         ) : exp.slug === "stamps" ? (
           <a
             href={`/experiments/${exp.slug}`}
-            class="group flex cursor-pointer items-center justify-center py-10 animate-fade-in"
+            class="group flex cursor-pointer items-center justify-center rounded-2xl bg-[var(--muted-bg)] px-10 py-10 animate-fade-in"
             style={`animation-delay:${0.15 + i * 0.07}s`}
             aria-label={exp.title}
           >
             {/* live preview - the stamps rotate on their own; clicks open the detail */}
-            <div class="pointer-events-none w-[220px] transition-transform duration-300 ease-out group-hover:scale-[1.04]">
+            <div class="pointer-events-none w-[260px] transition-transform duration-300 ease-out group-hover:scale-[1.04]">
               <StampCarousel controls={false} client:only="react" />
             </div>
           </a>

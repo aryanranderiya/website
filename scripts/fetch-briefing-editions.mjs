@@ -127,6 +127,12 @@ body { width: 540px; overflow: hidden; }
 /* Website adaptation: editions laid on a desk (data-paper marks their sheet; Air Mail
    and Receipt are the two without one) float on the page instead of a dark desk. */
 #root > article:has([data-paper]), #root > .t-postal, #root > .t-receipt { background: transparent !important; }
+/* ...and without the shadows they cast on it. Menu's card keeps its inset foil
+   rules, so its outer shadow is clipped instead of overridden. */
+.t-postal .env, .t-postal .letter, .t-memo .sheet, .t-librarycard .stack { box-shadow: none !important; }
+.t-boardingpass .pass, .t-invoice .doc { filter: none !important; }
+.t-receipt .wrap::before, .t-receipt .wrap::after { display: none !important; }
+.t-menu .card { clip-path: inset(0); }
 </style>
 <style id="tpl-css"></style>
 </head>

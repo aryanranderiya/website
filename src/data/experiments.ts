@@ -34,8 +34,7 @@ export const experiments: Experiment[] = [
 	{
 		slug: 'stamps',
 		title: 'City Stamps',
-		description:
-			"The 85 city stamps GAIA's Air Mail briefing is posted with. Click the stamp for the next.",
+		description: "The 85 city stamps of GAIA's Air Mail edition.",
 		bio: "Each morning's Air Mail edition draws a city from a shuffle bag and stamps the envelope with its art.",
 		date: '2026-11-02',
 	},

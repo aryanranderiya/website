@@ -1,8 +1,8 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { inputClass, RowList, Section, Switch } from './controls';
-import { WEEKDAYS_SHORT } from './edition';
+import { cardClass, inputClass, RowList, Section, Switch } from './controls';
+import { MAX_ASKS, MAX_EVENTS, WEEKDAYS_SHORT } from './edition';
 import type { Draft, Row } from './types';
 import { WeekChart } from './WeekChart';
 
@@ -19,15 +19,15 @@ export function ContentControls({
 }) {
 	const set = (patch: Partial<Draft>) => onChange({ ...draft, ...patch });
 	const week = (patch: Partial<Draft['week']>) => set({ week: { ...draft.week, ...patch } });
-	const list = (title: string, rows: Row[], save: (rows: Row[]) => void) => (
+	const list = (title: string, rows: Row[], save: (rows: Row[]) => void, max?: number) => (
 		<Section title={title} hint={countHint(rows)}>
-			<RowList label={title} rows={rows} onChange={save} create={() => ({ label: '' })} />
+			<RowList label={title} rows={rows} onChange={save} create={() => ({ label: '' })} max={max} />
 		</Section>
 	);
 
 	return (
-		<>
-			<Section title="Masthead">
+		<div className={cn(cardClass, 'flex flex-col py-1')}>
+			<Section title="Masthead" open>
 				<div className="-mx-2 flex flex-col">
 					<textarea
 						aria-label="Headline"
@@ -52,8 +52,11 @@ export function ContentControls({
 				</div>
 			</Section>
 
-			{list(weekly ? 'Still yours to call' : 'Needs you', draft.decisions, (decisions) =>
-				set({ decisions })
+			{list(
+				weekly ? 'Still yours to call' : 'Needs you',
+				draft.decisions,
+				(decisions) => set({ decisions }),
+				MAX_ASKS
 			)}
 
 			{weekly ? (
@@ -95,6 +98,7 @@ export function ContentControls({
 							rows={draft.today}
 							onChange={(today) => set({ today })}
 							create={() => ({ t24: '12:00', label: '' })}
+							max={MAX_EVENTS}
 							lead={(row, update) => (
 								<input
 									type="time"
@@ -111,12 +115,12 @@ export function ContentControls({
 					</Section>
 					{list('Overnight', draft.overnight, (overnight) => set({ overnight }))}
 					{list('In progress', draft.running, (running) => set({ running }))}
-					<div className="flex items-center justify-between rounded-2xl bg-[var(--muted-bg)] px-4 py-3 text-[13px]">
+					<div className="flex items-center justify-between px-4 py-3 text-[13px]">
 						<span className="font-medium">Stats</span>
 						<Switch label="Stats" checked={draft.stats} onChange={(stats) => set({ stats })} />
 					</div>
 				</>
 			)}
-		</>
+		</div>
 	);
 }

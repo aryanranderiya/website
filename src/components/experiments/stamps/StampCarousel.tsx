@@ -1,10 +1,10 @@
 'use client';
 
-import { ArrowDown01Icon, HugeiconsIcon, Search01Icon, ShuffleIcon } from '@icons';
+import { ChevronDown, HugeiconsIcon, Search01Icon, ShuffleIcon } from '@icons';
 import { Command } from 'cmdk';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { STAMP_CITIES, type StampCity, stampImage } from '@/data/stamps';
 import { cn } from '@/lib/utils';
@@ -12,17 +12,30 @@ import { cn } from '@/lib/utils';
 const loadFeatures = () => import('@/lib/motion-features').then((mod) => mod.default);
 
 const ROTATE_MS = 3500;
-/** 2x the largest display width. */
-const STAMP_PX = 720;
-const PRELOAD_AHEAD = 3;
+/** ~2x the pile's width. */
+const FULL_PX = 640;
+/** Shown instantly while the full art loads; all of them are fetched up front. */
+const PREVIEW_PX = 120;
+const PRELOAD_AHEAD = 2;
+/** Stamps kept on the pile; the oldest fades out from the bottom. */
+const PILE_SIZE = 4;
 
 const flagSrc = (city: StampCity) => `https://flagcdn.com/${city.countryCode}.svg`;
 
-/** A small, stable tilt per stamp so each one looks hand-placed. */
-function tilt(slug: string): number {
-	let h = 0;
-	for (const ch of slug) h = (h * 31 + ch.charCodeAt(0)) | 0;
-	return ((Math.abs(h) % 7) - 3) * 1.2;
+interface Placement {
+	rotate: number;
+	x: number;
+	y: number;
+}
+
+/** A fresh landing spot: 4-16 degrees, leaning the other way from the stamp below. */
+function landing(below?: Placement): Placement {
+	const lean = below && below.rotate > 0 ? -1 : 1;
+	return {
+		rotate: lean * (4 + Math.random() * 12),
+		x: (Math.random() - 0.5) * 28,
+		y: (Math.random() - 0.5) * 20,
+	};
 }
 
 function shuffled<T>(items: readonly T[]): T[] {
@@ -34,23 +47,43 @@ function shuffled<T>(items: readonly T[]): T[] {
 	return out;
 }
 
-/** Fetch and decode a stamp once; later calls reuse the same promise. */
-const decoded = new Map<string, Promise<void>>();
-function decodeStamp(city: StampCity): Promise<void> {
-	const src = stampImage(city, STAMP_PX);
-	let ready = decoded.get(src);
-	if (!ready) {
-		const img = new Image();
-		img.src = src;
-		ready = img.decode();
-		decoded.set(src, ready);
-	}
-	return ready;
+function preload(src: string) {
+	new Image().src = src;
+}
+
+/** The low-res art at once, the full art faded over it once it has loaded. */
+function StampArt({ city }: { city: StampCity }) {
+	const [loaded, setLoaded] = useState(false);
+	return (
+		<div className="relative size-full">
+			<img
+				src={stampImage(city, PREVIEW_PX)}
+				alt=""
+				className="absolute inset-0 size-full object-contain"
+				draggable={false}
+			/>
+			<img
+				src={stampImage(city, FULL_PX)}
+				alt={`${city.name}, ${city.country}`}
+				onLoad={() => setLoaded(true)}
+				className={cn(
+					'absolute inset-0 size-full object-contain transition-opacity duration-300',
+					loaded ? 'opacity-100' : 'opacity-0'
+				)}
+				draggable={false}
+			/>
+		</div>
+	);
 }
 
 function Flag({ city }: { city: StampCity }) {
 	return (
-		<img src={flagSrc(city)} alt="" className="h-3 w-[18px] shrink-0 rounded-[2px] object-cover" />
+		<img
+			src={flagSrc(city)}
+			alt=""
+			loading="lazy"
+			className="h-3 w-[18px] shrink-0 rounded-[2px] object-cover"
+		/>
 	);
 }
 
@@ -64,11 +97,11 @@ function CityPicker({
 	const [open, setOpen] = useState(false);
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger className="flex items-center gap-2 rounded-lg px-2 py-1 text-[14px] transition-colors hover:bg-[var(--muted-bg)]">
+			<PopoverTrigger className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[14px] transition-colors hover:bg-[var(--muted-bg)]">
 				<Flag city={value} />
 				<span className="font-medium">{value.name}</span>
 				<span className="text-[var(--text-ghost)]">{value.country}</span>
-				<HugeiconsIcon icon={ArrowDown01Icon} size={13} color="var(--text-ghost)" />
+				<ChevronDown size={14} className="text-[var(--text-ghost)]" />
 			</PopoverTrigger>
 			<PopoverContent className="w-72 p-0">
 				<Command>
@@ -107,66 +140,88 @@ function CityPicker({
 	);
 }
 
-/** Every Air Mail stamp, rotating; click the stamp for the next one. */
+interface Dealt {
+	key: number;
+	city: StampCity;
+	at: Placement;
+}
+
+interface Pile {
+	order: StampCity[];
+	/** Index into order of the stamp on top. */
+	cursor: number;
+	dealt: Dealt[];
+}
+
+/** `at` is drawn by the caller (landing) so the reducer stays pure. */
+type Deal = { type: 'next'; at: Placement } | { type: 'at'; index: number; at: Placement };
+
+const topOf = (pile: Pile) => pile.dealt[pile.dealt.length - 1];
+
+function dealReducer(pile: Pile, action: Deal): Pile {
+	const cursor = action.type === 'next' ? (pile.cursor + 1) % pile.order.length : action.index;
+	const key = topOf(pile).key + 1;
+	return {
+		...pile,
+		cursor,
+		dealt: [...pile.dealt, { key, city: pile.order[cursor], at: action.at }].slice(-PILE_SIZE),
+	};
+}
+
+function initialPile(): Pile {
+	const order = shuffled(STAMP_CITIES);
+	return { order, cursor: 0, dealt: [{ key: 0, city: order[0], at: landing() }] };
+}
+
+/** Every Air Mail stamp, dealt one onto another; click the pile for the next. */
 export default function StampCarousel({ controls = true }: { controls?: boolean }) {
-	const order = useMemo(() => shuffled(STAMP_CITIES), []);
-	const [index, setIndex] = useState(0);
-	const requested = useRef(0);
-	const city = order[index];
+	const [pile, dispatch] = useReducer(dealReducer, undefined, initialPile);
+	const { order } = pile;
+	const top = topOf(pile).city;
 
-	// Swap only once the requested stamp is decoded, so the old one never gives way to a blank.
-	const show = useCallback(
-		(next: number) => {
-			requested.current = next;
-			decodeStamp(order[next]).then(() => {
-				if (requested.current === next) setIndex(next);
-			});
-		},
-		[order]
-	);
-
-	// Re-armed on every change, so a manual pick gets the full interval before rotating on.
 	useEffect(() => {
-		for (let i = 1; i <= PRELOAD_AHEAD; i++) decodeStamp(order[(index + i) % order.length]);
-		const timer = window.setTimeout(() => show((index + 1) % order.length), ROTATE_MS);
+		for (const city of STAMP_CITIES) preload(stampImage(city, PREVIEW_PX));
+	}, []);
+
+	// Re-armed after every deal, so a manual pick gets the full interval before the next.
+	useEffect(() => {
+		for (let i = 1; i <= PRELOAD_AHEAD; i++) {
+			preload(stampImage(pile.order[(pile.cursor + i) % pile.order.length], FULL_PX));
+		}
+		const timer = window.setTimeout(
+			() => dispatch({ type: 'next', at: landing(topOf(pile).at) }),
+			ROTATE_MS
+		);
 		return () => window.clearTimeout(timer);
-	}, [index, order, show]);
+	}, [pile]);
 
 	return (
 		<LazyMotion features={loadFeatures}>
-			<div className="flex w-full flex-col items-center gap-6">
-				<button
-					type="button"
-					onClick={() => show((index + 1) % order.length)}
-					aria-label={`${city.name} stamp, show the next one`}
-					className="relative aspect-[5/7] w-full max-w-[360px] cursor-pointer"
-				>
-					<AnimatePresence initial={false}>
-						<m.img
-							key={city.slug}
-							src={stampImage(city, STAMP_PX)}
-							alt={`${city.name}, ${city.country}`}
-							initial={{ opacity: 0, y: 12, rotate: tilt(city.slug) - 3 }}
-							animate={{ opacity: 1, y: 0, rotate: tilt(city.slug) }}
-							exit={{ opacity: 0, y: -8, rotate: tilt(city.slug) + 3 }}
-							transition={{ type: 'spring', duration: 0.45, bounce: 0.15 }}
-							className="absolute inset-0 size-full object-contain"
-							draggable={false}
-						/>
-					</AnimatePresence>
-				</button>
+			<div className="flex w-full flex-col items-center gap-4">
 				{controls && (
 					<div className="flex items-center gap-1">
 						<CityPicker
-							value={city}
-							onChange={(picked) => show(order.findIndex((c) => c.slug === picked.slug))}
+							value={top}
+							onChange={(picked) =>
+								dispatch({
+									type: 'at',
+									index: order.findIndex((c) => c.slug === picked.slug),
+									at: landing(topOf(pile).at),
+								})
+							}
 						/>
 						<button
 							type="button"
 							aria-label="Shuffle"
 							title="Shuffle"
 							onClick={() =>
-								show((index + 1 + Math.floor(Math.random() * (order.length - 1))) % order.length)
+								dispatch({
+									type: 'at',
+									index:
+										(pile.cursor + 1 + Math.floor(Math.random() * (order.length - 1))) %
+										order.length,
+									at: landing(topOf(pile).at),
+								})
 							}
 							className="flex size-8 items-center justify-center rounded-lg text-[var(--text-ghost)] transition-colors hover:bg-[var(--muted-bg)] hover:text-[var(--foreground)]"
 						>
@@ -174,6 +229,41 @@ export default function StampCarousel({ controls = true }: { controls?: boolean 
 						</button>
 					</div>
 				)}
+				<button
+					type="button"
+					onClick={() => dispatch({ type: 'next', at: landing(topOf(pile).at) })}
+					aria-label={`${top.name} stamp, deal the next one`}
+					className="relative aspect-[5/7] w-full max-w-[380px] cursor-pointer select-none"
+				>
+					<AnimatePresence initial={false}>
+						{pile.dealt.map(({ key, city, at }) => {
+							return (
+								<m.div
+									key={key}
+									initial={{
+										opacity: 0,
+										scale: 1.12,
+										x: at.x,
+										y: at.y - 28,
+										rotate: at.rotate + 9,
+									}}
+									animate={{
+										opacity: 1,
+										scale: 1,
+										x: at.x,
+										y: at.y,
+										rotate: at.rotate,
+									}}
+									exit={{ opacity: 0, transition: { duration: 0.3 } }}
+									transition={{ type: 'spring', duration: 0.5, bounce: 0.22 }}
+									className="absolute inset-[11%]"
+								>
+									<StampArt city={city} />
+								</m.div>
+							);
+						})}
+					</AnimatePresence>
+				</button>
 			</div>
 		</LazyMotion>
 	);

@@ -11,6 +11,10 @@ export const POSTAL_FAMILY = 'postal';
 /** Families that hang a painting (ed.art). */
 export const ART_FAMILIES = new Set(['broadsheet', 'exhibition', 'almanac']);
 
+// Every template shows at most three asks; The Menu names at most five courses.
+export const MAX_ASKS = 3;
+export const MAX_EVENTS = 5;
+
 export const WEEKDAYS_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 // Fixed parts of the demo edition the sidebar does not edit.

@@ -18,6 +18,6 @@ export interface StampCity {
 
 export const STAMP_CITIES: StampCity[] = stampCities;
 
-/** The stamp art trimmed to its perforations and resized by Cloudinary's delivery transform. */
+/** The stamp art trimmed to its perforations, resized and compressed (AVIF: ~3x smaller than WebP). */
 export const stampImage = (city: StampCity, width: number) =>
-	city.url.replace('/upload/', `/upload/e_trim/w_${width},q_auto,f_auto/`);
+	city.url.replace('/upload/', `/upload/e_trim/w_${width},q_auto:eco,f_avif/`);
