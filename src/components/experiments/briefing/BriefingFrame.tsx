@@ -37,7 +37,7 @@ export function BriefingFrame({ draft, look, onTemplates, className }: Props) {
 		const template = frame.templates.find((t) => t.id === look.family);
 		if (!template) throw new Error(`unknown edition family: ${look.family}`);
 		const edition = buildEdition(draft, look);
-		setHeight(frame.render(look.family, resolveSkin(template, look, edition), edition));
+		setHeight(frame.render(look.family, resolveSkin(template, look), edition));
 	}, [frame, draft, look]);
 
 	const handleLoad = (event: React.SyntheticEvent<HTMLIFrameElement>) => {

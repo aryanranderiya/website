@@ -9,6 +9,8 @@ export interface StampCity {
 	country: string;
 	/** ISO 3166 alpha-2, lowercase */
 	countryCode: string;
+	/** The asset key the postal template reads this city's art from. */
+	assetKey: string;
 	url: string;
 	/** The country's own air-mail phrase; empty when it is "Par Avion" / "By Air Mail". */
 	air: string;
@@ -16,6 +18,6 @@ export interface StampCity {
 
 export const STAMP_CITIES: StampCity[] = stampCities;
 
-/** The stamp art resized by Cloudinary's delivery transform. */
+/** The stamp art trimmed to its perforations and resized by Cloudinary's delivery transform. */
 export const stampImage = (city: StampCity, width: number) =>
-	city.url.replace('/upload/', `/upload/w_${width},q_auto,f_auto/`);
+	city.url.replace('/upload/', `/upload/e_trim/w_${width},q_auto,f_auto/`);

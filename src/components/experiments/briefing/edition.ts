@@ -18,7 +18,6 @@ const EDITION_NO = 42;
 const SENT_AT = '06:02';
 const STATS = { done: 26, you: 7, gaia: 19, mail: 38, focus: '2h 30m' };
 
-const STAMP_ASSET_KEY = 'STAMP_CITY';
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const MONTHS = [
 	'January',
@@ -71,24 +70,12 @@ function decisionVerb(text: string): { verb: string; label: string } {
 
 const filled = <T extends { label: string }>(rows: T[]) => rows.filter((r) => r.label.trim());
 
-function stampSkin(slug: string): Edition['stamp'] {
-	const city = STAMPS.find((s) => s.slug === slug) ?? STAMPS[0];
-	return {
-		id: city.slug,
-		label: city.name,
-		key: STAMP_ASSET_KEY,
-		city: city.name.toUpperCase(),
-		air: city.air,
-	};
-}
-
 /** The ed object GAIA's explorer_adapter.build_ed would hand the template. */
 export function buildEdition(draft: Draft, look: Look): Edition {
 	const [year, month, day] = draft.date.split('-').map(Number);
 	const weekday = WEEKDAYS[new Date(year, month - 1, day).getDay()];
 	const monthName = MONTHS[month - 1];
 	const name = draft.recipient.trim().replace(/\s+/g, ' ');
-	const stamp = look.family === POSTAL_FAMILY ? stampSkin(look.stamp) : null;
 	const decisions = filled(draft.decisions);
 
 	return {
@@ -143,29 +130,22 @@ export function buildEdition(draft: Draft, look: Look): Edition {
 						handled: filled(draft.week.handled).map((s) => s.label),
 					}
 				: null,
-		stamp,
+		stamp: null,
 		art: ARTWORKS[look.art],
 		assets: {
 			BAND: `${manifest.base}/band.webp`,
 			TEC_MARK: `${manifest.base}/tec-mark.webp`,
-			...(stamp && {
-				[STAMP_ASSET_KEY]: STAMPS.find((s) => s.slug === stamp.id)?.url ?? '',
-			}),
+			...Object.fromEntries(STAMPS.map((c) => [c.assetKey, c.url])),
 		},
 	};
 }
 
-/** The skin objects for a look: the chosen option per axis, Air Mail's city from its stamp. */
-export function resolveSkin(
-	template: Template,
-	look: Look,
-	edition: Edition
-): Record<string, AxisOption> {
+/** The skin objects for a look: the chosen option per axis, else the first. */
+export function resolveSkin(template: Template, look: Look): Record<string, AxisOption> {
 	const skin: Record<string, AxisOption> = {};
 	for (const [axis, options] of Object.entries(template.axes)) {
 		skin[axis] = options.find((o) => o.id === look.skin[axis]) ?? options[0];
 	}
-	if (edition.stamp) skin.city = edition.stamp;
 	return skin;
 }
 
@@ -182,6 +162,5 @@ export function shuffleLook(templates: Template[], look: Look): Look {
 			Object.entries(template.axes).map(([axis, options]) => [axis, pick(options).id])
 		),
 		art: Math.floor(Math.random() * ARTWORKS.length),
-		stamp: pick(STAMPS).slug,
 	};
 }

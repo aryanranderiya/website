@@ -125,10 +125,9 @@ export interface Draft {
 	};
 }
 
-/** The look: which template, which option per axis, and the art it hangs. */
+/** The look: which template, which option per axis (Air Mail's city included), and the art it hangs. */
 export interface Look {
 	family: string;
 	skin: Record<string, string>;
 	art: number;
-	stamp: string;
 }

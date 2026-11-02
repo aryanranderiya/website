@@ -29,6 +29,10 @@
         { id: "dusk", label: "dusk (violet to amber)", a: "#c5b6e3", b: "#f7e3cf", c: "#f3b97c", mid: "#f4dccb", ink: "#1a1620", soft: "#3f3846" },
         { id: "night", label: "night sky (ink to ember)", a: "#1b2340", b: "#3b3a5c", c: "#c9705a", mid: "#36365a", ink: "#f4efe8", soft: "#d9d2cc" },
         { id: "sea", label: "sea (teal to sand)", a: "#9fd2cf", b: "#eef1e4", c: "#e9cf9f", mid: "#e9ecdf", ink: "#13201f", soft: "#334542" },
+        { id: "meadow", label: "meadow (sage to butter)", a: "#b7d1a3", b: "#f2f1dd", c: "#f0d382", mid: "#eceed6", ink: "#18200f", soft: "#3a4430" },
+        { id: "ember", label: "ember (peach to terracotta)", a: "#f5c79c", b: "#f8e8d6", c: "#dd8466", mid: "#f4e0cc", ink: "#1f1410", soft: "#4a352b" },
+        { id: "rosewater", label: "rosewater (blush to apricot)", a: "#efc0c8", b: "#fbefe7", c: "#f4c595", mid: "#f8e6de", ink: "#22151a", soft: "#4a3840" },
+        { id: "aurora", label: "aurora (deep teal to green)", a: "#0e2a33", b: "#1c4747", c: "#5aa985", mid: "#1b4040", ink: "#eef5ef", soft: "#cfe0d6" },
       ],
       face: [
         { id: "helvetica", label: "Helvetica Neue", head: "'Helvetica Neue', Helvetica, Arial, sans-serif", w: 700 },
@@ -71,7 +75,7 @@
 ${grain("hz-g", 0.7)}
 <div class="k"><span>GAIA · ${esc(ed.weekday)}</span><span>No ${ed.editionNo} · ${esc(ed.time24)}</span></div>
 <h1>${esc(ed.deck)}</h1>
-${secs.join("")}
+${EXPLORER.fold(secs).join("")}
 <div class="foot"><span><b>The ${esc(ed.weekday)} Brief</b><br>Edition No ${ed.editionNo}<br>${esc(ed.dateLong)}</span>${s ? `<span class="r2">Done ${s.done}${s.mail ? ` · mail ${s.mail}` : ""}${s.focus ? ` · focus ${esc(s.focus)}` : ""}${s.you && s.gaia ? `<br>${s.you} by you · ${s.gaia} by GAIA` : ""}</span>` : ""}</div>
 </article>`;
     },
@@ -146,7 +150,7 @@ ${secs.join("")}
       return `<article class="t-exhibition" style="--wall:${skin.wall.wall}; --ink:${skin.wall.ink}; --soft:${skin.wall.soft}; --acc:${skin.wall.acc}; --hair:${skin.wall.hair}; --plate:${skin.wall.plate}; --pos:${skin.crop.pos}; --head:${skin.face.head}">
 <div class="art"><img src="${a.src}" alt="${esc(a.title)}, ${esc(a.artist)}, ${a.year}">${grain("ex-g", 1.1)}</div>
 <div class="plate"><div class="k">One day only · ${esc(ed.dateLong)}</div><h1 style="font-size:${Math.min(104, Math.floor(480 / (ed.weekday.length * 0.82)))}px">The<br>${esc(ed.weekday)}<br>Brief</h1></div>
-<div class="body">
+<div class="body" data-fold>
   <div class="label mono"><b>${esc(a.artist)}</b>${esc(a.title)}, ${a.year}<br>${esc(a.medium)} · Edition No ${ed.editionNo}</div>
   <p class="deck">${esc(ed.deck)}</p>
   ${parts.length ? `<h2>Programme for the day</h2>${parts.join("")}` : ""}
@@ -262,7 +266,7 @@ ${grain("wk-g", 0.85)}
 <div class="k">GAIA · weekly review</div>
 <div class="mast"><h1>The Week</h1><div class="no"><b>No ${weekNo}</b>${esc(range)}</div></div>
 <p class="deck">${esc(ed.deck)}</p>
-${secs.join("")}
+${EXPLORER.fold(secs).join("")}
 <p class="foot">Weekly review · compiled by GAIA ${esc(ed.dateLong)} · week No ${weekNo} · from daily edition No ${ed.editionNo}</p>
 </article>`;
     },

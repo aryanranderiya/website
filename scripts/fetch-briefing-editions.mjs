@@ -100,7 +100,15 @@ function parseArtworks(source) {
 	return artworks;
 }
 
-function frameHtml(templateFiles) {
+function frameHtml(templateFiles, stamps) {
+	// stamps.py's stamp_for: the postal template's city axis, one option per hosted city.
+	const cityAxis = stamps.map((c) => ({
+		id: c.slug,
+		label: c.name,
+		key: c.assetKey,
+		city: c.name.toUpperCase(),
+		air: c.air,
+	}));
 	const faces = FONTS.map(
 		([family, key, weight, style]) =>
 			`@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};font-display:block;src:url(${PUBLIC_BASE}/fonts/${slugify(key)}.woff2) format('woff2');}`
@@ -116,6 +124,9 @@ ${faces}
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; background: transparent; }
 body { width: 540px; overflow: hidden; }
+/* Website adaptation: editions laid on a desk (data-paper marks their sheet; Air Mail
+   and Receipt are the two without one) float on the page instead of a dark desk. */
+#root > article:has([data-paper]), #root > .t-postal, #root > .t-receipt { background: transparent !important; }
 </style>
 <style id="tpl-css"></style>
 </head>
@@ -129,6 +140,11 @@ const EXPLORER = {
     if (!t.id || !t.name || !t.axes || !t.render || !t.css) throw new Error("bad template: " + (t.id || "?"));
     TEMPLATES.push(t);
   },
+  // explorer_render.py's fold marker: the first body block after the header.
+  fold(blocks) {
+    return blocks.map((block, i) => (i === 0 ? block.replace(/^(\\s*<[a-zA-Z][\\w-]*)/, "$1 data-fold") : block));
+  },
+  cities: ${JSON.stringify(cityAxis)},
 };
 </script>
 ${scripts}
@@ -194,13 +210,15 @@ async function main() {
 				name: c.name,
 				country: c.country,
 				countryCode,
+				// stamps.py's stamp_asset_key: the asset the postal template reads the art from.
+				assetKey: `CITY_${c.slug.toUpperCase()}`,
 				url: c.url,
 				air: LABEL_PHRASES.has(air.toLowerCase()) ? '' : air,
 			};
 		})
 		.sort((a, b) => a.name.localeCompare(b.name));
 
-	await writeFile(join(OUT, 'frame.html'), frameHtml(templateFiles));
+	await writeFile(join(OUT, 'frame.html'), frameHtml(templateFiles, stamps));
 	const manifest = {
 		base: PUBLIC_BASE,
 		artworks: artworks.map(({ key, ...a }) => ({ ...a, src: `${PUBLIC_BASE}/art/${slugify(a.title)}.jpg` })),

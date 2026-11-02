@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { stampImage } from '@/data/stamps';
 import { cn } from '@/lib/utils';
-import { Field, IconButton, optionColors, Swatches, TextOptions } from './controls';
+import { Field, IconButton, optionColors, Section, Swatches, TextOptions } from './controls';
 import { ART_FAMILIES, ARTWORKS, displayName, POSTAL_FAMILY, STAMPS, shuffleLook } from './edition';
 import type { Look, Template } from './types';
 
@@ -72,47 +72,73 @@ function EditionPicker({
 	);
 }
 
-function Thumbs<T>({
-	items,
-	value,
-	onChange,
-	src,
-	title,
-	label,
-	className,
-}: {
-	items: readonly T[];
-	value: T;
-	onChange: (item: T) => void;
-	src: (item: T) => string;
-	title: (item: T) => string;
-	label: string;
-	className: string;
-}) {
+const STAMPS_COLLAPSED = 12;
+
+function StampGrid({ value, onChange }: { value: string; onChange: (slug: string) => void }) {
+	const [all, setAll] = useState(false);
+	const shown = all ? STAMPS : STAMPS.slice(0, STAMPS_COLLAPSED);
 	return (
-		<fieldset className="flex [scrollbar-width:thin] gap-1.5 overflow-x-auto overscroll-x-contain pb-1">
-			<legend className="sr-only">{label}</legend>
-			{items.map((item) => (
+		<>
+			<fieldset className="grid grid-cols-6 gap-1.5">
+				<legend className="sr-only">Stamp</legend>
+				{shown.map((s) => (
+					<button
+						key={s.slug}
+						type="button"
+						aria-pressed={s.slug === value}
+						aria-label={s.name}
+						title={`${s.name}, ${s.country}`}
+						onClick={() => onChange(s.slug)}
+						className={cn(
+							'aspect-[5/7] transition-opacity',
+							s.slug === value ? 'opacity-100' : 'opacity-50 hover:opacity-100'
+						)}
+					>
+						<img
+							src={stampImage(s, 96)}
+							alt=""
+							loading="lazy"
+							className="size-full object-contain"
+						/>
+					</button>
+				))}
+			</fieldset>
+			<button
+				type="button"
+				onClick={() => setAll(!all)}
+				className="w-fit text-[12px] text-[var(--text-ghost)] transition-colors hover:text-[var(--foreground)]"
+			>
+				{all ? 'Show fewer' : `Show all ${STAMPS.length}`}
+			</button>
+		</>
+	);
+}
+
+function Paintings({ value, onChange }: { value: number; onChange: (index: number) => void }) {
+	return (
+		<fieldset className="grid grid-cols-5 gap-1.5">
+			<legend className="sr-only">Painting</legend>
+			{ARTWORKS.map((a, i) => (
 				<button
-					key={src(item)}
+					key={a.src}
 					type="button"
-					aria-pressed={item === value}
-					aria-label={title(item)}
-					title={title(item)}
-					onClick={() => onChange(item)}
+					aria-pressed={i === value}
+					aria-label={`${a.title}, ${a.artist}`}
+					title={`${a.title}, ${a.artist}`}
+					onClick={() => onChange(i)}
 					className={cn(
-						'shrink-0 overflow-hidden transition-opacity',
-						className,
-						item === value ? 'opacity-100' : 'opacity-40 hover:opacity-80'
+						'aspect-square overflow-hidden rounded-lg transition-opacity',
+						i === value ? 'opacity-100' : 'opacity-50 hover:opacity-100'
 					)}
 				>
-					<img src={src(item)} alt="" loading="lazy" className="size-full object-cover" />
+					<img src={a.src} alt="" loading="lazy" className="size-full object-cover" />
 				</button>
 			))}
 		</fieldset>
 	);
 }
 
+/** The edition picker, then a card per kind of look the edition has. */
 export function LookControls({
 	templates,
 	look,
@@ -124,57 +150,56 @@ export function LookControls({
 }) {
 	const template = templates.find((t) => t.id === look.family);
 	if (!template) throw new Error(`unknown edition family: ${look.family}`);
+	const isPostal = template.id === POSTAL_FAMILY;
+	// Air Mail's city gets the stamp grid; a one-option axis is no choice at all.
 	const axes = Object.entries(template.axes).filter(
-		([axis]) => !(template.id === POSTAL_FAMILY && axis === 'city')
+		([axis, options]) => options.length > 1 && !(isPostal && axis === 'city')
 	);
-	const stamp = STAMPS.find((s) => s.slug === look.stamp) ?? STAMPS[0];
+	const setAxis = (axis: string, id: string) =>
+		onChange({ ...look, skin: { ...look.skin, [axis]: id } });
+	const city = STAMPS.find((s) => s.slug === look.skin.city) ?? STAMPS[0];
+	const art = ARTWORKS[look.art];
 
 	return (
-		<div className="flex flex-col gap-1.5">
+		<>
 			<EditionPicker templates={templates} look={look} onChange={onChange} />
-			{axes.map(([axis, options]) => {
-				const value = look.skin[axis] ?? options[0].id;
-				const set = (id: string) => onChange({ ...look, skin: { ...look.skin, [axis]: id } });
-				return (
-					<Field key={axis} label={axis}>
-						{options.every((o) => optionColors(o).length > 0) ? (
-							<Swatches options={options} value={value} onChange={set} label={axis} />
-						) : (
-							<TextOptions
-								options={options.map((o) => ({
-									id: o.id,
-									label: o.label.replace(`${axis}: `, ''),
-								}))}
-								value={value}
-								onChange={set}
-								label={axis}
-							/>
-						)}
-					</Field>
-				);
-			})}
-			{template.id === POSTAL_FAMILY && (
-				<Thumbs
-					label="Stamp"
-					items={STAMPS}
-					value={stamp}
-					onChange={(s) => onChange({ ...look, stamp: s.slug })}
-					src={(s) => stampImage(s, 96)}
-					title={(s) => `${s.name}, ${s.country}`}
-					className="h-12 w-9"
-				/>
+			<Section title="Style" open>
+				{axes.map(([axis, options]) => {
+					const value = look.skin[axis] ?? options[0].id;
+					return (
+						<Field key={axis} label={axis}>
+							{options.every((o) => optionColors(o).length > 0) ? (
+								<Swatches
+									options={options}
+									value={value}
+									onChange={(id) => setAxis(axis, id)}
+									label={axis}
+								/>
+							) : (
+								<TextOptions
+									options={options.map((o) => ({
+										id: o.id,
+										label: o.label.replace(`${axis}: `, ''),
+									}))}
+									value={value}
+									onChange={(id) => setAxis(axis, id)}
+									label={axis}
+								/>
+							)}
+						</Field>
+					);
+				})}
+			</Section>
+			{isPostal && (
+				<Section title="Stamp" hint={city.name}>
+					<StampGrid value={city.slug} onChange={(slug) => setAxis('city', slug)} />
+				</Section>
 			)}
 			{ART_FAMILIES.has(template.id) && (
-				<Thumbs
-					label="Painting"
-					items={ARTWORKS}
-					value={ARTWORKS[look.art]}
-					onChange={(a) => onChange({ ...look, art: ARTWORKS.indexOf(a) })}
-					src={(a) => a.src}
-					title={(a) => `${a.title}, ${a.artist}`}
-					className="size-10 rounded-md"
-				/>
+				<Section title="Painting" hint={art.artist}>
+					<Paintings value={look.art} onChange={(i) => onChange({ ...look, art: i })} />
+				</Section>
 			)}
-		</div>
+		</>
 	);
 }

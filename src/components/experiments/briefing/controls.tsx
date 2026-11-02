@@ -1,6 +1,6 @@
 'use client';
 
-import { Cancel01Icon, HugeiconsIcon, PlusSignIcon } from '@icons';
+import { ArrowDown01Icon, Cancel01Icon, HugeiconsIcon, PlusSignIcon } from '@icons';
 import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import type { AxisOption, Row } from './types';
@@ -15,7 +15,7 @@ export function optionColors(option: AxisOption): string[] {
 		.slice(0, 2);
 }
 
-export const labelClass = 'text-[12px] text-[var(--text-ghost)] first-letter:uppercase';
+const labelClass = 'text-[12px] text-[var(--text-ghost)] first-letter:uppercase';
 
 /** Borderless until hovered or focused: reads as text, edits like a field. */
 export const inputClass =
@@ -166,7 +166,7 @@ export function IconButton({
 	);
 }
 
-/** A labelled, editable list of one-line rows; `lead` renders a field before the text. */
+/** An editable list of one-line rows; `lead` renders a field before the text. */
 export function RowList<T extends Row>({
 	label,
 	rows,
@@ -183,19 +183,9 @@ export function RowList<T extends Row>({
 	const update = (id: string, patch: Partial<T>) =>
 		onChange(rows.map((r) => (r.id === id ? { ...r, ...patch } : r)));
 	return (
-		<div className="flex flex-col">
-			<div className="flex items-center justify-between">
-				<span className={labelClass}>{label}</span>
-				<IconButton
-					label={`Add to ${label.toLowerCase()}`}
-					onClick={() => onChange([...rows, { ...create(), id: crypto.randomUUID() } as T])}
-					className="size-6"
-				>
-					<HugeiconsIcon icon={PlusSignIcon} size={12} />
-				</IconButton>
-			</div>
+		<div className="-mx-2 flex flex-col">
 			{rows.map((row) => (
-				<div key={row.id} className="group -ml-2 flex items-start">
+				<div key={row.id} className="group flex items-start">
 					{lead?.(row, (patch) => update(row.id, patch))}
 					<textarea
 						aria-label={label}
@@ -207,12 +197,49 @@ export function RowList<T extends Row>({
 					<IconButton
 						label="Remove"
 						onClick={() => onChange(rows.filter((r) => r.id !== row.id))}
-						className="size-6 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+						className="size-7 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
 					>
 						<HugeiconsIcon icon={Cancel01Icon} size={11} />
 					</IconButton>
 				</div>
 			))}
+			<button
+				type="button"
+				onClick={() => onChange([...rows, { ...create(), id: crypto.randomUUID() } as T])}
+				className="flex w-fit items-center gap-1.5 rounded-md px-2 py-1 text-[13px] text-[var(--text-ghost)] transition-colors hover:text-[var(--foreground)]"
+			>
+				<HugeiconsIcon icon={PlusSignIcon} size={12} />
+				Add
+			</button>
 		</div>
+	);
+}
+
+/** A collapsible card; `hint` shows the current value while it is closed. */
+export function Section({
+	title,
+	hint,
+	open = false,
+	children,
+}: {
+	title: string;
+	hint?: string;
+	open?: boolean;
+	children: ReactNode;
+}) {
+	return (
+		<details open={open} className="group/section rounded-2xl bg-[var(--muted-bg)]">
+			<summary className="flex cursor-pointer list-none items-center gap-2 px-4 py-3 text-[13px] [&::-webkit-details-marker]:hidden">
+				<span className="font-medium">{title}</span>
+				{hint && <span className="min-w-0 truncate text-[var(--text-ghost)]">{hint}</span>}
+				<HugeiconsIcon
+					icon={ArrowDown01Icon}
+					size={14}
+					color="var(--text-ghost)"
+					className="ml-auto shrink-0 transition-transform group-open/section:rotate-180"
+				/>
+			</summary>
+			<div className="flex flex-col gap-2 px-4 pb-4">{children}</div>
+		</details>
 	);
 }

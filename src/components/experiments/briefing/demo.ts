@@ -46,9 +46,4 @@ export const DEMO_DRAFT: Draft = {
 	},
 };
 
-export const DEMO_LOOK: Look = {
-	family: 'broadsheet',
-	skin: {},
-	art: 0,
-	stamp: 'tokyo',
-};
+export const DEMO_LOOK: Look = { family: 'postal', skin: { city: 'tokyo' }, art: 0 };

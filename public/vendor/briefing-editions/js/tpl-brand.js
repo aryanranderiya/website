@@ -34,6 +34,11 @@
         { id: "jade", label: "jade", filter: "hue-rotate(-55deg) saturate(1.1)", acc: "#3ddc9a" },
         { id: "amber", label: "amber", filter: "hue-rotate(-160deg) saturate(1.25)", acc: "#ffbf3c" },
         { id: "coral", label: "coral", filter: "hue-rotate(165deg) saturate(1.2)", acc: "#ff8a6b" },
+        { id: "violet", label: "violet", filter: "hue-rotate(68deg) saturate(1.1)", acc: "#b694ff" },
+        { id: "pink", label: "pink", filter: "hue-rotate(118deg) saturate(1.15)", acc: "#ff7fc4" },
+        { id: "red", label: "red", filter: "hue-rotate(145deg) saturate(1.35)", acc: "#ff6363" },
+        { id: "teal", label: "teal", filter: "hue-rotate(-28deg) saturate(1.05)", acc: "#3fd8d0" },
+        { id: "lime", label: "lime", filter: "hue-rotate(-128deg) saturate(1.15)", acc: "#c6e85c" },
       ],
       header: [
         { id: "tall", label: "tall band", h: "300px" },
@@ -93,7 +98,7 @@ ${grain("bd-g", 0.9)}
 <div class="hd"><img src="${ed.assets.BAND}" alt=""><span class="k">Daily brief · No. ${ed.editionNo}</span><span class="mark">GAIA</span><span class="date">${esc(ed.dateLong)} · ${esc(ed.time)}</span></div>
 <div class="body">
   <p class="deck">${esc(ed.deck)}</p>
-  ${secs.join("")}
+  ${EXPLORER.fold(secs).join("")}
   ${figs}
   <p class="foot">Edition No. ${ed.editionNo} · Generated ${esc(ed.time)} by GAIA</p>
 </div></article>`;
@@ -180,7 +185,7 @@ ${grain("pf-g", 0.8)}${skin.watermark.id === "on" ? `<div class="wm" aria-hidden
 <h1><span style="font-size:${size}px">${esc(t1)}</span><br>Brief</h1>
 <div class="rule"></div>
 <p class="deck">${esc(ed.deck)}</p>
-${secs.join("")}
+${EXPLORER.fold(secs).join("")}
 ${figs}
 <p class="col">Edition No ${ed.editionNo} · set by GAIA at ${esc(ed.time)}${s && s.you && s.gaia ? ` · yesterday ${s.you} by you, ${s.gaia} by GAIA` : ""}</p>
 </article>`;

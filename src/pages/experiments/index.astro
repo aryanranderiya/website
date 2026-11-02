@@ -10,7 +10,7 @@ import { experiments } from '@/data/experiments';
 import PageLayout from '@/layouts/PageLayout.astro';
 
 // Single-column previews first so they pair up; full-width ones after.
-const WIDE = new Set(['footer-glow', 'briefing']);
+const WIDE = new Set(['footer-glow']);
 const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number(WIDE.has(b.slug)));
 ---
 {/* astro-doctor-ignore-file astro/no-island-in-map -- demo index maps distinct showcase islands by design */}
@@ -30,12 +30,12 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
         exp.slug === "briefing" ? (
           <a
             href={`/experiments/${exp.slug}`}
-            class="group block h-[300px] cursor-pointer overflow-hidden animate-fade-in sm:col-span-2 [mask-image:linear-gradient(to_bottom,black_70%,transparent)]"
+            class="group flex h-[455px] cursor-pointer justify-center overflow-hidden pt-10 animate-fade-in [mask-image:linear-gradient(to_bottom,black_75%,transparent)]"
             style={`animation-delay:${0.15 + i * 0.07}s`}
             aria-label={exp.title}
           >
-            {/* live preview - three editions side by side, cut off at the card's fold */}
-            <div class="pointer-events-none transition-transform duration-300 ease-out group-hover:-translate-y-2">
+            {/* live preview - the demo edition, cut off at the card's fold */}
+            <div class="pointer-events-none w-[260px] transition-transform duration-300 ease-out group-hover:-translate-y-2">
               <BriefingThumbnail client:only="react" />
             </div>
           </a>
