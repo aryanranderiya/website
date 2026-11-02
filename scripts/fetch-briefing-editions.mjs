@@ -6,11 +6,12 @@
  * and commit the result. Idempotent: clean output means `git diff` is empty.
  *
  * Writes:
- * - public/vendor/briefing-editions/js/tpl-*.js: the templates, verbatim.
- * - public/vendor/briefing-editions/{fonts,art}/: assets.json decoded to files.
- * - public/vendor/briefing-editions/frame.html: the page, the browser twin of
- *   GAIA's explorer_render.py (fonts, EXPLORER shim, scripts), plus harness.js
- *   (scripts/briefing-harness.js, ours) that renders into it.
+ * - public/vendor/briefing-editions/frame.html: one self-contained page, the
+ *   browser twin of GAIA's explorer_render.py: the templates verbatim, the
+ *   EXPLORER shim, our renderer (scripts/briefing-harness.js) and the webfonts,
+ *   all inline. The configurator sandboxes it to an opaque origin, where
+ *   fetched scripts and fonts would need CORS.
+ * - public/vendor/briefing-editions/art/: the paintings, for the sidebar's picker.
  * - src/components/experiments/briefing/manifest.json: the paintings.
  * - src/data/stamp-cities.json: Air Mail's 85 city stamps (also the stamps experiment).
  */
@@ -101,7 +102,13 @@ function parseArtworks(source) {
 	return artworks;
 }
 
-function frameHtml(templateFiles, stamps) {
+/** One inline <script>; a source that could close the tag fails loud rather than truncating. */
+function inlineScript(name, source) {
+	if (/<\/script/i.test(source)) throw new Error(`${name}: contains </script>, cannot be inlined`);
+	return `<script>\n${source}\n</script>`;
+}
+
+function frameHtml({ templates, harness, fontData, frameAssets, inlineArt, stamps }) {
 	// stamps.py's stamp_for: the postal template's city axis, one option per hosted city.
 	const cityAxis = stamps.map((c) => ({
 		id: c.slug,
@@ -112,9 +119,9 @@ function frameHtml(templateFiles, stamps) {
 	}));
 	const faces = FONTS.map(
 		([family, key, weight, style]) =>
-			`@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};font-display:block;src:url(${PUBLIC_BASE}/fonts/${slugify(key)}.woff2) format('woff2');}`
+			`@font-face{font-family:'${family}';font-style:${style};font-weight:${weight};font-display:block;src:url(data:font/woff2;base64,${fontData[key]}) format('woff2');}`
 	).join('\n');
-	const scripts = templateFiles.map((f) => `<script src="${PUBLIC_BASE}/js/${f}"></script>`).join('\n');
+	const scripts = templates.map(({ name, source }) => inlineScript(name, source)).join('\n');
 	return `<!doctype html>
 <html lang="en">
 <head>
@@ -157,7 +164,8 @@ const EXPLORER = {
 };
 </script>
 ${scripts}
-<script src="${PUBLIC_BASE}/harness.js"></script>
+${inlineScript('frame assets', `const FRAME_ASSETS = ${JSON.stringify(frameAssets)};\nconst INLINE_ART = ${JSON.stringify(inlineArt)};`)}
+${inlineScript('briefing-harness.js', harness)}
 </body>
 </html>
 `;
@@ -169,25 +177,38 @@ async function main() {
 	const editions = join(gaia, 'apps', 'api', 'app', 'services', 'briefing', 'editions');
 	const explorer = join(editions, 'explorer');
 
-	await rm(OUT, { recursive: true, force: true });
-	await Promise.all(['js', 'fonts', 'art'].map((d) => mkdir(join(OUT, d), { recursive: true })));
+	// Thumbnails (briefing:thumbs) live alongside and are left alone.
+	for (const owned of ['frame.html', 'art']) {
+		await rm(join(OUT, owned), { recursive: true, force: true });
+	}
+	await mkdir(join(OUT, 'art'), { recursive: true });
 
 	const templateFiles = (await readdir(join(explorer, 'js'))).filter((f) => /^tpl-.*\.js$/.test(f)).sort();
-	for (const f of templateFiles) {
-		await writeFile(join(OUT, 'js', f), await readFile(join(explorer, 'js', f)));
-	}
+	const templates = await Promise.all(
+		templateFiles.map(async (name) => ({ name, source: await readFile(join(explorer, 'js', name), 'utf8') }))
+	);
 
 	const assets = JSON.parse(await readFile(join(explorer, 'assets', 'assets.json'), 'utf8'));
 	const decode = (key) => {
 		if (!assets[key]) throw new Error(`assets.json: missing ${key}`);
 		return Buffer.from(assets[key], 'base64');
 	};
-	for (const [, key] of FONTS) await writeFile(join(OUT, 'fonts', `${slugify(key)}.woff2`), decode(key));
-	await writeFile(join(OUT, 'band.webp'), decode('BAND'));
-	await writeFile(join(OUT, 'tec-mark.webp'), await readFile(join(explorer, 'assets', 'brand', 'tec_mark_black.webp')));
+	const fontData = Object.fromEntries(FONTS.map(([, key]) => [key, decode(key).toString('base64')]));
+	const dataUri = (bytes, type) => `data:${type};base64,${bytes.toString('base64')}`;
+	// Images only the templates read (ed.assets): inline in the frame, no file.
+	const frameAssets = {
+		BAND: dataUri(decode('BAND'), 'image/webp'),
+		TEC_MARK: dataUri(await readFile(join(explorer, 'assets', 'brand', 'tec_mark_black.webp')), 'image/webp'),
+	};
 
 	const artworks = parseArtworks(await readFile(join(editions, 'artworks.py'), 'utf8'));
-	for (const a of artworks) await writeFile(join(OUT, 'art', `${slugify(a.title)}.jpg`), decode(a.key));
+	// Paintings: a file for the sidebar's picker, and an inline copy the frame swaps in by URL.
+	const inlineArt = {};
+	for (const a of artworks) {
+		const path = `art/${slugify(a.title)}.jpg`;
+		await writeFile(join(OUT, path), decode(a.key));
+		inlineArt[`${PUBLIC_BASE}/${path}`] = dataUri(decode(a.key), 'image/jpeg');
+	}
 
 	const cities = JSON.parse(await readFile(join(explorer, 'assets', 'stamps', 'cities.json'), 'utf8'));
 	const countries = JSON.parse(await readFile(join(explorer, 'assets', 'stamps', 'countries.json'), 'utf8'));
@@ -211,8 +232,8 @@ async function main() {
 		})
 		.sort((a, b) => a.name.localeCompare(b.name));
 
-	await writeFile(join(OUT, 'frame.html'), frameHtml(templateFiles, stamps));
-	await writeFile(join(OUT, 'harness.js'), await readFile(join(ROOT, 'scripts', 'briefing-harness.js')));
+	const harness = await readFile(join(ROOT, 'scripts', 'briefing-harness.js'), 'utf8');
+	await writeFile(join(OUT, 'frame.html'), frameHtml({ templates, harness, fontData, frameAssets, inlineArt, stamps }));
 	const manifest = {
 		base: PUBLIC_BASE,
 		artworks: artworks.map(({ key, ...a }) => ({ ...a, src: `${PUBLIC_BASE}/art/${slugify(a.title)}.jpg` })),

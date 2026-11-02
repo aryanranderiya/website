@@ -26,17 +26,22 @@ export type SectionKey =
 /** Section headings by section: an edition's own, or the reader's renames. */
 export type Headings = Partial<Record<SectionKey, string>>;
 
-/** What frame.html (scripts/briefing-harness.js) exposes on its window. */
-export interface BriefingFrame {
-	templates: Template[];
-	render: (
-		family: string,
-		skin: Record<string, AxisOption>,
-		ed: Edition,
-		overrides: Headings
-	) => { height: number; headings: Headings };
-	onHeight: (height: number) => void;
-}
+/** Messages to the sandboxed frame (scripts/briefing-harness.js). */
+export type FrameRequest =
+	| { type: 'hello' }
+	| {
+			type: 'render';
+			family: string;
+			skin: Record<string, AxisOption>;
+			ed: Edition;
+			overrides: Headings;
+	  };
+
+/** Messages back from the frame. */
+export type FrameReply =
+	| { type: 'ready'; templates: Template[] }
+	| { type: 'rendered'; height: number; headings: Headings }
+	| { type: 'height'; height: number };
 
 export interface TodayItem {
 	time: string | null;

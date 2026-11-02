@@ -136,11 +136,8 @@ export function buildEdition(draft: Draft, look: Look): Edition {
 				: null,
 		stamp: null,
 		art: ARTWORKS[look.art],
-		assets: {
-			BAND: `${manifest.base}/band.webp`,
-			TEC_MARK: `${manifest.base}/tec-mark.webp`,
-			...Object.fromEntries(STAMPS.map((c) => [c.assetKey, c.url])),
-		},
+		// The stamp art by URL; the frame adds the images it carries inline (BAND, TEC_MARK).
+		assets: Object.fromEntries(STAMPS.map((c) => [c.assetKey, c.url])),
 	};
 }
 

@@ -45,8 +45,6 @@ const HEADINGS = {
 };
 
 const root = document.getElementById("root");
-let onHeight = () => {};
-new ResizeObserver(() => onHeight(root.scrollHeight)).observe(root);
 
 function textNodes(within) {
   const walker = document.createTreeWalker(within, NodeFilter.SHOW_TEXT, {
@@ -107,9 +105,15 @@ function findHeadings(family, ed) {
 window.briefing = {
   templates: TEMPLATES.map(({ id, name, axes }) => ({ id, name, axes })),
   /** Render one edition, renaming section headings by `overrides`; returns its height and own headings. */
-  render(family, skin, ed, overrides = {}) {
+  render(family, skin, pageEd, overrides = {}) {
     const tpl = TEMPLATES.find((t) => t.id === family);
     if (!tpl) throw new Error(`edition family not registered: ${family}`);
+    // This frame has an opaque origin, so it uses the images it carries (frame.html).
+    const ed = {
+      ...pageEd,
+      assets: { ...FRAME_ASSETS, ...pageEd.assets },
+      art: { ...pageEd.art, src: INLINE_ART[pageEd.art.src] ?? pageEd.art.src },
+    };
     document.getElementById("tpl-css").textContent = tpl.css;
     root.innerHTML = tpl.render(ed, skin);
 
@@ -127,7 +131,19 @@ window.briefing = {
     }
     return { height: root.scrollHeight, headings };
   },
-  set onHeight(fn) {
-    onHeight = fn;
-  },
 };
+
+// The page talks to this sandboxed (opaque-origin) frame by message only:
+// hello -> ready {templates}; render -> rendered {height, headings}; resizes -> height.
+const post = (message) => parent.postMessage(message, "*");
+addEventListener("message", (event) => {
+  if (event.source !== parent) return;
+  const message = event.data;
+  if (message?.type === "hello") {
+    post({ type: "ready", templates: window.briefing.templates });
+  } else if (message?.type === "render") {
+    const { family, skin, ed, overrides } = message;
+    post({ type: "rendered", ...window.briefing.render(family, skin, ed, overrides) });
+  }
+});
+new ResizeObserver(() => post({ type: "height", height: root.scrollHeight })).observe(root);

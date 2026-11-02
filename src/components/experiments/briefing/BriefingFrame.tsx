@@ -1,11 +1,16 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { buildEdition, resolveSkin } from './edition';
 import manifest from './manifest.json';
-import type { Draft, BriefingFrame as Frame, Headings, Look, Template } from './types';
+import type { Draft, FrameReply, FrameRequest, Headings, Look, Template } from './types';
 
 const NO_HEADINGS: Headings = {};
+
+/** The frame is sandboxed to an opaque origin, so its target origin can only be "*". */
+function send(frame: HTMLIFrameElement | null, request: FrameRequest) {
+	frame?.contentWindow?.postMessage(request, '*');
+}
 
 /** The templates' design canvas (GAIA's EXPLORER_CANVAS_PX). */
 const CANVAS_PX = 540;
@@ -31,7 +36,8 @@ export function BriefingFrame({
 	className,
 }: Props) {
 	const wrapRef = useRef<HTMLDivElement>(null);
-	const [frame, setFrame] = useState<Frame | null>(null);
+	const frameRef = useRef<HTMLIFrameElement>(null);
+	const [templates, setTemplates] = useState<Template[] | null>(null);
 	const [height, setHeight] = useState(0);
 	const [scale, setScale] = useState(1);
 
@@ -45,23 +51,38 @@ export function BriefingFrame({
 		return () => observer.disconnect();
 	}, []);
 
-	useEffect(() => {
-		if (!frame) return;
-		const template = frame.templates.find((t) => t.id === look.family);
-		if (!template) throw new Error(`unknown edition family: ${look.family}`);
-		const edition = buildEdition(draft, look);
-		const rendered = frame.render(look.family, resolveSkin(template, look), edition, headings);
-		setHeight(rendered.height);
-		onHeadings?.(rendered.headings);
-	}, [frame, draft, look, headings, onHeadings]);
+	const onReply = useEffectEvent((reply: FrameReply) => {
+		if (reply.type === 'ready') {
+			setTemplates(reply.templates);
+			onTemplates?.(reply.templates);
+		} else if (reply.type === 'rendered') {
+			setHeight(reply.height);
+			onHeadings?.(reply.headings);
+		} else {
+			setHeight(reply.height);
+		}
+	});
 
-	const handleLoad = (event: React.SyntheticEvent<HTMLIFrameElement>) => {
-		const win = event.currentTarget.contentWindow as (Window & { briefing: Frame }) | null;
-		if (!win?.briefing) throw new Error('briefing frame did not expose its templates');
-		win.briefing.onHeight = setHeight;
-		setFrame(win.briefing);
-		onTemplates?.(win.briefing.templates);
-	};
+	useEffect(() => {
+		const onMessage = (event: MessageEvent<FrameReply>) => {
+			if (event.source === frameRef.current?.contentWindow) onReply(event.data);
+		};
+		window.addEventListener('message', onMessage);
+		return () => window.removeEventListener('message', onMessage);
+	}, []);
+
+	useEffect(() => {
+		if (!templates) return;
+		const template = templates.find((t) => t.id === look.family);
+		if (!template) throw new Error(`unknown edition family: ${look.family}`);
+		send(frameRef.current, {
+			type: 'render',
+			family: look.family,
+			skin: resolveSkin(template, look),
+			ed: buildEdition(draft, look),
+			overrides: headings,
+		});
+	}, [templates, draft, look, headings]);
 
 	return (
 		<div ref={wrapRef} className={className}>
@@ -74,11 +95,12 @@ export function BriefingFrame({
 				}}
 			>
 				<iframe
+					ref={frameRef}
 					src={`${manifest.base}/frame.html`}
 					title="Briefing preview"
-					// same-origin: the parent calls the frame's render(); scripts: the templates are JS
-					sandbox="allow-scripts allow-same-origin"
-					onLoad={handleLoad}
+					// scripts only: the templates are JS; no same-origin, so the frame talks by message
+					sandbox="allow-scripts"
+					onLoad={(event) => send(event.currentTarget, { type: 'hello' })}
 					tabIndex={-1}
 					className="pointer-events-none absolute top-0 left-0 origin-top-left transition-opacity duration-300"
 					// biome-ignore lint/style/noInlineStyles: dynamic canvas height and scale transform
