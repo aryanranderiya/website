@@ -14,7 +14,7 @@ export * from '@theexperiencecompany/gaia-icons/solid-rounded';
 type LineIconProps = { size?: number; className?: string };
 
 // Line chevrons: the solid-rounded set only has filled ones.
-function LineChevron({ d, size = 24, className }: LineIconProps & { d: string }) {
+function lineChevronSvg(d: string, { size = 24, className }: LineIconProps) {
 	return createElement(
 		'svg',
 		{
@@ -34,15 +34,15 @@ function LineChevron({ d, size = 24, className }: LineIconProps & { d: string })
 }
 
 export function ChevronRight(props: LineIconProps) {
-	return LineChevron({ ...props, d: 'm9 18 6-6-6-6' });
+	return lineChevronSvg('m9 18 6-6-6-6', props);
 }
 
 export function ChevronLeft(props: LineIconProps) {
-	return LineChevron({ ...props, d: 'm15 18-6-6 6-6' });
+	return lineChevronSvg('m15 18-6-6 6-6', props);
 }
 
 export function ChevronDown(props: LineIconProps) {
-	return LineChevron({ ...props, d: 'm6 9 6 6 6-6' });
+	return lineChevronSvg('m6 9 6 6 6-6', props);
 }
 
 // Lucide `dices` icon (lucide.dev/icons/dices). Vendored inline so we don't
