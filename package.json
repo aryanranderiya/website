@@ -20,6 +20,8 @@
 		"covers": "node scripts/fetch-book-covers.mjs",
 		"gaia:components": "bun scripts/fetch-gaia-components.mjs",
 		"gaia:vendor": "bun scripts/fetch-gaia-vendor.mjs",
+		"briefing:vendor": "bun scripts/fetch-briefing-editions.mjs",
+		"briefing:thumbs": "bun scripts/render-briefing-thumbs.mjs",
 		"unused-assets": "node scripts/find-unused-assets.mjs",
 		"validate-media": "node scripts/validate-media.mjs",
 		"image-budget": "node scripts/image-budget.mjs",

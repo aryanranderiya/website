@@ -424,6 +424,22 @@ body {
 	margin-left: max(0px, calc((100% - var(--content-max-width)) / 2));
 }
 
+/* `.content-column`'s left edge, running wider to the right for tool-like
+   pages (the briefing configurator) that need room beside the reading width. */
+.wide-column {
+	--wide-column-left: max(0px, calc((100% - var(--content-max-width)) / 2));
+	width: calc(100% - var(--wide-column-left));
+	max-width: 960px;
+	margin-left: var(--wide-column-left);
+	padding-right: 1rem;
+}
+
+@media (max-width: 59.9375rem) {
+	.wide-column {
+		padding-left: 1rem;
+	}
+}
+
 @media (max-width: 59.9375rem) {
 	.content-column {
 		padding-left: 1rem;

@@ -1,0 +1,40 @@
+{
+	"base": "/vendor/briefing-editions",
+	"artworks": [
+		{
+			"title": "Wheat Field with Cypresses",
+			"artist": "Vincent van Gogh",
+			"year": "1889",
+			"medium": "oil on canvas",
+			"src": "/vendor/briefing-editions/art/wheat-field-with-cypresses.jpg"
+		},
+		{
+			"title": "Under the Wave off Kanagawa",
+			"artist": "Katsushika Hokusai",
+			"year": "ca. 1830–32",
+			"medium": "woodblock print",
+			"src": "/vendor/briefing-editions/art/under-the-wave-off-kanagawa.jpg"
+		},
+		{
+			"title": "Whalers",
+			"artist": "J. M. W. Turner",
+			"year": "ca. 1845",
+			"medium": "oil on canvas",
+			"src": "/vendor/briefing-editions/art/whalers.jpg"
+		},
+		{
+			"title": "The Boulevard Montmartre on a Winter Morning",
+			"artist": "Camille Pissarro",
+			"year": "1897",
+			"medium": "oil on canvas",
+			"src": "/vendor/briefing-editions/art/the-boulevard-montmartre-on-a-winter-morning.jpg"
+		},
+		{
+			"title": "Piazza San Marco",
+			"artist": "Canaletto",
+			"year": "late 1720s",
+			"medium": "oil on canvas",
+			"src": "/vendor/briefing-editions/art/piazza-san-marco.jpg"
+		}
+	]
+}

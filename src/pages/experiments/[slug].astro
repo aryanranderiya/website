@@ -4,8 +4,10 @@ import type { ChatPlatform } from '@/components/experiments/gaia-ui/chat-demo';
 import { ChatDemoInPhone } from '@/components/experiments/gaia-ui/demos';
 import { FooterGlow } from '@/components/experiments/gaia-ui/footer-glow';
 import '@/components/experiments/gaia-ui/wordmark-font.css';
+import BriefingConfigurator from '@/components/experiments/briefing/BriefingConfigurator';
 import HoloCardIsland from '@/components/experiments/HoloCardIsland';
 import { DEMO_CARD } from '@/components/experiments/holo-card/demo';
+import StampCarousel from '@/components/experiments/stamps/StampCarousel';
 import BackLink from '@/components/ui/BackLink.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
 import { type Experiment, experiments } from '@/data/experiments';
@@ -25,7 +27,8 @@ const chatPlatforms = (exp.gaiaUi?.variants.map((v) => v.anchor) ?? []).filter(
 ---
 {/* astro-doctor-ignore-file astro/no-island-in-map -- per-platform demo phones render distinct islands by design */}
 
-<PageLayout title={`${exp.title} - Experiments`} description={exp.description}>
+<PageLayout title={`${exp.title} - Experiments`} description={exp.description} fullWidth={exp.wide}>
+  <div class:list={[exp.wide && "wide-column"]}>
   <BackLink href="/experiments" label="Back to Experiments" class="mb-8" />
 
   <div class="mb-8 flex items-start justify-between gap-4 animate-fade-in stagger-1">
@@ -73,5 +76,17 @@ const chatPlatforms = (exp.gaiaUi?.variants.map((v) => v.anchor) ?? []).filter(
   </div>
   )}
 
+  {exp.slug === "stamps" && (
+  <div class="mb-10 flex justify-center py-6 animate-fade-in stagger-2">
+    <StampCarousel client:only="react" />
+  </div>
+  )}
+  {exp.slug === "briefing" && (
+  <div class="animate-fade-in stagger-2">
+    <BriefingConfigurator client:only="react" />
+  </div>
+  )}
+
   <Lightbox target=".tweet-embed img.tweet-media" />
+  </div>
 </PageLayout>

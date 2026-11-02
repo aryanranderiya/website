@@ -1,0 +1,767 @@
+[
+	{
+		"slug": "addis_ababa",
+		"name": "Addis Ababa",
+		"country": "Ethiopia",
+		"countryCode": "et",
+		"assetKey": "CITY_ADDIS_ABABA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/addis_ababa.webp",
+		"air": ""
+	},
+	{
+		"slug": "ahmedabad",
+		"name": "Ahmedabad",
+		"country": "India",
+		"countryCode": "in",
+		"assetKey": "CITY_AHMEDABAD",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/ahmedabad.webp",
+		"air": ""
+	},
+	{
+		"slug": "alexandria",
+		"name": "Alexandria",
+		"country": "Egypt",
+		"countryCode": "eg",
+		"assetKey": "CITY_ALEXANDRIA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/alexandria.webp",
+		"air": ""
+	},
+	{
+		"slug": "atlanta",
+		"name": "Atlanta",
+		"country": "United States",
+		"countryCode": "us",
+		"assetKey": "CITY_ATLANTA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/atlanta.webp",
+		"air": ""
+	},
+	{
+		"slug": "baghdad",
+		"name": "Baghdad",
+		"country": "Iraq",
+		"countryCode": "iq",
+		"assetKey": "CITY_BAGHDAD",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/baghdad.webp",
+		"air": ""
+	},
+	{
+		"slug": "bandung",
+		"name": "Bandung",
+		"country": "Indonesia",
+		"countryCode": "id",
+		"assetKey": "CITY_BANDUNG",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/bandung.webp",
+		"air": "Pos Udara"
+	},
+	{
+		"slug": "bangkok",
+		"name": "Bangkok",
+		"country": "Thailand",
+		"countryCode": "th",
+		"assetKey": "CITY_BANGKOK",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/bangkok.webp",
+		"air": ""
+	},
+	{
+		"slug": "barcelona",
+		"name": "Barcelona",
+		"country": "Spain",
+		"countryCode": "es",
+		"assetKey": "CITY_BARCELONA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/barcelona.webp",
+		"air": "Por Avión"
+	},
+	{
+		"slug": "beijing",
+		"name": "Beijing",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_BEIJING",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/beijing.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "belo_horizonte",
+		"name": "Belo Horizonte",
+		"country": "Brazil",
+		"countryCode": "br",
+		"assetKey": "CITY_BELO_HORIZONTE",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/belo_horizonte.webp",
+		"air": "Por Avião"
+	},
+	{
+		"slug": "bengaluru",
+		"name": "Bengaluru",
+		"country": "India",
+		"countryCode": "in",
+		"assetKey": "CITY_BENGALURU",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/bengaluru.webp",
+		"air": ""
+	},
+	{
+		"slug": "bogota",
+		"name": "Bogotá",
+		"country": "Colombia",
+		"countryCode": "co",
+		"assetKey": "CITY_BOGOTA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/bogota.webp",
+		"air": "Por Avión"
+	},
+	{
+		"slug": "buenos_aires",
+		"name": "Buenos Aires",
+		"country": "Argentina",
+		"countryCode": "ar",
+		"assetKey": "CITY_BUENOS_AIRES",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/buenos_aires.webp",
+		"air": "Por Avión"
+	},
+	{
+		"slug": "cairo",
+		"name": "Cairo",
+		"country": "Egypt",
+		"countryCode": "eg",
+		"assetKey": "CITY_CAIRO",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/cairo.webp",
+		"air": ""
+	},
+	{
+		"slug": "chengdu",
+		"name": "Chengdu",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_CHENGDU",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/chengdu.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "chennai",
+		"name": "Chennai",
+		"country": "India",
+		"countryCode": "in",
+		"assetKey": "CITY_CHENNAI",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/chennai.webp",
+		"air": ""
+	},
+	{
+		"slug": "chicago",
+		"name": "Chicago",
+		"country": "United States",
+		"countryCode": "us",
+		"assetKey": "CITY_CHICAGO",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/chicago.webp",
+		"air": ""
+	},
+	{
+		"slug": "chongqing",
+		"name": "Chongqing",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_CHONGQING",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/chongqing.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "dalian",
+		"name": "Dalian",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_DALIAN",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/dalian.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "dallas",
+		"name": "Dallas",
+		"country": "United States",
+		"countryCode": "us",
+		"assetKey": "CITY_DALLAS",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/dallas.webp",
+		"air": ""
+	},
+	{
+		"slug": "dar_es_salaam",
+		"name": "Dar es Salaam",
+		"country": "Tanzania",
+		"countryCode": "tz",
+		"assetKey": "CITY_DAR_ES_SALAAM",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/dar_es_salaam.webp",
+		"air": ""
+	},
+	{
+		"slug": "delhi",
+		"name": "Delhi",
+		"country": "India",
+		"countryCode": "in",
+		"assetKey": "CITY_DELHI",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/delhi.webp",
+		"air": ""
+	},
+	{
+		"slug": "dhaka",
+		"name": "Dhaka",
+		"country": "Bangladesh",
+		"countryCode": "bd",
+		"assetKey": "CITY_DHAKA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/dhaka.webp",
+		"air": ""
+	},
+	{
+		"slug": "dongguan",
+		"name": "Dongguan",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_DONGGUAN",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/dongguan.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "foshan",
+		"name": "Foshan",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_FOSHAN",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/foshan.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "fukuoka",
+		"name": "Fukuoka",
+		"country": "Japan",
+		"countryCode": "jp",
+		"assetKey": "CITY_FUKUOKA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/fukuoka.webp",
+		"air": "Kōkūbin"
+	},
+	{
+		"slug": "guadalajara",
+		"name": "Guadalajara",
+		"country": "Mexico",
+		"countryCode": "mx",
+		"assetKey": "CITY_GUADALAJARA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/guadalajara.webp",
+		"air": "Por Avión"
+	},
+	{
+		"slug": "guangzhou",
+		"name": "Guangzhou",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_GUANGZHOU",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/guangzhou.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "hangzhou",
+		"name": "Hangzhou",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_HANGZHOU",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/hangzhou.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "harbin",
+		"name": "Harbin",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_HARBIN",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/harbin.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "ho_chi_minh_city",
+		"name": "Ho Chi Minh City",
+		"country": "Vietnam",
+		"countryCode": "vn",
+		"assetKey": "CITY_HO_CHI_MINH_CITY",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/ho_chi_minh_city.webp",
+		"air": "Máy Bay"
+	},
+	{
+		"slug": "hong_kong",
+		"name": "Hong Kong",
+		"country": "Hong Kong",
+		"countryCode": "hk",
+		"assetKey": "CITY_HONG_KONG",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/hong_kong.webp",
+		"air": ""
+	},
+	{
+		"slug": "houston",
+		"name": "Houston",
+		"country": "United States",
+		"countryCode": "us",
+		"assetKey": "CITY_HOUSTON",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/houston.webp",
+		"air": ""
+	},
+	{
+		"slug": "hyderabad",
+		"name": "Hyderabad",
+		"country": "India",
+		"countryCode": "in",
+		"assetKey": "CITY_HYDERABAD",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/hyderabad.webp",
+		"air": ""
+	},
+	{
+		"slug": "istanbul",
+		"name": "Istanbul",
+		"country": "Turkey",
+		"countryCode": "tr",
+		"assetKey": "CITY_ISTANBUL",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/istanbul.webp",
+		"air": "Uçak İle"
+	},
+	{
+		"slug": "jakarta",
+		"name": "Jakarta",
+		"country": "Indonesia",
+		"countryCode": "id",
+		"assetKey": "CITY_JAKARTA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/jakarta.webp",
+		"air": "Pos Udara"
+	},
+	{
+		"slug": "jinan",
+		"name": "Jinan",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_JINAN",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/jinan.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "johannesburg",
+		"name": "Johannesburg",
+		"country": "South Africa",
+		"countryCode": "za",
+		"assetKey": "CITY_JOHANNESBURG",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/johannesburg.webp",
+		"air": ""
+	},
+	{
+		"slug": "karachi",
+		"name": "Karachi",
+		"country": "Pakistan",
+		"countryCode": "pk",
+		"assetKey": "CITY_KARACHI",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/karachi.webp",
+		"air": ""
+	},
+	{
+		"slug": "khartoum",
+		"name": "Khartoum",
+		"country": "Sudan",
+		"countryCode": "sd",
+		"assetKey": "CITY_KHARTOUM",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/khartoum.webp",
+		"air": ""
+	},
+	{
+		"slug": "kinshasa",
+		"name": "Kinshasa",
+		"country": "DR Congo",
+		"countryCode": "cd",
+		"assetKey": "CITY_KINSHASA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/kinshasa.webp",
+		"air": ""
+	},
+	{
+		"slug": "kolkata",
+		"name": "Kolkata",
+		"country": "India",
+		"countryCode": "in",
+		"assetKey": "CITY_KOLKATA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/kolkata.webp",
+		"air": ""
+	},
+	{
+		"slug": "kuala_lumpur",
+		"name": "Kuala Lumpur",
+		"country": "Malaysia",
+		"countryCode": "my",
+		"assetKey": "CITY_KUALA_LUMPUR",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/kuala_lumpur.webp",
+		"air": "Mel Udara"
+	},
+	{
+		"slug": "lagos",
+		"name": "Lagos",
+		"country": "Nigeria",
+		"countryCode": "ng",
+		"assetKey": "CITY_LAGOS",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/lagos.webp",
+		"air": ""
+	},
+	{
+		"slug": "lahore",
+		"name": "Lahore",
+		"country": "Pakistan",
+		"countryCode": "pk",
+		"assetKey": "CITY_LAHORE",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/lahore.webp",
+		"air": ""
+	},
+	{
+		"slug": "lima",
+		"name": "Lima",
+		"country": "Peru",
+		"countryCode": "pe",
+		"assetKey": "CITY_LIMA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/lima.webp",
+		"air": "Por Avión"
+	},
+	{
+		"slug": "london",
+		"name": "London",
+		"country": "United Kingdom",
+		"countryCode": "gb",
+		"assetKey": "CITY_LONDON",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/london.webp",
+		"air": ""
+	},
+	{
+		"slug": "los_angeles",
+		"name": "Los Angeles",
+		"country": "United States",
+		"countryCode": "us",
+		"assetKey": "CITY_LOS_ANGELES",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/los_angeles.webp",
+		"air": ""
+	},
+	{
+		"slug": "luanda",
+		"name": "Luanda",
+		"country": "Angola",
+		"countryCode": "ao",
+		"assetKey": "CITY_LUANDA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/luanda.webp",
+		"air": "Por Avião"
+	},
+	{
+		"slug": "madrid",
+		"name": "Madrid",
+		"country": "Spain",
+		"countryCode": "es",
+		"assetKey": "CITY_MADRID",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/madrid.webp",
+		"air": "Por Avión"
+	},
+	{
+		"slug": "manila",
+		"name": "Manila",
+		"country": "Philippines",
+		"countryCode": "ph",
+		"assetKey": "CITY_MANILA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/manila.webp",
+		"air": ""
+	},
+	{
+		"slug": "mexico_city",
+		"name": "Mexico City",
+		"country": "Mexico",
+		"countryCode": "mx",
+		"assetKey": "CITY_MEXICO_CITY",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/mexico_city.webp",
+		"air": "Por Avión"
+	},
+	{
+		"slug": "miami",
+		"name": "Miami",
+		"country": "United States",
+		"countryCode": "us",
+		"assetKey": "CITY_MIAMI",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/miami.webp",
+		"air": ""
+	},
+	{
+		"slug": "moscow",
+		"name": "Moscow",
+		"country": "Russia",
+		"countryCode": "ru",
+		"assetKey": "CITY_MOSCOW",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/moscow.webp",
+		"air": "Avia"
+	},
+	{
+		"slug": "mumbai",
+		"name": "Mumbai",
+		"country": "India",
+		"countryCode": "in",
+		"assetKey": "CITY_MUMBAI",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/mumbai.webp",
+		"air": ""
+	},
+	{
+		"slug": "nagoya",
+		"name": "Nagoya",
+		"country": "Japan",
+		"countryCode": "jp",
+		"assetKey": "CITY_NAGOYA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/nagoya.webp",
+		"air": "Kōkūbin"
+	},
+	{
+		"slug": "nanjing",
+		"name": "Nanjing",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_NANJING",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/nanjing.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "new_york_city",
+		"name": "New York City",
+		"country": "United States",
+		"countryCode": "us",
+		"assetKey": "CITY_NEW_YORK_CITY",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/new_york_city.webp",
+		"air": ""
+	},
+	{
+		"slug": "osaka",
+		"name": "Osaka",
+		"country": "Japan",
+		"countryCode": "jp",
+		"assetKey": "CITY_OSAKA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/osaka.webp",
+		"air": "Kōkūbin"
+	},
+	{
+		"slug": "paris",
+		"name": "Paris",
+		"country": "France",
+		"countryCode": "fr",
+		"assetKey": "CITY_PARIS",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/paris.webp",
+		"air": ""
+	},
+	{
+		"slug": "philadelphia",
+		"name": "Philadelphia",
+		"country": "United States",
+		"countryCode": "us",
+		"assetKey": "CITY_PHILADELPHIA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/philadelphia.webp",
+		"air": ""
+	},
+	{
+		"slug": "pune",
+		"name": "Pune",
+		"country": "India",
+		"countryCode": "in",
+		"assetKey": "CITY_PUNE",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/pune.webp",
+		"air": ""
+	},
+	{
+		"slug": "qingdao",
+		"name": "Qingdao",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_QINGDAO",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/qingdao.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "rio_de_janeiro",
+		"name": "Rio de Janeiro",
+		"country": "Brazil",
+		"countryCode": "br",
+		"assetKey": "CITY_RIO_DE_JANEIRO",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/rio_de_janeiro.webp",
+		"air": "Por Avião"
+	},
+	{
+		"slug": "riyadh",
+		"name": "Riyadh",
+		"country": "Saudi Arabia",
+		"countryCode": "sa",
+		"assetKey": "CITY_RIYADH",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/riyadh.webp",
+		"air": ""
+	},
+	{
+		"slug": "saint_petersburg",
+		"name": "Saint Petersburg",
+		"country": "Russia",
+		"countryCode": "ru",
+		"assetKey": "CITY_SAINT_PETERSBURG",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/saint_petersburg.webp",
+		"air": "Avia"
+	},
+	{
+		"slug": "santiago",
+		"name": "Santiago",
+		"country": "Chile",
+		"countryCode": "cl",
+		"assetKey": "CITY_SANTIAGO",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/santiago.webp",
+		"air": "Por Avión"
+	},
+	{
+		"slug": "sao_paulo",
+		"name": "São Paulo",
+		"country": "Brazil",
+		"countryCode": "br",
+		"assetKey": "CITY_SAO_PAULO",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/sao_paulo.webp",
+		"air": "Por Avião"
+	},
+	{
+		"slug": "seoul",
+		"name": "Seoul",
+		"country": "South Korea",
+		"countryCode": "kr",
+		"assetKey": "CITY_SEOUL",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/seoul.webp",
+		"air": "Hanggong"
+	},
+	{
+		"slug": "shanghai",
+		"name": "Shanghai",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_SHANGHAI",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/shanghai.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "shenyang",
+		"name": "Shenyang",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_SHENYANG",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/shenyang.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "shenzhen",
+		"name": "Shenzhen",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_SHENZHEN",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/shenzhen.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "singapore",
+		"name": "Singapore",
+		"country": "Singapore",
+		"countryCode": "sg",
+		"assetKey": "CITY_SINGAPORE",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/singapore.webp",
+		"air": ""
+	},
+	{
+		"slug": "surabaya",
+		"name": "Surabaya",
+		"country": "Indonesia",
+		"countryCode": "id",
+		"assetKey": "CITY_SURABAYA",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/surabaya.webp",
+		"air": "Pos Udara"
+	},
+	{
+		"slug": "surat",
+		"name": "Surat",
+		"country": "India",
+		"countryCode": "in",
+		"assetKey": "CITY_SURAT",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/surat.webp",
+		"air": ""
+	},
+	{
+		"slug": "suzhou",
+		"name": "Suzhou",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_SUZHOU",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/suzhou.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "taipei",
+		"name": "Taipei",
+		"country": "Taiwan",
+		"countryCode": "tw",
+		"assetKey": "CITY_TAIPEI",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/taipei.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "tehran",
+		"name": "Tehran",
+		"country": "Iran",
+		"countryCode": "ir",
+		"assetKey": "CITY_TEHRAN",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/tehran.webp",
+		"air": ""
+	},
+	{
+		"slug": "tianjin",
+		"name": "Tianjin",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_TIANJIN",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/tianjin.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "tokyo",
+		"name": "Tokyo",
+		"country": "Japan",
+		"countryCode": "jp",
+		"assetKey": "CITY_TOKYO",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/tokyo.webp",
+		"air": "Kōkūbin"
+	},
+	{
+		"slug": "toronto",
+		"name": "Toronto",
+		"country": "Canada",
+		"countryCode": "ca",
+		"assetKey": "CITY_TORONTO",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/toronto.webp",
+		"air": ""
+	},
+	{
+		"slug": "washington_dc",
+		"name": "Washington, D.C.",
+		"country": "United States",
+		"countryCode": "us",
+		"assetKey": "CITY_WASHINGTON_DC",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/washington_dc.webp",
+		"air": ""
+	},
+	{
+		"slug": "wuhan",
+		"name": "Wuhan",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_WUHAN",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/wuhan.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "xian",
+		"name": "Xi'an",
+		"country": "China",
+		"countryCode": "cn",
+		"assetKey": "CITY_XIAN",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/xian.webp",
+		"air": "Hángkōng"
+	},
+	{
+		"slug": "yangon",
+		"name": "Yangon",
+		"country": "Myanmar",
+		"countryCode": "mm",
+		"assetKey": "CITY_YANGON",
+		"url": "https://res.cloudinary.com/dwhuiazdn/image/upload/briefing/stamps/yangon.webp",
+		"air": ""
+	}
+]

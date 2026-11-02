@@ -11,7 +11,10 @@ import { createElement } from 'react';
 
 export * from '@theexperiencecompany/gaia-icons/solid-rounded';
 
-export function ChevronRight({ size = 24, className }: { size?: number; className?: string }) {
+type LineIconProps = { size?: number; className?: string };
+
+// Line chevrons: the solid-rounded set only has filled ones.
+function lineChevronSvg(d: string, { size = 24, className }: LineIconProps) {
 	return createElement(
 		'svg',
 		{
@@ -26,13 +29,25 @@ export function ChevronRight({ size = 24, className }: { size?: number; classNam
 			strokeLinejoin: 'round',
 			className,
 		},
-		createElement('path', { d: 'm9 18 6-6-6-6' })
+		createElement('path', { d })
 	);
+}
+
+export function ChevronRight(props: LineIconProps) {
+	return lineChevronSvg('m9 18 6-6-6-6', props);
+}
+
+export function ChevronLeft(props: LineIconProps) {
+	return lineChevronSvg('m15 18-6-6 6-6', props);
+}
+
+export function ChevronDown(props: LineIconProps) {
+	return lineChevronSvg('m6 9 6 6 6-6', props);
 }
 
 // Lucide `dices` icon (lucide.dev/icons/dices). Vendored inline so we don't
 // pull in the lucide-react package just for this one icon.
-export function DicesIcon({ size = 24, className }: { size?: number; className?: string }) {
+export function DicesIcon({ size = 24, className }: LineIconProps) {
 	return createElement(
 		'svg',
 		{
