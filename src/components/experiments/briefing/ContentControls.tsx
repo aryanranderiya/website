@@ -1,10 +1,22 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-import { cardClass, inputClass, RowList, Section, Switch } from './controls';
+import { cardClass, Field, inputClass, RowList, Section, Switch } from './controls';
 import { MAX_ASKS, MAX_EVENTS, WEEKDAYS_SHORT } from './edition';
-import type { Draft, Row } from './types';
+import type { Draft, Headings, Row, SectionKey } from './types';
 import { WeekChart } from './WeekChart';
+
+/** Used until the edition reports its own heading, or when it prints none. */
+const FALLBACK_TITLES: Record<SectionKey, string> = {
+	decisions: 'Needs you',
+	today: 'Today',
+	overnight: 'Overnight',
+	running: 'In progress',
+	ahead: 'The week ahead',
+	shipped: 'Shipped',
+	handled: 'Handled quietly',
+};
 
 const countHint = (rows: Row[]) => String(rows.filter((r) => r.label.trim()).length);
 
@@ -12,18 +24,54 @@ export function ContentControls({
 	draft,
 	onChange,
 	weekly,
+	headings,
+	renames,
+	onRename,
 }: {
 	draft: Draft;
 	onChange: (draft: Draft) => void;
 	weekly: boolean;
+	/** The edition's own section headings. */
+	headings: Headings;
+	/** The reader's renames for this edition. */
+	renames: Headings;
+	onRename: (section: SectionKey, text: string) => void;
 }) {
 	const set = (patch: Partial<Draft>) => onChange({ ...draft, ...patch });
 	const week = (patch: Partial<Draft['week']>) => set({ week: { ...draft.week, ...patch } });
-	const list = (title: string, rows: Row[], save: (rows: Row[]) => void, max?: number) => (
-		<Section title={title} hint={countHint(rows)}>
-			<RowList label={title} rows={rows} onChange={save} create={() => ({ label: '' })} max={max} />
-		</Section>
-	);
+
+	/** One list's card: titled with the edition's own heading, which can be renamed here. */
+	const section = (key: SectionKey, rows: Row[], body: ReactNode) => {
+		const own = headings[key];
+		return (
+			<Section title={renames[key] || own || FALLBACK_TITLES[key]} hint={countHint(rows)}>
+				{own && (
+					<Field label="Heading">
+						<input
+							aria-label={`${FALLBACK_TITLES[key]} heading`}
+							value={renames[key] ?? ''}
+							placeholder={own}
+							onChange={(e) => onRename(key, e.target.value)}
+							className={cn(inputClass, '-mx-2 w-[calc(100%+1rem)]')}
+						/>
+					</Field>
+				)}
+				{body}
+			</Section>
+		);
+	};
+	const list = (key: SectionKey, rows: Row[], save: (rows: Row[]) => void, max?: number) =>
+		section(
+			key,
+			rows,
+			<RowList
+				label={FALLBACK_TITLES[key]}
+				rows={rows}
+				onChange={save}
+				create={() => ({ label: '' })}
+				max={max}
+			/>
+		);
 
 	return (
 		<div className={cn(cardClass, 'flex flex-col py-1')}>
@@ -52,21 +100,18 @@ export function ContentControls({
 				</div>
 			</Section>
 
-			{list(
-				weekly ? 'Still yours to call' : 'Needs you',
-				draft.decisions,
-				(decisions) => set({ decisions }),
-				MAX_ASKS
-			)}
+			{list('decisions', draft.decisions, (decisions) => set({ decisions }), MAX_ASKS)}
 
 			{weekly ? (
 				<>
-					<Section title="The week">
+					<Section title="The numbers">
 						<WeekChart days={draft.week.days} onChange={(days) => week({ days })} />
 					</Section>
-					<Section title="Ahead" hint={countHint(draft.week.ahead)}>
+					{section(
+						'ahead',
+						draft.week.ahead,
 						<RowList
-							label="Ahead"
+							label={FALLBACK_TITLES.ahead}
 							rows={draft.week.ahead}
 							onChange={(ahead) => week({ ahead })}
 							create={() => ({ day: 'Mon', label: '' })}
@@ -77,7 +122,7 @@ export function ContentControls({
 									onChange={(e) => update({ day: e.target.value })}
 									className={cn(
 										inputClass,
-										'w-14 shrink-0 appearance-none text-[var(--text-secondary)]'
+										'w-14 shrink-0 cursor-pointer appearance-none text-[var(--text-secondary)]'
 									)}
 								>
 									{WEEKDAYS_SHORT.map((d) => (
@@ -86,15 +131,17 @@ export function ContentControls({
 								</select>
 							)}
 						/>
-					</Section>
-					{list('Shipped', draft.week.shipped, (shipped) => week({ shipped }))}
-					{list('Handled quietly', draft.week.handled, (handled) => week({ handled }))}
+					)}
+					{list('shipped', draft.week.shipped, (shipped) => week({ shipped }))}
+					{list('handled', draft.week.handled, (handled) => week({ handled }))}
 				</>
 			) : (
 				<>
-					<Section title="Today" hint={countHint(draft.today)}>
+					{section(
+						'today',
+						draft.today,
 						<RowList
-							label="Today"
+							label={FALLBACK_TITLES.today}
 							rows={draft.today}
 							onChange={(today) => set({ today })}
 							create={() => ({ t24: '12:00', label: '' })}
@@ -112,9 +159,9 @@ export function ContentControls({
 								/>
 							)}
 						/>
-					</Section>
-					{list('Overnight', draft.overnight, (overnight) => set({ overnight }))}
-					{list('In progress', draft.running, (running) => set({ running }))}
+					)}
+					{list('overnight', draft.overnight, (overnight) => set({ overnight }))}
+					{list('running', draft.running, (running) => set({ running }))}
 					<div className="flex items-center justify-between px-4 py-3 text-[13px]">
 						<span className="font-medium">Stats</span>
 						<Switch label="Stats" checked={draft.stats} onChange={(stats) => set({ stats })} />

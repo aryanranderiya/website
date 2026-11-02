@@ -53,22 +53,6 @@ const EXPLORER = {
 <script src="/vendor/briefing-editions/js/tpl-receipt.js"></script>
 <script src="/vendor/briefing-editions/js/tpl-tech.js"></script>
 <script src="/vendor/briefing-editions/js/tpl-transit.js"></script>
-<script>
-"use strict";
-const root = document.getElementById("root");
-let onHeight = () => {};
-new ResizeObserver(() => onHeight(root.scrollHeight)).observe(root);
-window.briefing = {
-  templates: TEMPLATES.map(({ id, name, axes }) => ({ id, name, axes })),
-  render(family, skin, ed) {
-    const tpl = TEMPLATES.find((t) => t.id === family);
-    if (!tpl) throw new Error("edition family not registered: " + family);
-    document.getElementById("tpl-css").textContent = tpl.css;
-    root.innerHTML = tpl.render(ed, skin);
-    return root.scrollHeight;
-  },
-  set onHeight(fn) { onHeight = fn; },
-};
-</script>
+<script src="/vendor/briefing-editions/harness.js"></script>
 </body>
 </html>

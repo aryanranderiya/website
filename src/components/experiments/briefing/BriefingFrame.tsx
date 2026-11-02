@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { buildEdition, resolveSkin } from './edition';
 import manifest from './manifest.json';
-import type { Draft, BriefingFrame as Frame, Look, Template } from './types';
+import type { Draft, BriefingFrame as Frame, Headings, Look, Template } from './types';
+
+const NO_HEADINGS: Headings = {};
 
 /** The templates' design canvas (GAIA's EXPLORER_CANVAS_PX). */
 const CANVAS_PX = 540;
@@ -11,12 +13,23 @@ const CANVAS_PX = 540;
 interface Props {
 	draft: Draft;
 	look: Look;
+	/** Renamed section headings for this edition. */
+	headings?: Headings;
 	onTemplates?: (templates: Template[]) => void;
+	/** The edition's own section headings, after every render. */
+	onHeadings?: (headings: Headings) => void;
 	className?: string;
 }
 
 /** Renders one edition in an isolated frame, scaled down to fit its container. */
-export function BriefingFrame({ draft, look, onTemplates, className }: Props) {
+export function BriefingFrame({
+	draft,
+	look,
+	headings = NO_HEADINGS,
+	onTemplates,
+	onHeadings,
+	className,
+}: Props) {
 	const wrapRef = useRef<HTMLDivElement>(null);
 	const [frame, setFrame] = useState<Frame | null>(null);
 	const [height, setHeight] = useState(0);
@@ -37,8 +50,10 @@ export function BriefingFrame({ draft, look, onTemplates, className }: Props) {
 		const template = frame.templates.find((t) => t.id === look.family);
 		if (!template) throw new Error(`unknown edition family: ${look.family}`);
 		const edition = buildEdition(draft, look);
-		setHeight(frame.render(look.family, resolveSkin(template, look), edition));
-	}, [frame, draft, look]);
+		const rendered = frame.render(look.family, resolveSkin(template, look), edition, headings);
+		setHeight(rendered.height);
+		onHeadings?.(rendered.headings);
+	}, [frame, draft, look, headings, onHeadings]);
 
 	const handleLoad = (event: React.SyntheticEvent<HTMLIFrameElement>) => {
 		const win = event.currentTarget.contentWindow as (Window & { briefing: Frame }) | null;

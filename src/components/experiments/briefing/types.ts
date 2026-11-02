@@ -13,10 +13,28 @@ export interface Template {
 	axes: Record<string, AxisOption[]>;
 }
 
-/** What frame.html exposes on its window. */
+/** The lists the sidebar edits; the weekly edition uses decisions plus the last three. */
+export type SectionKey =
+	| 'decisions'
+	| 'today'
+	| 'overnight'
+	| 'running'
+	| 'ahead'
+	| 'shipped'
+	| 'handled';
+
+/** Section headings by section: an edition's own, or the reader's renames. */
+export type Headings = Partial<Record<SectionKey, string>>;
+
+/** What frame.html (scripts/briefing-harness.js) exposes on its window. */
 export interface BriefingFrame {
 	templates: Template[];
-	render: (family: string, skin: Record<string, AxisOption>, ed: Edition) => number;
+	render: (
+		family: string,
+		skin: Record<string, AxisOption>,
+		ed: Edition,
+		overrides: Headings
+	) => { height: number; headings: Headings };
 	onHeight: (height: number) => void;
 }
 

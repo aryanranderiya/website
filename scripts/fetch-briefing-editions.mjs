@@ -8,8 +8,9 @@
  * Writes:
  * - public/vendor/briefing-editions/js/tpl-*.js: the templates, verbatim.
  * - public/vendor/briefing-editions/{fonts,art}/: assets.json decoded to files.
- * - public/vendor/briefing-editions/frame.html: the render harness, the
- *   browser twin of GAIA's explorer_render.py (fonts, EXPLORER shim, scripts).
+ * - public/vendor/briefing-editions/frame.html: the page, the browser twin of
+ *   GAIA's explorer_render.py (fonts, EXPLORER shim, scripts), plus harness.js
+ *   (scripts/briefing-harness.js, ours) that renders into it.
  * - src/components/experiments/briefing/manifest.json: the paintings.
  * - src/data/stamp-cities.json: Air Mail's 85 city stamps (also the stamps experiment).
  */
@@ -156,23 +157,7 @@ const EXPLORER = {
 };
 </script>
 ${scripts}
-<script>
-"use strict";
-const root = document.getElementById("root");
-let onHeight = () => {};
-new ResizeObserver(() => onHeight(root.scrollHeight)).observe(root);
-window.briefing = {
-  templates: TEMPLATES.map(({ id, name, axes }) => ({ id, name, axes })),
-  render(family, skin, ed) {
-    const tpl = TEMPLATES.find((t) => t.id === family);
-    if (!tpl) throw new Error("edition family not registered: " + family);
-    document.getElementById("tpl-css").textContent = tpl.css;
-    root.innerHTML = tpl.render(ed, skin);
-    return root.scrollHeight;
-  },
-  set onHeight(fn) { onHeight = fn; },
-};
-</script>
+<script src="${PUBLIC_BASE}/harness.js"></script>
 </body>
 </html>
 `;
@@ -227,6 +212,7 @@ async function main() {
 		.sort((a, b) => a.name.localeCompare(b.name));
 
 	await writeFile(join(OUT, 'frame.html'), frameHtml(templateFiles, stamps));
+	await writeFile(join(OUT, 'harness.js'), await readFile(join(ROOT, 'scripts', 'briefing-harness.js')));
 	const manifest = {
 		base: PUBLIC_BASE,
 		artworks: artworks.map(({ key, ...a }) => ({ ...a, src: `${PUBLIC_BASE}/art/${slugify(a.title)}.jpg` })),
