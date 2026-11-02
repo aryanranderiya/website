@@ -18,9 +18,20 @@ export interface Experiment {
 	date: string;
 	/** GAIA UI docs embed — grid shows the first variant, detail shows all */
 	gaiaUi?: GaiaUiEmbed;
+	/** detail page spans past the reading column (tool-like experiments) */
+	wide?: boolean;
 }
 
 export const experiments: Experiment[] = [
+	{
+		slug: 'briefing',
+		title: 'Configurable Briefing',
+		description:
+			'Every edition of the GAIA daily briefing, live: pick a style, tune its look, rewrite what it says.',
+		bio: 'GAIA writes a briefing every morning and sets it in one of nineteen printed styles, from an air-mail letter to a boarding pass. These are the production templates, rendering the same data GAIA sends.',
+		date: '2026-11-02',
+		wide: true,
+	},
 	{
 		slug: 'chat-demo',
 		title: 'Chat Demo',

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<style>
+@font-face{font-family:'Aeonik Extended';font-style:normal;font-weight:600;font-display:block;src:url(/vendor/briefing-editions/fonts/aeonik-semibold.woff2) format('woff2');}
+@font-face{font-family:'Aeonik Extended';font-style:normal;font-weight:700;font-display:block;src:url(/vendor/briefing-editions/fonts/aeonik-bold.woff2) format('woff2');}
+@font-face{font-family:'Playfair Display';font-style:normal;font-weight:500;font-display:block;src:url(/vendor/briefing-editions/fonts/playfair-normal-500.woff2) format('woff2');}
+@font-face{font-family:'Playfair Display';font-style:normal;font-weight:700;font-display:block;src:url(/vendor/briefing-editions/fonts/playfair-normal-700.woff2) format('woff2');}
+@font-face{font-family:'Playfair Display';font-style:italic;font-weight:500;font-display:block;src:url(/vendor/briefing-editions/fonts/playfair-italic-500.woff2) format('woff2');}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; background: transparent; }
+body { width: 540px; overflow: hidden; }
+</style>
+<style id="tpl-css"></style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+"use strict";
+const TEMPLATES = [];
+const EXPLORER = {
+  register(t) {
+    if (!t.id || !t.name || !t.axes || !t.render || !t.css) throw new Error("bad template: " + (t.id || "?"));
+    TEMPLATES.push(t);
+  },
+};
+</script>
+<script src="/vendor/briefing-editions/js/tpl-brand.js"></script>
+<script src="/vendor/briefing-editions/js/tpl-broadsheet.js"></script>
+<script src="/vendor/briefing-editions/js/tpl-image.js"></script>
+<script src="/vendor/briefing-editions/js/tpl-paper.js"></script>
+<script src="/vendor/briefing-editions/js/tpl-postal.js"></script>
+<script src="/vendor/briefing-editions/js/tpl-poster.js"></script>
+<script src="/vendor/briefing-editions/js/tpl-print.js"></script>
+<script src="/vendor/briefing-editions/js/tpl-receipt.js"></script>
+<script src="/vendor/briefing-editions/js/tpl-tech.js"></script>
+<script src="/vendor/briefing-editions/js/tpl-transit.js"></script>
+<script>
+"use strict";
+const root = document.getElementById("root");
+let onHeight = () => {};
+new ResizeObserver(() => onHeight(root.scrollHeight)).observe(root);
+window.briefing = {
+  templates: TEMPLATES.map(({ id, name, axes }) => ({ id, name, axes })),
+  render(family, skin, ed) {
+    const tpl = TEMPLATES.find((t) => t.id === family);
+    if (!tpl) throw new Error("edition family not registered: " + family);
+    document.getElementById("tpl-css").textContent = tpl.css;
+    root.innerHTML = tpl.render(ed, skin);
+    return root.scrollHeight;
+  },
+  set onHeight(fn) { onHeight = fn; },
+};
+</script>
+</body>
+</html>

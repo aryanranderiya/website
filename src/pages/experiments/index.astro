@@ -2,6 +2,7 @@
 import { ChatDemoInPhone } from '@/components/experiments/gaia-ui/demos';
 import { FooterGlow } from '@/components/experiments/gaia-ui/footer-glow';
 import '@/components/experiments/gaia-ui/wordmark-font.css';
+import BriefingThumbnail from '@/components/experiments/briefing/BriefingThumbnail';
 import HoloCardIsland from '@/components/experiments/HoloCardIsland';
 import { DEMO_CARD } from '@/components/experiments/holo-card/demo';
 import { experiments } from '@/data/experiments';
@@ -25,7 +26,21 @@ const ordered = experiments.toSorted((a, b) => Number(WIDE.has(a.slug)) - Number
   <div class="grid grid-cols-1 gap-8 sm:grid-cols-2">
     {
       ordered.map((exp, i) =>
-        exp.slug === "chat-demo" ? (
+        exp.slug === "briefing" ? (
+          <a
+            href={`/experiments/${exp.slug}`}
+            class="group relative block h-[455px] cursor-pointer overflow-hidden rounded-2xl bg-[var(--muted-bg)] px-10 pt-10 animate-fade-in"
+            style={`animation-delay:${0.15 + i * 0.07}s`}
+            aria-label={exp.title}
+          >
+            {/* live preview - the demo edition, scaled to the card and cut off at the fold */}
+            <div class="pointer-events-none transition-transform duration-300 ease-out group-hover:scale-[1.03]">
+              <BriefingThumbnail client:only="react">
+                <div slot="fallback" class="h-[400px] w-full rounded-xl bg-[var(--muted-bg)] animate-pulse" aria-hidden="true" />
+              </BriefingThumbnail>
+            </div>
+          </a>
+        ) : exp.slug === "chat-demo" ? (
           <a
             href={`/experiments/${exp.slug}`}
             class="group flex cursor-pointer items-center justify-center rounded-2xl bg-[var(--muted-bg)] px-6 py-10 animate-fade-in"
