@@ -61,6 +61,8 @@ export function BriefingFrame({ draft, look, onTemplates, className }: Props) {
 				<iframe
 					src={`${manifest.base}/frame.html`}
 					title="Briefing preview"
+					// same-origin: the parent calls the frame's render(); scripts: the templates are JS
+					sandbox="allow-scripts allow-same-origin"
 					onLoad={handleLoad}
 					tabIndex={-1}
 					className="absolute top-0 left-0 origin-top-left transition-opacity duration-300"
