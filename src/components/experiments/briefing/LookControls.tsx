@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { HoverTooltip } from '@/components/ui/hover-tooltip';
 import { stampImage } from '@/data/stamps';
 import { cn } from '@/lib/utils';
 import { cardClass, Field, optionColors, Section, Swatches, TextOptions } from './controls';
@@ -9,7 +10,7 @@ import type { Look, Template } from './types';
 
 const STAMP_BATCH = 18;
 const selectedClass =
-	'ring-2 ring-[var(--foreground)] ring-offset-2 ring-offset-[var(--background)]';
+	'ring-2 ring-[var(--accent-blue)] ring-offset-2 ring-offset-[var(--background)]';
 
 /** Renders stamps a batch at a time as the grid's own scroll nears the end. */
 function StampGrid({ value, onChange }: { value: string; onChange: (slug: string) => void }) {
@@ -29,22 +30,25 @@ function StampGrid({ value, onChange }: { value: string; onChange: (slug: string
 			<fieldset className="grid grid-cols-6 gap-2">
 				<legend className="sr-only">Stamp</legend>
 				{STAMPS.slice(0, count).map((s) => (
-					<button
-						key={s.slug}
-						type="button"
-						aria-pressed={s.slug === value}
-						aria-label={s.name}
-						title={`${s.name}, ${s.country}`}
-						onClick={() => onChange(s.slug)}
-						className={cn('aspect-[5/7] rounded-[3px]', s.slug === value && selectedClass)}
-					>
-						<img
-							src={stampImage(s, 96)}
-							alt=""
-							loading="lazy"
-							className="size-full object-contain"
-						/>
-					</button>
+					<HoverTooltip key={s.slug} label={s.name} className="flex">
+						<button
+							type="button"
+							aria-pressed={s.slug === value}
+							aria-label={s.name}
+							onClick={() => onChange(s.slug)}
+							className={cn(
+								'aspect-[5/7] w-full cursor-pointer rounded-[3px]',
+								s.slug === value && selectedClass
+							)}
+						>
+							<img
+								src={stampImage(s, 96)}
+								alt=""
+								loading="lazy"
+								className="size-full object-contain"
+							/>
+						</button>
+					</HoverTooltip>
 				))}
 			</fieldset>
 			{count < STAMPS.length && <div ref={sentinel} className="h-px" />}
@@ -64,7 +68,10 @@ function Paintings({ value, onChange }: { value: number; onChange: (index: numbe
 					aria-label={`${a.title}, ${a.artist}`}
 					title={`${a.title}, ${a.artist}`}
 					onClick={() => onChange(i)}
-					className={cn('aspect-square overflow-hidden rounded-lg', i === value && selectedClass)}
+					className={cn(
+						'aspect-square cursor-pointer overflow-hidden rounded-lg',
+						i === value && selectedClass
+					)}
 				>
 					<img src={a.src} alt="" loading="lazy" className="size-full object-cover" />
 				</button>

@@ -5,6 +5,7 @@ import { Command } from 'cmdk';
 import { AnimatePresence, LazyMotion } from 'motion/react';
 import * as m from 'motion/react-m';
 import { useEffect, useReducer, useState } from 'react';
+import { flatIconButton, flatSurface } from '@/components/ui/flat-button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { STAMP_CITIES, type StampCity, stampImage } from '@/data/stamps';
 import { cn } from '@/lib/utils';
@@ -97,11 +98,13 @@ function CityPicker({
 	const [open, setOpen] = useState(false);
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[14px] transition-colors hover:bg-[var(--muted-bg)]">
+			<PopoverTrigger
+				className={cn(flatSurface, 'flex h-9 w-72 items-center gap-2 px-3.5 text-[14px]')}
+			>
 				<Flag city={value} />
-				<span className="font-medium">{value.name}</span>
-				<span className="text-[var(--text-ghost)]">{value.country}</span>
-				<ChevronDown size={14} className="text-[var(--text-ghost)]" />
+				<span className="truncate font-medium">{value.name}</span>
+				<span className="truncate text-[var(--text-ghost)]">{value.country}</span>
+				<ChevronDown size={14} className="ml-auto shrink-0 text-[var(--text-secondary)]" />
 			</PopoverTrigger>
 			<PopoverContent className="w-72 p-0">
 				<Command>
@@ -199,7 +202,7 @@ export default function StampCarousel({ controls = true }: { controls?: boolean 
 		<LazyMotion features={loadFeatures}>
 			<div className="flex w-full flex-col items-center gap-4">
 				{controls && (
-					<div className="flex items-center gap-1">
+					<div className="flex items-center gap-1.5">
 						<CityPicker
 							value={top}
 							onChange={(picked) =>
@@ -223,7 +226,7 @@ export default function StampCarousel({ controls = true }: { controls?: boolean 
 									at: landing(topOf(pile).at),
 								})
 							}
-							className="flex size-8 items-center justify-center rounded-lg text-[var(--text-ghost)] transition-colors hover:bg-[var(--muted-bg)] hover:text-[var(--foreground)]"
+							className={flatIconButton}
 						>
 							<HugeiconsIcon icon={ShuffleIcon} size={15} />
 						</button>

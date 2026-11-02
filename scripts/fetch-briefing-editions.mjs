@@ -119,6 +119,8 @@ function frameHtml(templateFiles, stamps) {
 <head>
 <meta charset="utf-8">
 <meta name="robots" content="noindex">
+<!-- Matches the site's scheme: a mismatch makes the browser paint the frame opaque white. -->
+<meta name="color-scheme" content="light dark">
 <style>
 ${faces}
 * { margin: 0; padding: 0; box-sizing: border-box; }

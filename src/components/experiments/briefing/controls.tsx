@@ -52,7 +52,7 @@ export function TextOptions({
 					aria-pressed={o.id === value}
 					onClick={() => onChange(o.id)}
 					className={cn(
-						'text-[13px] transition-colors',
+						'cursor-pointer text-[13px] transition-colors',
 						o.id === value
 							? 'text-[var(--foreground)]'
 							: 'text-[var(--text-ghost)] hover:text-[var(--text-secondary)]'
@@ -90,7 +90,7 @@ export function Swatches({
 						title={o.label}
 						onClick={() => onChange(o.id)}
 						className={cn(
-							'size-6 rounded-full p-[3px] transition-colors',
+							'size-6 cursor-pointer rounded-full p-[3px] transition-colors',
 							o.id === value ? 'bg-[var(--foreground)]' : 'hover:bg-[var(--muted-bg-strong)]'
 						)}
 					>
@@ -125,7 +125,7 @@ export function Switch({
 			aria-label={label}
 			onClick={() => onChange(!checked)}
 			className={cn(
-				'relative h-4 w-7 shrink-0 rounded-full transition-colors',
+				'relative h-4 w-7 shrink-0 cursor-pointer rounded-full transition-colors',
 				checked ? 'bg-[var(--foreground)]' : 'bg-[var(--muted-bg-strong)]'
 			)}
 		>
@@ -157,7 +157,7 @@ export function IconButton({
 			title={label}
 			onClick={onClick}
 			className={cn(
-				'flex size-7 shrink-0 items-center justify-center rounded-lg text-[var(--text-ghost)] transition-colors hover:bg-[var(--muted-bg)] hover:text-[var(--foreground)]',
+				'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-lg text-[var(--text-ghost)] transition-colors hover:bg-[var(--muted-bg)] hover:text-[var(--foreground)]',
 				className
 			)}
 		>
@@ -210,7 +210,7 @@ export function RowList<T extends Row>({
 				<button
 					type="button"
 					onClick={() => onChange([...rows, { ...create(), id: crypto.randomUUID() } as T])}
-					className="flex w-fit items-center gap-1.5 rounded-md px-2 py-1 text-[13px] text-[var(--text-ghost)] transition-colors hover:text-[var(--foreground)]"
+					className="flex w-fit cursor-pointer items-center gap-1.5 rounded-md px-2 py-1 text-[13px] text-[var(--text-ghost)] transition-colors hover:text-[var(--foreground)]"
 				>
 					<HugeiconsIcon icon={PlusSignIcon} size={12} />
 					Add
