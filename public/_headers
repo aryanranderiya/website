@@ -1,0 +1,7 @@
+# The briefing frame is sandboxed to an opaque origin: Cloudflare's injected
+# analytics beacon cannot report from it and would count it as a page view.
+# no-transform tells Cloudflare not to inject into this response.
+/vendor/briefing-editions/frame
+  Cache-Control: no-transform
+/vendor/briefing-editions/frame.html
+  Cache-Control: no-transform
