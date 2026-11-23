@@ -32,6 +32,14 @@ export const experiments: Experiment[] = [
 		wide: true,
 	},
 	{
+		slug: 'everywhere',
+		title: 'Everywhere',
+		description: '197 countries, 197 single-ink visa stamps, one passport page.',
+		bio: 'A passport issued by nowhere, stamped by everywhere. Each country has a stamp drawn from its own symbols and typography, pressed onto a security-printed page in one ink. Choose countries and they land at random; drag them around; re-press the page for a new set of impressions. All 197 are drawn in SVG, down to the speckle of a dry rubber die.',
+		date: '2026-11-23',
+		wide: true,
+	},
+	{
 		slug: 'stamps',
 		title: 'City Stamps',
 		description: "The 85 city stamps of GAIA's Air Mail edition.",

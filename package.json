@@ -35,6 +35,10 @@
 		"@astrojs/react": "^6.0.5",
 		"@astrojs/sitemap": "^3.7.4",
 		"@fontsource-variable/inter": "^5.2.8",
+		"@fontsource/bebas-neue": "^5.3.0",
+		"@fontsource/dm-mono": "^5.3.0",
+		"@fontsource/instrument-serif": "^5.3.0",
+		"@fontsource/special-elite": "^5.3.0",
 		"@grizzshutsdown/simpleplayer": "^0.1.2",
 		"@mlc-ai/web-llm": "^0.2.82",
 		"@radix-ui/react-checkbox": "^1.3.3",
@@ -74,6 +78,7 @@
 		"@playwright/test": "^1.59.1",
 		"@types/react": "^19.2.14",
 		"@types/react-dom": "^19.2.3",
+		"countries-list": "^3.4.1",
 		"knip": "6.42.1",
 		"lefthook": "^2.1.5",
 		"lighthouse": "^13.1.0",
@@ -82,6 +87,7 @@
 		"sharp": "^0.35.4",
 		"typescript": "^5.8.3",
 		"vite-plugin-static-copy": "^4.1.1",
+		"world-countries": "^5.1.0",
 		"wrangler": "^4.85.0"
 	},
 	"overrides": {

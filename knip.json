@@ -6,7 +6,8 @@
     "astro.config.*",
     "src/components/ui/AIChat.tsx",
     "src/bones/registry.js",
-    "src/data/ai-context.ts"
+    "src/data/ai-context.ts",
+    "scripts/build-passport-countries.mjs"
   ],
   "project": [
     "src/**/*.{astro,ts,tsx,js,jsx}"
@@ -31,6 +32,11 @@
     "@lhci/cli",
     "lighthouse",
     "@playwright/test",
-    "playwright"
+    "playwright",
+    // Loaded by @import in studio.css; knip does not follow compiled CSS.
+    "@fontsource/bebas-neue",
+    "@fontsource/dm-mono",
+    "@fontsource/instrument-serif",
+    "@fontsource/special-elite"
   ]
 }

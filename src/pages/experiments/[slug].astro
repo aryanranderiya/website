@@ -7,6 +7,7 @@ import '@/components/experiments/gaia-ui/wordmark-font.css';
 import BriefingConfigurator from '@/components/experiments/briefing/BriefingConfigurator';
 import HoloCardIsland from '@/components/experiments/HoloCardIsland';
 import { DEMO_CARD } from '@/components/experiments/holo-card/demo';
+import PassportStudio from '@/components/experiments/passport/PassportStudio';
 import StampCarousel from '@/components/experiments/stamps/StampCarousel';
 import BackLink from '@/components/ui/BackLink.astro';
 import Lightbox from '@/components/ui/Lightbox.astro';
@@ -84,6 +85,11 @@ const chatPlatforms = (exp.gaiaUi?.variants.map((v) => v.anchor) ?? []).filter(
   {exp.slug === "briefing" && (
   <div class="animate-fade-in stagger-2">
     <BriefingConfigurator client:only="react" />
+  </div>
+  )}
+  {exp.slug === "everywhere" && (
+  <div class="animate-fade-in stagger-2">
+    <PassportStudio client:load />
   </div>
   )}
 

@@ -36,3 +36,6 @@ pnpm-debug.log*
 .beads-credential-key
 .lighthouse/
 .lighthouseci/
+
+# local QA screenshots and proof
+shots/
