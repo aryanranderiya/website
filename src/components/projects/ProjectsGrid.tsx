@@ -5,6 +5,7 @@ import {
 	Cancel01Icon,
 	ComputerTerminalIcon,
 	Delete02Icon,
+	DeveloperIcon,
 	FilterIcon,
 	HugeiconsIcon,
 	LaptopIcon,
@@ -54,6 +55,7 @@ const TYPE_CHIPS: { value: string; label: string; icon: ComponentType<IconProps>
 	{ value: 'web', label: 'Web', icon: WebDesignIcon },
 	{ value: 'mobile', label: 'Mobile', icon: MobileProgramming02Icon },
 	{ value: 'cli', label: 'CLI', icon: ComputerTerminalIcon },
+	{ value: 'tool', label: 'Dev Tool', icon: DeveloperIcon },
 	{ value: 'desktop', label: 'Desktop', icon: LaptopIcon },
 	{ value: 'os', label: 'OS', icon: Apple01Icon },
 ];

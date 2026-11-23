@@ -41,7 +41,7 @@ const projects = defineCollection({
 		github: z.url().optional(),
 		featured: z.boolean().default(false),
 		type: z
-			.enum(['mobile', 'web', 'os', 'design', 'other', 'cli', 'game', 'desktop'])
+			.enum(['mobile', 'web', 'os', 'design', 'other', 'cli', 'game', 'desktop', 'tool'])
 			.default('web'),
 		folder: z.string().default('Projects'),
 		coverImage: z.string().optional(),

@@ -14,6 +14,16 @@ function simpleicon(slug: string, color = '888888') {
 
 const ICON_MAP: Record<string, string> = {
 	typescript: devicon('typescript'),
+	swift: simpleicon('swift'),
+	swiftui: simpleicon('swift'),
+	macos: simpleicon('apple'),
+	bluetooth: simpleicon('bluetooth'),
+	discord: simpleicon('discord'),
+	'chrome extension': simpleicon('googlechrome'),
+	'github actions': simpleicon('githubactions'),
+	bun: simpleicon('bun'),
+	'apple books': simpleicon('apple'),
+	'google play books': simpleicon('googleplay'),
 	javascript: devicon('javascript'),
 	python: devicon('python'),
 	c: devicon('c'),
