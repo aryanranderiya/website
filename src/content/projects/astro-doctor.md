@@ -5,12 +5,13 @@ shortDescription: Deterministic Astro linter for humans and agents
 date: 2026-09-15
 tech: [JavaScript, Node.js, WASM, Astro]
 featured: false
-type: cli
+type: tool
 folder: Projects
 coverImage: /images/projects/astro-doctor/cover.svg
 images:
   - /images/projects/astro-doctor/cover.svg
 order: 38
+url: https://astro-doctor.mintlify.site
 github: https://github.com/aryanranderiya/astro-doctor
 ---
 

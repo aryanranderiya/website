@@ -1,18 +1,18 @@
 ---
-title: ccusage (fork)
+title: ccusage2 (fork)
 description: Terminal token-usage tracker for AI coding CLIs, extended with prime-agent, fx, opencode2 and pi parsers, magnitude formatting, and multi-machine GitHub sync.
 shortDescription: Extended CLI usage + cost tracker
 date: 2026-08-21
 tech: [TypeScript, Rust, SQLite, Node.js]
 featured: false
-type: cli
+type: tool
 folder: Projects
 coverImage: /images/projects/ccusage/screenshot.webp
 images:
   - /images/projects/ccusage/screenshot.webp
   - /images/projects/ccusage/logo.svg
 order: 41
-github: https://github.com/aryanranderiya/ccusage
+github: https://github.com/aryanranderiya/ccusage2
 ---
 
 `ccusage` reads the local log files left by AI coding CLIs and prints token-usage and dollar-cost tables by day, week, month, or session — offline, no API keys. Upstream (`ccusage/ccusage`) already covers 16+ sources with daily/weekly/monthly/session reports, billing-block views, model breakdowns, cache-token accounting, and JSON output.

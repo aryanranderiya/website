@@ -37,6 +37,7 @@ const TYPE_LABELS: Record<string, string> = {
 	mobile: 'Mobile',
 	game: 'Game',
 	cli: 'CLI',
+	tool: 'Dev Tool',
 	desktop: 'Desktop',
 	macos: 'macOS',
 	os: 'macOS',
