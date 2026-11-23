@@ -82,19 +82,6 @@ const rows = selected.map((country) => {
 	const capital =
 		CAPITAL_OVERRIDES[country.cca2] ?? (Array.isArray(country.capital) ? country.capital[0] : '');
 
-	assert(
-		design.form === 'arrival' ||
-			design.form === 'oval' ||
-			design.form === 'round' ||
-			design.form === 'date' ||
-			design.form === 'permit' ||
-			design.form === 'transit',
-		`${country.cca2}: bad form ${design.form}`,
-	);
-	assert(
-		['ultramarine', 'ink', 'forest', 'oxblood', 'violet', 'umber', 'teal'].includes(design.ink),
-		`${country.cca2}: bad ink ${design.ink}`,
-	);
 	assert(motifKeys.has(design.motif), `${country.cca2}: unknown motif ${design.motif}`);
 	if (design.motif2) {
 		assert(motifKeys.has(design.motif2), `${country.cca2}: unknown motif2 ${design.motif2}`);
@@ -114,8 +101,6 @@ const rows = selected.map((country) => {
 		region: country.region,
 		motif: design.motif,
 		motif2: design.motif2,
-		form: design.form,
-		ink: design.ink,
 		dateStyle: DATE_STYLE_OVERRIDES[country.cca2] ?? 'dmy',
 	};
 });
@@ -139,19 +124,7 @@ const count = (key) =>
 		return map;
 	}, {});
 
-const formCounts = count('form');
-const inkCounts = count('ink');
 const motifCounts = count('motif');
-
-for (const form of ['arrival', 'oval', 'round', 'date', 'permit', 'transit']) {
-	assert((formCounts[form] ?? 0) >= 30 && (formCounts[form] ?? 0) <= 36, `form ${form} out of range`);
-}
-for (const [ink, n] of Object.entries(inkCounts)) {
-	assert(n / 197 <= 0.3, `ink ${ink} is ${((n / 197) * 100).toFixed(1)}% of the set`);
-}
-for (const ink of ['ultramarine', 'ink', 'forest']) {
-	assert((inkCounts[ink] ?? 0) >= 25, `primary ink ${ink} underused`);
-}
 
 const dateStyleFailures = validRows.filter((row) => {
 	if (row.code === 'us') return row.dateStyle !== 'mdy';
@@ -184,8 +157,6 @@ const serializedCountry = (country) => {
 	];
 	if (country.motif2) lines.push(`\t\tmotif2: ${q(country.motif2)},`);
 	lines.push(
-		`\t\tform: ${q(country.form)},`,
-		`\t\tink: ${q(country.ink)},`,
 		`\t\tdateStyle: ${q(country.dateStyle)},`,
 		`\t\tserial: ${q(country.serial)},`,
 		'\t},',
@@ -204,7 +175,7 @@ export const COUNTRY_BY_CODE: Record<string, Country> = Object.fromEntries(
 );
 `;
 
-const proofHeader = ['code', 'iso3', 'name', 'capital', 'motif', 'motif2', 'form', 'ink'].join('\t');
+const proofHeader = ['code', 'iso3', 'name', 'capital', 'motif', 'motif2'].join('\t');
 const proofRows = countries.map((country) =>
 	[
 		country.code.toUpperCase(),
@@ -213,8 +184,6 @@ const proofRows = countries.map((country) =>
 		country.capital,
 		country.motif,
 		country.motif2 ?? '',
-		country.form,
-		country.ink,
 	].join('\t'),
 );
 
@@ -248,8 +217,6 @@ const printCounts = (label, counts) => {
 };
 
 console.log(`countries 197, designs 197, writes ${countries.length}`);
-printCounts('forms', formCounts);
-printCounts('inks', inkCounts);
 console.log(
 	`motifs: ${Object.keys(motifCounts).length} distinct, max repeat ${Math.max(...Object.values(motifCounts))}`,
 );

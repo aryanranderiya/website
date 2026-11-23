@@ -2,7 +2,7 @@ import { PassportPage } from './PassportPage';
 import { initialEntries } from './state';
 import './studio.css';
 
-const PREVIEW = initialEntries(['jp', 'ke', 'th', 'nl', 'za', 'qa', 'no']);
+const PREVIEW = initialEntries(['jp', 'ke', 'th', 'br', 'za', 'pl', 'no']);
 
 export function PassportThumbnail() {
 	return (

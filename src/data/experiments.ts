@@ -35,7 +35,7 @@ export const experiments: Experiment[] = [
 		slug: 'everywhere',
 		title: 'Everywhere',
 		description: '197 countries, 197 single-ink visa stamps, one passport page.',
-		bio: 'A passport issued by nowhere, stamped by everywhere. 197 countries, one ink each, pressed onto a single visa page. Choose countries, arrange the page, or shuffle the composition.',
+		bio: 'A passport issued by nowhere, stamped by everywhere. Every stamp is grown from its country name: shape, die, ornament, type, and ink. Choose countries, arrange the page, or shuffle the composition.',
 		date: '2026-11-23',
 		wide: true,
 	},

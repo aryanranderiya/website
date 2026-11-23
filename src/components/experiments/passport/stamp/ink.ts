@@ -1,13 +1,12 @@
 import type { Country, InkKey } from '../types';
+import { hash, mulberry32 } from './random';
 
 export const INK_HEX: Record<InkKey, string> = {
 	ultramarine: '#1f3b73',
 	ink: '#25221d',
-	forest: '#2b4d3d',
 	oxblood: '#7c2930',
 	violet: '#513765',
 	umber: '#6b4a2f',
-	teal: '#1d5053',
 };
 
 export const CONDENSED = "'Bebas Neue', 'Arial Narrow', sans-serif";
@@ -71,25 +70,6 @@ export interface StampSpec {
 	voids: Void[];
 }
 
-function hash32(text: string, salt: number): number {
-	let h = 2166136261 ^ salt;
-	for (let i = 0; i < text.length; i++) {
-		h ^= text.charCodeAt(i);
-		h = Math.imul(h, 16777619);
-	}
-	return h >>> 0;
-}
-
-function mulberry32(a: number): () => number {
-	let t = a;
-	return () => {
-		t = (t + 0x6d2b79f5) | 0;
-		let r = Math.imul(t ^ (t >>> 15), 1 | t);
-		r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
-		return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
-	};
-}
-
 function formatDate(date: Date, style: Country['dateStyle']): string {
 	const day = String(date.getUTCDate()).padStart(2, '0');
 	const month = MONTHS[date.getUTCMonth()];
@@ -108,15 +88,15 @@ function portCode(capital: string): string {
 	return letters.slice(0, 3) || 'EVW';
 }
 
-function directionFor(country: Country, roll: number): StampDirection {
-	if (country.form === 'transit') return 'TRANSIT';
-	if (roll < 0.64) return 'ENTRY';
-	if (roll < 0.86) return 'EXIT';
+function directionFor(roll: number): StampDirection {
+	if (roll < 0.08) return 'TRANSIT';
+	if (roll < 0.68) return 'ENTRY';
+	if (roll < 0.88) return 'EXIT';
 	return 'ADMITTED';
 }
 
 export function stampSpec(country: Country, seed: number): StampSpec {
-	const rnd = mulberry32(hash32(country.code, seed));
+	const rnd = mulberry32(hash(country.code, seed));
 	const start = Date.UTC(2019, 0, 1);
 	const end = Date.UTC(2026, 10, 20);
 	const date = new Date(start + rnd() * (end - start));
@@ -130,7 +110,7 @@ export function stampSpec(country: Country, seed: number): StampSpec {
 	const classCode = CLASSES[Math.floor(rnd() * CLASSES.length)];
 	const dateLine = formatDate(date, country.dateStyle);
 	const untilLine = formatDate(until, country.dateStyle);
-	const direction = directionFor(country, rnd());
+	const direction = directionFor(rnd());
 	const officer = String(10 + Math.floor(rnd() * 89));
 
 	const voids: Void[] = [];

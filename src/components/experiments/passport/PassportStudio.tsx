@@ -24,7 +24,7 @@ import {
 } from './state';
 import './studio.css';
 
-const INITIAL = ['jp', 'ke', 'th', 'nl', 'za', 'qa', 'no'];
+const INITIAL = ['jp', 'ke', 'th', 'br', 'za', 'pl', 'no'];
 
 export default function PassportStudio() {
 	const [entries, setEntries] = useState<StampEntry[]>(() => initialEntries(INITIAL));

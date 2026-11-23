@@ -1,6 +1,6 @@
 import { COUNTRY_BY_CODE } from './data/countries';
-import { FORM_BOX, FORM_WIDTH } from './stamp/form';
-import type { StampForm } from './types';
+import { stampDesign } from './stamp/generate';
+import { hash, mulberry32 } from './stamp/random';
 
 export interface StampEntry {
 	code: string;
@@ -14,33 +14,10 @@ export interface StampEntry {
 
 export const MAX_STAMPS = 9;
 
-const SAFE = { left: 8, right: 92, top: 19, bottom: 90 };
+const SAFE = { left: 8, right: 92, top: 19, bottom: 87 };
 
-function hash(text: string, salt: number): number {
-	let h = 2166136261 ^ salt;
-	for (let i = 0; i < text.length; i++) {
-		h ^= text.charCodeAt(i);
-		h = Math.imul(h, 16777619);
-	}
-	return h >>> 0;
-}
-
-function mulberry32(a: number): () => number {
-	let t = a;
-	return () => {
-		t = (t + 0x6d2b79f5) | 0;
-		let r = Math.imul(t ^ (t >>> 15), 1 | t);
-		r = (r + Math.imul(r ^ (r >>> 7), 61 | r)) ^ r;
-		return ((r ^ (r >>> 14)) >>> 0) / 4294967296;
-	};
-}
-
-function formOf(code: string): StampForm {
-	return COUNTRY_BY_CODE[code]?.form ?? 'arrival';
-}
-
-function aspectOf(code: string): number {
-	return FORM_BOX[formOf(code)].aspect;
+function designOf(code: string) {
+	return stampDesign(COUNTRY_BY_CODE[code]);
 }
 
 export function stampHeight(width: number, aspect: number): number {
@@ -89,8 +66,8 @@ function zoneOf(x: number, y: number): number {
 function place(code: string, entries: StampEntry[], pageSeed: number): StampEntry {
 	const rnd = mulberry32(hash(code, pageSeed + entries.length * 7919));
 	const baseSeed = Math.floor(rnd() * 2 ** 30);
-	const baseWidth = FORM_WIDTH[formOf(code)];
-	const aspect = aspectOf(code);
+	const baseWidth = designOf(code).baseWidth;
+	const aspect = designOf(code).aspect;
 	const rotations = [-10, -7, -4, -1, 2, 5, 8, 11];
 	const scales = [1, 0.95, 0.9, 0.85, 0.8, 0.75, 0.7, 0.65, 0.6];
 	const grid = Array.from({ length: 11 }, (_, i) => i / 10);
@@ -139,7 +116,7 @@ function place(code: string, entries: StampEntry[], pageSeed: number): StampEntr
 					fallbackScore = rawScore;
 					fallback = next;
 				}
-				if (coreOverlap > 0.001 || overlap > 0.03) continue;
+				if (coreOverlap > 0.0005 || overlap > 0.03) continue;
 				const crowding = entries.length > 0 ? Math.max(0, 14 - nearest) * 0.22 : 0;
 				const zonePenalty = zoneCounts[zoneOf(x, y)] * 0.55;
 				const score =
@@ -167,32 +144,32 @@ function place(code: string, entries: StampEntry[], pageSeed: number): StampEntr
 	};
 }
 
-const OPENING: Record<string, Pick<StampEntry, 'x' | 'y' | 'rotation' | 'width'>> = {
-	ke: { x: 30, y: 30, rotation: -8, width: 44 },
-	za: { x: 68, y: 28, rotation: 10, width: 34 },
-	nl: { x: 29, y: 54, rotation: 5, width: 41 },
-	th: { x: 70, y: 42, rotation: -11, width: 33 },
-	jp: { x: 50, y: 72, rotation: -16, width: 28 },
-	qa: { x: 19, y: 83.5, rotation: 8, width: 32 },
-	no: { x: 82, y: 80, rotation: -6, width: 31 },
-};
+function arrange(entries: StampEntry[], pageSeed: number): StampEntry[] {
+	const sorted = [...entries].sort(
+		(a, b) => designOf(b.code).baseWidth - designOf(a.code).baseWidth
+	);
+	const placed: StampEntry[] = [];
+	for (const entry of sorted) {
+		placed.push(place(entry.code, placed, pageSeed));
+	}
+	const byCode = new Map(placed.map((entry) => [entry.code, entry]));
+	return entries.map((entry) => byCode.get(entry.code) as StampEntry);
+}
 
 export function initialEntries(codes: string[]): StampEntry[] {
-	const entries: StampEntry[] = [];
-	for (const code of codes) {
-		const at = OPENING[code];
-		if (at) {
-			entries.push({
-				code,
-				seed: hash(code, 197) % 2 ** 30,
-				aspect: aspectOf(code),
-				...at,
-			});
-		} else {
-			entries.push(place(code, entries, 197));
-		}
-	}
-	return entries;
+	const entries = codes.map((code) => {
+		const design = designOf(code);
+		return {
+			code,
+			seed: hash(code, 197) % 2 ** 30,
+			x: 50,
+			y: 50,
+			rotation: 0,
+			width: design.baseWidth,
+			aspect: design.aspect,
+		};
+	});
+	return arrange(entries, 197);
 }
 
 export function addEntry(code: string, entries: StampEntry[], pageSeed: number): StampEntry {
@@ -210,32 +187,10 @@ export function reinkEntries(entries: StampEntry[], pageSeed: number): StampEntr
 	});
 }
 
-const SHUFFLE_SLOTS = Object.values(OPENING);
-
 export function shuffleEntries(entries: StampEntry[], pageSeed: number): StampEntry[] {
-	const rnd = mulberry32(hash('shuffle', pageSeed));
-	const slots = [...SHUFFLE_SLOTS];
-	for (let i = slots.length - 1; i > 0; i--) {
-		const j = Math.floor(rnd() * (i + 1));
-		[slots[i], slots[j]] = [slots[j], slots[i]];
-	}
-	const next: StampEntry[] = [];
-	entries.slice(0, slots.length).forEach((entry, index) => {
-		const slot = slots[index];
-		const width = Math.min(slot.width, FORM_WIDTH[formOf(entry.code)] * 1.12);
-		next.push({
-			...entry,
-			x: slot.x + (rnd() - 0.5) * 2.4,
-			y: slot.y + (rnd() - 0.5) * 2.4,
-			rotation: slot.rotation + (rnd() - 0.5) * 4,
-			width,
-			aspect: aspectOf(entry.code),
-		});
-	});
-	for (const entry of entries.slice(slots.length)) {
-		next.push(place(entry.code, next, pageSeed));
-	}
-	return next;
+	const arranged = arrange(entries, pageSeed);
+	const seeds = new Map(entries.map((entry) => [entry.code, entry.seed]));
+	return arranged.map((entry) => ({ ...entry, seed: seeds.get(entry.code) ?? entry.seed }));
 }
 
 export function randomSeed(): number {
