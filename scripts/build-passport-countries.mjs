@@ -1,7 +1,6 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { countries as countryList } from 'countries-list';
 import worldCountries from 'world-countries';
 import { DESIGNS } from '../src/components/experiments/passport/data/designs.ts';
 
@@ -23,28 +22,6 @@ const DATE_STYLE_OVERRIDES = {
 };
 const ISO3_OVERRIDES = {
 	XK: 'XKX',
-};
-
-const STAMP_CAPITAL_OVERRIDES = {
-	DZ: 'Alger',
-	GR: 'Athina',
-	IT: 'Roma',
-	PT: 'Lisboa',
-	DK: 'København',
-	BE: 'Brussel',
-	AT: 'Wien',
-	CZ: 'Praha',
-	PL: 'Warszawa',
-	RO: 'București',
-	RU: 'Moskva',
-	EG: 'Al-Qahira',
-	LK: 'Colombo',
-	CY: 'Lefkosia',
-	UZ: 'Toshkent',
-	TM: 'Aşgabat',
-	LU: 'Lëtzebuerg',
-	VA: 'Città del Vaticano',
-	SM: 'San Marino',
 };
 
 const CAPITAL_OVERRIDES = {
@@ -69,7 +46,6 @@ const assert = (condition, message) => {
 };
 
 const latinOnly = /^[\p{Script=Latin}\p{Nd} .,'&()-]+$/u;
-const isUpper = (value) => value === value.toUpperCase() && /\p{Lu}/u.test(value);
 
 function readMotifKeys(source) {
 	const match = source.match(/export type MotifKey\s*=([^;]+);/);
@@ -103,18 +79,16 @@ const rows = selected.map((country) => {
 	if (!design) return null;
 
 	const englishName = country.name.common;
-	const native = countryList[country.cca2]?.native ?? '';
-	const stampName = design.name ?? englishName.toUpperCase();
 	const capital =
 		CAPITAL_OVERRIDES[country.cca2] ?? (Array.isArray(country.capital) ? country.capital[0] : '');
 
 	assert(
-		design.form === 'oval' ||
+		design.form === 'arrival' ||
+			design.form === 'oval' ||
 			design.form === 'round' ||
+			design.form === 'date' ||
 			design.form === 'permit' ||
-			design.form === 'shield' ||
-			design.form === 'transit' ||
-			design.form === 'visa',
+			design.form === 'transit',
 		`${country.cca2}: bad form ${design.form}`,
 	);
 	assert(
@@ -126,13 +100,8 @@ const rows = selected.map((country) => {
 		assert(motifKeys.has(design.motif2), `${country.cca2}: unknown motif2 ${design.motif2}`);
 		assert(design.motif2 !== design.motif, `${country.cca2}: motif2 repeats motif`);
 	}
-	assert(stampName.length > 0, `${country.cca2}: empty stampName`);
-	assert(stampName.length <= 20, `${country.cca2}: stampName over 20 chars: ${stampName}`);
-	assert(isUpper(stampName), `${country.cca2}: stampName not uppercase Latin: ${stampName}`);
-	assert(latinOnly.test(stampName), `${country.cca2}: stampName not Latin: ${stampName}`);
-	assert(design.entry, `${country.cca2}: missing entry word`);
-	assert(isUpper(design.entry), `${country.cca2}: entry not uppercase Latin: ${design.entry}`);
-	assert(latinOnly.test(design.entry), `${country.cca2}: entry not Latin: ${design.entry}`);
+	assert(englishName.length > 0, `${country.cca2}: empty English name`);
+	assert(latinOnly.test(englishName), `${country.cca2}: English name not Latin: ${englishName}`);
 	assert(capital.length > 0, `${country.cca2}: empty capital`);
 	assert(latinOnly.test(capital), `${country.cca2}: capital not Latin: ${capital}`);
 	assert(REGION_ORDER.includes(country.region), `${country.cca2}: bad region ${country.region}`);
@@ -141,17 +110,13 @@ const rows = selected.map((country) => {
 		code: country.cca2.toLowerCase(),
 		iso3: ISO3_OVERRIDES[country.cca2] ?? country.cca3.toUpperCase(),
 		name: englishName,
-		stampName,
 		capital,
-		stampCapital: STAMP_CAPITAL_OVERRIDES[country.cca2],
 		region: country.region,
 		motif: design.motif,
 		motif2: design.motif2,
 		form: design.form,
 		ink: design.ink,
-		entryWord: design.entry,
 		dateStyle: DATE_STYLE_OVERRIDES[country.cca2] ?? 'dmy',
-		native,
 	};
 });
 
@@ -178,7 +143,7 @@ const formCounts = count('form');
 const inkCounts = count('ink');
 const motifCounts = count('motif');
 
-for (const form of ['oval', 'round', 'permit', 'shield', 'transit', 'visa']) {
+for (const form of ['arrival', 'oval', 'round', 'date', 'permit', 'transit']) {
 	assert((formCounts[form] ?? 0) >= 30 && (formCounts[form] ?? 0) <= 36, `form ${form} out of range`);
 }
 for (const [ink, n] of Object.entries(inkCounts)) {
@@ -194,20 +159,6 @@ const dateStyleFailures = validRows.filter((row) => {
 	return row.dateStyle !== 'dmy';
 });
 assert(dateStyleFailures.length === 0, `dateStyle mismatches: ${dateStyleFailures.map((r) => r.code)}`);
-
-const nativeNotes = validRows.filter((row) => {
-	const nativeName = row.native.trim();
-	return nativeName && !latinOnly.test(nativeName);
-});
-const latinNativeNames = validRows.filter((row) => {
-	const nativeName = row.native.trim();
-	return nativeName && latinOnly.test(nativeName) && nativeName.length <= 20;
-});
-const englishFallbacks = latinNativeNames.filter(
-	(row) =>
-		row.stampName === row.name.toUpperCase() &&
-		row.native.trim().toUpperCase() !== row.name.toUpperCase(),
-);
 
 if (failures.length > 0) {
 	console.error(`FAIL (${failures.length})`);
@@ -227,9 +178,7 @@ const serializedCountry = (country) => {
 		`\t\tcode: ${q(country.code)},`,
 		`\t\tiso3: ${q(country.iso3)},`,
 		`\t\tname: ${q(country.name)},`,
-		`\t\tstampName: ${q(country.stampName)},`,
 		`\t\tcapital: ${q(country.capital)},`,
-		...(country.stampCapital ? [`\t\tstampCapital: ${q(country.stampCapital)},`] : []),
 		`\t\tregion: ${q(country.region)},`,
 		`\t\tmotif: ${q(country.motif)},`,
 	];
@@ -237,7 +186,6 @@ const serializedCountry = (country) => {
 	lines.push(
 		`\t\tform: ${q(country.form)},`,
 		`\t\tink: ${q(country.ink)},`,
-		`\t\tentryWord: ${q(country.entryWord)},`,
 		`\t\tdateStyle: ${q(country.dateStyle)},`,
 		`\t\tserial: ${q(country.serial)},`,
 		'\t},',
@@ -256,13 +204,12 @@ export const COUNTRY_BY_CODE: Record<string, Country> = Object.fromEntries(
 );
 `;
 
-const proofHeader = ['code', 'iso3', 'name', 'stampName', 'capital', 'motif', 'motif2', 'form', 'ink'].join('\t');
+const proofHeader = ['code', 'iso3', 'name', 'capital', 'motif', 'motif2', 'form', 'ink'].join('\t');
 const proofRows = countries.map((country) =>
 	[
 		country.code.toUpperCase(),
 		country.iso3,
 		country.name,
-		country.stampName,
 		country.capital,
 		country.motif,
 		country.motif2 ?? '',
@@ -307,9 +254,6 @@ console.log(
 	`motifs: ${Object.keys(motifCounts).length} distinct, max repeat ${Math.max(...Object.values(motifCounts))}`,
 );
 console.log(`motif2: ${countries.filter((country) => country.motif2).length}`);
-console.log(`native names in non-Latin script: ${nativeNotes.length}`);
-console.log(`latin native names available: ${latinNativeNames.length}`);
-console.log(`latin local variants not used on stamps: ${englishFallbacks.length}`);
 console.log(`wrote ${OUT_PATH}`);
 console.log(`wrote ${PROOF_PATH}`);
 console.log('PASS');

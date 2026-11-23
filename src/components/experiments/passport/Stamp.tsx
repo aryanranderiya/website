@@ -2,13 +2,13 @@
 
 import { memo, useId } from 'react';
 import { MOTIFS } from './data/motifs';
+import { FORM_BOX } from './stamp/form';
 import {
 	CONDENSED,
 	cleanId,
 	fitSize,
 	INK_HEX,
 	MONO,
-	SERIF,
 	type StampSpec,
 	stampSpec,
 	TYPEWRITER,
@@ -18,25 +18,30 @@ import type { Country, MotifKey } from './types';
 interface FormProps {
 	country: Country;
 	spec: StampSpec;
-	uid: string;
 }
 
-interface MotifProps {
+const r3 = (n: number): number => Math.round(n * 1000) / 1000;
+
+function Motif({
+	name,
+	x,
+	y,
+	size,
+	opacity = 1,
+}: {
 	name: MotifKey;
 	x: number;
 	y: number;
 	size: number;
 	opacity?: number;
-}
-
-function Motif({ name, x, y, size, opacity = 1 }: MotifProps) {
+}) {
 	return (
 		<g
 			transform={`translate(${x - size / 2} ${y - size / 2}) scale(${size / 48})`}
 			opacity={opacity}
 			fill="none"
 			stroke="currentColor"
-			strokeWidth={1.5}
+			strokeWidth={1.25}
 			strokeLinecap="round"
 			strokeLinejoin="round"
 		>
@@ -45,126 +50,24 @@ function Motif({ name, x, y, size, opacity = 1 }: MotifProps) {
 	);
 }
 
-function r3Number(n: number): number {
-	return Math.round(n * 1000) / 1000;
-}
-
-function Star({ cx, cy, r, opacity = 1 }: { cx: number; cy: number; r: number; opacity?: number }) {
-	const points: string[] = [];
-	for (let i = 0; i < 10; i++) {
-		const radius = i % 2 === 0 ? r : r * 0.4;
-		const angle = -Math.PI / 2 + (i * Math.PI) / 5;
-		points.push(
-			`${r3Number(cx + Math.cos(angle) * radius)},${r3Number(cy + Math.sin(angle) * radius)}`
-		);
-	}
-	return <polygon points={points.join(' ')} fill="currentColor" opacity={opacity} />;
-}
-
-function Rosette({
-	cx,
-	cy,
-	r,
-	seed,
-	opacity = 0.12,
-}: {
-	cx: number;
-	cy: number;
-	r: number;
-	seed: number;
-	opacity?: number;
-}) {
-	const rings = Array.from({ length: 22 }, (_, i) => {
-		const t = i / 21;
-		const ringR = r3Number(r * (0.34 + 0.66 * t));
-		const squash = 0.58 + (((seed % 7) + i) % 5) * 0.014;
-		return (
-			<ellipse
-				// biome-ignore lint/suspicious/noArrayIndexKey: rings are a fixed generated set
-				key={i}
-				cx={cx}
-				cy={cy}
-				rx={ringR}
-				ry={r3Number(ringR * squash)}
-				transform={`rotate(${r3Number(i * 4.1 + (seed % 17))} ${cx} ${cy})`}
-			/>
-		);
-	});
-	return (
-		<g fill="none" stroke="currentColor" strokeWidth={0.28} opacity={opacity}>
-			{rings}
-		</g>
-	);
-}
-
-function ArcText({
-	id,
-	d,
-	children,
-	fontFamily = MONO,
-	fontSize = 4.1,
-	letterSpacing = 0.45,
-	opacity = 0.72,
-	dy = 0,
-	baseline = 'auto',
-}: {
-	id: string;
-	d: string;
-	children: string;
-	fontFamily?: string;
-	fontSize?: number;
-	letterSpacing?: number;
-	opacity?: number;
-	dy?: number;
-	baseline?: 'auto' | 'middle';
-}) {
-	return (
-		<>
-			<path id={id} d={d} fill="none" />
-			<text
-				fill="currentColor"
-				fontFamily={fontFamily}
-				fontSize={fontSize}
-				letterSpacing={letterSpacing}
-				opacity={opacity}
-				dy={dy}
-				dominantBaseline={baseline}
-			>
-				<textPath href={`#${id}`} startOffset="50%" textAnchor="middle">
-					{children}
-				</textPath>
-			</text>
-		</>
-	);
-}
-
-function NameArc({
+function ArcName({
 	id,
 	d,
 	name,
 	size,
-	fontFamily = CONDENSED,
-	letterSpacing = 1.2,
-	arcWidth = 250,
+	arcWidth = 160,
 }: {
 	id: string;
 	d: string;
 	name: string;
 	size: number;
-	fontFamily?: string;
-	letterSpacing?: number;
 	arcWidth?: number;
 }) {
-	const fontSize = fitSize(name, size, arcWidth, fontFamily, letterSpacing);
+	const fontSize = fitSize(name, size, arcWidth, CONDENSED, 0);
 	return (
 		<>
 			<path id={id} d={d} fill="none" />
-			<text
-				fill="currentColor"
-				fontFamily={fontFamily}
-				fontSize={fontSize}
-				letterSpacing={letterSpacing}
-			>
+			<text fill="currentColor" fontFamily={CONDENSED} fontSize={fontSize}>
 				<textPath href={`#${id}`} startOffset="50%" textAnchor="middle">
 					{name}
 				</textPath>
@@ -173,14 +76,12 @@ function NameArc({
 	);
 }
 
-function StraightName({
+function Name({
 	name,
 	x,
 	y,
 	size,
 	maxWidth,
-	fontFamily = CONDENSED,
-	letterSpacing = 1.2,
 	anchor = 'middle',
 }: {
 	name: string;
@@ -188,19 +89,16 @@ function StraightName({
 	y: number;
 	size: number;
 	maxWidth: number;
-	fontFamily?: string;
-	letterSpacing?: number;
 	anchor?: 'start' | 'middle' | 'end';
 }) {
-	const fontSize = fitSize(name, size, maxWidth, fontFamily, letterSpacing);
+	const fontSize = fitSize(name, size, maxWidth, CONDENSED, 0);
 	return (
 		<text
 			x={x}
 			y={y}
 			fill="currentColor"
-			fontFamily={fontFamily}
+			fontFamily={CONDENSED}
 			fontSize={fontSize}
-			letterSpacing={letterSpacing}
 			textAnchor={anchor}
 		>
 			{name}
@@ -208,43 +106,13 @@ function StraightName({
 	);
 }
 
-function Ticks({
-	cx,
-	cy,
-	rx,
-	ry,
-	count = 12,
-	length = 2.4,
-}: {
-	cx: number;
-	cy: number;
-	rx: number;
-	ry: number;
-	count?: number;
-	length?: number;
-}) {
-	return (
-		<g stroke="currentColor" strokeWidth={0.45} opacity={0.45}>
-			{Array.from({ length: count }, (_, i) => {
-				const angle = (i * Math.PI * 2) / count;
-				const x1 = r3Number(cx + Math.cos(angle) * (rx - length));
-				const y1 = r3Number(cy + Math.sin(angle) * (ry - length));
-				const x2 = r3Number(cx + Math.cos(angle) * (rx + 0.6));
-				const y2 = r3Number(cy + Math.sin(angle) * (ry + 0.6));
-				return <line key={angle} x1={x1} y1={y1} x2={x2} y2={y2} />;
-			})}
-		</g>
-	);
-}
-
 function Micro({
 	children,
 	x,
 	y,
-	size = 4.15,
+	size = 3.8,
 	anchor = 'middle',
-	opacity = 0.7,
-	letterSpacing = 0.28,
+	opacity = 0.64,
 }: {
 	children: string;
 	x: number;
@@ -252,7 +120,6 @@ function Micro({
 	size?: number;
 	anchor?: 'start' | 'middle' | 'end';
 	opacity?: number;
-	letterSpacing?: number;
 }) {
 	return (
 		<text
@@ -261,7 +128,6 @@ function Micro({
 			fill="currentColor"
 			fontFamily={MONO}
 			fontSize={size}
-			letterSpacing={letterSpacing}
 			textAnchor={anchor}
 			opacity={opacity}
 		>
@@ -270,199 +136,334 @@ function Micro({
 	);
 }
 
-function repeat(text: string, times: number): string {
-	return Array.from({ length: times }, () => text).join('');
-}
-
-function OvalForm({ country, spec, uid }: FormProps) {
-	const name = country.stampName;
+function DateCells({
+	x,
+	y,
+	width,
+	height,
+	spec,
+}: {
+	x: number;
+	y: number;
+	width: number;
+	height: number;
+	spec: StampSpec;
+}) {
+	const cell = width / 3;
 	return (
 		<g>
-			<ellipse
-				cx={120}
-				cy={80}
-				rx={97}
-				ry={64}
+			<rect
+				x={x}
+				y={y}
+				width={width}
+				height={height}
 				fill="none"
 				stroke="currentColor"
-				strokeWidth={2.6}
+				strokeWidth={0.9}
 			/>
-			<ellipse
-				cx={120}
-				cy={80}
-				rx={91}
-				ry={58}
-				fill="none"
-				stroke="currentColor"
-				strokeWidth={0.7}
-				opacity={0.9}
-			/>
-			<Ticks cx={120} cy={80} rx={94} ry={61} count={16} />
-			<Rosette cx={120} cy={84} r={55} seed={spec.seed} />
-			<NameArc
-				id={`${uid}-oval-name`}
-				d="M 40 72 A 80 24 0 0 1 200 72"
-				name={name}
-				size={20}
-				fontFamily={CONDENSED}
-				letterSpacing={1.5}
-				arcWidth={152}
-			/>
-			<ArcText
-				id={`${uid}-oval-micro`}
-				d="M 40 84 A 80 44 0 0 0 200 84"
-				fontSize={4.15}
-				opacity={0.68}
-				letterSpacing={0.4}
-				baseline="middle"
-			>
-				{repeat(`${spec.reference} / ${country.iso3} /`, 3)}
-			</ArcText>
 			<line
-				x1={114}
-				y1={56}
-				x2={114}
-				y2={104}
+				x1={x + cell}
+				y1={y}
+				x2={x + cell}
+				y2={y + height}
 				stroke="currentColor"
-				strokeWidth={0.5}
-				opacity={0.38}
+				strokeWidth={0.55}
+				opacity={0.65}
 			/>
-			<Motif name={country.motif} x={74} y={83} size={motifSize(country, 38)} />
-			{country.motif2 && <Motif name={country.motif2} x={186} y={116} size={13} opacity={0.6} />}
+			<line
+				x1={x + cell * 2}
+				y1={y}
+				x2={x + cell * 2}
+				y2={y + height}
+				stroke="currentColor"
+				strokeWidth={0.55}
+				opacity={0.65}
+			/>
 			<text
-				x={146}
-				y={73}
+				x={x + cell * 0.5}
+				y={y + height * 0.7}
 				fill="currentColor"
 				fontFamily={CONDENSED}
-				fontSize={26}
-				letterSpacing={0.8}
+				fontSize={r3(height * 0.58)}
 				textAnchor="middle"
 			>
 				{spec.day}
 			</text>
-			<Micro x={146} y={83} size={6.6} letterSpacing={0.5}>
-				{`${spec.month} ${spec.year}`}
-			</Micro>
 			<text
-				x={146}
-				y={96}
+				x={x + cell * 1.5}
+				y={y + height * 0.65}
 				fill="currentColor"
-				fontFamily={CONDENSED}
-				fontSize={9.8}
-				letterSpacing={1.8}
+				fontFamily={MONO}
+				fontSize={r3(height * 0.36)}
 				textAnchor="middle"
 			>
-				{country.entryWord}
+				{spec.month}
 			</text>
-			<line
-				x1={128}
-				y1={101}
-				x2={194}
-				y2={101}
-				stroke="currentColor"
-				strokeWidth={0.5}
-				opacity={0.5}
-			/>
-			<Micro x={146} y={109} size={5} opacity={0.82}>
-				{`CLASS ${spec.classCode} / ${spec.serial}`}
-			</Micro>
-			<Micro x={120} y={118} size={4.4} opacity={0.62}>
-				{`PORT ${(country.stampCapital ?? country.capital).toUpperCase()} / ${spec.serial}`}
-			</Micro>
-			<Star cx={33} cy={80} r={3.2} opacity={0.72} />
-			<Star cx={207} cy={80} r={3.2} opacity={0.72} />
+			<text
+				x={x + cell * 2.5}
+				y={y + height * 0.65}
+				fill="currentColor"
+				fontFamily={MONO}
+				fontSize={r3(height * 0.4)}
+				textAnchor="middle"
+			>
+				{spec.shortYear}
+			</text>
 		</g>
 	);
 }
 
-function RoundForm({ country, spec, uid }: FormProps) {
+function Rule({ x1, x2, y }: { x1: number; x2: number; y: number }) {
+	return (
+		<line x1={x1} y1={y} x2={x2} y2={y} stroke="currentColor" strokeWidth={0.8} opacity={0.55} />
+	);
+}
+
+function ArrivalForm({ country, spec }: FormProps) {
 	return (
 		<g>
-			<circle cx={120} cy={80} r={64} fill="none" stroke="currentColor" strokeWidth={2.6} />
-			<circle
-				cx={120}
-				cy={80}
-				r={58}
+			<rect
+				x={11}
+				y={12}
+				width={218}
+				height={126}
+				rx={3}
+				fill="none"
+				stroke="currentColor"
+				strokeWidth={3.2}
+			/>
+			<rect
+				x={18}
+				y={19}
+				width={204}
+				height={112}
+				rx={1.5}
 				fill="none"
 				stroke="currentColor"
 				strokeWidth={0.7}
-				opacity={0.9}
+				opacity={0.6}
 			/>
-			<Rosette cx={120} cy={84} r={49} seed={spec.seed} opacity={0.11} />
-			<ArcText
-				id={`${uid}-round-top`}
-				d="M 59 80 A 61 61 0 0 1 181 80"
-				fontSize={4.15}
-				opacity={0.66}
-				letterSpacing={0.35}
-				baseline="middle"
-			>
-				{repeat(`${country.iso3} / ${country.name.toUpperCase()} / `, 2)}
-			</ArcText>
-			<ArcText
-				id={`${uid}-round-bottom`}
-				d="M 59 80 A 61 61 0 0 0 181 80"
-				fontSize={4.15}
-				opacity={0.66}
-				letterSpacing={0.35}
-				baseline="middle"
-			>
-				{repeat(`BORDER CONTROL / ${spec.reference} / `, 2)}
-			</ArcText>
-			<StraightName
-				name={country.stampName}
-				x={120}
-				y={50}
-				size={17}
-				maxWidth={86}
+			<Name
+				name={country.name.toUpperCase()}
+				x={23}
+				y={45}
+				size={22}
+				maxWidth={148}
+				anchor="start"
+			/>
+			<Rule x1={23} x2={217} y={51} />
+			<rect x={23} y={59} width={96} height={30} fill="currentColor" />
+			<text
+				x={26}
+				y={82}
+				fill="var(--paper, #f4ecdc)"
 				fontFamily={CONDENSED}
-				letterSpacing={1.3}
+				fontSize={24}
+				textAnchor="start"
+			>
+				{spec.direction}
+			</text>
+			<Name
+				name={country.capital.toUpperCase()}
+				x={23}
+				y={105}
+				size={9.4}
+				maxWidth={94}
+				anchor="start"
 			/>
-			<line
-				x1={82}
-				y1={52}
-				x2={158}
-				y2={52}
+			<DateCells x={132} y={58} width={85} height={37} spec={spec} />
+			<Micro x={132} y={108} size={4.5} anchor="start">
+				{`NO. ${spec.serial}`}
+			</Micro>
+			<Motif name={country.motif} x={208} y={120} size={18} opacity={0.18} />
+		</g>
+	);
+}
+
+function OvalForm({ country, spec }: FormProps) {
+	return (
+		<g>
+			<ellipse
+				cx={120}
+				cy={80}
+				rx={100}
+				ry={67}
+				fill="none"
 				stroke="currentColor"
-				strokeWidth={0.5}
-				opacity={0.4}
+				strokeWidth={3}
 			/>
-			<Motif name={country.motif} x={120} y={72} size={motifSize(country, 38)} />
+			<ellipse
+				cx={120}
+				cy={80}
+				rx={94.5}
+				ry={61.5}
+				fill="none"
+				stroke="currentColor"
+				strokeWidth={0.65}
+				opacity={0.6}
+			/>
+			<ArcName
+				id={`${country.code}-${spec.seed}-oval-name`}
+				d="M 30 70 A 90 43 0 0 1 210 70"
+				name={country.name.toUpperCase()}
+				size={20}
+				arcWidth={166}
+			/>
+			<ArcName
+				id={`${country.code}-${spec.seed}-oval-control`}
+				d="M 30 94 A 90 37 0 0 0 210 94"
+				name={`IMMIGRATION · ${country.iso3}`}
+				size={5.6}
+				arcWidth={154}
+			/>
 			<text
 				x={120}
-				y={99}
+				y={75}
+				fill="currentColor"
+				fontFamily={CONDENSED}
+				fontSize={21}
+				textAnchor="middle"
+			>
+				{spec.direction}
+			</text>
+			<text
+				x={120}
+				y={90}
 				fill="currentColor"
 				fontFamily={MONO}
-				fontSize={9.8}
-				letterSpacing={0.7}
+				fontSize={11.5}
 				textAnchor="middle"
 			>
 				{spec.dateLine}
 			</text>
-			<line
-				x1={84}
-				y1={106}
-				x2={156}
-				y2={106}
+			<Name name={country.capital.toUpperCase()} x={120} y={103} size={8} maxWidth={104} />
+			<Micro x={120} y={115} size={4.3}>
+				{`NO. ${spec.serial}`}
+			</Micro>
+			<Motif name={country.motif} x={46} y={80} size={18} opacity={0.2} />
+		</g>
+	);
+}
+
+function RoundForm({ country, spec }: FormProps) {
+	return (
+		<g>
+			<circle cx={80} cy={80} r={73} fill="none" stroke="currentColor" strokeWidth={3} />
+			<circle
+				cx={80}
+				cy={80}
+				r={67}
+				fill="none"
 				stroke="currentColor"
-				strokeWidth={0.5}
-				opacity={0.4}
+				strokeWidth={0.65}
+				opacity={0.6}
+			/>
+			<ArcName
+				id={`${country.code}-${spec.seed}-round-name`}
+				d="M 15 80 A 65 65 0 0 1 145 80"
+				name={country.name.toUpperCase()}
+				size={15}
+				arcWidth={150}
+			/>
+			<ArcName
+				id={`${country.code}-${spec.seed}-round-control`}
+				d="M 15 80 A 65 65 0 0 0 145 80"
+				name={`IMMIGRATION · ${country.iso3}`}
+				size={5}
+				arcWidth={144}
 			/>
 			<text
-				x={120}
-				y={118}
+				x={80}
+				y={67}
 				fill="currentColor"
 				fontFamily={CONDENSED}
 				fontSize={12}
-				letterSpacing={2.4}
 				textAnchor="middle"
 			>
-				{country.entryWord}
+				{spec.direction}
 			</text>
-			<Micro x={120} y={129} size={4.35} opacity={0.66}>
-				{`CLASS ${spec.classCode} / Nº ${spec.serial}`}
+			<text
+				x={80}
+				y={85}
+				fill="currentColor"
+				fontFamily={CONDENSED}
+				fontSize={26}
+				textAnchor="middle"
+			>
+				{spec.day}
+			</text>
+			<Micro x={80} y={94} size={7}>
+				{`${spec.month} ${spec.year}`}
 			</Micro>
-			{country.motif2 && <Motif name={country.motif2} x={164} y={58} size={13} opacity={0.6} />}
+			<Name name={country.capital.toUpperCase()} x={80} y={106} size={6} maxWidth={94} />
+			<Micro x={80} y={116} size={4}>
+				{`NO. ${spec.serial}`}
+			</Micro>
+			<Motif name={country.motif} x={80} y={51} size={10} opacity={0.16} />
+		</g>
+	);
+}
+
+function DateForm({ country, spec }: FormProps) {
+	return (
+		<g>
+			<rect
+				x={12}
+				y={10}
+				width={216}
+				height={80}
+				rx={1.5}
+				fill="none"
+				stroke="currentColor"
+				strokeWidth={2.8}
+			/>
+			<rect
+				x={18}
+				y={16}
+				width={204}
+				height={68}
+				rx={1.5}
+				fill="none"
+				stroke="currentColor"
+				strokeWidth={0.65}
+				opacity={0.6}
+			/>
+			<Name
+				name={country.name.toUpperCase()}
+				x={24}
+				y={33}
+				size={18}
+				maxWidth={140}
+				anchor="start"
+			/>
+			<text
+				x={216}
+				y={33}
+				fill="currentColor"
+				fontFamily={CONDENSED}
+				fontSize={16}
+				textAnchor="end"
+			>
+				{spec.direction}
+			</text>
+			<Rule x1={24} x2={216} y={38} />
+			<rect x={24} y={45} width={192} height={28} fill="currentColor" />
+			<text
+				x={120}
+				y={65}
+				fill="var(--paper, #f1e6d2)"
+				fontFamily={TYPEWRITER}
+				fontSize={14}
+				textAnchor="middle"
+			>
+				{spec.dateLine}
+			</text>
+			<Micro x={24} y={83} size={4.5} anchor="start">
+				{`PORT ${country.capital.toUpperCase()}`}
+			</Micro>
+			<Micro x={216} y={83} size={4.5} anchor="end">
+				{`NO. ${spec.serial}`}
+			</Micro>
 		</g>
 	);
 }
@@ -471,275 +472,67 @@ function PermitForm({ country, spec }: FormProps) {
 	return (
 		<g>
 			<rect
-				x={14}
-				y={20}
-				width={212}
-				height={120}
-				rx={4}
+				x={11}
+				y={14}
+				width={218}
+				height={112}
+				rx={3}
 				fill="none"
 				stroke="currentColor"
-				strokeWidth={2.6}
+				strokeWidth={3.2}
 			/>
 			<rect
-				x={20}
-				y={26}
-				width={200}
-				height={108}
-				rx={2.5}
+				x={18}
+				y={21}
+				width={204}
+				height={98}
+				rx={1.5}
 				fill="none"
 				stroke="currentColor"
 				strokeWidth={0.7}
-				opacity={0.85}
+				opacity={0.6}
 			/>
-			<line
-				x1={20}
-				y1={58}
-				x2={220}
-				y2={58}
-				stroke="currentColor"
-				strokeWidth={0.55}
-				opacity={0.55}
-			/>
-			<line
-				x1={20}
-				y1={62}
-				x2={220}
-				y2={62}
-				stroke="currentColor"
-				strokeWidth={0.3}
-				opacity={0.4}
-			/>
-			<line
-				x1={118}
-				y1={68}
-				x2={118}
-				y2={128}
-				stroke="currentColor"
-				strokeWidth={0.5}
-				opacity={0.42}
-			/>
-			<Rosette cx={120} cy={94} r={58} seed={spec.seed} opacity={0.075} />
-			<StraightName
-				name={country.stampName}
-				x={30}
-				y={47}
-				size={22}
-				maxWidth={145}
-				fontFamily={CONDENSED}
-				letterSpacing={1.4}
+			<Name
+				name={country.name.toUpperCase()}
+				x={23}
+				y={45}
+				size={21}
+				maxWidth={146}
 				anchor="start"
 			/>
-			<rect
-				x={184}
-				y={32}
-				width={32}
-				height={18}
-				fill="none"
-				stroke="currentColor"
-				strokeWidth={0.55}
-				opacity={0.7}
-			/>
-			<Micro x={200} y={44.5} size={5} letterSpacing={0.7}>
-				{country.iso3}
-			</Micro>
-			<Motif name={country.motif} x={62} y={88} size={motifSize(country, 38)} />
-			{country.motif2 && <Motif name={country.motif2} x={90} y={103} size={13} opacity={0.6} />}
+			<rect x={188} y={30} width={29} height={15} fill="currentColor" />
 			<text
-				x={62}
-				y={116}
+				x={202.5}
+				y={41.5}
+				fill="var(--paper, #f4ecdc)"
+				fontFamily={CONDENSED}
+				fontSize={12}
+				textAnchor="middle"
+			>
+				VISA
+			</text>
+			<Rule x1={23} x2={217} y={50} />
+			<text
+				x={23}
+				y={75}
 				fill="currentColor"
 				fontFamily={CONDENSED}
-				fontSize={11}
-				letterSpacing={1.9}
-				textAnchor="middle"
+				fontSize={19}
+				textAnchor="start"
 			>
-				{country.entryWord}
+				{spec.direction}
 			</text>
-			<Micro x={62} y={124} size={4.15} opacity={0.65}>
-				{`PORT ${(country.stampCapital ?? country.capital).toUpperCase()}`}
+			<DateCells x={81} y={56} width={136} height={32} spec={spec} />
+			<Micro x={23} y={99} size={4.5} anchor="start">
+				{`UNTIL ${spec.untilLine}`}
 			</Micro>
-			<rect
-				x={126}
-				y={70}
-				width={88}
-				height={50}
-				fill="currentColor"
-				fillOpacity={0.045}
-				stroke="currentColor"
-				strokeWidth={0.55}
-				strokeOpacity={0.62}
-			/>
-			<Micro x={170} y={81} size={5.4} letterSpacing={1.1}>
-				{`CLASS ${spec.classCode}`}
+			<Micro x={23} y={110} size={4.5} anchor="start">
+				{country.capital.toUpperCase()}
 			</Micro>
-			<line
-				x1={132}
-				y1={85}
-				x2={208}
-				y2={85}
-				stroke="currentColor"
-				strokeWidth={0.4}
-				opacity={0.4}
-			/>
-			<text
-				x={140}
-				y={105}
-				fill="currentColor"
-				fontFamily={TYPEWRITER}
-				fontSize={22}
-				textAnchor="middle"
-			>
-				{spec.day}
-			</text>
-			<text
-				x={163}
-				y={101}
-				fill="currentColor"
-				fontFamily={MONO}
-				fontSize={7.2}
-				letterSpacing={0.35}
-			>
-				{spec.month}
-			</text>
-			<text
-				x={163}
-				y={109}
-				fill="currentColor"
-				fontFamily={MONO}
-				fontSize={7.2}
-				letterSpacing={0.35}
-			>
-				{spec.year}
-			</text>
-			<text
-				x={207}
-				y={105}
-				fill="currentColor"
-				fontFamily={MONO}
-				fontSize={5.6}
-				letterSpacing={0.3}
-				textAnchor="end"
-			>
-				{spec.serial}
-			</text>
-			<Micro x={120} y={130} size={4.15} opacity={0.63} letterSpacing={0.5}>
-				{`ADMITTED AT ${(country.stampCapital ?? country.capital).toUpperCase()} / ${spec.reference} / ${spec.isoDate.replaceAll('-', '.')}`}
+			<Micro x={217} y={110} size={4.5} anchor="end">
+				{`NO. ${spec.serial}`}
 			</Micro>
-			<Ticks cx={120} cy={80} rx={101} ry={55} count={28} length={2} />
-		</g>
-	);
-}
-
-function ShieldForm({ country, spec }: FormProps) {
-	const compactDate = `${spec.day}.${spec.isoDate.slice(5, 7)}.${spec.isoDate.slice(2, 4)}`;
-	return (
-		<g>
-			<path
-				d="M 38 26 H 202 L 194 104 L 120 144 L 46 104 Z"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth={2.6}
-				strokeLinejoin="round"
-			/>
-			<path
-				d="M 44 33 H 196 L 188.6 100.5 L 120 136.5 L 51.4 100.5 Z"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth={0.7}
-				strokeDasharray="3 1.6"
-				opacity={0.65}
-			/>
-			<Rosette cx={120} cy={84} r={28} seed={spec.seed} opacity={0.12} />
-			<StraightName
-				name={country.stampName}
-				x={120}
-				y={51}
-				size={21}
-				maxWidth={150}
-				fontFamily={SERIF}
-				letterSpacing={1.5}
-			/>
-			<Micro x={120} y={60} size={4.15} opacity={0.66}>
-				{`IMMIGRATION / ${country.iso3} / ${spec.reference}`}
-			</Micro>
-			<circle
-				cx={120}
-				cy={84}
-				r={17}
-				fill="currentColor"
-				fillOpacity={0.05}
-				stroke="currentColor"
-				strokeWidth={0.6}
-				strokeOpacity={0.52}
-			/>
-			<Motif name={country.motif} x={120} y={84} size={motifSize(country, 30)} />
-			<Star cx={42} cy={33} r={2.6} opacity={0.6} />
-			<Star cx={198} cy={33} r={2.6} opacity={0.6} />
-			<line
-				x1={82}
-				y1={106}
-				x2={158}
-				y2={106}
-				stroke="currentColor"
-				strokeWidth={0.45}
-				opacity={0.4}
-			/>
-			<text
-				x={105}
-				y={110}
-				fill="currentColor"
-				fontFamily={CONDENSED}
-				fontSize={5.8}
-				letterSpacing={1.1}
-				textAnchor="middle"
-			>
-				{country.entryWord}
-			</text>
-			<text
-				x={108}
-				y={117}
-				fill="currentColor"
-				fontFamily={MONO}
-				fontSize={8.4}
-				letterSpacing={0.15}
-				textAnchor="middle"
-			>
-				{compactDate}
-			</text>
-			<text
-				x={137}
-				y={110}
-				fill="currentColor"
-				fontFamily={CONDENSED}
-				fontSize={5.8}
-				letterSpacing={1.1}
-				textAnchor="middle"
-			>
-				{`CLASS ${spec.classCode}`}
-			</text>
-			<text
-				x={137}
-				y={119}
-				fill="currentColor"
-				fontFamily={MONO}
-				fontSize={5.2}
-				letterSpacing={0.2}
-				textAnchor="middle"
-			>
-				{spec.serial}
-			</text>
-			<Micro x={120} y={128} size={3.2} opacity={0.55} letterSpacing={0.5}>
-				CONSULAR
-			</Micro>
-			<line
-				x1={44}
-				y1={66}
-				x2={196}
-				y2={66}
-				stroke="currentColor"
-				strokeWidth={0.45}
-				opacity={0.35}
-			/>
+			<Motif name={country.motif} x={54} y={119} size={14} opacity={0.17} />
 		</g>
 	);
 }
@@ -747,254 +540,67 @@ function ShieldForm({ country, spec }: FormProps) {
 function TransitForm({ country, spec }: FormProps) {
 	return (
 		<g>
-			<path
-				d="M 120 18 L 204 52 L 204 108 L 120 142 L 36 108 L 36 52 Z"
+			<rect
+				x={11}
+				y={18}
+				width={218}
+				height={94}
+				rx={5}
 				fill="none"
 				stroke="currentColor"
-				strokeWidth={2.6}
-				strokeLinejoin="round"
+				strokeWidth={2.8}
 			/>
-			<path
-				d="M 120 25 L 197.5 56 L 197.5 104 L 120 135 L 42.5 104 L 42.5 56 Z"
+			<rect
+				x={17}
+				y={24}
+				width={206}
+				height={82}
+				rx={1.5}
 				fill="none"
 				stroke="currentColor"
-				strokeWidth={0.7}
-				strokeDasharray="2.6 1.8"
-				opacity={0.62}
+				strokeWidth={0.65}
+				opacity={0.6}
 			/>
-			<Rosette cx={120} cy={84} r={52} seed={spec.seed} opacity={0.09} />
-			<StraightName
-				name={country.stampName}
-				x={120}
-				y={53}
-				size={17}
-				maxWidth={96}
-				fontFamily={CONDENSED}
-				letterSpacing={1.4}
+			<Name
+				name={country.name.toUpperCase()}
+				x={23}
+				y={40}
+				size={15}
+				maxWidth={142}
+				anchor="start"
 			/>
-			<line
-				x1={54}
-				y1={58}
-				x2={186}
-				y2={58}
-				stroke="currentColor"
-				strokeWidth={0.45}
-				opacity={0.38}
-			/>
-			<Motif name={country.motif} x={73} y={85} size={motifSize(country, 40)} />
-			{country.motif2 && <Motif name={country.motif2} x={98} y={102} size={13} opacity={0.6} />}
+			<Rule x1={23} x2={217} y={46} />
 			<text
-				x={145}
-				y={80}
+				x={23}
+				y={78}
 				fill="currentColor"
 				fontFamily={CONDENSED}
-				fontSize={14}
-				letterSpacing={2.2}
-				textAnchor="middle"
+				fontSize={30}
+				textAnchor="start"
 			>
 				TRANSIT
 			</text>
-			<line
-				x1={126}
-				y1={86}
-				x2={180}
-				y2={86}
-				stroke="currentColor"
-				strokeWidth={0.45}
-				opacity={0.45}
-			/>
-			<text
-				x={145}
-				y={96}
-				fill="currentColor"
-				fontFamily={MONO}
-				fontSize={8.2}
-				letterSpacing={0.25}
-				textAnchor="middle"
-			>
+			<text x={217} y={68} fill="currentColor" fontFamily={MONO} fontSize={8.4} textAnchor="end">
 				{spec.dateLine}
 			</text>
-			<text
-				x={145}
-				y={108}
-				fill="currentColor"
-				fontFamily={CONDENSED}
-				fontSize={8}
-				letterSpacing={1.4}
-				textAnchor="middle"
-			>
-				{country.entryWord}
-			</text>
-			<Micro x={120} y={126} size={4} opacity={0.6} letterSpacing={0.2}>
-				{`Nº ${spec.serial}`}
+			<Micro x={23} y={92} size={3.8} anchor="start">
+				{`PORT ${country.capital.toUpperCase()}`}
 			</Micro>
-			<Star cx={120} cy={24} r={2.3} opacity={0.55} />
+			<Micro x={217} y={92} size={3.8} anchor="end">
+				{`NO. ${spec.serial}`}
+			</Micro>
+			<Motif name={country.motif} x={202} y={78} size={14} opacity={0.13} />
 		</g>
 	);
-}
-
-function VisaForm({ country, spec, uid }: FormProps) {
-	return (
-		<g>
-			<path
-				d="M 36 138 V 78 A 84 54 0 0 1 204 78 V 138 Z"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth={2.6}
-				strokeLinejoin="round"
-			/>
-			<path
-				d="M 43 134 V 80 A 77 48 0 0 1 197 80 V 134"
-				fill="none"
-				stroke="currentColor"
-				strokeWidth={0.7}
-				opacity={0.7}
-			/>
-			<Rosette cx={120} cy={100} r={44} seed={spec.seed} opacity={0.12} />
-			<NameArc
-				id={`${uid}-visa-name`}
-				d="M 44 82 A 76 22 0 0 1 196 82"
-				name={country.stampName}
-				size={18}
-				fontFamily={CONDENSED}
-				letterSpacing={1.6}
-				arcWidth={148}
-			/>
-			<rect
-				x={98}
-				y={79}
-				width={44}
-				height={13}
-				fill="currentColor"
-				fillOpacity={0.05}
-				stroke="currentColor"
-				strokeWidth={0.6}
-				strokeOpacity={0.66}
-			/>
-			<text
-				x={120}
-				y={88}
-				fill="currentColor"
-				fontFamily={MONO}
-				fontSize={5.9}
-				letterSpacing={1.2}
-				textAnchor="middle"
-			>
-				VISA
-			</text>
-			<Motif name={country.motif} x={80} y={104} size={motifSize(country, 34)} />
-			{country.motif2 && <Motif name={country.motif2} x={108} y={116} size={13} opacity={0.6} />}
-			<rect
-				x={120}
-				y={96}
-				width={78}
-				height={38}
-				fill="currentColor"
-				fillOpacity={0.05}
-				stroke="currentColor"
-				strokeWidth={0.55}
-				strokeOpacity={0.62}
-			/>
-			<Micro x={161} y={104} size={4.5} letterSpacing={1}>
-				{country.entryWord}
-			</Micro>
-			<line
-				x1={126}
-				y1={108}
-				x2={196}
-				y2={108}
-				stroke="currentColor"
-				strokeWidth={0.4}
-				opacity={0.4}
-			/>
-			<text
-				x={138}
-				y={124}
-				fill="currentColor"
-				fontFamily={CONDENSED}
-				fontSize={22}
-				letterSpacing={0.8}
-				textAnchor="middle"
-			>
-				{spec.day}
-			</text>
-			<text
-				x={161}
-				y={116}
-				fill="currentColor"
-				fontFamily={MONO}
-				fontSize={6.4}
-				letterSpacing={0.3}
-				textAnchor="middle"
-			>
-				{spec.month}
-			</text>
-			<text
-				x={161}
-				y={124}
-				fill="currentColor"
-				fontFamily={MONO}
-				fontSize={6.4}
-				letterSpacing={0.3}
-				textAnchor="middle"
-			>
-				{spec.year}
-			</text>
-			<text
-				x={184}
-				y={117}
-				fill="currentColor"
-				fontFamily={CONDENSED}
-				fontSize={5.8}
-				letterSpacing={0.9}
-				textAnchor="middle"
-			>
-				{`CL ${spec.classCode}`}
-			</text>
-			<Micro x={194} y={128} size={4.3} letterSpacing={0.15} anchor="end">
-				{`Nº ${spec.serial}`}
-			</Micro>
-			<Micro x={80} y={130} size={4.2} opacity={0.68}>
-				{`PORT ${(country.stampCapital ?? country.capital).toUpperCase()}`}
-			</Micro>
-
-			<Star cx={46} cy={98} r={2.2} opacity={0.55} />
-			<Star cx={194} cy={92} r={2.2} opacity={0.55} />
-			<line
-				x1={38}
-				y1={88}
-				x2={38}
-				y2={110}
-				stroke="currentColor"
-				strokeWidth={0.4}
-				opacity={0.3}
-			/>
-			<line
-				x1={202}
-				y1={88}
-				x2={202}
-				y2={110}
-				stroke="currentColor"
-				strokeWidth={0.4}
-				opacity={0.3}
-			/>
-		</g>
-	);
-}
-
-function motifSize(country: Country, base: number): number {
-	if (country.stampName.length > 22) return r3Number(base * 0.74);
-	if (country.stampName.length > 17) return r3Number(base * 0.86);
-	return base;
 }
 
 const FORMS = {
+	arrival: ArrivalForm,
 	oval: OvalForm,
 	round: RoundForm,
+	date: DateForm,
 	permit: PermitForm,
-	shield: ShieldForm,
 	transit: TransitForm,
-	visa: VisaForm,
 } as const;
 
 export const Stamp = memo(function Stamp({
@@ -1009,39 +615,42 @@ export const Stamp = memo(function Stamp({
 	const uid = cleanId(`${country.code}-${useId()}`);
 	const spec = stampSpec(country, seed);
 	const Form = FORMS[country.form];
+	const box = FORM_BOX[country.form];
+	const doubleStrike = seed % 5 === 0;
+	const inkOpacity = 0.9 + (seed % 4) * 0.025;
 	return (
 		<svg
 			className="passport-stamp-art"
-			viewBox="0 0 240 160"
+			viewBox={`0 0 ${box.width} ${box.height}`}
 			aria-hidden={decorative ? 'true' : undefined}
 			role={decorative ? undefined : 'img'}
 			aria-label={
 				decorative
 					? undefined
-					: `${country.name} entry stamp, ${spec.dateLine}, ${country.entryWord.toLowerCase()}`
+					: `${country.name} ${spec.direction.toLowerCase()} stamp, ${spec.dateLine}, ${country.capital}`
 			}
-			style={{ color: INK_HEX[country.ink] }}
+			style={{ color: INK_HEX[country.ink], opacity: inkOpacity }}
 		>
 			<defs>
 				<filter
 					id={`${uid}-ink`}
-					x={-8}
-					y={-8}
-					width={256}
-					height={176}
+					x={-10}
+					y={-10}
+					width={box.width + 20}
+					height={box.height + 20}
 					filterUnits="userSpaceOnUse"
 					colorInterpolationFilters="sRGB"
 				>
 					<feTurbulence
 						type="fractalNoise"
-						baseFrequency="0.22"
+						baseFrequency="0.16"
 						numOctaves="2"
 						seed={spec.seed % 907}
 						result="warpNoise"
 					/>
 					<feTurbulence
 						type="fractalNoise"
-						baseFrequency="0.9"
+						baseFrequency="0.75"
 						numOctaves="3"
 						seed={(spec.seed + 137) % 811}
 						result="grain"
@@ -1049,31 +658,39 @@ export const Stamp = memo(function Stamp({
 					<feDisplacementMap
 						in="SourceGraphic"
 						in2="warpNoise"
-						scale="0.7"
+						scale="1"
 						xChannelSelector="R"
 						yChannelSelector="G"
 						result="warped"
 					/>
 					<feColorMatrix in="grain" type="luminanceToAlpha" result="lum" />
 					<feComponentTransfer in="lum" result="holes">
-						<feFuncA type="table" tableValues="0 0.8 0.95 1 1 1 1 1" />
+						<feFuncA type="table" tableValues="0 0.45 0.7 0.9 1 1 1 1" />
 					</feComponentTransfer>
-					<feComposite in="warped" in2="holes" operator="in" />
+					<feComposite in="warped" in2="holes" operator="in" result="inked" />
+					<feGaussianBlur in="inked" stdDeviation="0.1" />
 				</filter>
 				<linearGradient
 					id={`${uid}-pressure`}
 					gradientUnits="userSpaceOnUse"
-					x1={r3Number(120 + Math.cos((spec.seed % 360) * (Math.PI / 180)) * 130)}
-					y1={r3Number(80 + Math.sin((spec.seed % 360) * (Math.PI / 180)) * 90)}
-					x2={r3Number(120 - Math.cos((spec.seed % 360) * (Math.PI / 180)) * 130)}
-					y2={r3Number(80 - Math.sin((spec.seed % 360) * (Math.PI / 180)) * 90)}
+					x1={r3(box.width / 2 + Math.cos((spec.seed % 360) * (Math.PI / 180)) * box.width)}
+					y1={r3(box.height / 2 + Math.sin((spec.seed % 360) * (Math.PI / 180)) * box.height)}
+					x2={r3(box.width / 2 - Math.cos((spec.seed % 360) * (Math.PI / 180)) * box.width)}
+					y2={r3(box.height / 2 - Math.sin((spec.seed % 360) * (Math.PI / 180)) * box.height)}
 				>
 					<stop offset="0" stopColor="#ffffff" />
-					<stop offset="0.55" stopColor="#f7f7f7" />
-					<stop offset="1" stopColor="#d8d8d8" />
+					<stop offset="0.6" stopColor="#f2f2f2" />
+					<stop offset="1" stopColor="#c8c8c8" />
 				</linearGradient>
-				<mask id={`${uid}-press`} maskUnits="userSpaceOnUse" x={0} y={0} width={240} height={160}>
-					<rect width={240} height={160} fill={`url(#${uid}-pressure)`} />
+				<mask
+					id={`${uid}-press`}
+					maskUnits="userSpaceOnUse"
+					x={0}
+					y={0}
+					width={box.width}
+					height={box.height}
+				>
+					<rect width={box.width} height={box.height} fill={`url(#${uid}-pressure)`} />
 					{spec.voids.map((voidSpec) => (
 						<ellipse
 							key={`${voidSpec.x}-${voidSpec.y}`}
@@ -1082,18 +699,22 @@ export const Stamp = memo(function Stamp({
 							rx={voidSpec.rx}
 							ry={voidSpec.ry}
 							fill="#000000"
+							opacity={voidSpec.opacity ?? 1}
 							transform={`rotate(${voidSpec.rotation} ${voidSpec.x} ${voidSpec.y})`}
 						/>
 					))}
 				</mask>
 				<g id={`${uid}-body`}>
-					<Form country={country} spec={spec} uid={uid} />
+					<Form country={country} spec={spec} />
 				</g>
 			</defs>
 			<g filter={`url(#${uid}-ink)`} mask={`url(#${uid}-press)`}>
+				{doubleStrike && (
+					<use href={`#${uid}-body`} transform="translate(0.6 -0.4)" opacity={0.2} />
+				)}
 				<use href={`#${uid}-body`} />
 			</g>
-			<g fill="currentColor" opacity={0.6}>
+			<g fill="currentColor" opacity={0.5}>
 				{spec.specks.map((speck) =>
 					speck.kind === 'ring' ? (
 						<circle
@@ -1111,10 +732,10 @@ export const Stamp = memo(function Stamp({
 							key={`${speck.x}-${speck.y}-dash`}
 							x1={speck.x}
 							y1={speck.y}
-							x2={speck.x + Math.cos(speck.angle) * 2.4}
-							y2={speck.y + Math.sin(speck.angle) * 2.4}
+							x2={speck.x + Math.cos(speck.angle) * 2.2}
+							y2={speck.y + Math.sin(speck.angle) * 2.2}
 							stroke="currentColor"
-							strokeWidth={0.5}
+							strokeWidth={0.45}
 							opacity={speck.opacity}
 						/>
 					) : (

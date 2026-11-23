@@ -56,27 +56,21 @@ function normalize(value: string): string {
 
 function scoreCountry(country: Country, query: string): number {
 	const name = normalize(country.name);
-	const stamp = normalize(country.stampName);
 	const capital = normalize(country.capital);
 	const alias = normalize(ALIASES[country.code] ?? '');
 	const nameWords = name.split(/\s+/);
-	const stampWords = stamp.split(/\s+/);
 	const capitalWords = capital.split(/\s+/);
 	const aliasWords = alias.split(/\s+/);
 	if (name === query) return 240;
 	if (alias === query || aliasWords.includes(query)) return 220;
-	if (stamp === query) return 210;
 	if (name.startsWith(query)) return 190;
-	if (stamp.startsWith(query)) return 180;
 	if (nameWords.includes(query)) return 170;
-	if (stampWords.includes(query)) return 160;
 	if (country.code === query || country.iso3.toLowerCase() === query) return 150;
 	if (alias.startsWith(query)) return 130;
 	if (capital === query) return 80;
 	if (capital.startsWith(query)) return 70;
 	if (capitalWords.includes(query)) return 60;
 	if (name.includes(query)) return 40;
-	if (stamp.includes(query)) return 30;
 	return 0;
 }
 
@@ -86,8 +80,8 @@ function Flag({ code, size = 'small' }: { code: string; size?: 'small' | 'chip' 
 			className={`passport-flag passport-flag--${size}`}
 			src={`https://flagcdn.com/${code}.svg`}
 			alt=""
-			width={size === 'chip' ? 16 : 18}
-			height={size === 'chip' ? 12 : 13}
+			width={size === 'chip' ? 18 : 18}
+			height={size === 'chip' ? 13 : 13}
 			loading="lazy"
 			decoding="async"
 		/>
@@ -125,7 +119,6 @@ function CountryOption({
 	onHover,
 	onPick,
 }: CountryOptionProps) {
-	const native = country.stampName !== country.name.toUpperCase() ? country.stampName : '';
 	return (
 		// biome-ignore lint/a11y/useKeyWithClickEvents: keyboard is handled by the combobox input via aria-activedescendant
 		<div
@@ -147,9 +140,7 @@ function CountryOption({
 			<Flag code={country.code} />
 			<span className="passport-command-text">
 				<span className="passport-command-name">{country.name}</span>
-				<span className="passport-command-meta">
-					{native ? `${native} · ${country.capital}` : country.capital}
-				</span>
+				<span className="passport-command-meta">{country.capital}</span>
 			</span>
 			{isSelected ? (
 				<span className="passport-command-check" aria-hidden="true">
@@ -231,8 +222,6 @@ export function CountrySelect({ selected, onToggle, onRemove }: Props) {
 	const commandRef = useRef<HTMLDivElement>(null);
 	const full = selected.length >= MAX_STAMPS;
 	const selectedSet = new Set(selected);
-	const count = String(selected.length).padStart(2, '0');
-	const max = String(MAX_STAMPS).padStart(2, '0');
 
 	const needle = normalize(query).trim();
 	const groups = needle
@@ -339,12 +328,6 @@ export function CountrySelect({ selected, onToggle, onRemove }: Props) {
 
 	return (
 		<div className="passport-picker">
-			<div className="passport-field-label">
-				<span>{full ? 'Manage endorsements' : 'Add a country'}</span>
-				<span>
-					{count} / {max}
-				</span>
-			</div>
 			<Popover
 				open={open}
 				onOpenChange={(next) => {
@@ -356,33 +339,10 @@ export function CountrySelect({ selected, onToggle, onRemove }: Props) {
 				}}
 			>
 				<PopoverTrigger asChild>
-					<button
-						id={TRIGGER_ID}
-						type="button"
-						className={`passport-trigger ${full ? 'is-full' : ''}`}
-					>
-						<span className="passport-trigger-plus" aria-hidden="true">
-							{full ? (
-								<HugeiconsIcon icon={CheckmarkCircle01Icon} size={13} />
-							) : (
-								<HugeiconsIcon icon={PlusSignIcon} size={13} />
-							)}
-						</span>
-						<span className="passport-trigger-text">
-							{full
-								? 'Page full'
-								: selected.length > 0
-									? 'Add another country'
-									: 'Select a country'}
-						</span>
-						<span className="passport-trigger-count">
-							{selected.length > 0 ? selected.length : ''}
-						</span>
-						<span className="passport-trigger-flags" aria-hidden="true">
-							{selected.slice(-3).map((code) => (
-								<Flag key={code} code={code} />
-							))}
-						</span>
+					<button id={TRIGGER_ID} type="button" className={`passport-add ${full ? 'is-full' : ''}`}>
+						<HugeiconsIcon icon={Search01Icon} size={14} className="passport-add-icon" />
+						<span className="passport-add-text">{full ? 'Page full' : 'Find a country'}</span>
+						<HugeiconsIcon icon={PlusSignIcon} size={14} className="passport-add-plus" />
 					</button>
 				</PopoverTrigger>
 				<PopoverContent
@@ -415,7 +375,7 @@ export function CountrySelect({ selected, onToggle, onRemove }: Props) {
 								role="combobox"
 								className="passport-command-input"
 							/>
-							<kbd>ESC</kbd>
+							<kbd>Esc</kbd>
 							<button
 								type="button"
 								className="passport-command-close"
@@ -426,9 +386,7 @@ export function CountrySelect({ selected, onToggle, onRemove }: Props) {
 							</button>
 						</div>
 						{full && (
-							<p className="passport-command-note">
-								The page holds {MAX_STAMPS} stamps. Remove one to add another.
-							</p>
+							<p className="passport-command-note">Page full. Remove a stamp to add another.</p>
 						)}
 						<CountryList
 							groups={groups}
@@ -439,37 +397,39 @@ export function CountrySelect({ selected, onToggle, onRemove }: Props) {
 							onPick={pick}
 						/>
 						<div className="passport-command-footer">
-							<span>{COUNTRIES.length - selected.length} countries off the page</span>
-							<span>Select to toggle</span>
+							<span>{COUNTRIES.length} countries</span>
+							<span>Enter to add</span>
 						</div>
 					</div>
 				</PopoverContent>
 			</Popover>
 
-			<div className="passport-chips">
+			<div className="passport-selected">
 				{selected.length === 0 ? (
-					<p className="passport-chips-empty">No countries on this page yet.</p>
+					<p className="passport-selected-empty">No stamps yet.</p>
 				) : (
 					selected.map((code) => {
 						const country = COUNTRY_BY_CODE[code];
 						if (!country) return null;
 						return (
-							<button
-								type="button"
-								className="passport-chip"
-								key={code}
-								onClick={() => {
-									onRemove(code);
-									focusTrigger();
-								}}
-								aria-label={`Remove ${country.name}`}
-							>
+							<div className="passport-selected-row" key={code}>
 								<Flag code={code} size="chip" />
-								<span>{country.name}</span>
-								<span className="passport-chip-remove" aria-hidden="true">
-									<HugeiconsIcon icon={Cancel01Icon} size={11} />
+								<span className="passport-selected-text">
+									<span className="passport-selected-name">{country.name}</span>
+									<span className="passport-selected-capital">{country.capital}</span>
 								</span>
-							</button>
+								<button
+									type="button"
+									className="passport-selected-remove"
+									onClick={() => {
+										onRemove(code);
+										focusTrigger();
+									}}
+									aria-label={`Remove ${country.name}`}
+								>
+									<HugeiconsIcon icon={Cancel01Icon} size={11} />
+								</button>
+							</div>
 						);
 					})
 				)}

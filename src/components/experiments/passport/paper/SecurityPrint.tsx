@@ -172,6 +172,18 @@ const ROSE_B =
 		steps: 34,
 	});
 
+const SEAL = disc(300, 462, 176, {
+	count: 72,
+	from: 0.14,
+	to: 1,
+	petals: 43,
+	amp0: 0.4,
+	amp1: 0.72,
+	drift: 0.31,
+	wander: 0.24,
+	steps: 72,
+});
+
 const CORNER = disc(0, 0, 14, {
 	count: 14,
 	from: 0.2,
@@ -292,6 +304,7 @@ const SERIAL = serial(452, 722, 12);
 
 const MICRO_FRAME = 'REPUBLIC OF EVERYWHERE · VISA PAGE · '.repeat(72);
 const MICRO_GLOBE = 'EVERYWHERE · '.repeat(11);
+const MICRO_SEAL = 'REPUBLIC OF EVERYWHERE · MINISTRY OF FOREIGN AFFAIRS · '.repeat(8);
 
 function framePath(inset: number): string {
 	const x = FRAME.x + inset;
@@ -367,6 +380,10 @@ export default function SecurityPrint({ className }: { className?: string }) {
 				</pattern>
 				<path d={MICRO_PATH} id={`${uid}-micro-frame`} />
 				<path d={globeTextPath} id={`${uid}-micro-globe`} />
+				<path
+					d="M 300 462 m -184 0 a 184 184 0 1 1 368 0 a 184 184 0 1 1 -368 0"
+					id={`${uid}-micro-seal`}
+				/>
 			</defs>
 
 			<g opacity={0.08}>
@@ -458,6 +475,19 @@ export default function SecurityPrint({ className }: { className?: string }) {
 			<g opacity={0.27}>
 				<path d={ROSE_B} strokeWidth={0.25} {...ink} strokeLinejoin="round" />
 			</g>
+
+			<g opacity={0.075}>
+				<path d={SEAL} strokeWidth={0.24} {...ink} strokeLinejoin="round" />
+			</g>
+			<g opacity={0.12}>
+				<circle cx={300} cy={462} r={184} strokeWidth={0.32} {...ink} />
+				<circle cx={300} cy={462} r={178} strokeWidth={0.24} {...ink} opacity={0.6} />
+			</g>
+			<text className="ps-micro" fontSize={2.85} opacity={0.17}>
+				<textPath href={`#${uid}-micro-seal`} startOffset="0">
+					{MICRO_SEAL}
+				</textPath>
+			</text>
 
 			<g opacity={0.38}>
 				<path d={TOP_BAND} strokeWidth={0.28} {...ink} />

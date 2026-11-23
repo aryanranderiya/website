@@ -1,6 +1,14 @@
 'use client';
 
-import { Cancel01Icon, HugeiconsIcon, PlusSignIcon, RefreshIcon, ShuffleIcon } from '@icons';
+import {
+	Cursor02Icon,
+	Delete02Icon,
+	DicesIcon,
+	HugeiconsIcon,
+	PlusSignIcon,
+	RefreshIcon,
+	ShuffleIcon,
+} from '@icons';
 import { useEffect, useRef, useState } from 'react';
 import { CountrySelect } from './CountrySelect';
 import { COUNTRIES, COUNTRY_BY_CODE } from './data/countries';
@@ -12,6 +20,7 @@ import {
 	randomSeed,
 	reinkEntries,
 	type StampEntry,
+	shuffleEntries,
 } from './state';
 import './studio.css';
 
@@ -46,7 +55,7 @@ export default function PassportStudio() {
 		setCanUndo(false);
 		cleared.current = null;
 		if (full) {
-			announce(`Page full. ${MAX_STAMPS} stamps is the limit for one page.`);
+			announce(`Page full. ${MAX_STAMPS} stamps is the limit.`);
 			return;
 		}
 		const country = COUNTRY_BY_CODE[code];
@@ -71,13 +80,22 @@ export default function PassportStudio() {
 		);
 	};
 
-	const reink = () => {
+	const redate = () => {
 		setCanUndo(false);
 		cleared.current = null;
 		const nextSeed = randomSeed();
 		pageSeed.current = nextSeed;
 		setEntries((current) => reinkEntries(current, nextSeed));
-		announce('Page re-pressed. New dates, fresh impressions.');
+		announce('New dates pressed.');
+	};
+
+	const shuffle = () => {
+		setCanUndo(false);
+		cleared.current = null;
+		const nextSeed = randomSeed();
+		pageSeed.current = nextSeed;
+		setEntries((current) => shuffleEntries(current, nextSeed));
+		announce('Layout shuffled.');
 	};
 
 	const clear = () => {
@@ -85,7 +103,7 @@ export default function PassportStudio() {
 		cleared.current = entries;
 		setCanUndo(true);
 		setEntries([]);
-		announce('Page cleared. Undo available.');
+		announce('Page cleared.');
 		window.requestAnimationFrame(() => {
 			document.getElementById('passport-country-trigger')?.focus();
 		});
@@ -123,7 +141,7 @@ export default function PassportStudio() {
 			}
 			return next;
 		});
-		announce(`${shuffled.length} stamp${shuffled.length === 1 ? '' : 's'} added at random.`);
+		announce(`${shuffled.length} stamp${shuffled.length === 1 ? '' : 's'} added.`);
 	};
 
 	return (
@@ -148,56 +166,66 @@ export default function PassportStudio() {
 						aria-pressed={arranging}
 						onClick={() => setArranging((value) => !value)}
 					>
-						{arranging ? 'Done arranging' : 'Arrange stamps'}
+						<HugeiconsIcon icon={Cursor02Icon} size={14} />
+						{arranging ? 'Done' : 'Arrange'}
 					</button>
 				</div>
-				<PassportPage entries={entries} onMove={move} arranging={arranging} />
-				<div className="passport-caption">
-					<span>A passport issued by nowhere. Stamped by everywhere.</span>
-					{entries.length > 0 && (
-						<span className="passport-caption-drag">Drag a stamp to move it.</span>
-					)}
-				</div>
+				<PassportPage entries={entries} onMove={move} onRemove={remove} arranging={arranging} />
 			</div>
 
 			<aside className="passport-controls" aria-label="Passport controls">
-				<div className="passport-control-top">
-					<span className="passport-eyebrow">ENDORSEMENTS</span>
-					<span className="passport-page-tag">PAGE 07</span>
+				<div className="passport-controls-head">
+					<span className="passport-controls-title">Stamps</span>
+					<span className="passport-controls-count">
+						{entries.length} of {MAX_STAMPS}
+					</span>
 				</div>
 
 				<CountrySelect selected={selected} onToggle={toggle} onRemove={remove} />
 
-				<div className="passport-actions">
+				<div className="passport-toolbar" role="toolbar" aria-label="Stamp actions">
 					<button
 						type="button"
-						className="passport-action"
-						onClick={reink}
-						disabled={entries.length === 0}
+						className="passport-tool"
+						onClick={shuffle}
+						disabled={entries.length < 2}
+						title="Shuffle placement"
+						aria-label="Shuffle placement"
 					>
-						<HugeiconsIcon icon={RefreshIcon} size={13} />
-						Re-press page
+						<HugeiconsIcon icon={ShuffleIcon} size={14} />
 					</button>
 					<button
 						type="button"
-						className="passport-action passport-action--danger"
+						className="passport-tool"
+						onClick={redate}
+						disabled={entries.length === 0}
+						title="New dates"
+						aria-label="New dates"
+					>
+						<HugeiconsIcon icon={RefreshIcon} size={14} />
+					</button>
+					<button
+						type="button"
+						className="passport-tool"
+						onClick={addRandom}
+						disabled={full}
+						title="Add random stamps"
+						aria-label="Add random stamps"
+					>
+						<DicesIcon size={14} />
+					</button>
+					<span className="passport-toolbar-spacer" />
+					<button
+						type="button"
+						className="passport-tool passport-tool--danger"
 						onClick={clear}
 						disabled={entries.length === 0}
+						title="Clear page"
+						aria-label="Clear page"
 					>
-						<HugeiconsIcon icon={Cancel01Icon} size={13} />
-						Clear
+						<HugeiconsIcon icon={Delete02Icon} size={14} />
 					</button>
 				</div>
-
-				<button type="button" className="passport-random" onClick={addRandom} disabled={full}>
-					<HugeiconsIcon icon={ShuffleIcon} size={14} />
-					Add random stamps
-				</button>
-
-				<p className="passport-hint">
-					Every country carries its own stamp: one ink, a form, a motif, a date from the road. Nine
-					fit on a page; the set holds 197. Choose a country and it lands somewhere new.
-				</p>
 
 				<div className="passport-live" role="status" aria-live="polite">
 					{notice}

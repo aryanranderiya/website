@@ -126,7 +126,7 @@ export type MotifKey =
 	| 'yurt'
 	| 'zebra';
 
-export type StampForm = 'oval' | 'round' | 'permit' | 'shield' | 'transit' | 'visa';
+export type StampForm = 'arrival' | 'oval' | 'round' | 'date' | 'permit' | 'transit';
 
 export type InkKey = 'ultramarine' | 'ink' | 'forest' | 'oxblood' | 'violet' | 'umber' | 'teal';
 
@@ -138,15 +138,12 @@ export interface Country {
 	code: string;
 	iso3: string;
 	name: string;
-	stampName: string;
 	capital: string;
-	stampCapital?: string;
 	region: Region;
 	motif: MotifKey;
 	motif2?: MotifKey;
 	form: StampForm;
 	ink: InkKey;
-	entryWord: string;
 	dateStyle: DateStyle;
 	serial: string;
 }

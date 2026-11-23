@@ -2,6 +2,8 @@
 // Usage: node scripts/qa-everywhere.mjs
 import { chromium } from 'playwright';
 
+const base = process.env.PASSPORT_URL ?? 'http://127.0.0.1:4072';
+
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1440, height: 1100 }, deviceScaleFactor: 2 });
 const errors = [];
@@ -12,7 +14,7 @@ page.on('pageerror', (err) => errors.push(String(err)));
 await page.route('**unpkg.com/react-scan**', (route) => route.fulfill({ status: 200, contentType: 'application/javascript', body: '' }));
 await page.addInitScript(() => localStorage.setItem('portfolio-pet:v1', JSON.stringify({ animal: 'none', color: 'brown' })));
 
-await page.goto('http://localhost:4331/experiments/everywhere', {
+await page.goto(`${base}/experiments/everywhere`, {
 	waitUntil: 'domcontentloaded',
 	timeout: 60_000,
 });
@@ -35,7 +37,18 @@ await page.evaluate(() => {
 });
 await page.screenshot({ path: 'shots/qa/everywhere-initial.png', fullPage: true });
 
-await page.locator('.passport-trigger').click();
+await page.locator('.passport-stamp-hit').first().click();
+await page.waitForTimeout(200);
+check('clicking a stamp selects it', (await page.locator('.passport-stamp-slot.is-selected').count()) === 1);
+check(
+	'selected stamp shows a remove control',
+	await page.locator('.passport-stamp-remove').isVisible()
+);
+await page.keyboard.press('Escape');
+await page.waitForTimeout(150);
+check('escape clears the selection', (await page.locator('.passport-stamp-slot.is-selected').count()) === 0);
+
+await page.locator('.passport-add').click();
 await page.waitForTimeout(350);
 const items = await page.locator('.passport-command-item').count();
 check('selector lists all 197 countries', items === 197, String(items));
@@ -52,7 +65,7 @@ await page.screenshot({ path: 'shots/qa/everywhere-picker.png' });
 await page.keyboard.press('Enter');
 await page.waitForTimeout(900);
 check('iceland stamp added', (await page.locator('.passport-stamp-slot').count()) === 8);
-check('iceland chip present', await page.locator('.passport-chip', { hasText: 'Iceland' }).isVisible());
+check('iceland row present', await page.locator('.passport-selected-row', { hasText: 'Iceland' }).isVisible());
 await page.keyboard.press('Escape');
 await page.waitForTimeout(300);
 
@@ -80,23 +93,23 @@ check(
 	`${beforeBox?.x} -> ${afterBox?.x}`
 );
 check('drag updates the slot position', before !== after);
-await first.focus();
+await first.locator('.passport-stamp-hit').focus();
 const beforeKey = await first.evaluate((el) => el.getAttribute('style'));
 await page.keyboard.press('ArrowRight');
 await page.waitForTimeout(250);
 const afterKey = await first.evaluate((el) => el.getAttribute('style'));
 check('arrow keys nudge a focused stamp', beforeKey !== afterKey);
 
-await page.locator('.passport-random').click();
+await page.locator('.passport-tool[aria-label="Add random stamps"]').click();
 await page.waitForTimeout(900);
 check('random fills remaining slots', (await page.locator('.passport-stamp-slot').count()) === 9);
 
-await page.locator('.passport-chip-remove').first().click();
+await page.locator('.passport-selected-remove').first().click();
 await page.waitForTimeout(500);
-check('chip removal removes its stamp', (await page.locator('.passport-stamp-slot').count()) === 8);
-check('chip removal returns focus to the trigger', (await page.evaluate(() => document.activeElement?.id)) === 'passport-country-trigger');
+check('row removal removes its stamp', (await page.locator('.passport-stamp-slot').count()) === 8);
+check('row removal returns focus to the trigger', (await page.evaluate(() => document.activeElement?.id)) === 'passport-country-trigger');
 
-await page.locator('.passport-action', { hasText: 'Re-press page' }).click();
+await page.locator('.passport-tool[aria-label="New dates"]').click();
 await page.waitForTimeout(900);
 check('re-press keeps the count', (await page.locator('.passport-stamp-slot').count()) === 8);
 await page.evaluate(() => {
@@ -104,11 +117,11 @@ await page.evaluate(() => {
 });
 await page.screenshot({ path: 'shots/qa/everywhere-full.png', fullPage: true });
 
-await page.locator('.passport-random').click();
+await page.locator('.passport-tool[aria-label="Add random stamps"]').click();
 await page.waitForTimeout(900);
 check('page fills to nine', (await page.locator('.passport-stamp-slot').count()) === 9);
-check('trigger stays available when full', !(await page.locator('.passport-trigger').isDisabled()));
-await page.locator('.passport-trigger').click();
+check('trigger stays available when full', !(await page.locator('.passport-add').isDisabled()));
+await page.locator('.passport-add').click();
 await page.waitForTimeout(300);
 check('full state explains itself', await page.locator('.passport-command-note').isVisible());
 await page.keyboard.press('Escape');
@@ -117,10 +130,10 @@ await page.evaluate(() => {
 	document.querySelectorAll('astro-dev-toolbar, agentation-toolbar, #react-scan-root, #blur-stack').forEach((el) => el.remove());
 });
 await page.screenshot({ path: 'shots/qa/everywhere-page-full.png', fullPage: true });
-await page.locator('.passport-chip-remove').first().click();
+await page.locator('.passport-selected-remove').first().click();
 await page.waitForTimeout(500);
-check('picker remains available after removing at full', !(await page.locator('.passport-trigger').isDisabled()));
-await page.locator('.passport-action', { hasText: 'Clear' }).click();
+check('picker remains available after removing at full', !(await page.locator('.passport-add').isDisabled()));
+await page.locator('.passport-tool[aria-label="Clear page"]').click();
 await page.waitForTimeout(500);
 check('clear empties the page', (await page.locator('.passport-stamp-slot').count()) === 0);
 check('empty state appears', await page.locator('.passport-empty').isVisible());
@@ -145,7 +158,7 @@ await page.screenshot({ path: 'shots/qa/everywhere-dark.png', fullPage: true });
 
 const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
 await mobile.addInitScript(() => localStorage.setItem('portfolio-pet:v1', JSON.stringify({ animal: 'none', color: 'brown' })));
-await mobile.goto('http://localhost:4331/experiments/everywhere', { waitUntil: 'domcontentloaded' });
+await mobile.goto(`${base}/experiments/everywhere`, { waitUntil: 'domcontentloaded' });
 await mobile.addStyleTag({ content: 'agentation-toolbar, astro-dev-toolbar { display: none !important; }' });
 await mobile.evaluate(() => {
 	document.querySelectorAll('astro-dev-toolbar, agentation-toolbar, #react-scan-root, #blur-stack').forEach((el) => el.remove());
@@ -162,8 +175,8 @@ const mobilePage = await mobile.locator('.passport-page').boundingBox();
 const mobileControls = await mobile.locator('.passport-controls').boundingBox();
 check('mobile shows the passport before the controls', !!mobilePage && !!mobileControls && mobilePage.y < mobileControls.y);
 await mobile.setViewportSize({ width: 390, height: 500 });
-await mobile.locator('.passport-trigger').scrollIntoViewIfNeeded();
-await mobile.locator('.passport-trigger').click();
+await mobile.locator('.passport-add').scrollIntoViewIfNeeded();
+await mobile.locator('.passport-add').click();
 await mobile.waitForTimeout(350);
 const sheet = await mobile.locator('.passport-picker-popover').boundingBox();
 const sheetSearch = await mobile.locator('.passport-command-search').boundingBox();

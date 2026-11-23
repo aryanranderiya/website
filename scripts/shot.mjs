@@ -2,6 +2,7 @@
 // Usage: node scripts/shot.mjs <path> <outfile> [width] [height] [dark] [full]
 import { chromium } from 'playwright';
 
+const base = process.env.PASSPORT_URL ?? 'http://127.0.0.1:4072';
 const [
 	path = '/experiments/everywhere',
 	out = 'shots/page.png',
@@ -26,7 +27,7 @@ page.on('console', (msg) => {
 	if (msg.type() === 'error') errors.push(msg.text());
 });
 page.on('pageerror', (err) => errors.push(String(err)));
-await page.goto(`http://localhost:4331${path}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
+await page.goto(`${base}${path}`, { waitUntil: 'domcontentloaded', timeout: 60_000 });
 await page.addStyleTag({
 	content: 'agentation-toolbar, astro-dev-toolbar, #react-scan-root { display: none !important; }',
 });
