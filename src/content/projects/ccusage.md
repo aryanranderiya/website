@@ -1,7 +1,7 @@
 ---
 title: ccusage2 (fork)
-description: Terminal token-usage tracker for AI coding CLIs, extended with prime-agent, fx, opencode2 and pi parsers, magnitude formatting, and multi-machine GitHub sync.
-shortDescription: Extended CLI usage + cost tracker
+description: "A fork of ccusage for multi-agent, multi-machine setups: prime-agent, fx, opencode and pi parsers, GitHub sync, magnitude formatting and the ccusage2 alias."
+shortDescription: "Multi-agent, multi-machine ccusage fork"
 date: 2026-08-21
 tech: [TypeScript, Rust, SQLite, Node.js]
 featured: false
@@ -15,9 +15,9 @@ order: 41
 github: https://github.com/aryanranderiya/ccusage2
 ---
 
-`ccusage` reads the local log files left by AI coding CLIs and prints token-usage and dollar-cost tables by day, week, month, or session — offline, no API keys. The repo is `ccusage2`; the command and npm package are still `ccusage`. Upstream (`ccusage/ccusage`) already covers 16+ sources with daily/weekly/monthly/session reports, billing-block views, model breakdowns, cache-token accounting, and JSON output.
+This is a fork of [ccusage](https://github.com/ccusage/ccusage). Upstream already prints token-usage and dollar-cost tables for 16+ AI coding CLIs, offline and without API keys. The fork adds the sources and workflow I needed to run a fleet of agents across machines; the command and npm package are still `ccusage`.
 
-This fork extends it for a multi-agent, multi-machine setup, with every addition documented in `FORK.md`:
+## What this fork adds
 
 - **Extra agents**: `prime-agent` (`~/.prime` JSONL sessions), `fx` (Vercel usage ledger), `opencode`/`opencode2` (SQLite `opencode.db` plus legacy JSON, deduped), and `pi` — all rolling into the unified reports with an Agent column.
 - **`ccusage sync`**: backs stats up to a private GitHub repo and coalesces every machine's usage (`data/<machine>.json`, conflict-free by construction, `--machine`, `--no-push`).
@@ -38,4 +38,4 @@ $ ccusage fx daily                         # fork only: Vercel ledger agent
 $ ccusage prime daily                      # fork only: prime-agent sessions
 ```
 
-Verified locally against real usage data (Claude, Grok, OpenCode sources all parse; `daily` renders identically where the data overlaps). The one honest caveat: the fork's Rust core means contributions go through `cargo`, not just the TypeScript surface.
+Verified locally against real usage data (Claude, Grok and OpenCode sources all parse; `daily` renders identically where the data overlaps). The fork keeps upstream's Rust core, so changes go through `cargo` as well as the TypeScript surface.
