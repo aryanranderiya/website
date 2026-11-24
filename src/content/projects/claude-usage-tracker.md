@@ -7,7 +7,7 @@ tech: [Swift, SwiftUI, macOS, Codex]
 featured: false
 type: desktop
 folder: Projects
-coverImage: /images/projects/claude-usage-tracker/popover.webp
+coverImage: /images/projects/claude-usage-tracker/accounts.webp
 order: 30
 github: https://github.com/aryanranderiya/claude-usage-tracker-aryan
 ---
