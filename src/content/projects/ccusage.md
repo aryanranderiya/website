@@ -9,6 +9,9 @@ type: tool
 folder: Projects
 coverImage: /images/projects/ccusage/fork-daily.webp
 order: 41
+images:
+  - src: /images/projects/ccusage/upstream-daily.webp
+    caption: Upstream ccusage — daily report, compact layout.
 github: https://github.com/aryanranderiya/ccusage2
 ---
 
