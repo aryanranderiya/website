@@ -14,6 +14,8 @@ github: https://github.com/aryanranderiya/booksync
 
 booksync moves the EPUBs and PDFs you uploaded to Google Play Books into Apple Books, on your Mac, with one command. There is no export API and no built-in path between the two apps; without this, your options are clicking Export on 70 books one at a time or giving up.
 
-`booksync sync` borrows your existing Google login from Arc or Chrome, opens Play Books in a hidden browser window, skips everything it has already handled, exports each new book, checks the file is real, gives it a cover worth looking at, saves a copy to `~/Books/PlayBooks` and adds it to Apple Books. Run it again next month and it only fetches what you added since. Books are tracked by file and ISBN, so you never end up with duplicates, and books it cannot export are remembered and skipped on later runs. `booksync shelf`, `status`, `import`, `covers` and `doctor` cover the rest.
+`booksync sync` borrows your Google login from Arc or Chrome’s existing cookies, opens Play Books in a hidden window, and skips everything it has already handled. For each new book it exports the file, checks that it is real, gives it a cover worth looking at, saves a copy to `~/Books/PlayBooks` and adds it to Apple Books.
 
-It is Python 3.12 with `uv`, reads the cookies your own browser already has and unlocks them locally. Nothing is sent anywhere except to Google, as you: no server, no account, no telemetry.
+Run it again next month and it only fetches what is new. Books are tracked by file and ISBN, so there are no duplicates, and anything it cannot export is remembered and skipped later. `booksync shelf`, `status`, `import`, `covers` and `doctor` cover the rest.
+
+It is Python 3.12 with `uv`, reads your own browser cookies and decrypts them locally. Nothing is sent anywhere except to Google, as you: no server, no account, no telemetry.

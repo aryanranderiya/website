@@ -15,7 +15,7 @@ order: 41
 github: https://github.com/aryanranderiya/ccusage2
 ---
 
-`ccusage` reads the local log files left by AI coding CLIs and prints token-usage and dollar-cost tables by day, week, month, or session — offline, no API keys. Upstream (`ccusage/ccusage`) already covers 16+ sources with daily/weekly/monthly/session reports, billing-block views, model breakdowns, cache-token accounting, and JSON output.
+`ccusage` reads the local log files left by AI coding CLIs and prints token-usage and dollar-cost tables by day, week, month, or session — offline, no API keys. The repo is `ccusage2`; the command and npm package are still `ccusage`. Upstream (`ccusage/ccusage`) already covers 16+ sources with daily/weekly/monthly/session reports, billing-block views, model breakdowns, cache-token accounting, and JSON output.
 
 This fork extends it for a multi-agent, multi-machine setup, with every addition documented in `FORK.md`:
 

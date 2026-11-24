@@ -16,6 +16,8 @@ github: https://github.com/aryanranderiya/app-presence
 
 AppPresence puts the app you are actually using on your Discord profile, with its real icon. It is a menu bar-only macOS app: no bot, no token, no login, and nothing registered in the Discord Developer Portal.
 
-Nothing appears until you enable it per app. Each app gets its own status line — `shipping with` for Rex, `conducting agents` for Conductor — and an editable third line for real context; Conductor fills it live with the active project and branch. Icons come from every app in `/Applications` exported at 512px, so Rex, Conductor, Arc, Ghostty and 260+ others show their actual artwork. A second card reports WakaTime today and your weekly leaderboard rank, then your daily average and 7-day total on hover. Hard blocks (Discord, 1Password) mean an app can never appear even if you enable everything else, and switching to a hidden app does not wipe the last allowed status. The timer counts from when the app actually opened, not when you last focused it.
+Nothing appears until you enable it per app. Each app gets its own status line (`shipping with` for Rex, `conducting agents` for Conductor) and an editable detail line; Conductor fills that line live with the active project and branch. Icons come from every app in `/Applications`, exported at 512px, so Rex, Conductor, Arc, Ghostty and 260+ others show their actual artwork.
+
+A second card reports WakaTime today and your weekly leaderboard rank, then your daily average and 7-day total on hover. Hard blocks such as Discord or 1Password mean an app can never appear, even if you enable everything else, and switching to a hidden app does not wipe the last allowed status. The timer counts from when the app opened, not when you last focused it.
 
 Policies, phrases and settings live in one small SQLite database under Application Support. Menu bar only, macOS 13+.
