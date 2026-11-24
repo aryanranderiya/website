@@ -7,7 +7,7 @@ tech: [TypeScript, Rust, SQLite, Node.js]
 featured: false
 type: tool
 folder: Projects
-coverImage: /images/projects/ccusage/screenshot.webp
+coverImage: /images/projects/ccusage/fork-daily.webp
 order: 41
 github: https://github.com/aryanranderiya/ccusage2
 ---
