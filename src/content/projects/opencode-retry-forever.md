@@ -7,7 +7,6 @@ tech: [TypeScript, Bun, OpenCode]
 featured: false
 type: tool
 folder: Projects
-coverImage: /images/projects/opencode-retry-forever/cover.webp
 order: 35
 github: https://github.com/aryanranderiya/opencode-retry-forever
 ---

@@ -7,7 +7,6 @@ tech: [Python, macOS, Apple Books, Google Play Books]
 featured: false
 type: cli
 folder: Projects
-coverImage: /images/projects/booksync/cover.webp
 order: 33
 github: https://github.com/aryanranderiya/booksync
 ---
