@@ -7,11 +7,10 @@ tech: [Swift, SwiftUI, macOS, Codex]
 featured: false
 type: desktop
 folder: Projects
-coverImage: /images/projects/claude-usage-tracker/cover.webp
+coverImage: /images/projects/claude-usage-tracker/cover-fork.webp
 images:
-  - /images/projects/claude-usage-tracker/popover.webp
-  - /images/projects/claude-usage-tracker/settings.webp
-  - /images/projects/claude-usage-tracker/statusline.webp
+  - src: /images/projects/claude-usage-tracker/statusline.webp
+    caption: The menu bar status line, with account, model and context.
 order: 30
 github: https://github.com/aryanranderiya/claude-usage-tracker-aryan
 ---

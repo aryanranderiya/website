@@ -8,9 +8,6 @@ featured: false
 type: tool
 folder: Projects
 coverImage: /images/projects/ccusage/screenshot.webp
-images:
-  - /images/projects/ccusage/screenshot.webp
-  - /images/projects/ccusage/logo.svg
 order: 41
 github: https://github.com/aryanranderiya/ccusage2
 ---
@@ -23,19 +20,5 @@ This is a fork of [ccusage](https://github.com/ccusage/ccusage). Upstream alread
 - **`ccusage sync`**: backs stats up to a private GitHub repo and coalesces every machine's usage (`data/<machine>.json`, conflict-free by construction, `--machine`, `--no-push`).
 - **Readability**: magnitude formatting (millions render as `68.44M`, never truncated mid-digit), redundant `[store]` prefixes dropped, plus a `ccusage2` install alias.
 - **Counting guarantees**: single-count from authoritative ledgers, message-identity dedupes, all cross-checked against independent tallies of the raw logs.
-
-Before (upstream, captured) vs after (fork — new commands, documented in `FORK.md`):
-
-```text
-$ ccusage sync
-Unknown command 'sync'
-Run 'ccusage --help' for usage.
-```
-
-```text
-$ ccusage sync --repo <you>/ccusage-sync   # fork only: parse → push → pull → merged report
-$ ccusage fx daily                         # fork only: Vercel ledger agent
-$ ccusage prime daily                      # fork only: prime-agent sessions
-```
 
 Verified locally against real usage data (Claude, Grok and OpenCode sources all parse; `daily` renders identically where the data overlaps). The fork keeps upstream's Rust core, so changes go through `cargo` as well as the TypeScript surface.
